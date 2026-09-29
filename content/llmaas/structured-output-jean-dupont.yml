@@ -1,0 +1,38 @@
+applicant:
+  name: Jean Dupont
+  degree: 
+  alma_mater: Université de Lyon
+  attended:
+  - Apprentissage automatique
+  - Vision par ordinateur
+  skills:
+  - Machine learning
+  - Computer vision
+  - Supervised learning
+  - Classification methods
+  - Dimensionality reduction
+  - Support Vector Machines (SVM)
+  - Data analysis
+  - Programming
+  strengths:
+  - Technical competence in AI/ML
+  - Ability to implement algorithms and follow protocols
+  - Dependable and focused in structured settings
+  - Receptive to feedback and able to work with explicit milestones
+  weaknesses:
+  - Prefers well-defined problems and structured supervision; less comfortable defining
+    problems independently
+  - Written work sometimes descriptive rather than analytical
+  - May not quickly identify deeper limitations or broader implications
+author:
+  name: Claire Moreau
+  affiliation: Université de Lyon, Département d’Informatique
+  position: Maîtresse de conférences en informatique
+  seniority: 1
+  email: claire.moreau@example.fr
+  nationality: 
+  relationship_with_applicant: Course instructor for Jean Dupont’s Master’s courses
+    (Apprentissage automatique) and his primary contact during the research-oriented
+    module Vision par ordinateur
+application_for: PhD Programme in Artificial Intelligence
+score: 4

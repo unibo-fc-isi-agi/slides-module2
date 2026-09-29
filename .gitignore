@@ -1,0 +1,9 @@
+.idea
+public/
+build/
+_gen/
+*.pdf
+*.hprof
+*build.lock
+.venv
+.DS_Store

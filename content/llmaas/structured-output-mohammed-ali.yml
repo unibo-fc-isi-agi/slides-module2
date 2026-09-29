@@ -1,0 +1,37 @@
+applicant:
+  name: Mohammed Ali
+  degree: 
+  alma_mater: 
+  attended:
+  - computing
+  - software development
+  - information systems
+  - programming
+  - software engineering
+  - databases
+  - computer networks
+  - Islamic studies
+  - ethics
+  - communication
+  - social responsibility
+  skills:
+  - programming
+  - software engineering
+  - databases
+  - computer networks
+  strengths:
+  - polite
+  - serious
+  - disciplined
+  - ability to follow academic instructions
+  weaknesses: []
+author:
+  name: Kareem Al-Haddad
+  affiliation: Department of Computer Science, University of Amman
+  position: Associate Professor
+  seniority: 3
+  email: k.alhaddad@example.edu.jo
+  nationality: 
+  relationship_with_applicant: course instructor in Software Engineering programme
+application_for: PhD Programme in Cyber Security
+score: 4

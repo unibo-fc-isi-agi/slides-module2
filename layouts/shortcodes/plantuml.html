@@ -1,0 +1,9 @@
+{{ $figure_id := now.UnixNano }}
+<figure id="plantuml-figure-{{ $figure_id }}" class="plantuml" 
+    alt="{{ with .Get "alt" }}{{.}}{{ else }}{{ end }}"
+    style="width: {{ with .Get "width" }}{{.}}{{ else }}100%{{ end }};{{ with .Get "height" }}height: {{.}};{{ end }}max-width: {{ with .Get "max-w" }}{{.}}{{ else }}95vw{{ end }};max-height: {{ with .Get "max-h" }}{{.}}{{ else }}80vh{{end}};">
+    {{ .Inner }}
+</figure>
+<script>
+    handlePlantumlFigureByID("plantuml-figure-{{ $figure_id }}");
+</script>

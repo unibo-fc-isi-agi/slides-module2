@@ -1,0 +1,5 @@
+{{ $_hugo_config := `{ "version": 1 }` }}
+<div 
+    class='col {{ .Get "class" }}'
+    {{ with .Get "text-align" | default "left" }}style='text-align: {{ . }};'{{else}}{{end}}
+>{{ .Inner }}</div>
