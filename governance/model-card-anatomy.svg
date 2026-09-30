@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 470" width="1800" height="470" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+<path d="M20,10 L1740,10 L1790,60 L1790,460 L20,460 Z" fill="#ffffff" stroke="#8a8f98" stroke-width="3" stroke-linejoin="round"/>
+<path d="M1740,10 L1740,60 L1790,60" fill="#eceef1" stroke="#8a8f98" stroke-width="3" stroke-linejoin="round"/>
+<text x="45" y="55" font-size="32" font-weight="bold">Model card</text>
+<rect x="235" y="33" width="260" height="22" rx="6" fill="#eceef1"/>
+<rect x="45" y="80" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="65" y="116" font-size="25" font-weight="bold">Model details</text>
+<rect x="65" y="134" width="300" height="11" rx="5" fill="#eceef1"/>
+<rect x="65" y="156" width="240" height="11" rx="5" fill="#eceef1"/>
+<rect x="65" y="178" width="270" height="11" rx="5" fill="#eceef1"/>
+<rect x="65" y="207" width="109.5" height="34" rx="17" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+<text x="119.75" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#3a9e4f">control</text>
+<rect x="480" y="80" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="500" y="116" font-size="25" font-weight="bold">Intended use</text>
+<rect x="500" y="134" width="320" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="156" width="260" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="178" width="200" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="207" width="147.0" height="34" rx="17" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+<text x="573.5" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#8e5bb5">compliance</text>
+<rect x="659.0" y="207" width="109.5" height="34" rx="17" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+<text x="713.75" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#2690e7">quality</text>
+<rect x="915" y="80" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="935" y="116" font-size="25" font-weight="bold">Out-of-scope use</text>
+<rect x="935" y="134" width="290" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="156" width="310" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="178" width="180" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="207" width="147.0" height="34" rx="17" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+<text x="1008.5" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#8e5bb5">compliance</text>
+<rect x="1350" y="80" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="1370" y="116" font-size="25" font-weight="bold">Training data</text>
+<rect x="1370" y="134" width="330" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="156" width="250" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="178" width="280" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="207" width="147.0" height="34" rx="17" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+<text x="1443.5" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#8e5bb5">compliance</text>
+<rect x="1529.0" y="207" width="109.5" height="34" rx="17" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+<text x="1583.75" y="231" text-anchor="middle" font-size="21" font-weight="bold" fill="#2690e7">quality</text>
+<rect x="45" y="270" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="65" y="306" font-size="25" font-weight="bold">Evaluation</text>
+<rect x="65" y="320" width="125" height="30" fill="#eceef1" stroke="#8a8f98" stroke-width="1.5"/>
+<rect x="65" y="350" width="125" height="30" fill="#ffffff" stroke="#8a8f98" stroke-width="1.5"/>
+<text x="127.5" y="342" text-anchor="middle" font-size="20" fill="#555555">overall</text>
+<text x="127.5" y="372" text-anchor="middle" font-size="20" font-weight="bold" fill="#222222">0.91</text>
+<rect x="190" y="320" width="125" height="30" fill="#eceef1" stroke="#8a8f98" stroke-width="1.5"/>
+<rect x="190" y="350" width="125" height="30" fill="#ffffff" stroke="#8a8f98" stroke-width="1.5"/>
+<text x="252.5" y="342" text-anchor="middle" font-size="20" fill="#555555">group A</text>
+<text x="252.5" y="372" text-anchor="middle" font-size="20" font-weight="bold" fill="#222222">0.93</text>
+<rect x="315" y="320" width="125" height="30" fill="#eceef1" stroke="#8a8f98" stroke-width="1.5"/>
+<rect x="315" y="350" width="125" height="30" fill="#ffffff" stroke="#8a8f98" stroke-width="1.5"/>
+<text x="377.5" y="342" text-anchor="middle" font-size="20" fill="#555555">group B</text>
+<text x="377.5" y="372" text-anchor="middle" font-size="20" font-weight="bold" fill="#d64541">0.78</text>
+<rect x="65" y="397" width="109.5" height="34" rx="17" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+<text x="119.75" y="421" text-anchor="middle" font-size="21" font-weight="bold" fill="#2690e7">quality</text>
+<rect x="480" y="270" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="500" y="306" font-size="25" font-weight="bold">Ethical considerations</text>
+<rect x="500" y="324" width="310" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="346" width="270" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="368" width="220" height="11" rx="5" fill="#eceef1"/>
+<rect x="500" y="397" width="147.0" height="34" rx="17" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+<text x="573.5" y="421" text-anchor="middle" font-size="21" font-weight="bold" fill="#8e5bb5">compliance</text>
+<rect x="915" y="270" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="935" y="306" font-size="25" font-weight="bold">Limitations</text>
+<rect x="935" y="324" width="280" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="346" width="320" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="368" width="190" height="11" rx="5" fill="#eceef1"/>
+<rect x="935" y="397" width="109.5" height="34" rx="17" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+<text x="989.75" y="421" text-anchor="middle" font-size="21" font-weight="bold" fill="#2690e7">quality</text>
+<rect x="1350" y="270" width="415" height="175" rx="12" fill="#ffffff" stroke="#8a8f98" stroke-width="2"/>
+<text x="1370" y="306" font-size="25" font-weight="bold">License</text>
+<rect x="1370" y="324" width="260" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="346" width="300" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="368" width="150" height="11" rx="5" fill="#eceef1"/>
+<rect x="1370" y="397" width="147.0" height="34" rx="17" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+<text x="1443.5" y="421" text-anchor="middle" font-size="21" font-weight="bold" fill="#8e5bb5">compliance</text>
+<rect x="1529.0" y="397" width="109.5" height="34" rx="17" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+<text x="1583.75" y="421" text-anchor="middle" font-size="21" font-weight="bold" fill="#3a9e4f">control</text>
+</svg>

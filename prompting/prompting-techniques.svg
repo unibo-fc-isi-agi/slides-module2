@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- column headers -->
+  <g font-size="30" font-weight="bold" text-anchor="middle">
+    <text x="180" y="40">1. Zero-shot</text>
+    <text x="580" y="40">2. Few-shot</text>
+    <text x="1020" y="40">3. Chain-of-thought</text>
+    <text x="1420" y="40">4. Self-consistency</text>
+  </g>
+
+  <!-- ========== system bubbles (cols 1-3) ========== -->
+  <g font-size="22">
+    <rect x="10" y="60" width="340" height="104" rx="12" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="26" y="90">Classify the tone:</text>
+    <text x="26" y="118">enthusiastic, lukewarm,</text>
+    <text x="26" y="146">or critical <tspan fill="#555555" font-size="20">(+ definitions)</tspan></text>
+
+    <rect x="370" y="60" width="420" height="104" rx="12" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="386" y="90">Classify the tone:</text>
+    <text x="386" y="118">enthusiastic, lukewarm,</text>
+    <text x="386" y="146">or critical <tspan fill="#555555" font-size="20">(+ definitions)</tspan></text>
+
+    <rect x="810" y="60" width="420" height="104" rx="12" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="826" y="90">Classify the tone:</text>
+    <text x="826" y="118">enthusiastic, lukewarm,</text>
+    <text x="826" y="146">or critical <tspan fill="#555555" font-size="20">(+ definitions)</tspan></text>
+  </g>
+
+  <!-- ========== middle band ========== -->
+  <!-- col 1: nothing -->
+  <rect x="10" y="176" width="340" height="152" rx="12" fill="none" stroke="#8a8f98" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="180" y="260" font-size="22" fill="#555555" text-anchor="middle">(no examples)</text>
+
+  <!-- col 2: solved examples -->
+  <g font-size="20">
+    <rect x="370" y="176" width="250" height="44" rx="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <text x="384" y="205" font-style="italic">Anna led our lab's…</text>
+    <rect x="632" y="176" width="158" height="44" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="711" y="205" text-anchor="middle">enthusiastic</text>
+
+    <rect x="370" y="230" width="250" height="44" rx="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <text x="384" y="259" font-style="italic">Luca passed the exam…</text>
+    <rect x="632" y="230" width="158" height="44" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="711" y="259" text-anchor="middle">lukewarm</text>
+
+    <rect x="370" y="284" width="250" height="44" rx="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <text x="384" y="313" font-style="italic">Sara needed reminders…</text>
+    <rect x="632" y="284" width="158" height="44" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="711" y="313" text-anchor="middle">critical</text>
+  </g>
+
+  <!-- col 3: output schema -->
+  <rect x="810" y="176" width="420" height="152" rx="12" fill="none" stroke="#8a8f98" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="826" y="210" font-size="22" fill="#555555">(no examples) output schema:</text>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20">
+    <text x="840" y="252">1. reasoning: str</text>
+    <text x="840" y="284">2. label: Tone</text>
+  </g>
+  <text x="826" y="316" font-size="20" fill="#555555">fields are generated in order</text>
+
+  <!-- ========== user bubbles (cols 1-3) ========== -->
+  <g>
+    <rect x="10" y="342" width="340" height="70" rx="12" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <rect x="370" y="342" width="420" height="70" rx="12" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <rect x="810" y="342" width="420" height="70" rx="12" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20">
+      <text x="26" y="372">&lt;letter&gt;…&lt;/letter&gt;</text>
+      <text x="386" y="372">&lt;letter&gt;…&lt;/letter&gt;</text>
+      <text x="826" y="372">&lt;letter&gt;…&lt;/letter&gt;</text>
+    </g>
+    <g font-size="20" fill="#555555" font-style="italic">
+      <text x="26" y="400">Jean Dupont's letter</text>
+      <text x="386" y="400">Jean Dupont's letter</text>
+      <text x="826" y="400">Jean Dupont's letter</text>
+    </g>
+  </g>
+
+  <!-- ========== LLM calls (cols 1-3) ========== -->
+  <g stroke="#222222" stroke-width="2.5" marker-end="url(#arr)">
+    <line x1="180" y1="414" x2="180" y2="437"/>
+    <line x1="580" y1="414" x2="580" y2="437"/>
+    <line x1="1020" y1="414" x2="1020" y2="437"/>
+    <line x1="180" y1="484" x2="180" y2="507"/>
+    <line x1="580" y1="484" x2="580" y2="507"/>
+    <line x1="1020" y1="484" x2="1020" y2="507"/>
+  </g>
+  <g font-size="22" font-weight="bold" text-anchor="middle">
+    <rect x="120" y="440" width="120" height="44" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="180" y="470">LLM</text>
+    <rect x="520" y="440" width="120" height="44" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="580" y="470">LLM</text>
+    <rect x="960" y="440" width="120" height="44" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1020" y="470">LLM</text>
+  </g>
+
+  <!-- ========== outputs (cols 1-3) ========== -->
+  <rect x="80" y="510" width="200" height="50" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <text x="180" y="543" font-size="24" font-weight="bold" text-anchor="middle">lukewarm</text>
+
+  <rect x="480" y="510" width="200" height="50" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <text x="580" y="543" font-size="24" font-weight="bold" text-anchor="middle">critical</text>
+
+  <rect x="810" y="510" width="420" height="290" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20" xml:space="preserve">
+    <text x="824" y="542">{"reasoning":</text>
+    <g fill="#555555">
+      <text x="824" y="569">  "The author says he 'was</text>
+      <text x="824" y="596">  less comfortable when asked</text>
+      <text x="824" y="623">  to define a problem</text>
+      <text x="824" y="650">  independently', and that he</text>
+      <text x="824" y="677">  'would benefit from a</text>
+      <text x="824" y="704">  structured research group':</text>
+      <text x="824" y="731">  polite, but reservations.",</text>
+    </g>
+    <text x="824" y="770" font-weight="bold"> "label": "critical"}</text>
+  </g>
+
+  <!-- ========== col 4: self-consistency ========== -->
+  <!-- stack of 5 copies of the CoT request -->
+  <g stroke-width="2">
+    <rect x="1298" y="92" width="280" height="150" rx="12" fill="#ffffff" stroke="#8a8f98"/>
+    <rect x="1290" y="84" width="280" height="150" rx="12" fill="#ffffff" stroke="#8a8f98"/>
+    <rect x="1282" y="76" width="280" height="150" rx="12" fill="#ffffff" stroke="#8a8f98"/>
+    <rect x="1274" y="68" width="280" height="150" rx="12" fill="#ffffff" stroke="#8a8f98"/>
+    <rect x="1266" y="60" width="280" height="150" rx="12" fill="#ffffff" stroke="#222222"/>
+    <rect x="1282" y="76" width="200" height="22" rx="6" fill="#eceef1" stroke="#8a8f98"/>
+    <rect x="1282" y="106" width="248" height="22" rx="6" fill="#d6e8fb" stroke="#2690e7"/>
+  </g>
+  <text x="1282" y="164" font-size="24" font-weight="bold">CoT request</text>
+  <text x="1282" y="192" font-size="20" fill="#555555">(same as column 3)</text>
+  <text x="1420" y="276" font-size="22" text-anchor="middle">× 5, temperature = 1.0</text>
+
+  <!-- fan-out bus -->
+  <path d="M1266 135 H1256 V530" fill="none" stroke="#222222" stroke-width="2.5"/>
+  <g stroke="#222222" stroke-width="2.5" marker-end="url(#arr)">
+    <line x1="1256" y1="330" x2="1276" y2="330"/>
+    <line x1="1256" y1="380" x2="1276" y2="380"/>
+    <line x1="1256" y1="430" x2="1276" y2="430"/>
+    <line x1="1256" y1="480" x2="1276" y2="480"/>
+    <line x1="1256" y1="530" x2="1276" y2="530"/>
+    <line x1="1350" y1="330" x2="1368" y2="330"/>
+    <line x1="1350" y1="380" x2="1368" y2="380"/>
+    <line x1="1350" y1="430" x2="1368" y2="430"/>
+    <line x1="1350" y1="480" x2="1368" y2="480"/>
+    <line x1="1350" y1="530" x2="1368" y2="530"/>
+  </g>
+  <g font-size="20" font-weight="bold" text-anchor="middle">
+    <rect x="1280" y="312" width="70" height="36" rx="8" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1315" y="337">LLM</text>
+    <rect x="1280" y="362" width="70" height="36" rx="8" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1315" y="387">LLM</text>
+    <rect x="1280" y="412" width="70" height="36" rx="8" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1315" y="437">LLM</text>
+    <rect x="1280" y="462" width="70" height="36" rx="8" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1315" y="487">LLM</text>
+    <rect x="1280" y="512" width="70" height="36" rx="8" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1315" y="537">LLM</text>
+  </g>
+  <g font-size="20" text-anchor="middle">
+    <rect x="1372" y="312" width="130" height="36" rx="8" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1437" y="337">critical</text>
+    <rect x="1372" y="362" width="130" height="36" rx="8" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1437" y="387">critical</text>
+    <rect x="1372" y="412" width="130" height="36" rx="8" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1437" y="437">lukewarm</text>
+    <rect x="1372" y="462" width="130" height="36" rx="8" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1437" y="487">critical</text>
+    <rect x="1372" y="512" width="130" height="36" rx="8" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1437" y="537">critical</text>
+  </g>
+
+  <!-- fan-in bus into the ballot box -->
+  <g stroke="#222222" stroke-width="2.5" fill="none">
+    <path d="M1502 330 H1560 M1502 380 H1560 M1502 430 H1560 M1502 480 H1560 M1502 530 H1560"/>
+    <path d="M1560 330 V650"/>
+  </g>
+  <line x1="1560" y1="650" x2="1524" y2="650" stroke="#222222" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ballot box -->
+  <rect x="1432" y="574" width="44" height="40" rx="3" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+  <path d="M1443 594 l7 8 l14 -16" fill="none" stroke="#3a9e4f" stroke-width="3"/>
+  <rect x="1370" y="606" width="150" height="90" rx="8" fill="#eceef1" stroke="#222222" stroke-width="2.5"/>
+  <rect x="1420" y="604" width="68" height="8" rx="3" fill="#222222"/>
+  <text x="1445" y="662" font-size="22" text-anchor="middle">majority</text>
+  <text x="1445" y="686" font-size="22" text-anchor="middle">vote</text>
+  <line x1="1445" y1="698" x2="1445" y2="722" stroke="#222222" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <rect x="1335" y="726" width="220" height="50" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <text x="1445" y="759" font-size="24" font-weight="bold" text-anchor="middle">critical (4/5)</text>
+
+  <!-- legend -->
+  <g font-size="22">
+    <rect x="440" y="848" width="36" height="26" rx="6" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="486" y="869">system</text>
+    <rect x="600" y="848" width="36" height="26" rx="6" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+    <text x="646" y="869">user</text>
+    <rect x="740" y="848" width="36" height="26" rx="6" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="786" y="869">assistant</text>
+    <rect x="910" y="848" width="36" height="26" rx="6" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="956" y="869">one request to the model</text>
+  </g>
+</svg>

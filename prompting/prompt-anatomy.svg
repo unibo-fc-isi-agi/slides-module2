@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" width="1600" height="800" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- system message -->
+  <text x="44" y="48" font-size="22" fill="#555555">system</text>
+  <rect x="40" y="60" width="640" height="285" rx="14" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+  <rect x="62" y="75" width="560" height="69" rx="6" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <rect x="62" y="147" width="573" height="69" rx="6" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+  <rect x="62" y="291" width="533" height="33" rx="6" fill="#fbe7cf" stroke="#e8871e" stroke-width="2"/>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="22">
+    <text x="70" y="100">You are assisting the admission committee</text>
+    <text x="70" y="136">of University of Bologna PhD programmes.</text>
+    <text x="70" y="172">Your goal is to help assess recommendation</text>
+    <text x="70" y="208">letters for PhD applications.</text>
+    <text x="70" y="244">You'll be provided with the text of each</text>
+    <text x="70" y="280">letter, and you'll have to analyse it to</text>
+    <text x="70" y="316">extract structured information in JSON.</text>
+  </g>
+
+  <!-- user message -->
+  <text x="44" y="393" font-size="22" fill="#555555">user</text>
+  <rect x="40" y="405" width="640" height="185" rx="14" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+  <rect x="62" y="425" width="414" height="33" rx="6" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+  <rect x="62" y="461" width="300" height="105" rx="6" fill="#fbf1c7" stroke="#e6b800" stroke-width="2"/>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="22">
+    <text x="70" y="450">Evaluate the following letter:</text>
+    <text x="70" y="486">&lt;letter&gt;</text>
+    <text x="70" y="522" font-weight="bold">{letter_text}</text>
+    <text x="70" y="558">&lt;/letter&gt;</text>
+  </g>
+
+  <!-- JSON Schema attached to the request -->
+  <line x1="360" y1="590" x2="360" y2="650" stroke="#e8871e" stroke-width="3" stroke-dasharray="8 6"/>
+  <text x="376" y="628" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20" fill="#555555">response_format=LetterInfo</text>
+  <rect x="40" y="650" width="640" height="125" rx="14" fill="#fbe7cf" stroke="#e8871e" stroke-width="2.5"/>
+  <text x="60" y="686" font-size="26" font-weight="bold">JSON Schema</text>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20">
+    <text x="60" y="720">properties: applicant, author,</text>
+    <text x="60" y="750">application_for, score (integer)</text>
+  </g>
+
+  <!-- fixed vs variable annotations -->
+  <path d="M697 62 h12 V343 h-12" fill="none" stroke="#222222" stroke-width="2.5"/>
+  <line x1="780" y1="202" x2="716" y2="202" stroke="#222222" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="792" y="196" font-size="26" font-weight="bold">fixed across requests</text>
+  <text x="792" y="228" font-size="22" fill="#555555">same system prompt</text>
+  <text x="792" y="256" font-size="22" fill="#555555">for every letter</text>
+
+  <path d="M697 463 h12 V564 h-12" fill="none" stroke="#222222" stroke-width="2.5"/>
+  <line x1="780" y1="513" x2="716" y2="513" stroke="#222222" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="792" y="507" font-size="26" font-weight="bold">changes at every request</text>
+  <text x="792" y="539" font-size="22" fill="#555555">placeholder, filled in</text>
+  <text x="792" y="567" font-size="22" fill="#555555">by the prompt template</text>
+
+  <!-- legend -->
+  <text x="1170" y="90" font-size="30" font-weight="bold">Prompt elements</text>
+  <g font-size="26">
+    <rect x="1170" y="118" width="44" height="32" rx="6" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
+    <text x="1232" y="143" font-weight="bold">1. instructions</text>
+    <text x="1232" y="174" font-size="22" fill="#555555">the task, and how to do it</text>
+
+    <rect x="1170" y="218" width="44" height="32" rx="6" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+    <text x="1232" y="243" font-weight="bold">2. context</text>
+    <text x="1232" y="274" font-size="22" fill="#555555">background information</text>
+
+    <rect x="1170" y="318" width="44" height="32" rx="6" fill="#fbf1c7" stroke="#e6b800" stroke-width="2"/>
+    <text x="1232" y="343" font-weight="bold">3. input data</text>
+    <text x="1232" y="374" font-size="22" fill="#555555">the data to be processed</text>
+
+    <rect x="1170" y="418" width="44" height="32" rx="6" fill="#fbe7cf" stroke="#e8871e" stroke-width="2"/>
+    <text x="1232" y="443" font-weight="bold">4. output indicator</text>
+    <text x="1232" y="474" font-size="22" fill="#555555">the expected format</text>
+  </g>
+</svg>

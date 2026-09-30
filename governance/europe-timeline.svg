@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 640" width="1800" height="640" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+<line x1="200.0" y1="20" x2="200.0" y2="520" stroke="#eceef1" stroke-width="2"/>
+<line x1="200.0" y1="512" x2="200.0" y2="528" stroke="#222222" stroke-width="2.5"/>
+<text x="395.0" y="556" text-anchor="middle" font-size="26" font-weight="bold">2023</text>
+<line x1="590.0" y1="20" x2="590.0" y2="520" stroke="#eceef1" stroke-width="2"/>
+<line x1="590.0" y1="512" x2="590.0" y2="528" stroke="#222222" stroke-width="2.5"/>
+<text x="785.0" y="556" text-anchor="middle" font-size="26" font-weight="bold">2024</text>
+<line x1="980.0" y1="20" x2="980.0" y2="520" stroke="#eceef1" stroke-width="2"/>
+<line x1="980.0" y1="512" x2="980.0" y2="528" stroke="#222222" stroke-width="2.5"/>
+<text x="1175.0" y="556" text-anchor="middle" font-size="26" font-weight="bold">2025</text>
+<line x1="1370.0" y1="20" x2="1370.0" y2="520" stroke="#eceef1" stroke-width="2"/>
+<line x1="1370.0" y1="512" x2="1370.0" y2="528" stroke="#222222" stroke-width="2.5"/>
+<text x="1565.0" y="556" text-anchor="middle" font-size="26" font-weight="bold">2026</text>
+<line x1="1760.0" y1="20" x2="1760.0" y2="520" stroke="#eceef1" stroke-width="2"/>
+<line x1="1760.0" y1="512" x2="1760.0" y2="528" stroke="#222222" stroke-width="2.5"/>
+<line x1="200" y1="520" x2="1760.0" y2="520" stroke="#222222" stroke-width="2.5"/>
+<line x1="1646.25" y1="20" x2="1646.25" y2="520" stroke="#8a8f98" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="1646.25" y="584" text-anchor="middle" font-size="20" fill="#555555">status as of Sep 2026</text>
+<line x1="200" y1="150" x2="1760.0" y2="150" stroke="#2690e7" stroke-width="4"/>
+<text x="20" y="144" font-size="28" font-weight="bold" fill="#2690e7">global</text>
+<text x="20" y="176" font-size="28" font-weight="bold" fill="#2690e7">frontier</text>
+<line x1="200" y1="330" x2="1760.0" y2="330" stroke="#e8871e" stroke-width="4"/>
+<text x="20" y="324" font-size="28" font-weight="bold" fill="#e8871e">EU /</text>
+<text x="20" y="356" font-size="28" font-weight="bold" fill="#e8871e">Italy</text>
+<line x1="395.0" y1="150" x2="395.0" y2="128" stroke="#2690e7" stroke-width="2"/>
+<text x="395.0" y="98" text-anchor="middle" font-size="23" font-weight="bold">GPT-4</text>
+<text x="395.0" y="120" text-anchor="middle" font-size="21" fill="#555555">2023</text>
+<circle cx="395.0" cy="150" r="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<line x1="785.0" y1="150" x2="785.0" y2="128" stroke="#2690e7" stroke-width="2"/>
+<text x="785.0" y="98" text-anchor="middle" font-size="23" font-weight="bold">Llama 3 · Qwen2</text>
+<text x="785.0" y="120" text-anchor="middle" font-size="21" fill="#555555">2024</text>
+<circle cx="785.0" cy="150" r="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<line x1="996.25" y1="150" x2="996.25" y2="73" stroke="#2690e7" stroke-width="2"/>
+<text x="1002.25" y="43" text-anchor="end" font-size="23" font-weight="bold">DeepSeek-R1</text>
+<text x="1002.25" y="65" text-anchor="end" font-size="21" fill="#555555">Jan 2025</text>
+<circle cx="996.25" cy="150" r="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<line x1="1175.0" y1="150" x2="1175.0" y2="128" stroke="#2690e7" stroke-width="2"/>
+<text x="1169.0" y="98" text-anchor="start" font-size="23" font-weight="bold">gpt-oss · Qwen3</text>
+<text x="1169.0" y="120" text-anchor="start" font-size="21" fill="#555555">gpt-oss-120b: 120B · 2025</text>
+<circle cx="1175.0" cy="150" r="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<line x1="1565.0" y1="150" x2="1565.0" y2="128" stroke="#2690e7" stroke-width="2"/>
+<text x="1565.0" y="98" text-anchor="middle" font-size="23" font-weight="bold">Gemma 4</text>
+<text x="1565.0" y="120" text-anchor="middle" font-size="21" fill="#555555">2026</text>
+<circle cx="1565.0" cy="150" r="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<line x1="1028.75" y1="330" x2="1028.75" y2="298" stroke="#555555" stroke-width="2"/>
+<text x="1034.75" y="268" text-anchor="end" font-size="23" font-weight="bold">OpenEuroLLM starts</text>
+<text x="1034.75" y="290" text-anchor="end" font-size="21" fill="#555555">Feb 2025</text>
+<path d="M1028.75,319 L1039.75,330 L1028.75,341 L1017.75,330 Z" fill="#eceef1" stroke="#555555" stroke-width="3"/>
+<line x1="1061.25" y1="330" x2="1061.25" y2="298" stroke="#555555" stroke-width="2"/>
+<text x="1055.25" y="268" text-anchor="start" font-size="23" font-weight="bold">OpenGPT-X ends</text>
+<text x="1055.25" y="290" text-anchor="start" font-size="21" fill="#555555">Mar 2025</text>
+<path d="M1061.25,319 L1072.25,330 L1061.25,341 L1050.25,330 Z" fill="#eceef1" stroke="#555555" stroke-width="3"/>
+<line x1="1581.25" y1="330" x2="1581.25" y2="298" stroke="#555555" stroke-width="2"/>
+<text x="1587.25" y="268" text-anchor="end" font-size="23" font-weight="bold">AI Gigafactories call</text>
+<text x="1587.25" y="290" text-anchor="end" font-size="21" fill="#555555">Jul 2026</text>
+<path d="M1581.25,319 L1592.25,330 L1581.25,341 L1570.25,330 Z" fill="#eceef1" stroke="#555555" stroke-width="3"/>
+<line x1="931.25" y1="330" x2="931.25" y2="354" stroke="#e8871e" stroke-width="2"/>
+<text x="937.25" y="380" text-anchor="end" font-size="23" font-weight="bold">Minerva-7B · Teuken-7B</text>
+<text x="937.25" y="404" text-anchor="end" font-size="21" fill="#555555">7B · Nov 2024</text>
+<circle cx="931.25" cy="330" r="10" fill="#fbe7cf" stroke="#e8871e" stroke-width="3"/>
+<line x1="996.25" y1="330" x2="996.25" y2="424" stroke="#e8871e" stroke-width="2"/>
+<text x="990.25" y="450" text-anchor="start" font-size="23" font-weight="bold">Velvet</text>
+<text x="990.25" y="474" text-anchor="start" font-size="21" fill="#555555">2B, 14B · Jan 2025</text>
+<circle cx="996.25" cy="330" r="10" fill="#fbe7cf" stroke="#e8871e" stroke-width="3"/>
+<line x1="1256.25" y1="330" x2="1256.25" y2="354" stroke="#e8871e" stroke-width="2"/>
+<text x="1262.25" y="380" text-anchor="end" font-size="23" font-weight="bold">Apertus 1.0</text>
+<text x="1262.25" y="404" text-anchor="end" font-size="21" fill="#555555">8B, 70B · Sep 2025</text>
+<circle cx="1256.25" cy="330" r="10" fill="#fbe7cf" stroke="#e8871e" stroke-width="3"/>
+<line x1="1418.75" y1="330" x2="1418.75" y2="424" stroke="#e8871e" stroke-width="2"/>
+<text x="1412.75" y="450" text-anchor="start" font-size="23" font-weight="bold">EuroLLM-22B</text>
+<text x="1412.75" y="474" text-anchor="start" font-size="21" fill="#555555">22B · Feb 2026</text>
+<circle cx="1418.75" cy="330" r="10" fill="#fbe7cf" stroke="#e8871e" stroke-width="3"/>
+<line x1="1743.75" y1="330" x2="1743.75" y2="354" stroke="#e8871e" stroke-width="2"/>
+<text x="1749.75" y="380" text-anchor="end" font-size="23" font-weight="bold">OpenEuroLLM flagship</text>
+<text x="1749.75" y="404" text-anchor="end" font-size="21" fill="#555555">pending</text>
+<circle cx="1743.75" cy="330" r="10" fill="#ffffff" stroke="#e8871e" stroke-width="3" stroke-dasharray="4 3"/>
+<circle cx="30" cy="617" r="9" fill="#ffffff" stroke="#222222" stroke-width="3"/>
+<text x="48" y="624" font-size="20" fill="#555555">model release</text>
+<path d="M200,606 L211,617 L200,628 L189,617 Z" fill="#eceef1" stroke="#555555" stroke-width="3"/>
+<text x="220" y="624" font-size="20" fill="#555555">project / policy event</text>
+<text x="440" y="624" font-size="20" fill="#555555">(year-only dates placed mid-year)</text>
+</svg>

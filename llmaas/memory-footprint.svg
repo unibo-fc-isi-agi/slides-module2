@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 470" width="1600" height="470" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<text x="83" y="367.0" font-size="20" fill="#555555" text-anchor="end">0</text>
+<text x="83" y="303.8" font-size="20" fill="#555555" text-anchor="end">20</text>
+<text x="83" y="240.7" font-size="20" fill="#555555" text-anchor="end">40</text>
+<text x="83" y="177.5" font-size="20" fill="#555555" text-anchor="end">60</text>
+<text x="83" y="114.4" font-size="20" fill="#555555" text-anchor="end">80</text>
+<text x="83" y="32" font-size="20" fill="#555555" text-anchor="end">GB</text>
+<line x1="95" y1="334.7" x2="1265" y2="334.7" stroke="#222222" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+<text x="1275" y="341.7" font-size="20" fill="#222222">8 GB</text>
+<line x1="95" y1="309.5" x2="1265" y2="309.5" stroke="#222222" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+<text x="1275" y="316.5" font-size="20" fill="#222222">16 GB</text>
+<line x1="95" y1="284.2" x2="1265" y2="284.2" stroke="#222222" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+<text x="1275" y="291.2" font-size="20" fill="#222222">24 GB</text>
+<line x1="95" y1="208.4" x2="1265" y2="208.4" stroke="#222222" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+<text x="1275" y="215.4" font-size="20" fill="#222222">48 GB</text>
+<line x1="95" y1="107.4" x2="1265" y2="107.4" stroke="#222222" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+<text x="1275" y="114.4" font-size="20" fill="#222222">80 GB</text>
+<rect x="118.2" y="315.8" width="70" height="44.2" fill="#2690e7"/>
+<rect x="118.2" y="312.4" width="70" height="3.4" fill="#e8871e"/>
+<text x="153.2" y="304.4" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">15</text>
+<text x="153.2" y="388" font-size="18" fill="#555555" text-anchor="middle">16-bit</text>
+<rect x="206.2" y="336.5" width="70" height="23.5" fill="#2690e7"/>
+<rect x="206.2" y="333.1" width="70" height="3.4" fill="#e8871e"/>
+<text x="241.2" y="325.1" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">8.5</text>
+<text x="241.2" y="388" font-size="18" fill="#555555" text-anchor="middle">Q8_0</text>
+<rect x="294.2" y="346.5" width="70" height="13.5" fill="#2690e7"/>
+<rect x="294.2" y="343.1" width="70" height="3.4" fill="#e8871e"/>
+<text x="329.2" y="335.1" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">5.4</text>
+<text x="329.2" y="388" font-size="18" fill="#555555" text-anchor="middle">Q4_K_M</text>
+<text x="241.2" y="422" font-size="26" font-weight="bold" fill="#222222" text-anchor="middle">7B</text>
+<rect x="410.8" y="271.6" width="70" height="88.4" fill="#2690e7"/>
+<rect x="410.8" y="266.5" width="70" height="5.1" fill="#e8871e"/>
+<text x="445.8" y="258.5" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">30</text>
+<text x="445.8" y="388" font-size="18" fill="#555555" text-anchor="middle">16-bit</text>
+<rect x="498.8" y="313.0" width="70" height="47.0" fill="#2690e7"/>
+<rect x="498.8" y="307.9" width="70" height="5.1" fill="#e8871e"/>
+<text x="533.8" y="299.9" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">16</text>
+<text x="533.8" y="388" font-size="18" fill="#555555" text-anchor="middle">Q8_0</text>
+<rect x="586.8" y="332.9" width="70" height="27.1" fill="#2690e7"/>
+<rect x="586.8" y="327.8" width="70" height="5.1" fill="#e8871e"/>
+<text x="621.8" y="319.8" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">10</text>
+<text x="621.8" y="388" font-size="18" fill="#555555" text-anchor="middle">Q4_K_M</text>
+<text x="533.8" y="422" font-size="26" font-weight="bold" fill="#222222" text-anchor="middle">14B</text>
+<rect x="703.2" y="157.9" width="70" height="202.1" fill="#2690e7"/>
+<rect x="703.2" y="151.1" width="70" height="6.8" fill="#e8871e"/>
+<text x="738.2" y="143.1" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">66</text>
+<text x="738.2" y="388" font-size="18" fill="#555555" text-anchor="middle">16-bit</text>
+<rect x="791.2" y="252.6" width="70" height="107.4" fill="#2690e7"/>
+<rect x="791.2" y="245.9" width="70" height="6.8" fill="#e8871e"/>
+<text x="826.2" y="237.9" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">36</text>
+<text x="826.2" y="388" font-size="18" fill="#555555" text-anchor="middle">Q8_0</text>
+<rect x="879.2" y="298.1" width="70" height="61.9" fill="#2690e7"/>
+<rect x="879.2" y="291.3" width="70" height="6.8" fill="#e8871e"/>
+<text x="914.2" y="283.3" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">22</text>
+<text x="914.2" y="388" font-size="18" fill="#555555" text-anchor="middle">Q4_K_M</text>
+<text x="826.2" y="422" font-size="26" font-weight="bold" fill="#222222" text-anchor="middle">32B</text>
+<rect x="995.8" y="68.5" width="70" height="291.5" fill="#2690e7"/>
+<rect x="995.8" y="60.0" width="70" height="8.5" fill="#e8871e"/>
+<path d="M991.8,178.5 L1069.8,162.5 L1069.8,174.5 L991.8,190.5 Z" fill="#ffffff"/>
+<text x="1030.8" y="52.0" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">143</text>
+<text x="1030.8" y="388" font-size="18" fill="#555555" text-anchor="middle">16-bit</text>
+<rect x="1083.8" y="125.1" width="70" height="234.9" fill="#2690e7"/>
+<rect x="1083.8" y="116.7" width="70" height="8.5" fill="#e8871e"/>
+<text x="1118.8" y="108.7" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">77</text>
+<text x="1118.8" y="388" font-size="18" fill="#555555" text-anchor="middle">Q8_0</text>
+<rect x="1171.8" y="224.6" width="70" height="135.4" fill="#2690e7"/>
+<rect x="1171.8" y="216.1" width="70" height="8.5" fill="#e8871e"/>
+<text x="1206.8" y="208.1" font-size="21" font-weight="bold" fill="#222222" stroke="#ffffff" stroke-width="6" paint-order="stroke" text-anchor="middle">46</text>
+<text x="1206.8" y="388" font-size="18" fill="#555555" text-anchor="middle">Q4_K_M</text>
+<text x="1118.8" y="422" font-size="26" font-weight="bold" fill="#222222" text-anchor="middle">70B</text>
+<line x1="95" y1="360" x2="1265" y2="360" stroke="#222222" stroke-width="2"/>
+<rect x="1380" y="70" width="28" height="28" rx="4" fill="#2690e7"/>
+<text x="1420" y="93" font-size="22" fill="#222222">weights</text>
+<rect x="1380" y="120" width="28" height="28" rx="4" fill="#e8871e"/>
+<text x="1420" y="143" font-size="22" fill="#222222">KV cache</text>
+<text x="1420" y="169" font-size="18" fill="#555555">(8k tokens)</text>
+<line x1="1380" y1="210" x2="1408" y2="210" stroke="#222222" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="1420" y="217" font-size="22" fill="#222222">device</text>
+<text x="1420" y="243" font-size="22" fill="#222222">memory</text>
+<text x="95" y="460" font-size="18" fill="#555555">Weights = params × bits/8 (Q8_0 ≈ 8.5, Q4_K_M ≈ 4.9 bits). KV cache: 8k-token context in fp16, GQA with 8 KV heads × 128 dims, 32/48/64/80 layers. Runtime overhead not shown.</text>
+</svg>

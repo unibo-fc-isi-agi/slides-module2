@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1600 800" width="1600" height="800" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222222"/>
+    </marker>
+    <!-- icons, drawn in a 60x60 box -->
+    <symbol id="gear" viewBox="0 0 60 60">
+      <circle cx="30" cy="30" r="21" fill="none" stroke="#2690e7" stroke-width="9" stroke-dasharray="5.5 5.5"/>
+      <circle cx="30" cy="30" r="17" fill="#2690e7"/>
+      <circle cx="30" cy="30" r="6" fill="#ffffff"/>
+    </symbol>
+    <symbol id="scale" viewBox="0 0 60 60">
+      <g fill="none" stroke="#e8871e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M30 10 V52 M18 53 H42 M8 16 H52"/>
+        <path d="M10 16 L3 34 M10 16 L17 34 M50 16 L43 34 M50 16 L57 34"/>
+      </g>
+      <path d="M2 34 Q10 45 18 34 Z M42 34 Q50 45 58 34 Z" fill="#e8871e"/>
+      <circle cx="30" cy="10" r="4" fill="#e8871e"/>
+    </symbol>
+    <symbol id="judge" viewBox="0 0 60 60">
+      <line x1="22" y1="14" x2="22" y2="7" stroke="#8e5bb5" stroke-width="3"/>
+      <circle cx="22" cy="6" r="4" fill="#8e5bb5"/>
+      <rect x="4" y="14" width="36" height="30" rx="7" fill="#eadff3" stroke="#8e5bb5" stroke-width="3"/>
+      <circle cx="15" cy="27" r="4" fill="#8e5bb5"/>
+      <circle cx="29" cy="27" r="4" fill="#8e5bb5"/>
+      <line x1="14" y1="36" x2="30" y2="36" stroke="#8e5bb5" stroke-width="3" stroke-linecap="round"/>
+      <g transform="rotate(-40 50 40)">
+        <rect x="41" y="28" width="18" height="11" rx="2" fill="#8e5bb5"/>
+        <line x1="50" y1="39" x2="50" y2="58" stroke="#8e5bb5" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </symbol>
+    <symbol id="letter" viewBox="0 0 44 54">
+      <path d="M2 2 H30 L42 14 V52 H2 Z" fill="#ffffff" stroke="#222222" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M30 2 V14 H42" fill="none" stroke="#222222" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M9 22 H35 M9 30 H35 M9 38 H27" stroke="#8a8f98" stroke-width="2.5"/>
+    </symbol>
+    <symbol id="tick" viewBox="-15 -15 30 30">
+      <path d="M-10 0 L-3 8 L11 -9" fill="none" stroke="#3a9e4f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="cross" viewBox="-15 -15 30 30">
+      <path d="M-9 -9 L9 9 M9 -9 L-9 9" fill="none" stroke="#d64541" stroke-width="4.5" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+
+  <!-- stage headers -->
+  <g font-size="28" font-weight="bold" text-anchor="middle">
+    <text x="205" y="44">1. golden set</text>
+    <text x="545" y="44">2. system under test</text>
+    <text x="825" y="100">outputs</text>
+    <text x="1175" y="44">3. scorers</text>
+    <text x="1470" y="44">4. report</text>
+  </g>
+  <text x="1175" y="80" font-size="20" fill="#555555" text-anchor="middle">input + output + expectations</text>
+
+  <!-- ===== 1. golden set ===== -->
+  <rect x="10" y="70" width="390" height="490" rx="12" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+  <path d="M10 110 V82 Q10 70 22 70 H388 Q400 70 400 82 V110 Z" fill="#eceef1"/>
+  <g stroke="#8a8f98" stroke-width="2">
+    <line x1="10" y1="110" x2="400" y2="110"/>
+    <line x1="10" y1="260" x2="400" y2="260"/>
+    <line x1="10" y1="410" x2="400" y2="410"/>
+    <line x1="100" y1="70" x2="100" y2="560"/>
+  </g>
+  <g font-size="22" font-weight="bold">
+    <text x="55" y="98" text-anchor="middle">input</text>
+    <text x="116" y="98">expectations</text>
+  </g>
+  <use xlink:href="#letter" href="#letter" x="33" y="140" width="44" height="54"/>
+  <use xlink:href="#letter" href="#letter" x="33" y="290" width="44" height="54"/>
+  <use xlink:href="#letter" href="#letter" x="33" y="440" width="44" height="54"/>
+  <g font-size="20" fill="#555555" text-anchor="middle">
+    <text x="55" y="222">Rossi</text>
+    <text x="55" y="372">Dupont</text>
+    <text x="55" y="522">Ali</text>
+  </g>
+  <g font-size="21">
+    <text x="114" y="150">applicant = Mario Rossi</text>
+    <text x="114" y="190">score ≥ 4</text>
+    <text x="114" y="230">has weaknesses = no</text>
+    <text x="114" y="300">applicant = Jean Dupont</text>
+    <text x="114" y="340">score ≤ 4</text>
+    <text x="114" y="380">has weaknesses = yes</text>
+    <text x="114" y="450">applicant = Mohammed Ali</text>
+    <text x="114" y="490">score ≤ 3</text>
+    <text x="114" y="530">programme = Cyber Sec.</text>
+  </g>
+
+  <!-- ===== 2. system under test ===== -->
+  <line x1="400" y1="335" x2="440" y2="335" stroke="#222222" stroke-width="2.5" marker-end="url(#arr)"/>
+  <rect x="445" y="200" width="200" height="270" rx="14" fill="#eceef1" stroke="#222222" stroke-width="2.5"/>
+  <rect x="465" y="220" width="160" height="96" rx="10" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+  <g font-size="24" text-anchor="middle">
+    <text x="545" y="260">prompt</text>
+    <text x="545" y="290">template</text>
+    <text x="545" y="345" font-weight="bold">+</text>
+  </g>
+  <rect x="465" y="358" width="160" height="92" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+  <text x="545" y="413" font-size="24" font-weight="bold" text-anchor="middle">model</text>
+
+  <!-- arrows to outputs -->
+  <g stroke="#222222" stroke-width="2.5" fill="none" marker-end="url(#arr)">
+    <path d="M645 335 C665 335 655 185 675 185"/>
+    <line x1="645" y1="335" x2="675" y2="335"/>
+    <path d="M645 335 C665 335 655 485 675 485"/>
+  </g>
+
+  <!-- outputs: LetterInfo documents -->
+  <g fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2">
+    <path d="M680 130 H950 L970 150 V240 H680 Z"/>
+    <path d="M680 280 H950 L970 300 V390 H680 Z"/>
+    <path d="M680 430 H950 L970 450 V540 H680 Z"/>
+  </g>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20" xml:space="preserve">
+    <text x="690" y="162">{"applicant": {"name":</text>
+    <text x="690" y="192">   "Mario Rossi", …},</text>
+    <text x="690" y="222"> "score": 5, …}</text>
+    <text x="690" y="312">{"applicant": {"name":</text>
+    <text x="690" y="342">   "Jean Dupont", …},</text>
+    <text x="690" y="372"> "score": 3, …}</text>
+    <text x="690" y="462">{"applicant": {"name":</text>
+    <text x="690" y="492">   "Mohammed Ali", …},</text>
+    <text x="690" y="522"> "score": <tspan fill="#d64541" font-weight="bold">4</tspan>, …}</text>
+  </g>
+
+  <!-- bus to scorers -->
+  <g stroke="#222222" stroke-width="2.5" fill="none">
+    <path d="M970 185 H1000 M970 335 H1000 M970 485 H1000 M1000 185 V510"/>
+  </g>
+  <g stroke="#222222" stroke-width="2.5" marker-end="url(#arr)">
+    <line x1="1000" y1="190" x2="1022" y2="190"/>
+    <line x1="1000" y1="350" x2="1022" y2="350"/>
+    <line x1="1000" y1="510" x2="1022" y2="510"/>
+  </g>
+
+  <!-- ===== 3. scorers ===== -->
+  <g fill="#ffffff" stroke="#222222" stroke-width="2.5">
+    <rect x="1025" y="120" width="300" height="140" rx="12"/>
+    <rect x="1025" y="280" width="300" height="140" rx="12"/>
+    <rect x="1025" y="440" width="300" height="140" rx="12"/>
+  </g>
+  <use xlink:href="#gear" href="#gear" x="1037" y="136" width="56" height="56"/>
+  <use xlink:href="#scale" href="#scale" x="1037" y="296" width="56" height="56"/>
+  <use xlink:href="#judge" href="#judge" x="1037" y="456" width="56" height="56"/>
+  <g font-size="23" font-weight="bold">
+    <text x="1103" y="160">deterministic</text>
+    <text x="1103" y="188">checks</text>
+    <text x="1103" y="320">relational</text>
+    <text x="1103" y="348">check</text>
+    <text x="1103" y="480">LLM-as-a-judge</text>
+  </g>
+  <g font-size="20" fill="#555555">
+    <text x="1103" y="218">name matches,</text>
+    <text x="1103" y="244">score in range</text>
+    <text x="1103" y="378">Mario's score is</text>
+    <text x="1103" y="404">the highest</text>
+    <text x="1103" y="512">strengths, weaknesses</text>
+    <text x="1103" y="538">grounded in the</text>
+    <text x="1103" y="564">letter?</text>
+  </g>
+
+  <g stroke="#222222" stroke-width="2.5" marker-end="url(#arr)">
+    <line x1="1325" y1="190" x2="1347" y2="190"/>
+    <line x1="1325" y1="350" x2="1347" y2="350"/>
+    <line x1="1325" y1="510" x2="1347" y2="510"/>
+  </g>
+
+  <!-- ===== 4. report ===== -->
+  <rect x="1350" y="110" width="240" height="390" rx="12" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+  <path d="M1350 170 V122 Q1350 110 1362 110 H1578 Q1590 110 1590 122 V170 Z" fill="#eceef1"/>
+  <path d="M1350 440 H1590 V488 Q1590 500 1578 500 H1362 Q1350 500 1350 488 Z" fill="#fbe7cf"/>
+  <g stroke="#8a8f98" stroke-width="2">
+    <line x1="1350" y1="170" x2="1590" y2="170"/>
+    <line x1="1350" y1="260" x2="1484" y2="260"/>
+    <line x1="1536" y1="260" x2="1590" y2="260"/>
+    <line x1="1350" y1="350" x2="1484" y2="350"/>
+    <line x1="1536" y1="350" x2="1590" y2="350"/>
+    <line x1="1350" y1="440" x2="1590" y2="440"/>
+    <line x1="1430" y1="110" x2="1430" y2="500"/>
+    <line x1="1484" y1="110" x2="1484" y2="500"/>
+    <line x1="1536" y1="110" x2="1536" y2="500"/>
+  </g>
+  <use xlink:href="#gear" href="#gear" x="1439" y="122" width="36" height="36"/>
+  <use xlink:href="#scale" href="#scale" x="1492" y="122" width="36" height="36"/>
+  <use xlink:href="#judge" href="#judge" x="1545" y="122" width="36" height="36"/>
+  <g font-size="20" text-anchor="middle">
+    <text x="1390" y="222">Rossi</text>
+    <text x="1390" y="312">Dupont</text>
+    <text x="1390" y="402">Ali</text>
+    <text x="1390" y="477" fill="#555555">pass</text>
+  </g>
+  <use xlink:href="#tick" href="#tick" x="1442" y="200" width="30" height="30"/>
+  <use xlink:href="#tick" href="#tick" x="1442" y="290" width="30" height="30"/>
+  <use xlink:href="#cross" href="#cross" x="1442" y="380" width="30" height="30"/>
+  <use xlink:href="#tick" href="#tick" x="1495" y="290" width="30" height="30"/>
+  <use xlink:href="#tick" href="#tick" x="1548" y="200" width="30" height="30"/>
+  <use xlink:href="#tick" href="#tick" x="1548" y="290" width="30" height="30"/>
+  <use xlink:href="#tick" href="#tick" x="1548" y="380" width="30" height="30"/>
+  <g font-size="20" font-weight="bold" text-anchor="middle">
+    <text x="1457" y="477">8/9</text>
+    <text x="1510" y="477">1/1</text>
+    <text x="1563" y="477">3/3</text>
+  </g>
+
+  <!-- feedback loop -->
+  <path d="M1470 500 V700 H545 V476" fill="none" stroke="#222222" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#arr)"/>
+  <text x="1000" y="738" font-size="26" text-anchor="middle">change prompt or model, then re-run</text>
+</svg>

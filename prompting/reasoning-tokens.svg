@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+<text x="30" y="50" font-size="30"><tspan font-weight="bold">same request, three effort levels:</tspan><tspan dx="10" font-style="italic">“rank the three candidates by their letters”</tspan></text>
+<text x="230" y="90" font-size="22" fill="#555555">bars = output tokens, generated left to right (length ∝ time)</text>
+<rect x="230" y="125" width="638" height="52" rx="14" fill="#eceef1" stroke="#8a8f98" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M251,176 L263,199 L275,176" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+<line x1="253" y1="177" x2="273" y2="177" stroke="#eceef1" stroke-width="4"/>
+<text x="250" y="159" font-size="22" font-style="italic" fill="#8a8f98">Mario: strong. Jean: needs guidance. Mohammed: generic.</text>
+<text x="210" y="242" font-size="28" text-anchor="end" font-weight="bold">low</text>
+<rect x="230" y="205" width="66.7" height="56" fill="#8a8f98"/>
+<rect x="296.7" y="205" width="64.0" height="56" fill="#3a9e4f"/>
+<rect x="230" y="205" width="130.7" height="56" fill="none" stroke="#222222" stroke-width="2"/>
+<text x="230" y="291" font-size="22" fill="#555555">250 reasoning + 240 answer tokens</text>
+<text x="1270" y="229" font-size="28" font-weight="bold">2.0 s</text>
+<text x="1270" y="259" font-size="22" fill="#555555">output cost ×1.0</text>
+<rect x="230" y="340" width="1092" height="52" rx="14" fill="#eceef1" stroke="#8a8f98" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M278,391 L290,414 L302,391" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+<line x1="280" y1="392" x2="300" y2="392" stroke="#eceef1" stroke-width="4"/>
+<text x="250" y="374" font-size="22" font-style="italic" fill="#8a8f98">Mario's letter is very positive, and specific... Jean's says “when given sufficient structure”...</text>
+<text x="210" y="457" font-size="28" text-anchor="end" font-weight="bold">medium</text>
+<rect x="230" y="420" width="333.3" height="56" fill="#8a8f98"/>
+<rect x="563.3" y="420" width="69.3" height="56" fill="#3a9e4f"/>
+<rect x="230" y="420" width="402.7" height="56" fill="none" stroke="#222222" stroke-width="2"/>
+<text x="230" y="506" font-size="22" fill="#555555">1250 reasoning + 260 answer tokens</text>
+<text x="1270" y="444" font-size="28" font-weight="bold">6.0 s</text>
+<text x="1270" y="474" font-size="22" fill="#555555">output cost ×3.1</text>
+<rect x="230" y="555" width="1221" height="52" rx="14" fill="#eceef1" stroke="#8a8f98" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M278,606 L290,629 L302,606" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+<line x1="280" y1="607" x2="300" y2="607" stroke="#eceef1" stroke-width="4"/>
+<text x="250" y="589" font-size="22" font-style="italic" fill="#8a8f98">Mario: praise backed by examples... Jean: fine on well-defined problems, but... re-check Mohammed: generic...</text>
+<text x="210" y="672" font-size="28" text-anchor="end" font-weight="bold">high</text>
+<rect x="230" y="635" width="933.3" height="56" fill="#8a8f98"/>
+<rect x="1163.3" y="635" width="66.7" height="56" fill="#3a9e4f"/>
+<rect x="230" y="635" width="1000.0" height="56" fill="none" stroke="#222222" stroke-width="2"/>
+<text x="230" y="721" font-size="22" fill="#555555">3500 reasoning + 250 answer tokens</text>
+<text x="1270" y="659" font-size="28" font-weight="bold">15.0 s</text>
+<text x="1270" y="689" font-size="22" fill="#555555">output cost ×7.7</text>
+<path d="M230,790 q0,20 20,20 H710.0 q20,0 20,20 q0,-20 20,-20 H1210 q20,0 20,-20" fill="none" stroke="#222222" stroke-width="2.5"/>
+<text x="730.0" y="852" font-size="26" text-anchor="middle">all billed as <tspan font-weight="bold">output tokens</tspan></text>
+<rect x="1270" y="770" width="28" height="28" fill="#8a8f98"/><text x="1310" y="792" font-size="22">reasoning: hidden</text>
+<text x="1310" y="818" font-size="22" fill="#555555">(or summarised)</text>
+<rect x="1270" y="838" width="28" height="28" fill="#3a9e4f"/><text x="1310" y="860" font-size="22">answer: shown to user</text>
+</svg>
