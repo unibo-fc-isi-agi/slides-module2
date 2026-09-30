@@ -14,9 +14,9 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
         * [x] Model zoo — `llmaas`
             + [x] how to choose a model for a given task — `governance`
                 - [x] how to evaluate models — `governance` (benchmarks, leaderboards, task-specific evaluation; exercise 1)
-            + [ ] italian / european initiatives for open-models (maturity, issues, etc.) (placeholder slide in `governance`, content pending)
-                - [ ] eg. OpenLLM, ALT-EDIC, LLMs4EU, Minerva
-            + [ ] open weights vs. open source: licensing of models _(proposed)_ (placeholder slide in `governance`, content pending)
+            + [x] italian / european initiatives for open-models (maturity, issues, etc.) — `governance`
+                - [x] eg. OpenLLM, ALT-EDIC, LLMs4EU, Minerva — `governance`
+            + [x] open weights vs. open source: licensing of models _(proposed)_ — `governance`
     - Exercises:
         * [x] E0.1: building CLI for LLM — `llmaas` (examples 1 and 2: sync and async/streaming CLI chat)
         * [x] E0.2: extract structured information from pictures with text (`llmaas` exercise 4 does that with ID documents)

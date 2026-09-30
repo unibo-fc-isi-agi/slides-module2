@@ -16,8 +16,8 @@ outputs = ["Reveal"]
 
 1. What is _AI governance_, and why should engineers care?
 2. _Where_ should the model run? (cloud vs. on-premise)
-3. _Open_ models and licensing
-4. _Regulation_: GDPR, EU AI Act, UniBo policy
+3. _Regulation_: GDPR, EU AI Act, national law, UniBo policy
+4. _Open_ models, licensing, and "sovereignty"
 5. _Which technique_? Prompting vs. RAG vs. fine-tuning vs. agents
 6. _Which model_? Selection, documentation, and evaluation
 7. Exercises
@@ -51,7 +51,7 @@ Every choice about an AI-powered system implies a trade-off among:
 4. __Compliance__: does the system respect _laws_ (e.g. GDPR, AI Act), _contracts_, and _internal policies_?
 5. __Time-to-market__: how quickly can we _ship_ (and _change_) the system?
 
-{{< image src="./todo-tradeoff-radar.png" max-h="45vh" alt="TODO picture: radar (spider) chart with five axes: quality, cost (inverted: cheaper = further out), control, compliance, time-to-market. Two overlapping polygons: 'frontier cloud API' (high quality, high time-to-market, low control, medium compliance, medium cost) and 'small open model on-premise' (medium quality, high control, high compliance, low time-to-market, low running cost). Legend below." >}}
+{{< image src="./todo-tradeoff-radar.png" max-h="45vh" alt="TODO picture: radar (spider) chart with five axes: quality, cost (inverted: cheaper = further out), control, compliance, time-to-market. Two overlapping polygons: 'frontier cloud API' (high quality, fast time-to-market, low control, medium compliance, medium cost) and 'small open model on-premise' (medium quality, high control, high compliance, slow time-to-market, low running cost). Legend below." >}}
 
 {{% fragment %}}
 > There is __no__ option dominating all the others: governance is about choosing the _right compromise_ for the _use case_ at hand, and __writing down why__
@@ -148,15 +148,7 @@ Let's estimate the yearly cost of the running example, under explicit (and rough
 
 ---
 
-{{% section %}}
 
-{{< slide id="open-models" >}}
-
-## Open models and licensing
-
-{{< image src="./todo-open-models-section.png" max-h="70vh" alt="TODO section (content to be written from a deep-research report): 1) what makes a model 'open' (weights, inference code, training code, training data, documentation, license), openness as a graded notion and open-washing; 2) open weights vs. open source: closed / restrictive open-weights / permissive open-weights / fully open, with license examples and the OSI Open Source AI Definition; 3) Italian and European open-model initiatives (Minerva, Velvet, EuroLLM, OpenEuroLLM, ALT-EDIC, LLMs4EU, EuroHPC AI Factories, ...) as a digital-sovereignty matter; 4) maturity and open issues; 5) engineering take-aways for choosing among them." >}}
-
-{{% /section %}}
 
 ---
 
@@ -258,7 +250,7 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 - Beware: a deployer __becomes a provider__ if it _substantially modifies_ a system, or puts its _own name_ on it (Art. 25)
     + e.g. a University building its own admission assistant on top of an LLM API is the _provider_ __and__ the _deployer_ of that system
 - __GPAI model providers__ (e.g. OpenAI, Mistral) must provide technical documentation to downstream providers, a _copyright policy_, and a public _summary of training data_ (Art. 53); models with _systemic risk_ (> 10<sup>25</sup> FLOPs of training) also need evaluations, adversarial testing, incident reporting (Art. 55)
-    + _open-source_ GPAI models are exempted from the documentation duties only, and only if they do not pose systemic risk (Art. 53(2))
+    + _open-source_ GPAI models are exempted from the documentation duties only, and only if they do not pose systemic risk (Art. 53(2), details [later](#/open-models-ai-act))
     + a voluntary [GPAI Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai) (July 2025) details how to comply
 
 ---
@@ -313,6 +305,278 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 
 {{% section %}}
 
+{{< slide id="open-models" >}}
+
+## What makes a model _"open"_? The general concept
+
+A model release is a __bundle__ of separately _openable_ artifacts: downloading one of them (usually the weights) says little about the others
+
+| Component | What a useful release contains | What it enables |
+|---|---|---|
+| __Weights__ | final parameters (ideally also intermediate checkpoints) | local inference, fine-tuning, independent hosting |
+| __Inference code__ | architecture, tokenizer, generation code, configuration | actually _running_ the weights |
+| __Training code & recipe__ | data processing, hyper-parameters, training and post-training (SFT, RL) pipelines | understanding _how_ the weights arose; re-training |
+| __Training data__ | the actual training mixture, in training-ready form | data auditing, contamination analysis, exact reproduction |
+| __Data information__ | provenance, sources, filtering and selection processes | a (weaker) substitute when data cannot be redistributed |
+| __Documentation__ | model card, technical report, evaluations, limitations | auditability, downstream risk assessment |
+| __Licenses__ | _separate_ licenses for weights, code, and data | knowing what you may _legally_ do with all the above |
+
+---
+
+## Openness is _graded_, not binary
+
+{{< image src="./todo-openness-bar.png" max-h="30vh" alt="TODO picture: three horizontal bars, one per model, each split into 7 segments (weights, inference code, training code, training data, data information, documentation, licenses), colored green (open) / yellow (partial or restricted) / red (closed): 'closed API model' (all red, documentation yellow); 'open-weights model, e.g. Llama 4' (weights and inference code green, license yellow, everything else red or yellow); 'fully open model, e.g. OLMo 3' (all green). Caption: 'Downloadable weights ≠ open model'." >}}
+
+| Framework | Question it answers |
+|---|---|
+| [Liesenfeld & Dingemanse, FAccT 2024](https://doi.org/10.1145/3630106.3659005) | how open is a release _in practice_? (14 dimensions, 40 text LLMs + 6 text-to-image models) |
+| [European Open Source AI Index](https://osai-index.eu/database/) | which open-science artifacts were actually released? (graded score; top ranks in July 2026: YuLan-Mini, BLOOMZ, OLMo 3, Apertus) |
+| [Stanford Foundation Model Transparency Index](https://crfm.stanford.edu/fmti/December-2025/index.html) (Dec. 2025) | how _transparent_ are providers? (mean score 41/100, down 17 from 2024; IBM 95, DeepSeek 32, Alibaba 26: open weights $\neq$ transparency) |
+| [OSI Open Source AI Definition](https://opensource.org/ai/open-source-ai-definition) | does a system meet a _normative_ definition of "open source AI"? (next slide) |
+
+- __Open-washing__: presenting a model as "open" or "open source" based on _one_ disclosed component (typically the weights), while the artifacts or legal freedoms needed to study, reproduce, modify, or freely use it are missing
+    + e.g. _Llama 4_ (downloadable weights, restrictive license), _Gemma 3_ (custom terms with use restrictions), _Mistral 3_ (called "open-source" by its vendor: Apache 2.0 weights, undisclosed training data)
+    + by contrast, OpenAI calls [gpt-oss](https://openai.com/index/introducing-gpt-oss/) "_open-weight_": the more accurate term
+
+---
+
+## The OSI Open Source AI Definition (OSAID 1.0, Oct. 2024)
+
+- Users must be able, _without asking permission_, to:
+    1. __use__ the system for _any_ purpose
+    2. __study__ how it works
+    3. __modify__ it for any purpose
+    4. __share__ it, with or without modifications
+- This requires the _preferred form for making modifications_:
+    + __data information__: enough detail on training data for a skilled person to build a _substantially equivalent_ system
+    + __code__: the _complete_ training and inference pipeline
+    + __parameters__: weights and configuration, under open terms
+- __Controversy__: OSAID does __not__ require releasing the training data itself (cf. [OSI's FAQ](https://opensource.org/ai/faq))
+    + OSI: data may be personal, copyrighted, or confidential, so requiring it would exclude too many systems
+    + critics: without the data, exact reproduction and data-level auditing are impossible
+- OSI's [initial validation](https://opensource.org/ai/final-board-report) found that _Pythia_, _OLMo_, _Amber_, _CrystalCoder_, and _T5_ passed, while _Llama 2_, _Grok_, _Phi-2_, and _Mixtral_ did not
+    + a _snapshot_ of 2024, __not__ a certification registry for later versions
+
+---
+
+## The licensing landscape (as of September 2026)
+
+| Category | Examples | What is open | Main limitation |
+|---|---|---|---|
+| __Closed__ (API-only) | GPT, Claude, Gemini, Mistral's "Premier" models | API + documentation | no weights; usage governed by _terms of service_ |
+| __Open weights, restrictive license__ | [Llama 4](https://www.llama.com/llama4/license/), [Gemma 3](https://ai.google.dev/gemma/terms), [Teuken v0.6](https://huggingface.co/openGPT-X), BLOOM ([RAIL](https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE)) | weights, inference code | use-based, geographic, commercial, or downstream restrictions: _not_ "any purpose" |
+| __Open weights, permissive license__ | [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Qwen3](https://huggingface.co/Qwen/Qwen3-8B), [DeepSeek-R1](https://huggingface.co/deepseek-ai/DeepSeek-R1), [gpt-oss](https://huggingface.co/openai/gpt-oss-120b), [Mistral Large 3 / Small 4](https://docs.mistral.ai/getting-started/models/) | weights under Apache 2.0 or MIT | training data and full pipeline _not_ released |
+| __Fully (or nearly) open__ | [OLMo 3](https://allenai.org/blog/olmo3), [Apertus](https://www.apertus-ai.org/), [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | weights + code + data (or data pipeline) + docs | reproduction still needs _enormous_ compute |
+
+### Licenses change across versions: always check the __exact checkpoint__
+
+| Model | Before | Now |
+|---|---|---|
+| __Gemma__ | Gemma 3: custom Gemma Terms, with cascading use restrictions | Gemma 4 (2026): __Apache 2.0__ |
+| __DeepSeek-V3__ | original V3: custom DeepSeek Model Agreement | V3-0324: [relicensed under __MIT__](https://api-docs.deepseek.com/news/news250325) (March 2025) |
+| __Mistral__ | historically mixed | _still_ mixed: Large 3 and Small 4 Apache 2.0, Medium 3.5 "Modified MIT", several models proprietary |
+| __Teuken__ | v0.4-commercial: Apache 2.0 | v0.6: __non-commercial__ ("newer" does not mean "more permissive") |
+| __iGenius → Domyn__ | Italia 9B: MIT; Italia 10B: custom, non-open license | rebranded Domyn (June 2025); [Domyn Small 10B](https://huggingface.co/domyn/Domyn-Small-v1.0) (May 2026): MIT |
+
+---
+
+## What do restrictive licenses mean in practice?
+
+| License | On-premise use | Fine-tuning | Hosted service | Redistribution |
+|---|---|---|---|---|
+| __Llama 4__ ([license](https://www.llama.com/llama4/license/), [AUP](https://www.llama.com/llama4/use-policy/)) | yes, __except__ multimodal models for individuals/companies _based in the EU_ | yes | yes (EU _end users_ of products are carved out) | _"Built with Llama"_ attribution; derived models named _"Llama..."_; separate license above 700M monthly active users |
+| __Gemma 3__ ([terms](https://ai.google.dev/gemma/terms)) | yes, within the prohibited-use policy | yes, derivatives inherit the restrictions | counts as _distribution_ | restrictions must be passed to downstream users; Google may restrict use _"remotely or otherwise"_ (a contractual right, not a kill switch) |
+| __OpenRAIL__ ([OpenRAIL-M](https://www.licenses.ai/blog/2022/8/26/bigscience-open-rail-m-license)) | yes, for permitted purposes | yes, for permitted purposes | yes, users bound to use restrictions | use restrictions must be passed on |
+| __Apache 2.0 / MIT__ | yes | yes | yes | yes, with attribution/notices (and patent clauses, for Apache) |
+
+{{% fragment %}}
+> __Running example__: the admission assistant must read _passport pictures_, hence needs a __multimodal__ model. The University of Bologna is an EU organization: under Llama 4's acceptable use policy, it is __not__ granted the right to use Llama 4's multimodal models. Gemma 4, Qwen3, or Mistral's Apache models raise no such issue
+{{% /fragment %}}
+
+---
+
+## Derivatives: fine-tunes, distillation, merges, data, outputs
+
+- __Fine-tunes__ remain subject to the base model's license: easy for Apache/MIT, restrictions _propagate_ for Gemma 3 and Llama
+- __Distillation__ is license-specific:
+    + Gemma 3 counts models trained on Gemma's _outputs_ (synthetic data) as _Model Derivatives_
+    + DeepSeek-R1 (MIT) allows distillation, but its published _distills_ are fine-tunes of other models, and __inherit their licenses__ ([Qwen](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B) → Apache 2.0, [Llama](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B) → Llama license)
+- __Merges__: a merge of models A and B must (conservatively) satisfy __both__ licenses; a restrictive component is not "washed away"
+    + whether weights are copyrightable at all is still legally _unsettled_
+- __Training data__ has its _own_ license: e.g. OLMo 3 is Apache 2.0, but its dataset [Dolma 3](https://huggingface.co/datasets/allenai/dolma3_mix-6T) is ODC-By (attribution required), and its sources may carry further terms
+- __Outputs__: "the vendor claims no rights on outputs" $\neq$ "outputs are free of restrictions"
+    + e.g. using Llama _outputs_ to train a distributed model triggers Llama's _naming_ requirement
+
+---
+
+{{< slide id="open-models-ai-act" >}}
+
+## Open models under the EU AI Act
+
+| GPAI provider duty ([Art. 53](https://artificialintelligenceact.eu/article/53/)) | Ordinary GPAI | Free/open-source GPAI |
+|---|---|---|
+| (a) technical documentation (for the AI Office) | required | __exempt__ |
+| (b) information for downstream providers | required | __exempt__ |
+| (c) policy to comply with EU _copyright_ law (incl. text-and-data-mining opt-outs) | required | __still required__ |
+| (d) public _summary of training content_ (AI Office template) | required | __still required__ |
+| systemic-risk obligations ([Art. 55](https://artificialintelligenceact.eu/article/55/)) | if > 10<sup>25</sup> FLOPs | __no exemption__ |
+
+- To qualify, the model must be released under a license allowing _access, use, modification, and distribution_, with weights, architecture, and usage information _public_
+    + this is much __weaker__ than OSAID: no training data or training code needed
+- Non-EU providers of open-source GPAI are also exempted from appointing an EU _authorized representative_ ([Art. 54(6)](https://artificialintelligenceact.eu/article/54/)), unless the model poses systemic risk
+
+> The AI Act gives open-source GPAI a __documentation discount__: __not__ a copyright exemption, __not__ a training-data-summary exemption, and __not__ a systemic-risk exemption
+
+---
+
+{{< slide id="sovereignty" >}}
+
+## "Sovereign AI": a framing, and its limits
+
+- Several European and Italian actors frame open, locally-developed models as a matter of __digital sovereignty__
+    + reduce dependency on US and Chinese providers; better support for EU _languages_; compliance with EU _law_
+- The framing mixes (at least) three __distinct__ goals, which should _not_ be conflated:
+    1. __where__ a model is _developed_ (nationality of the developer)
+    2. __where__ it is _executed_, and data are processed (_operational_ control)
+    3. whether its making can be _inspected_ and _reproduced_ (_auditability_)
+- Goals 2 and 3 do __not__ require goal 1:
+    + _any_ open-weights model (e.g. Qwen3, gpt-oss, OLMo 3) can run in an EU data centre
+    + the most reproducible models are not necessarily European (e.g. OLMo 3, from the US), and a European vendor may disclose little (e.g. Mistral)
+
+{{% fragment %}}
+> Skeptical reading: for an engineer, _where the model runs_ and _what its license allows_ matter much more than _who trained it_. The evidence (next slides) suggests that EU and Italian models are mostly __small__, __late__, and __not competitive__ with the frontier, nor with the best global open-weights models
+{{% /fragment %}}
+
+---
+
+## Italian initiatives
+
+| Model | Who | What | License | Status (Sep. 2026) |
+|---|---|---|---|---|
+| [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | Sapienza NLP, within the [FAIR](https://fondazione-fair.it/) PNRR project; trained on CINECA's Leonardo | up to __7B__, from scratch; 1.14T Italian + 1.14T English + 200B code tokens | Apache 2.0, open data | 7B presented in Nov. 2024; still the flagship, research-grade |
+| [LLaMAntino / ANITA](https://huggingface.co/swap-uniba/LLaMAntino-3-ANITA-8B-Inst-DPO-ITA) | Univ. of Bari | _fine-tunes_ of Llama, Mistral, gpt-oss for Italian (not trained from scratch) | inherited; [ANITA-NEXT](https://huggingface.co/m-polignano/ANITA-NEXT-24B-Magistral-2506-ITA)'s metadata says Apache 2.0, its card says "research only" | active research project; license hygiene is weak |
+| [Velvet](https://huggingface.co/Almawave/Velvet-14B) | Almawave (private); trained on Leonardo | 2B and 14B, 6 languages (~23% Italian for the 14B) | Apache 2.0 | released Jan.–Feb. 2025, static since |
+| [Italia](https://huggingface.co/sapienzanlp/modello-italia-9b) → [Domyn Small](https://huggingface.co/domyn/Domyn-Small-v1.0) | iGenius (private), renamed Domyn in June 2025 | Italia 9B (2024), then 10B; Domyn Small 10B (May 2026), 50+ languages | Italia 9B: MIT; Italia 10B: _custom, non-open_; Domyn Small: MIT | company focus moved to _proprietary_ large models |
+
+- A "__national__" model says nothing about its _openness_: compare Minerva (Apache, open data) with Italia 10B (restrictive license)
+- All Italian models are in the __2–24B__ range: one or two orders of magnitude below frontier models
+
+---
+
+## European initiatives
+
+| Initiative | Who | What | License | Status (Sep. 2026) |
+|---|---|---|---|---|
+| [EuroLLM](https://huggingface.co/utter-project/EuroLLM-22B-2512) | IST Lisbon, Univ. of Edinburgh, Unbabel, et al.; EuroHPC and Horizon Europe funding | 1.7B, 9B, 22B; 35 languages (all 24 EU ones), ~4T tokens | Apache 2.0 | 22B released Feb. 2026 |
+| [OpenEuroLLM](https://openeurollm.eu/) | 20 members, led by Charles University and AMD Silo AI; Digital Europe grant (Feb. 2025, 3 years) | "truly open" models for all EU languages | open (planned) | so far only small _reference_ models (e.g. [38 monolingual 2.15B](https://openeurollm.eu/blog/hplt-oellm-38-reference-models), with HPLT); flagship still pending |
+| [OpenLLM-France](https://openllm-france.fr/en/main-page-en/) | French consortium, Bpifrance funding | [Lucie-7B](https://huggingface.co/OpenLLM-France/Lucie-7B), then [Luciole](https://huggingface.co/collections/OpenLLM-France/luciole-llm) 1B/8B/23B (~30% French) | open data, weights, code | research project |
+| [Teuken / OpenGPT-X](https://www.iais.fraunhofer.de/en/industries_and_cross-sector_solutions/cross-sector_solutions/generative-ai/opengpt-x.html) | Fraunhofer, FZ Jülich, et al.; ~€14M from the German government | 7B, 24 EU languages | v0.4: Apache 2.0; v0.6: non-commercial | project __ended__ in March 2025; models still downloadable |
+| [Apertus](https://www.apertus-ai.org/) | ETH Zurich, EPFL, CSCS (Swiss AI Initiative: CHF 20M + 10M GPU-hours) | 8B, 70B; 1.5 (July 2026) adds images, reasoning, tools | Apache 2.0, fully open | the most complete open release in Europe; 2.0 planned for 2027 |
+| [Mistral AI](https://docs.mistral.ai/getting-started/models/) | French private company | from small to large MoE models | mixed: Apache 2.0, Modified MIT, proprietary | the European vendor closest to the frontier; little training disclosure |
+
+---
+
+## Infrastructure and policy
+
+- __EuroHPC AI Factories__: supercomputing centres opened to AI training and use
+    + [IT4LIA](https://www.hpc.cineca.it/projects/it4lia/), at CINECA in Bologna (with Austria and Slovenia), was among the [first seven](https://eurohpc-ju.europa.eu/selection-first-seven-ai-factories-drive-europes-leadership-ai-2024-12-10_en) selected in Dec. 2024 (€1.5bn in total, EU + national funds)
+    + beware: IT4LIA is an AI __Factory__, __not__ an AI _Gigafactory_: the [Gigafactories call](https://www.eurohpc-ju.europa.eu/eurohpc-joint-undertaking-launches-ai-gigafactories-call-2026-07-30_en) (for frontier-scale training) opened only in July 2026, with a Nov. 2026 deadline
+- __Data__: [ALT-EDIC](https://www.alt-edic.eu/)'s [LLMs4EU](https://www.alt-edic.eu/projects/llms4eu/) (March 2025, 3 years, 20+ countries) collects language resources for all EU languages, and targets sector-specific models
+- __Italian policy__: the [Italian AI Strategy 2024–2026](https://www.agid.gov.it/sites/agid/files/2024-07/Strategia_italiana_per_l_Intelligenza_artificiale_2024-2026.pdf) and [Law 132/2025](#/regulation) call for technology "tailored to the Italian context" and open research artifacts
+
+{{< image src="./todo-europe-timeline.png" max-h="35vh" alt="TODO picture: a timeline 2023–2027 with two parallel lanes. Top lane 'global frontier': releases of GPT-4 (2023), Llama 3 / Qwen2 (2024), DeepSeek-R1 (Jan 2025), gpt-oss / Qwen3 (2025), Gemma 4 (2026). Bottom lane 'EU / Italy': Minerva-7B (Nov 2024), Teuken-7B (Nov 2024), Velvet (Jan 2025), OpenEuroLLM start (Feb 2025), OpenGPT-X end (Mar 2025), Apertus 1.0 (Sep 2025), EuroLLM-22B (Feb 2026), Gigafactories call (Jul 2026), OpenEuroLLM flagship ('pending'). Each release annotated with its size (e.g. 7B vs. hundreds of B). The visual message: EU releases are smaller and later." >}}
+
+---
+
+## How good are Italian models?
+
+- Measuring it is hard: translated English benchmarks are _not_ enough
+    + [ITA-Bench](https://aclanthology.org/2024.clicit-1.67/) (CLiC-it 2024) mixes translated tasks with native Italian datasets
+    + [Evalita-LLM](https://arxiv.org/abs/2502.02289) (2025) uses _native_ Italian tasks, and multiple prompts per task, since rankings are _sensitive_ to prompt wording ([leaderboard](https://huggingface.co/spaces/evalitahf/evalita_llm_leaderboard))
+- Published numbers show that small Italian models can be _useful_, e.g. [Velvet-2B](https://huggingface.co/Almawave/Velvet-2B) reports 39.6 on Italian MMLU and 61.9–86.6 on ITA-Bench tasks...
+- ... but there is __no robust evidence__ that Italian models outperform large multilingual open models (e.g. Qwen3, Gemma 4), let alone frontier ones, _even on Italian_
+
+{{% fragment %}}
+> Leaderboard positions change every few months: when citing a rank, always write the __snapshot date__
+{{% /fragment %}}
+
+---
+
+## Recurring issues of European open models
+
+1. __Data__: too little high-quality text in less-resourced languages (the very reason for LLMs4EU and for synthetic data)
+2. __Compute__: every project depends on a public supercomputer allocation (Leonardo, MareNostrum 5, JUWELS, Alps); an "open" model is not _reproducible_ by anyone who lacks one
+3. __Scale and timing__: models of 2–24B parameters, released _months to years_ after comparable global open models; flagships "planned" or "pending"
+4. __Maintenance__: projects have _finite_ funding (e.g. OpenGPT-X ended in 2025): who fixes, updates, and re-evaluates the models afterwards?
+5. __Adoption__: public-administration use is mostly _aspirational_ in the sources, not a demonstrated large-scale deployment
+
+{{% fragment %}}
+> These initiatives are valuable for __research__, __openness__, and __language coverage__; they are (still) __not__ a production-grade alternative to global models. An EU organization can get operational control by running a _global_ open-weights model on _EU_ infrastructure
+{{% /fragment %}}
+
+---
+
+{{< slide id="open-models-checklist" >}}
+
+## Engineering take-aways: pre-adoption checklist
+
+The compliance unit is __checkpoint + license version + code licenses + data licenses + deployment + intended use__, not a brand name
+
+| Question | What to check |
+|---|---|
+| exactly _which_ artifact? | repository, checkpoint hash, release date, license version |
+| commercial use? | Apache/MIT: yes; CC-BY-NC: no; custom licenses: read the use restrictions |
+| on-premise use? | the license, not the availability of files (e.g. Llama 4 multimodal in the EU) |
+| fine-tuning, distillation, merging? | whether derivatives inherit restrictions; license of _each_ parent model |
+| hosted service or redistribution? | whether serving an API counts as distribution (it does for Gemma 3); attribution and naming duties |
+| geography or scale limits? | e.g. Llama 4: EU multimodal clause, 700M monthly users |
+| training and fine-tuning data? | provenance, licenses (e.g. ODC-By), personal data |
+| AI Act role? | are _we_ becoming a GPAI provider (e.g. by fine-tuning and distributing)? does the open-source exemption apply? |
+| reproducibility needed? | self-hosting: permissive weights suffice; audit or research: prefer fully open models (OLMo 3, Apertus) |
+
+> Mnemonic: __weights → license → recipe → data → regulatory role__: a model is only as open as the layer that matters for your use
+
+---
+
+## Engineering take-aways: three scenarios
+
+{{% multicol %}}
+{{% col %}}
+
+### A UniBo lab, on-premise
+
+- wants: local RAG/chat, fine-tuning on university material, reproducible experiments
+- good fits: OLMo 3, Apertus (reproducibility); Gemma 4, Qwen3, gpt-oss, Mistral Apache models (weights only suffice); Minerva (Italian-centric research)
+- ruled out: Llama 4 _multimodal_ (EU clause)
+
+{{% /col %}}
+{{% col %}}
+
+### An Italian startup reselling a fine-tune
+
+- wants: fine-tune, host, sell the model
+- good fits: Apache/MIT weights (Gemma 4, Qwen3, gpt-oss, DeepSeek-R1, Mistral Large 3, OLMo 3, Domyn Small)
+- beware: R1 _distills_ (Llama-based ones inherit Llama's license); Gemma 3 (restrictions flow to customers); Teuken v0.6 (non-commercial)
+
+{{% /col %}}
+{{% col %}}
+
+### A public administration
+
+- wants: EU-controlled deployment and auditability
+- _auditability_: Apertus, OLMo 3, Minerva
+- _operational control_: any permissively licensed model on EU infrastructure (incl. Mistral, EuroLLM, Velvet, Domyn Small)
+- beware: IT4LIA/CINECA provides _compute_, not a model license
+
+{{% /col %}}
+{{% /multicol %}}
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
 {{< slide id="technique-selection" >}}
 
 ## Which technique? The general concept
@@ -336,7 +600,7 @@ Given a model, there are several ways to make it _behave_ as your task requires,
 
 {{< image src="./todo-technique-decision-tree.png" max-h="70vh" alt="TODO picture: decision tree starting from 'Is prompting (with good instructions and a few examples) good enough on your validation set?' → yes: 'stop, use prompting'. no → 'What is missing?' branching into: 'knowledge the model does not have (private / recent documents)' → RAG; 'ability to act or to get live data' → tools / agents; 'a multi-step procedure to be followed reliably' → workflow (if steps are fixed) or skill (if the agent should decide when to apply it); 'a consistent style, format, or narrow skill that prompting cannot elicit' → fine-tuning (only if data, budget and license allow). Each leaf annotated with an example from the running example: 'answer questions about the PhD regulations' (RAG), 'check the candidate's university in a ranking API' (tools), 'extract → validate → score → report pipeline' (workflow), 'write evaluations in the committee's house style' (fine-tuning)." >}}
 
-(cf. OpenAI's [optimizing LLM accuracy](https://platform.openai.com/docs/guides/optimizing-llm-accuracy) guide, and Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
+(cf. OpenAI's [optimizing LLM accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) guide, and Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
 
 ---
 
@@ -411,6 +675,8 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 {{< image src="./todo-benchmark-saturation.png" max-h="30vh" alt="TODO picture: line chart 'best model score over time' (2019–2026) for several benchmarks: MMLU, GPQA, SWE-bench, HLE, ARC-AGI-2, each curve rising from low values and flattening near the top (saturation); a dashed 'human expert' reference line for some of them; ARC-AGI-3 shown as a new curve starting near 0% in 2026. Caption: 'each benchmark is useful until it saturates'." >}}
 
 > __Engineering take-away__: frontier benchmarks tell you where the _state of the art_ is, not whether a model is good for __your__ task
+
+---
 
 ## How to choose a model for a given task?
 
@@ -532,7 +798,8 @@ Write a short (2–4 pages) __decision record__, answering:
 
 1. __Regulatory classification__: is the system _high-risk_ under the EU AI Act? Which _obligations_ follow for the University (as _deployer_)? Which GDPR _obligations_ apply to candidates' documents?
 2. __Deployment__: cloud API, hosted open model, or on-premise? Support the choice with a _cost estimate_ (number of applications per year × tokens per application × price, vs. hardware) and _privacy_ considerations
-3. __Model__: which model? Support the choice with the results of [Exercise 1](#/compare-models), and with the model's _license_ and _documentation_
+3. __Model__: which model? Support the choice with the results of [Exercise 1](#/compare-models), and with the model's _documentation_
+    + apply the [pre-adoption checklist](#/open-models-checklist) to the __exact checkpoint__: license, multimodal restrictions, derivatives, AI Act role
 4. __Technique__: which parts rely on prompting / structured output / tools / RAG? Why not fine-tuning?
 5. __Human oversight__: which outputs are _reviewed_ by humans, how, and who is _accountable_ for the final decision?
 6. __Monitoring__: what is _logged_, and when is the decision _re-assessed_ (e.g. model deprecation, new regulations)?
