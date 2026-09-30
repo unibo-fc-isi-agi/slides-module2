@@ -148,7 +148,7 @@ Let's estimate the yearly cost of the running example, under explicit (and rough
 
 ---
 
-
+# Regulatory framework
 
 ---
 
@@ -303,6 +303,10 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 
 ---
 
+# Open models, licensing, and "sovereignty"
+
+---
+
 {{% section %}}
 
 {{< slide id="open-models" >}}
@@ -367,6 +371,10 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 | __Open weights, restrictive license__ | [Llama 4](https://www.llama.com/llama4/license/), [Gemma 3](https://ai.google.dev/gemma/terms), [Teuken v0.6](https://huggingface.co/openGPT-X), BLOOM ([RAIL](https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE)) | weights, inference code | use-based, geographic, commercial, or downstream restrictions: _not_ "any purpose" |
 | __Open weights, permissive license__ | [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Qwen3](https://huggingface.co/Qwen/Qwen3-8B), [DeepSeek-R1](https://huggingface.co/deepseek-ai/DeepSeek-R1), [gpt-oss](https://huggingface.co/openai/gpt-oss-120b), [Mistral Large 3 / Small 4](https://docs.mistral.ai/getting-started/models/) | weights under Apache 2.0 or MIT | training data and full pipeline _not_ released |
 | __Fully (or nearly) open__ | [OLMo 3](https://allenai.org/blog/olmo3), [Apertus](https://www.apertus-ai.org/), [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | weights + code + data (or data pipeline) + docs | reproduction still needs _enormous_ compute |
+
+---
+
+## The licensing landscape (as of September 2026)
 
 ### Licenses change across versions: always check the __exact checkpoint__
 
@@ -575,6 +583,10 @@ The compliance unit is __checkpoint + license version + code licenses + data lic
 
 ---
 
+# Agentic Technique Selection Criteria
+
+---
+
 {{% section %}}
 
 {{< slide id="technique-selection" >}}
@@ -623,6 +635,10 @@ Given a model, there are several ways to make it _behave_ as your task requires,
 {{% /fragment %}}
 
 {{% /section %}}
+
+---
+
+# Model Selection Criteria
 
 ---
 
