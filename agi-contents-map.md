@@ -1,6 +1,6 @@
 Coverage legend: `[x]` covered by slides (lecture dir in backticks), `[ ]` not covered yet (notes say what partially exists).
 
-Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas` exercises on request caching and retry with exponential backoff; `llmaas` exercise 5 (comparing models on the running example); `llmaas` Example 1 bis (Anthropic Messages API via Ollama) + cross-provider API comparison table.
+Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas` exercises on request caching and retry with exponential backoff; `llmaas` Example 1 bis (Anthropic Messages API via Ollama) + cross-provider API comparison table.
 
 0. Programmatic interfaces for LLMaaS
     - Topics:
@@ -12,11 +12,11 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
             + [x] commonly recommended hardware/software requirements — `llmaas`
                 - [x] quantization (e.g. GGUF) and model size vs. VRAM/RAM — `llmaas`
         * [x] Model zoo — `llmaas`
-            + [x] how to choose a model for a given task — `llmaas`
-                - [x] how to evaluate models — `llmaas` (benchmarks, leaderboards, task-specific evaluation; exercise 5)
-            + [ ] italian / european initiatives for open-models (maturity, issues, etc.) (to be covered in `governance`)
+            + [x] how to choose a model for a given task — `governance`
+                - [x] how to evaluate models — `governance` (benchmarks, leaderboards, task-specific evaluation; exercise 1)
+            + [ ] italian / european initiatives for open-models (maturity, issues, etc.) (placeholder slide in `governance`, content pending)
                 - [ ] eg. OpenLLM, ALT-EDIC, LLMs4EU, Minerva
-            + [ ] open weights vs. open source: licensing of models _(proposed)_ (to be covered in `governance`)
+            + [ ] open weights vs. open source: licensing of models _(proposed)_ (placeholder slide in `governance`, content pending)
     - Exercises:
         * [x] E0.1: building CLI for LLM — `llmaas` (examples 1 and 2: sync and async/streaming CLI chat)
         * [x] E0.2: extract structured information from pictures with text (`llmaas` exercise 4 does that with ID documents)
@@ -96,10 +96,13 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
 
 6. AI governance 101
     - Topics:
-        * [ ] AI in cloud vs local providers vs on-premise (cost/control/privacy considerations) (on-premise vs on-cloud trade-offs introduced in `llmaas`)
-        * [ ] trade-offs among quality, cost, control, compliance, and time-to-market (e.g. in skills vs ad-hoc workflow with tools+LLM)
-            + [ ] regulation: EU AI Act, GDPR, UniBo GenAI policy
-        * [ ] guidelines for technology selection upon use case patterns
-            + [ ] prompting vs. RAG vs. fine-tuning
-        * [ ] detail on model evaluation: model cards and model evaluation (maybe mention ARC-AGI, and other benchmarks?)
+        * [x] AI in cloud vs local providers vs on-premise (cost/control/privacy considerations) — `governance` (with worked cost example)
+        * [x] trade-offs among quality, cost, control, compliance, and time-to-market (e.g. in skills vs ad-hoc workflow with tools+LLM) — `governance`
+            + [x] regulation: EU AI Act, GDPR, UniBo GenAI policy — `governance` (+ Italian L. 132/2025)
+        * [x] guidelines for technology selection upon use case patterns — `governance`
+            + [x] prompting vs. RAG vs. fine-tuning — `governance`
+        * [x] detail on model evaluation: model cards and model evaluation (maybe mention ARC-AGI, and other benchmarks?) — `governance`
+    - Exercises:
+        * [x] E6.1: Comparing models on the running example (quality, consistency, latency, cost) — `governance` exercise 1
+        * [x] E6.2: Governance decision record for the running example (AI Act, GDPR, deployment, model, oversight) — `governance` exercise 2
 

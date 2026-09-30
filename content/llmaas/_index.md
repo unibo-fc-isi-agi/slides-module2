@@ -1291,6 +1291,8 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
 ---
 
+{{< slide id="running-example" >}}
+
 {{< import path="reusable/running-example.md" >}}
 
 ---
@@ -1537,109 +1539,11 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
 ---
 
-## How to choose a model for a given task?
+## Model zoos (pt. 3): what next?
 
-{{% multicol %}}
-{{% col %}}
-
-### Hard constraints (filter)
-
-1. __Deployment__: on-premise (hardware available?) or on-cloud (budget available?)
-2. __Data protection__: can the data leave your premises? which jurisdiction? (cf. GDPR)
-3. __License__: is the intended use (e.g. commercial) permitted?
-4. __Modalities__: text only? images? audio?
-5. __Capabilities__: tool calling? structured output? reasoning?
-6. __Context window__: will prompts + documents + history fit?
-7. __Languages__: e.g. is Italian supported well enough?
-
-{{% /col %}}
-{{% col %}}
-
-### Soft criteria (rank)
-
-- _quality_ on __your__ task (see next slide)
-- _latency_ (time to first token, tokens per second)
-- _cost_ per request (tokens × price, or hardware amortization)
-- _stability_ of the offer (will the model be deprecated soon?)
-- _ecosystem_ (client libraries, documentation, community)
-
-{{% fragment %}}
-> __Rule of thumb__: start from the _smallest/cheapest_ model satisfying the hard constraints, measure its quality on your task, and move to _bigger_ models only if needed
-{{% /fragment %}}
-
-{{% /col %}}
-{{% /multicol %}}
-
-{{< image src="./todo-model-selection-flowchart.png" max-h="30vh" alt="TODO picture: left-to-right funnel/flowchart. Start: 'all models in the zoo' → filter by deployment & data protection → filter by license → filter by modalities & capabilities → filter by context window & language → 'shortlist (3-5 models)' → 'evaluate on your own test set' → 'pick the cheapest one above the quality threshold'. Each filter drawn as a narrowing funnel stage." >}}
-
----
-
-## How to evaluate models?
-
-### 1. Public __benchmarks__ and __leaderboards__ (generic, cheap to consult)
-
-- _benchmarks_: fixed datasets + metrics for some capability
-    + e.g. knowledge ([MMLU](https://arxiv.org/abs/2009.03300)), expert reasoning ([GPQA](https://arxiv.org/abs/2311.12022)), coding ([SWE-bench](https://www.swebench.com/)), tool use, long context...
-    + holistic frameworks like [HELM](https://arxiv.org/abs/2211.09110) evaluate many models on many scenarios and metrics (not just accuracy)
-- _leaderboards_: rankings aggregating benchmark results or human preferences
-    + e.g. [Arena](https://arena.ai/) (formerly Chatbot Arena / LMArena: humans blindly compare pairs of answers, cf. [Chiang et al., 2024](https://arxiv.org/abs/2403.04132); but see also the critique by [Singh et al., 2025](https://arxiv.org/abs/2504.20879)), [Artificial Analysis](https://artificialanalysis.ai/) (quality vs. price vs. speed)
-- __caveats__:
-    + _data contamination_: benchmark items may have leaked into training data (cf. [Xu et al., 2024](https://arxiv.org/abs/2406.04244))
-    + _saturation_: top models all score near 100%, so benchmarks stop discriminating (e.g. Hugging Face [retired](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/discussions/1135) its Open LLM Leaderboard in 2025)
-    + _Goodhart's law_: once a benchmark becomes a target, it stops being a good measure
-    + benchmarks measure _generic_ skills, possibly _not_ the ones your task requires
-
-### 2. __Task-specific__ evaluation (the one that really matters)
-
-- build a small _validation set_ of realistic inputs for __your__ task (with expected outputs, when possible)
-- run each shortlisted model on it, and _score_ outputs: exact match, schema validity, custom checks, or _LLM-as-a-Judge_
-- measure _latency_ and _cost_ too (both reported in the API responses' metadata, e.g. `usage`)
-- (systematic infrastructure for this will be discussed in the _prompt engineering_ lecture)
-
----
-
-## Exercise 5: Comparing Models on the Running Example (pt. 1)
-
-> __Goal__: the admission committee wants to pick the model to be used for letter evaluation (cf. [Example 3](./letter_evaluator_openai.py)), based on _evidence_ rather than on hype
-
-### TO-DO List
-
-1. __Shortlist__ 3 models, e.g.:
-    + one small _free_ model on Open Router,
-    + one larger (possibly free) model on Open Router,
-    + one _local_ model via Ollama (if your hardware allows it)
-2. Run the letter evaluator on __all 3 letters__ of the running example, __5 times__ per letter per model
-    + the script is already parametric w.r.t. the model: just change `OPENAI_MODEL` (and `OPENAI_BASE_URL` for Ollama)
-3. For each model, __collect__:
-    + the _scores_ (average, and _variance_ across the 5 runs: is the model _consistent_?)
-    + the _agreement_ among models (do they rank candidates in the same way?)
-    + the number of _failures_ (e.g. invalid JSON, validation errors)
-    + _latency_ (wall-clock time per request) and _tokens_ used (from `response.usage`), hence _cost_
-4. Summarize the results in a __table__, and motivate your choice
-
----
-
-## Exercise 5: Comparing Models on the Running Example (pt. 2)
-
-### Decision points and hints
-
-- How to automate the runs?
-    * e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file
-    * reuse the caching mechanism of Exercise 1? (careful: caching would hide the variance!)
-- How to measure time?
-    * e.g. `time.perf_counter()` before and after the request
-- How to compute costs?
-    * `evaluate_letter(...)` only returns the parsed `LetterInfo`: adapt it to also return the whole `response` (or its `usage`)
-    * multiply `usage.prompt_tokens` and `usage.completion_tokens` by the prices listed in the zoo (Open Router also reports `usage.cost` directly)
-- How to deal with rate limits of free models?
-    * reuse the retry mechanism of Exercise 2
-- What if models disagree?
-    * which one is _right_? you need a __reference__: e.g. score the letters yourself, and compare each model against your scores
-
-### How to test it?
-
-- the table should contain 3 models × 3 letters × 5 runs = 45 rows (minus failures, which should be _counted_, not hidden)
-- re-running the script with a _different temperature_ (e.g. `0` vs. `1`) should visibly affect the variance
+- Zoos tell you _which_ models exist, and what they _claim_ to be capable of
+- __Choosing__ the right model for a given task, and __evaluating__ it on _evidence_, are decisions with consequences on quality, cost, control, and compliance
+    + hence, they are discussed in the [AI Governance lecture](../governance/#/model-selection), along with an exercise on comparing models on the running example
 
 {{% /section %}}
 
