@@ -1,3 +1,3 @@
-{{- $src := "[`matteo.magnini@unibo.it`](mailto:matteo.magnini@unibo.it)" -}}
+{{- $src := "[`mattia.matteini@unibo.it`](mailto:mattia.matteini@unibo.it)" -}}
 {{- $content := $src | markdownify -}}
 {{- $content -}}

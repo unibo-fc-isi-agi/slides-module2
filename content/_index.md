@@ -2,7 +2,7 @@
 +++
 
 title = "About the course"
-description = "Presentation of the course 'Intelligent Systems Engineering — Module 2'"
+description = "Presentation of the course 'Intelligent Agents — Module 2'"
 outputs = ["Reveal"]
 aliases = [
     "/about/"
@@ -18,12 +18,8 @@ aliases = [
 
 ## Table of Contents
 
-1. [About the Lab](https://github.com/unibo-fc-isi-ise/lecture-about/releases/download/3.0.0/ise-lab-about.pdf)
-2. [Programming Intentional Agents: Exercises in Jason](https://github.com/unibo-fc-isi-ise/lecture-jason/releases/download/0.2.1-5-g105ae3b/ise-lab-jason.pdf)
-3. [Planning with STRIPS](https://github.com/unibo-fc-isi-ise/lecture-strips/releases/download/0.1.0-2025-05-13T114833/ise-lab-strips.pdf)
-4. Agentic AI
-    1. [Generative AI 101](genai)
-    2. [LLM-as-a-Service](llmaas)
+1. [Generative AI 101](genai)
+2. [LLM-as-a-Service](llmaas)
 
 ---
 

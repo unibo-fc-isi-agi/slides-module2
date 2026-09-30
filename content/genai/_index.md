@@ -1,6 +1,6 @@
 +++
 
-title = "[ISE] Generative AI 101"
+title = "[AgI] Generative AI 101"
 description = "Gentle Introduction to Generative AI"
 outputs = ["Reveal"]
 

@@ -1,6 +1,6 @@
-baseURL = "https://unibo-fc-isi-ise.github.io/slides-module2"
+baseURL = "https://unibo-fc-isi-agi.github.io/slides-module2"
 languageCode = "en-us"
-title = "Intelligent Systems Engineering — Module 2"
+title = "Intelligent Agents — Module 2"
 disableKinds = ["sitemap", "RSS"]
 theme = "reveal-hugo"
 publishDir = "build"
