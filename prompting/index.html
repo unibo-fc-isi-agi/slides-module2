@@ -45,7 +45,9 @@
 </li>
 <li><a href="#/prompting-techniques">Prompting techniques</a>: zero-shot, few-shot, chain-of-thought, self-consistency, prompt chaining</li>
 <li><a href="#/reasoning-models">Reasoning models</a>: models which “think” before answering, and how to control how much they think</li>
-<li><a href="#/exercise-checklist">Exercises</a> on the running example</li>
+<li><a href="#/context-management">Context management</a>: context windows, token budgets, compaction, prompt caching</li>
+<li><a href="#/validation">Validating generative software</a>: golden sets, deterministic scorers, LLM-as-a-Judge, with DeepEval and MLflow</li>
+<li>Exercises on the running example: <a href="#/exercise-checklist">checklist scoring</a>, <a href="#/exercise-id-documents">ID documents extraction</a>, <a href="#/exercise-id-tests">testing infrastructure</a></li>
 </ol>
 <blockquote>
 <p>Recall: we assume the reader is familiar with the <a href="../llmaas/#/chat-completion-concept">Chat Completion API</a>, and with the notion of <a href="../genai/">prompt templates</a> from previous lectures</p>
@@ -1456,6 +1458,680 @@
 <p>[BEWARE] There are limitations w.r.t. input data <a href="https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements">on OpenAI</a> (and what about <a href="https://openrouter.ai/docs/guides/overview/multimodal/image-understanding">OR</a>?)</p>
   <img src="./openai-image-input-limits.png" alt="OpenAI image input limits" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </li>
+</ul>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="context-management">
+<h2 id="context-management-the-general-concept">Context management: the general concept</h2>
+<ul>
+<li>
+<p>The <strong>context window</strong> is the <em>maximum number of tokens</em> a model can process in a <em>single</em> request: <em>input</em> (all messages) + <em>output</em> (including reasoning tokens)</p>
+<ul>
+<li>from a few thousands (small local models) to millions (some frontier models) of tokens, cf. <a href="../llmaas/#/model-zoos">model zoos</a></li>
+<li>exceeding it leads to <em>errors</em>, or to <em>silent truncation</em>, depending on the provider</li>
+</ul>
+</li>
+<li>
+<p>Recall: the Chat Completion API is <strong>stateless</strong>, so the <em>client</em> re-sends the <em>whole history</em> at each turn</p>
+<ul>
+<li>hence, the input grows at <em>each turn</em>, and so do <em>cost</em> and <em>latency</em></li>
+<li>the <em>cumulative</em> cost of a conversation grows <strong>quadratically</strong> with the number of turns</li>
+</ul>
+</li>
+<li>
+<p>Even <em>within</em> the window, <em>more</em> context is not necessarily <em>better</em>:</p>
+<ul>
+<li>information in the <em>middle</em> of long contexts is used less effectively (cf. <a href="https://arxiv.org/abs/2307.03172">Liu et al. (2024)</a>)</li>
+<li>performance degrades as input length grows, even on simple tasks (cf. <a href="https://research.trychroma.com/context-rot">“context rot”</a>)</li>
+</ul>
+</li>
+<li>
+<p><strong>Context management</strong> (a.k.a. <em>context engineering</em>, cf. <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic</a>) is the practice of deciding <em>what</em> enters the context, <em>when</em>, and <em>in which order</em>:</p>
+<ol>
+<li><strong>budgeting</strong>: <em>count</em> tokens, and reserve room for the output</li>
+<li><strong>trimming</strong>: drop the <em>oldest</em> (or least relevant) messages</li>
+<li><strong>summarisation</strong> (a.k.a. <em>compaction</em>): replace older messages with a <em>summary</em> of them</li>
+<li><strong>retrieval</strong>: load only the <em>relevant</em> pieces of information, when needed (cf. RAG, in a later lecture)</li>
+<li><strong>prompt caching</strong>: make the <em>repeated</em> part of the context <em>cheaper</em> and <em>faster</em> to process</li>
+</ol>
+</li>
+</ul>
+</section><section>
+<h2 id="context-management-an-intuitive-example">Context management: an intuitive example</h2>
+<img src="./todo-context-growth.png" alt="TODO picture: two stacked-bar charts side by side, sharing the same y axis 'tokens sent per request' and x axis 'turn number' (1 to 10). A horizontal dashed red line marks the 'context budget'. Left chart, 'no context management': each bar is the whole history (a thin grey 'system' slice at the bottom, then alternating blue 'user' and green 'assistant' slices), bars grow linearly and cross the budget line at turn 7, where the bar is marked with an error icon. Right chart, 'with compaction': bars grow until they approach the budget at turn 5, then drop: the oldest slices are replaced by a single orange 'summary' slice right above the system slice, while the last 4 messages stay verbatim; the pattern repeats at turn 9. Below both charts, a small legend also marks the bottom-most slices (system + summary) with a lock icon labelled 'stable prefix: cacheable'." style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+</section><section>
+<h2 id="prompt-caching-the-general-concept">Prompt caching: the general concept</h2>
+<ul>
+<li>
+<p><strong>Prompt caching</strong>: the provider <em>stores</em> the internal state of the model (the <em>KV cache</em>) for a <em>prefix</em> of the prompt, and <em>reuses</em> it when a later request starts with <em>exactly the same</em> prefix</p>
+<ul>
+<li>cached input tokens are billed at a <em>fraction</em> of the price (commonly $\approx$ 10%), and processed <em>faster</em></li>
+<li>only the <em>prefix</em> is cached: <em>any</em> change invalidates the cache from that point on</li>
+<li>caches <em>expire</em> after some minutes of inactivity</li>
+</ul>
+</li>
+<li>
+<p>Consequences for prompt design:</p>
+<ul>
+<li>put the <strong>stable</strong> parts <em>first</em> (system instructions, examples, documents), and the <strong>variable</strong> parts <em>last</em> (user input)</li>
+<li>avoid timestamps or random IDs at the beginning of prompts</li>
+<li>compaction and trimming <em>change</em> the prefix: there’s a <em>trade-off</em> between shorter contexts and cache hits</li>
+</ul>
+</li>
+<li>
+<p><strong>Not</strong> to be confused with the <em>client-side</em> caching of <a href="../llmaas/">Exercise 1 of the LLM-as-a-Service lecture</a>:</p>
+</li>
+</ul>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>Client-side response caching</th>
+					<th>Provider-side prompt caching</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>What is cached</td>
+					<td>the <em>whole response</em>, for an <em>identical</em> request</td>
+					<td>the model’s state for a <em>prefix</em> of the prompt</td>
+			</tr>
+			<tr>
+					<td>Is the model called?</td>
+					<td>no</td>
+					<td>yes, the response is always <em>generated</em> anew</td>
+			</tr>
+			<tr>
+					<td>Saves</td>
+					<td>100% of cost and latency</td>
+					<td>part of input cost, and time-to-first-token</td>
+			</tr>
+			<tr>
+					<td>Changes the output?</td>
+					<td>yes: same output every time (no sampling variability)</td>
+					<td>no</td>
+			</tr>
+	</tbody>
+</table>
+</section><section>
+<h2 id="context-management-the-technological-landscape">Context management: the technological landscape</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Provider</th>
+					<th>Token counting</th>
+					<th>Prompt caching</th>
+					<th>Server-side compaction</th>
+					<th>Docs</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>OpenAI</td>
+					<td>offline, via <a href="https://github.com/openai/tiktoken"><code>tiktoken</code></a></td>
+					<td><em>automatic</em> for long prompts; optional <code>prompt_cache_key</code></td>
+					<td><code>context_management</code> in the Responses API, or <code>/responses/compact</code></td>
+					<td><a href="https://developers.openai.com/api/docs/guides/prompt-caching">caching</a>, <a href="https://developers.openai.com/api/docs/guides/compaction">compaction</a></td>
+			</tr>
+			<tr>
+					<td>Anthropic</td>
+					<td><code>/v1/messages/count_tokens</code> endpoint</td>
+					<td><code>cache_control</code>: automatic (top-level) or explicit breakpoints; cache <em>writes</em> cost extra</td>
+					<td>beta: on demand, or at a token threshold; plus <em>context editing</em></td>
+					<td><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">caching</a>, <a href="https://platform.claude.com/docs/en/build-with-claude/compaction">compaction</a></td>
+			</tr>
+			<tr>
+					<td>Google Gemini</td>
+					<td><code>count_tokens</code> method</td>
+					<td><em>implicit</em> (automatic), or <em>explicit</em> caches created in advance</td>
+					<td>—</td>
+					<td><a href="https://ai.google.dev/gemini-api/docs/caching">caching</a>, <a href="https://ai.google.dev/gemini-api/docs/tokens">tokens</a></td>
+			</tr>
+			<tr>
+					<td>OpenRouter</td>
+					<td>reported in <code>usage</code></td>
+					<td>forwarded to the underlying provider</td>
+					<td>—</td>
+					<td><a href="https://openrouter.ai/docs/features/prompt-caching">caching</a></td>
+			</tr>
+			<tr>
+					<td>LangChain</td>
+					<td><code>count_tokens_approximately(...)</code>, <code>llm.get_num_tokens_from_messages(...)</code> (model-specific)</td>
+					<td>reported in <code>usage_metadata["input_token_details"]["cache_read"]</code></td>
+					<td><code>trim_messages(...)</code>, summarisation middleware for agents</td>
+					<td><a href="https://docs.langchain.com/oss/python/langchain/short-term-memory">short-term memory</a></td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><strong>Same concepts</strong> everywhere; <em>different</em> syntax, <em>thresholds</em> (e.g. minimum cacheable length), <em>prices</em>, and <em>retention times</em></li>
+<li>Server-side compaction is convenient, but <em>opaque</em> (e.g. OpenAI’s compacted items are <em>encrypted</em>) and <em>provider-specific</em>: client-side compaction is <em>portable</em></li>
+</ul>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="chat-compaction">
+<h2 id="example-4-cli-chat-with-context-compaction-pt-1">Example 4: CLI Chat with Context Compaction (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: a CLI chat (as in <a href="../llmaas/">Example 1 of the LLM-as-a-Service lecture</a>) which never exceeds a given <em>token budget</em>, by <em>summarising</em> older messages</p>
+</blockquote>
+<ol>
+<li>
+<p>Let’s configure the chat model, the <em>budget</em>, and how many recent messages to keep <em>verbatim</em>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"https://openrouter.ai/api/v1/"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openrouter/auto"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">budget</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">int</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"CONTEXT_BUDGET"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"1000"</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># tokens; tiny on purpose, to see compaction happen</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">keep_last</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">4</span>  <span style="color:#8f5902;font-style:italic"># most recent messages, always kept verbatim</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">instructions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"You are a helpful assistant. Be concise."</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">summary</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">""</span>  <span style="color:#8f5902;font-style:italic"># summary of the older part of the conversation (initially empty)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">BaseMessage</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+</span></span></code></pre></div><ul>
+<li>the <em>state</em> of the conversation is a (running) <code>summary</code>, plus the recent <code>history</code></li>
+</ul>
+</li>
+<li>
+<p>The <em>context</em> sent at each request is: system instructions + summary (if any) + recent history:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">BaseMessage</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">system</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">instructions</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">Summary of the earlier conversation:</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">summary</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">summary</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">SystemMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">system</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">]</span>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-4-cli-chat-with-context-compaction-pt-2">Example 4: CLI Chat with Context Compaction (pt. 2)</h2>
+<ol start="3">
+<li>
+<p><strong>Compaction</strong> is itself an LLM call, asking to summarise the <em>older</em> messages (and the previous summary):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">compact</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">global</span> <span style="color:#000">summary</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">history</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">older</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">history</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">history</span><span style="color:#000;font-weight:bold">[:</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">history</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">:]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">()[:</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">older</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HumanMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Summarise the conversation so far in a few sentences. "</span>
+</span></span><span style="display:flex;"><span>                                                    <span style="color:#4e9a06">"Keep all facts, names, numbers, and decisions."</span><span style="color:#000;font-weight:bold">)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">summary</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span>
+</span></span></code></pre></div></li>
+<li>
+<p>The main loop compacts the context whenever its (approximate) size exceeds the budget, and prints <em>token usage</em> at each turn:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">while</span> <span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">history</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">HumanMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"You: "</span><span style="color:#000;font-weight:bold">)))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#c00;font-weight:bold">EOFError</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#c00;font-weight:bold">KeyboardInterrupt</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">history</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">response</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"AI: </span><span style="color:#4e9a06">{</span><span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">usage</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">usage_metadata</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">cached</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">usage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"input_token_details"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">{})</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"cache_read"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [input: </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'input_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens, of which </span><span style="color:#4e9a06">{</span><span style="color:#000">cached</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> cached | output: </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'output_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens]"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">count_tokens_approximately</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">budget</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">compact</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [context compacted: now ~</span><span style="color:#4e9a06">{</span><span style="color:#000">count_tokens_approximately</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens]"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li><code>count_tokens_approximately</code> is <em>provider-agnostic</em> (it assumes $\approx$ 4 characters per token): good enough for <em>budgeting</em>, not for <em>billing</em></li>
+<li><code>usage_metadata</code> reports the <em>actual</em> counts, including <em>cached</em> input tokens (if the provider supports caching)</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="example-4-cli-chat-with-context-compaction-pt-3">Example 4: CLI Chat with Context Compaction (pt. 3)</h2>
+<ol start="5">
+<li>
+<p>Let’s try it (full code <a href="./chat_with_compaction.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">CONTEXT_BUDGET</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">300</span> python chat_with_compaction.py
+</span></span></code></pre></div></li>
+<li>
+<p>Things to observe:</p>
+<ul>
+<li>tell the model your name, chat for a while, then ask for your name again: is it <em>remembered</em> after compaction?</li>
+<li>how do input tokens evolve over turns, before and after compaction?</li>
+<li>with a <em>long</em> system prompt (e.g. &gt; 1024 tokens) and a provider supporting caching, how many input tokens are <em>cached</em>? What happens to them right after a compaction?</li>
+</ul>
+</li>
+<li>
+<p>Possible improvements (left to the reader):</p>
+<ul>
+<li>compact in the <em>background</em>, while the user is typing</li>
+<li><em>trim</em> instead of summarising, via LangChain’s <a href="https://docs.langchain.com/oss/python/langchain/short-term-memory"><code>trim_messages</code></a>, and compare the two strategies</li>
+</ul>
+</li>
+</ol>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="validation">
+<h2 id="validating-generative-software-the-general-concept">Validating generative software: the general concept</h2>
+<ul>
+<li>
+<p>LLM-based software is hard to test:</p>
+<ul>
+<li>outputs are <em>non-deterministic</em> (same input, different outputs)</li>
+<li>outputs are <em>open-ended</em> (many correct answers, no single expected value)</li>
+<li>behaviour changes whenever the <em>prompt</em>, the <em>model</em>, or the <em>provider</em> changes, even silently</li>
+</ul>
+</li>
+<li>
+<p>Hence, rather than <em>unit tests</em>, we need <strong>evaluations</strong> (a.k.a. <em>evals</em>): measuring <em>how often</em>, and <em>how well</em>, the system behaves as expected, on a <em>dataset</em> of representative inputs</p>
+</li>
+<li>
+<p>Ingredients of an evaluation:</p>
+<ol>
+<li>a <strong>dataset</strong> of inputs, possibly with <em>expectations</em> (a <em>golden set</em>, written by humans)</li>
+<li>the <strong>system under test</strong> (prompt + model + code)</li>
+<li><strong>scorers</strong> (a.k.a. <em>metrics</em>), mapping each (input, output, expectation) to a <em>score</em> or a <em>pass/fail</em>:
+<ul>
+<li><strong>deterministic</strong> scorers: schema validity, exact match, ranges, regular expressions, invariants and <em>relations</em> among outputs</li>
+<li><strong>statistical</strong> scorers: similarity to a reference (e.g. <a href="https://aclanthology.org/P02-1040/">BLEU</a>, <a href="https://aclanthology.org/W04-1013/">ROUGE</a>, embedding similarity)</li>
+<li><strong>LLM-as-a-Judge</strong>: another LLM grades the output, according to a natural language <em>rubric</em></li>
+<li><strong>humans</strong>: the most reliable, and the most expensive</li>
+</ul>
+</li>
+<li>an <strong>aggregation</strong> (e.g. pass rate, mean score), to be compared across <em>versions</em> of the system (<em>regression testing</em>)</li>
+</ol>
+</li>
+<li>
+<p>Structured outputs make evaluation <em>much</em> easier: most fields can be checked with <em>code</em></p>
+</li>
+</ul>
+</section><section>
+<h2 id="validating-generative-software-an-intuitive-example">Validating generative software: an intuitive example</h2>
+<img src="./todo-evaluation-pipeline.png" alt="TODO picture: an evaluation pipeline, left to right. 1) A table titled 'golden set' with three rows (Mario Rossi, Jean Dupont, Mohammed Ali), columns 'input' (a letter icon) and 'expectations' (e.g. 'applicant = Mario Rossi', 'score >= 4', 'has weaknesses = no'). 2) An arrow into a box 'system under test' containing 'prompt template + model', producing, for each row, a small JSON document (the LetterInfo). 3) Three kinds of scorers stacked vertically, each receiving input, output and expectations: a gear icon 'deterministic checks' (name matches, score in range), a scale icon 'relational check' (Mario's score is the highest), and a robot-with-gavel icon 'LLM-as-a-judge: are strengths and weaknesses grounded in the letter?'. 4) A report table on the right, with a green tick or red cross per row and scorer, and aggregated pass rates at the bottom (e.g. 'fields: 8/9, relation: 1/1, groundedness: 3/3'). A dashed feedback arrow goes from the report back to the prompt template, labelled 'change prompt or model, then re-run'." style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+</section><section>
+<h2 id="llm-as-a-judge">LLM-as-a-Judge</h2>
+<ul>
+<li>
+<p>Idea: use a (strong) LLM to <em>grade</em> outputs, according to some <em>criteria</em> (cf. <a href="https://arxiv.org/abs/2306.05685">Zheng et al. (2023)</a>, and the survey by <a href="https://arxiv.org/abs/2411.15594">Gu et al. (2024)</a>)</p>
+<ul>
+<li><em>pointwise</em> (grade one output on a scale), or <em>pairwise</em> (which of two outputs is better?), with or without a <em>reference</em> answer</li>
+<li>the judge’s prompt is a <em>rubric</em>, and its answer is (ideally) a <strong>structured output</strong>: score + rationale</li>
+<li>asking for the <em>rationale first</em> helps (cf. <a href="#/letter-tone">chain-of-thought</a>); <a href="https://arxiv.org/abs/2303.16634">G-Eval</a> goes further, by first generating <em>evaluation steps</em> from the criteria</li>
+</ul>
+</li>
+<li>
+<p>Known <strong>biases</strong> of judges:</p>
+<ul>
+<li><em>position</em> bias (preferring the first, or the second, option in pairwise comparisons), cf. <a href="https://arxiv.org/abs/2305.17926">Wang et al. (2023)</a></li>
+<li><em>verbosity</em> bias (preferring longer answers), and <em>self-preference</em> (preferring outputs of the <em>same</em> model family)</li>
+</ul>
+</li>
+<li>
+<p>Good practices:</p>
+<ul>
+<li>use a <em>different</em> (and possibly stronger) model as judge, with <em>low</em> temperature</li>
+<li>prefer <em>narrow</em>, <em>binary</em> criteria (e.g. “is every strength supported by the letter?”) over vague ones (e.g. “is it good?”)</li>
+<li><strong>validate the judge</strong>: compare its grades with <em>human</em> grades, on a small sample, before trusting it</li>
+<li>use judges only for what <em>cannot</em> be checked with code</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="evaluation-frameworks-the-technological-landscape">Evaluation frameworks: the technological landscape</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Style</th>
+					<th>Scorers / judges</th>
+					<th>Results in</th>
+					<th>Docs</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://github.com/confident-ai/deepeval">DeepEval</a></td>
+					<td><em>unit-test</em> like, on top of <code>pytest</code></td>
+					<td>many built-in metrics (G-Eval, hallucination, RAG, agents), custom ones</td>
+					<td>terminal; optional cloud dashboard</td>
+					<td><a href="https://deepeval.com/docs/getting-started">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://mlflow.org/">MLflow</a> GenAI</td>
+					<td><em>experiment</em> tracking: runs, datasets, traces</td>
+					<td>code scorers (<code>@scorer</code>), built-in and custom judges (<code>make_judge</code>)</td>
+					<td>local (or remote) tracking server, with web UI</td>
+					<td><a href="https://mlflow.org/docs/latest/genai/eval-monitor/">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://www.promptfoo.dev/">promptfoo</a></td>
+					<td><em>declarative</em> (YAML), CLI, language-agnostic</td>
+					<td>assertions, model-graded rubrics, red-teaming</td>
+					<td>terminal, local web UI</td>
+					<td><a href="https://www.promptfoo.dev/docs/intro/">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://github.com/openai/evals">OpenAI Evals</a></td>
+					<td>registry of evals + platform</td>
+					<td>templates, model-graded</td>
+					<td>OpenAI dashboard</td>
+					<td><a href="https://developers.openai.com/api/docs/guides/evals">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://docs.ragas.io/">Ragas</a></td>
+					<td>library of metrics</td>
+					<td>focused on <em>RAG</em> and agents</td>
+					<td>Python objects, dataframes</td>
+					<td><a href="https://docs.ragas.io/">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://inspect.aisi.org.uk/">Inspect</a></td>
+					<td>framework for <em>benchmarks</em> and safety evals</td>
+					<td>solvers + scorers, model-graded</td>
+					<td>log viewer</td>
+					<td><a href="https://inspect.aisi.org.uk/">link</a></td>
+			</tr>
+			<tr>
+					<td><a href="https://www.langchain.com/langsmith">LangSmith</a></td>
+					<td>tracing + evals, by LangChain</td>
+					<td>code and LLM evaluators</td>
+					<td>cloud dashboard</td>
+					<td><a href="https://docs.langchain.com/langsmith/evaluation">link</a></td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><strong>Same metamodel</strong> everywhere: <em>dataset</em> $\times$ <em>system under test</em> $\rightarrow$ <em>outputs</em> $\rightarrow$ <em>scorers</em> $\rightarrow$ <em>report</em></li>
+<li><strong>Differences</strong>: <em>how</em> datasets and scorers are declared (code vs. configuration), <em>where</em> results go (terminal, local UI, cloud), and <em>batteries included</em> (built-in metrics)</li>
+</ul>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="test-deepeval">
+<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-1">Example 5: Testing the Letter Evaluator with DeepEval (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: set up a <em>test suite</em> for the <a href="#/langchain">LangChain letter evaluator</a> of Example 1 (bis)</p>
+</blockquote>
+<ol>
+<li>
+<p>The <strong>golden set</strong> is written by <em>humans</em>, and shared among test suites (full code <a href="./golden.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Golden set, written by humans (the committee): what a correct evaluation of each letter must contain</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">GOLDEN</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-mario-rossi.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Mario Rossi"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Alessandro Bianchi"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Data Science"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">has_weaknesses</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">min_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-jean-dupont.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Jean Dupont"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Claire Moreau"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Artificial Intelligence"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">has_weaknesses</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-mohammed-ali.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Mohammed Ali"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Kareem Al-Haddad"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Cyber Security"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">LETTERS_DIR</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"letter"</span><span style="color:#000;font-weight:bold">])</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
+</span></span></code></pre></div><ul>
+<li>notice that expectations are <em>partial</em> and <em>tolerant</em>: e.g. <em>ranges</em> for scores, “contains” for names</li>
+</ul>
+</li>
+<li>
+<p>Imports: DeepEval runs on top of <code>pytest</code>, and the system under test is imported <em>as is</em>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai deepeval pytest</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: pytest test_letter_evaluator.py   (or: deepeval test run test_letter_evaluator.py)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pytest</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">assert_test</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.metrics</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GEval</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.models</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">OpenRouterModel</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.test_case</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">golden</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_evaluator_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">evaluate</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">functools</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">cache</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># one LLM call per letter, shared by all tests</span>
+</span></span></code></pre></div><ul>
+<li><code>functools.cache</code> avoids calling the LLM <em>once per test</em>: each letter is evaluated once, and outputs are shared</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-2">Example 5: Testing the Letter Evaluator with DeepEval (pt. 2)</h2>
+<ol start="3">
+<li>
+<p><strong>Deterministic</strong> scorers are just <code>pytest</code> assertions on the <em>fields</em> of the structured output:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. deterministic scorers: plain assertions on the fields of the structured output</span>
+</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@pytest.mark.parametrize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"golden"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ids</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_extracted_fields</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"author"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"programme"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">application_for</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"min_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">score</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">golden</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"max_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#4e9a06">"has_weaknesses"</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">weaknesses</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"has_weaknesses"</span><span style="color:#000;font-weight:bold">]</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Relational</strong> properties hold <em>across</em> inputs (a.k.a. <em>metamorphic</em> testing): they are robust to the variability of single scores</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 2. relational property: holds across inputs, even if single scores may vary</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_best_letter_is_mario_rossi</span><span style="color:#000;font-weight:bold">():</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">scores</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]:</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">))</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">score</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">g</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">scores</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"Mario Rossi"</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87">max</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">scores</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">())</span>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-3">Example 5: Testing the Letter Evaluator with DeepEval (pt. 3)</h2>
+<ol start="5">
+<li>
+<p><strong>LLM-as-a-Judge</strong>, via DeepEval’s <em>G-Eval</em> metric: the judge scores (in $[0, 1]$) how much the output satisfies the <em>criteria</em>, and the test passes if the score is above the <em>threshold</em></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 3. LLM-as-a-judge: a (different) model grades what is hard to check with code</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">judge</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenRouterModel</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"JUDGE_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openai/gpt-oss-120b"</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">groundedness</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">GEval</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Groundedness"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">criteria</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Every skill, strength, and weakness listed in the actual output must be explicitly supported by the letter in the input. "</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#4e9a06">"Penalise any invented, exaggerated, or misattributed item."</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">evaluation_params</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">INPUT</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ACTUAL_OUTPUT</span><span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">judge</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@pytest.mark.parametrize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"golden"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ids</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_groundedness</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">assert_test</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">actual_output</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">()),</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
+</span></span></code></pre></div><ul>
+<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it)</li>
+<li><code>evaluation_params</code> selects which parts of the test case the judge can <em>see</em></li>
+</ul>
+</li>
+<li>
+<p>Let’s run it (full code <a href="./test_letter_evaluator.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>pytest test_letter_evaluator.py -v
+</span></span></code></pre></div><ul>
+<li>would the outputs of <a href="#/letter-evaluator">Example 1</a> pass? <strong>No</strong>: Mohammed Ali’s shallow letter got score 4, whereas the committee expects at most 3
+<ul>
+<li>a test failure is <em>information</em>: fix the <em>prompt</em> (e.g. with <a href="#/exercise-checklist">Exercise 1</a>), or the <em>model</em>, and re-run</li>
+</ul>
+</li>
+<li>run the suite <em>several times</em>: which tests are <em>flaky</em>? Flakiness is a <em>measure</em> of the system’s (in)consistency</li>
+</ul>
+</li>
+</ol>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="evaluate-mlflow">
+<h2 id="example-5-bis-evaluating-the-letter-evaluator-with-mlflow-pt-1">Example 5 (bis): Evaluating the Letter Evaluator with MLflow (pt. 1)</h2>
+<ol>
+<li>
+<p>Same golden set, rearranged as MLflow wants it: <code>inputs</code> (for the system) + <code>expectations</code> (for the scorers)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai mlflow</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: python evaluate_mlflow.py   then browse results with: mlflow ui</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">typing</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Literal</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">mlflow</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">scorer</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai.judges</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">make_judge</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">golden</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_evaluator_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">inputs</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">g</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 2. the system under test (outputs must be serialisable)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">()</span>
+</span></span></code></pre></div><ul>
+<li>the system under test is a <em>function</em> (<code>predict_fn</code>), called with the <code>inputs</code> as keyword arguments</li>
+</ul>
+</li>
+<li>
+<p>Deterministic scorers are <em>functions</em> decorated with <code>@scorer</code>, whose parameters are <em>named</em> after what they need (<code>inputs</code>, <code>outputs</code>, <code>expectations</code>, <code>trace</code>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 3. deterministic scorers</span>
+</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@scorer</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">applicant_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@scorer</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_in_range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"min_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"score"</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"max_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-5-bis-evaluating-the-letter-evaluator-with-mlflow-pt-2">Example 5 (bis): Evaluating the Letter Evaluator with MLflow (pt. 2)</h2>
+<ol start="3">
+<li>
+<p>The judge is created via <code>make_judge</code>, with <em>template variables</em> in the instructions, and a <em>structured</em> feedback type:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 4. LLM-as-a-judge (the API key is read from OPENAI_API_KEY)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">groundedness</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">make_judge</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"groundedness"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">instructions</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The {{ inputs }} contain a recommendation letter, and the {{ outputs }} the information extracted from it. "</span>
+</span></span><span style="display:flex;"><span>                 <span style="color:#4e9a06">"Answer 'yes' if every skill, strength, and weakness in the outputs is explicitly supported by the letter, 'no' otherwise."</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"openai:/</span><span style="color:#4e9a06">{</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">'JUDGE_MODEL'</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">'openai/gpt-oss-120b'</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">feedback_value_type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">Literal</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"yes"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"no"</span><span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">generate_rationale_first</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li><code>generate_rationale_first=True</code>: rationale <em>before</em> verdict (cf. <a href="#/letter-tone">chain-of-thought</a>)</li>
+<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API</li>
+</ul>
+</li>
+<li>
+<p>Evaluation is a <em>single call</em>, whose results are logged as an MLflow <em>run</em> (full code <a href="./evaluate_mlflow.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_experiment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"letter-evaluator"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">genai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">predict_fn</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">scorers</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">applicant_name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">score_in_range</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">results</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">metrics</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python evaluate_mlflow.py   <span style="color:#8f5902;font-style:italic"># prints aggregated metrics, e.g. {'score_in_range/mean': 0.67, ...}</span>
+</span></span><span style="display:flex;"><span>mlflow ui                   <span style="color:#8f5902;font-style:italic"># then open http://localhost:5000, to browse runs, traces, and judges' rationales</span>
+</span></span></code></pre></div> <img src="./todo-mlflow-ui.png" alt="TODO picture: screenshot of the MLflow UI, 'letter-evaluator' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." style="max-width: 95vw; max-height: 25vh; object-fit: contain;">
+</li>
+</ol>
+</section><section>
+<h2 id="deepeval-vs-mlflow-analogies-and-differences">DeepEval vs. MLflow: analogies and differences</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Aspect</th>
+					<th>DeepEval</th>
+					<th>MLflow GenAI</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Mental model</td>
+					<td><em>tests</em>: pass / fail, in CI</td>
+					<td><em>experiments</em>: runs to be <em>compared</em> over time</td>
+			</tr>
+			<tr>
+					<td>Dataset</td>
+					<td>test cases (<code>LLMTestCase</code>), or <code>pytest</code> parameters</td>
+					<td>list of dicts (<code>inputs</code>, <code>expectations</code>), dataframes, or managed datasets</td>
+			</tr>
+			<tr>
+					<td>System under test</td>
+					<td>called by you, inside the test</td>
+					<td><code>predict_fn</code>, called by the framework (and <em>traced</em>)</td>
+			</tr>
+			<tr>
+					<td>Deterministic scorers</td>
+					<td>plain <code>assert</code>s</td>
+					<td><code>@scorer</code> functions, returning <code>bool</code>, numbers, or <code>Feedback</code></td>
+			</tr>
+			<tr>
+					<td>LLM judges</td>
+					<td><code>GEval(criteria=..., threshold=...)</code>, plus many ready-made metrics</td>
+					<td><code>make_judge(instructions=..., feedback_value_type=...)</code>, plus built-in judges</td>
+			</tr>
+			<tr>
+					<td>Judge model</td>
+					<td><code>DeepEvalBaseLLM</code> subclasses (OpenAI, OpenRouter, Ollama, …)</td>
+					<td>model URIs (<code>openai:/...</code>, <code>anthropic:/...</code>), plus <code>base_url</code></td>
+			</tr>
+			<tr>
+					<td>Results</td>
+					<td>terminal (+ optional cloud platform)</td>
+					<td>tracking server + web UI (local, self-hosted, or managed)</td>
+			</tr>
+			<tr>
+					<td>Best for</td>
+					<td><em>regression</em> tests in CI pipelines</td>
+					<td><em>comparing</em> prompts / models, and <em>monitoring</em> in production</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>Same <em>concepts</em> (golden set, deterministic scorers, judges, aggregation), different <em>workflows</em>: the two can <em>coexist</em> in a project</li>
+</ul>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-id-tests">
+<h2 id="exercise-3-testing-infrastructure-for-id-document-extraction-pt-1">Exercise 3: Testing Infrastructure for ID Document Extraction (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: the committee wants <em>evidence</em> that the extractor of <a href="#/exercise-id-documents">Exercise 2</a> is reliable, and wants to be <em>warned</em> whenever a change in prompt or model makes it worse</p>
+</blockquote>
+<span class="fragment ">
+  <h3 id="to-do-list">TO-DO List</h3>
+<ol>
+<li>build a <strong>golden set</strong> from the 3 passports of the <a href="#/running-example">running example</a>: for each picture, write down the <em>expected</em> values of all fields (name, date of birth, ID number, expiration date)</li>
+<li>pick a framework (DeepEval <em>or</em> MLflow), and write <strong>deterministic scorers</strong>:
+<ul>
+<li><em>exact match</em> for ID numbers and dates, <em>normalised</em> match for names (case, accents, order of first/family name)</li>
+<li><em>invariants</em>: date of birth &lt; expiration date, candidate is of age, etc.</li>
+</ul>
+</li>
+<li>measure <strong>consistency</strong>: run the extractor $N$ times per picture, and report the <em>agreement rate</em> per field
+<ul>
+<li>compare single queries vs. <em>majority voting</em> (as in Exercise 2): does voting improve <em>accuracy</em>?</li>
+</ul>
+</li>
+<li>add an <strong>LLM-as-a-Judge</strong> <em>only</em> where code can’t help (e.g. “is the document <em>legible</em> enough to trust the extraction?”), and <em>validate</em> it against your own judgement</li>
+<li>run the suite with at least <strong>two models</strong>, and write down which one you’d pick, and why (cf. the <a href="../governance/#/compare-models">Governance lecture</a>)</li>
+</ol>
+</span>
+</section><section>
+<h2 id="exercise-3-testing-infrastructure-for-id-document-extraction-pt-2">Exercise 3: Testing Infrastructure for ID Document Extraction (pt. 2)</h2>
+<h3 id="decision-points-and-hints">Decision points and hints</h3>
+<ul>
+<li><em>Where</em> should the golden set live? (code, YAML/JSON file, a managed dataset?) Who is allowed to change it?</li>
+<li><em>Tolerance</em>: which fields must be exactly right, and which ones may be <em>flagged</em> for human review instead?</li>
+<li><em>Cost</em>: $N$ samples $\times$ 3 pictures $\times$ $M$ models $\times$ (1 + judge) requests: keep $N$ small while developing, and use <code>:free</code> models (cf. <a href="../free-access/">Free Access to LLMs</a>)</li>
+<li><em>Flakiness</em>: a test that fails 1 time out of 10 is telling you something; consider asserting on <em>rates</em> (e.g. “at least 4 out of 5 runs are correct”) rather than on single runs</li>
+<li>Do <strong>not</strong> cache LLM responses while measuring consistency (cf. <a href="../llmaas/">Exercise 1 of the LLM-as-a-Service lecture</a>)</li>
+</ul>
+<h3 id="how-to-test-it">How to test it?</h3>
+<ul>
+<li>deliberately <em>break</em> the system (e.g. remove the field descriptions from the Pydantic class, or use a tiny model) and check that the suite <em>catches</em> it</li>
+<li>run it in CI (e.g. GitHub Actions), with the API key stored as a <em>secret</em></li>
 </ul>
 
 </section>
