@@ -280,7 +280,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 {{% multicol %}}
 {{% col class="col-6" %}}
-{{< image src="./todo-logo-openai.svg" height="2em" alt="TODO picture: OpenAI logo (SVG), same style as the other logos" >}}
+{{< image src="./logo-openai.svg" height="2em" alt="OpenAI logo" >}}
 ```python
 import asyncio
 from openai import AsyncOpenAI

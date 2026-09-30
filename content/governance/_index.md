@@ -51,7 +51,7 @@ Every choice about an AI-powered system implies a trade-off among:
 4. __Compliance__: does the system respect _laws_ (e.g. GDPR, AI Act), _contracts_, and _internal policies_?
 5. __Time-to-market__: how quickly can we _ship_ (and _change_) the system?
 
-{{< image src="./todo-tradeoff-radar.png" max-h="45vh" alt="TODO picture: radar (spider) chart with five axes: quality, cost (inverted: cheaper = further out), control, compliance, time-to-market. Two overlapping polygons: 'frontier cloud API' (high quality, fast time-to-market, low control, medium compliance, medium cost) and 'small open model on-premise' (medium quality, high control, high compliance, slow time-to-market, low running cost). Legend below." >}}
+{{< image src="./tradeoff-radar.svg" max-h="45vh" alt="Radar chart comparing a frontier cloud API and a small open model on-premise on quality, cost, control, compliance and time-to-market: neither dominates" >}}
 
 {{% fragment %}}
 > There is __no__ option dominating all the others: governance is about choosing the _right compromise_ for the _use case_ at hand, and __writing down why__
@@ -103,7 +103,7 @@ Three main __deployment options__, differing in _who_ runs the model, and _where
 
 ## Where should the model run? An intuitive example
 
-{{< image src="./todo-deployment-options.png" max-h="70vh" alt="TODO picture: three side-by-side architecture diagrams of the SAME running-example pipeline (committee member → admission assistant program → LLM). (1) Proprietary cloud API: the LLM box sits inside a cloud labelled 'provider, possibly outside the EU'; arrows carrying 'passport, transcript, letter' cross the organization's boundary (dashed line) and a 'jurisdiction' flag is shown. (2) Hosted open model: the LLM box (labelled 'open weights, e.g. Qwen/Gemma') sits in a cloud labelled 'EU hosting provider'; data still crosses the boundary, but the model could be moved (arrow 'portable'). (3) On-premise: the LLM box sits inside the university boundary, on a GPU server icon; no data arrow crosses the boundary. Under each diagram, small icons for: who pays what (per token / per hour / hardware purchase), who can see the data." >}}
+{{< image src="./deployment-options.svg" max-h="70vh" alt="The same admission pipeline under three deployment options (proprietary cloud API, hosted open model, on-premise): whether the candidates' documents leave the university boundary, who pays for what, and who can see the data" >}}
 
 ---
 
@@ -167,7 +167,7 @@ AI-powered software is subject to (at least) four _layers_ of rules, each with a
 
 plus _contracts_ (e.g. providers' terms of service, data processing agreements) and _licenses_ (of models, and of data)
 
-{{< image src="./todo-regulation-layers.png" max-h="45vh" alt="TODO picture: concentric (or stacked) layers around a small 'LLM-powered application' box: innermost 'licenses & terms of service', then 'institutional policy (UniBo)', then 'national law (L. 132/2025)', then 'EU AI Act (AI systems & GPAI models)', outermost 'GDPR (personal data)'. Next to each layer, a short question it answers: 'may I use this model?', 'how may staff/students use GenAI?', 'who supervises? what's a crime?', 'is my use high-risk? which obligations?', 'may I process these data? how?'." >}}
+{{< image src="./regulation-layers.svg" max-h="45vh" alt="Nested layers of rules around an LLM-powered application (licenses and terms of service, UniBo policy, Italian Law 132/2025, EU AI Act, GDPR), each paired with the question it answers" >}}
 
 > Disclaimer: this is an _engineer's_ overview, __not__ legal advice: in real projects, involve your organization's _legal office_ and _Data Protection Officer_ (DPO)
 
@@ -329,7 +329,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 
 ## Openness is _graded_, not binary
 
-{{< image src="./todo-openness-bar.png" max-h="30vh" alt="TODO picture: three horizontal bars, one per model, each split into 7 segments (weights, inference code, training code, training data, data information, documentation, licenses), colored green (open) / yellow (partial or restricted) / red (closed): 'closed API model' (all red, documentation yellow); 'open-weights model, e.g. Llama 4' (weights and inference code green, license yellow, everything else red or yellow); 'fully open model, e.g. OLMo 3' (all green). Caption: 'Downloadable weights ≠ open model'." >}}
+{{< image src="./openness-bar.svg" max-h="30vh" alt="Openness of seven release components for a closed API model, an open-weights model (Llama 4) and a fully open model (OLMo 3): downloadable weights do not make a model open" >}}
 
 | Framework | Question it answers |
 |---|---|
@@ -493,7 +493,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 - __Data__: [ALT-EDIC](https://www.alt-edic.eu/)'s [LLMs4EU](https://www.alt-edic.eu/projects/llms4eu/) (March 2025, 3 years, 20+ countries) collects language resources for all EU languages, and targets sector-specific models
 - __Italian policy__: the [Italian AI Strategy 2024–2026](https://www.agid.gov.it/sites/agid/files/2024-07/Strategia_italiana_per_l_Intelligenza_artificiale_2024-2026.pdf) and [Law 132/2025](#/regulation) call for technology "tailored to the Italian context" and open research artifacts
 
-{{< image src="./todo-europe-timeline.png" max-h="35vh" alt="TODO picture: a timeline 2023–2027 with two parallel lanes. Top lane 'global frontier': releases of GPT-4 (2023), Llama 3 / Qwen2 (2024), DeepSeek-R1 (Jan 2025), gpt-oss / Qwen3 (2025), Gemma 4 (2026). Bottom lane 'EU / Italy': Minerva-7B (Nov 2024), Teuken-7B (Nov 2024), Velvet (Jan 2025), OpenEuroLLM start (Feb 2025), OpenGPT-X end (Mar 2025), Apertus 1.0 (Sep 2025), EuroLLM-22B (Feb 2026), Gigafactories call (Jul 2026), OpenEuroLLM flagship ('pending'). Each release annotated with its size (e.g. 7B vs. hundreds of B). The visual message: EU releases are smaller and later." >}}
+{{< image src="./europe-timeline.svg" max-h="35vh" alt="Timeline 2023-2026 contrasting global frontier model releases with EU and Italian releases and projects, which are smaller and arrive later" >}}
 
 ---
 
@@ -611,7 +611,33 @@ Given a model, there are several ways to make it _behave_ as your task requires,
 
 ## Which technique? An intuitive example
 
-{{< image src="./todo-technique-decision-tree.png" max-h="70vh" alt="TODO picture: decision tree starting from 'Is prompting (with good instructions and a few examples) good enough on your validation set?' → yes: 'stop, use prompting'. no → 'What is missing?' branching into: 'knowledge the model does not have (private / recent documents)' → RAG; 'ability to act or to get live data' → tools / agents; 'a multi-step procedure to be followed reliably' → workflow (if steps are fixed) or skill (if the agent should decide when to apply it); 'a consistent style, format, or narrow skill that prompting cannot elicit' → fine-tuning (only if data, budget and license allow). Each leaf annotated with an example from the running example: 'answer questions about the PhD regulations' (RAG), 'check the candidate's university in a ranking API' (tools), 'extract → validate → score → report pipeline' (workflow), 'write evaluations in the committee's house style' (fine-tuning)." >}}
+{{< mermaid >}}
+%%{init: {'flowchart': {'htmlLabels': false}}}%%
+flowchart LR
+    Q{"Is prompting good enough
+    on your validation set?"} -->|yes| P["Stop: use prompting"]
+    Q -->|no| M{"What is missing?"}
+    M -->|"knowledge the model lacks
+    (private / recent documents)"| R["RAG
+    e.g. answer questions
+    about the PhD regulations"]
+    M -->|"ability to act,
+    or live data"| T["Tools / agents
+    e.g. check the candidate's
+    university in a ranking API"]
+    M -->|"a multi-step procedure,
+    followed reliably"| S{"Who decides
+    when to apply it?"}
+    S -->|"the engineer
+    (fixed steps)"| W["Workflow
+    e.g. extract → validate
+    → score → report"]
+    S -->|the agent| K["Skill"]
+    M -->|"a consistent style, format, or
+    narrow skill (+ data, budget, license)"| F["Fine-tuning
+    e.g. evaluations in the
+    committee's house style"]
+{{< /mermaid >}}
 
 (cf. OpenAI's [optimizing LLM accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) guide, and Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
 
@@ -670,7 +696,7 @@ Given a model, there are several ways to make it _behave_ as your task requires,
 - __System cards__: longer reports published by frontier providers for each model release, focusing on _safety_ evaluations, red-teaming, and mitigations
     + e.g. [OpenAI's](https://openai.com/index/gpt-oss-model-card/) and [Anthropic's](https://www.anthropic.com/system-cards) system cards
 
-{{< image src="./todo-model-card-anatomy.png" max-h="35vh" alt="TODO picture: anatomy of a model card as a document mock-up with labelled sections (Model details, Intended use, Out-of-scope use, Training data, Evaluation (with a small disaggregated results table), Ethical considerations, Limitations, License); each section annotated with the governance dimension it informs (quality, compliance, control)." >}}
+{{< image src="./model-card-anatomy.svg" max-h="35vh" alt="Anatomy of a model card: eight sections, from model details to license, each tagged with the governance dimensions it informs (quality, compliance, control)" >}}
 
 - __What to look for__, as an engineer: _license_, _languages_, _context window_, _knowledge cut-off_, _intended uses_ (does yours fit?), known _limitations_, and _evaluations_ relevant to your task
 
@@ -689,7 +715,9 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
     + it has been _doubling_ every ~7 months (cf. [live measurements](https://metr.org/time-horizons))
 - __Aggregated views__: the [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report) describes a _jagged frontier_: models winning maths olympiad gold medals, yet failing at reading analog clocks
 
-{{< image src="./todo-benchmark-saturation.png" max-h="30vh" alt="TODO picture: line chart 'best model score over time' (2019–2026) for several benchmarks: MMLU, GPQA, SWE-bench, HLE, ARC-AGI-2, each curve rising from low values and flattening near the top (saturation); a dashed 'human expert' reference line for some of them; ARC-AGI-3 shown as a new curve starting near 0% in 2026. Caption: 'each benchmark is useful until it saturates'." >}}
+{{< image src="./benchmark-saturation.png" max-h="40vh" alt="AI Index 2026, Figure 2.1.1: best model performance relative to the human baseline, 2012-2025, on ImageNet, SuperGLUE, MMLU, GPQA Diamond, MATH, MMMU, AIME, SWE-bench Verified, OSWorld and others: each benchmark climbs towards or past the human baseline, newer ones ever faster" >}}
+
+<small>Source: [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report), ch. 2, Figure 2.1.1 ([CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/))</small>
 
 > __Engineering take-away__: frontier benchmarks tell you where the _state of the art_ is, not whether a model is good for __your__ task
 
@@ -728,7 +756,18 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 {{% /col %}}
 {{% /multicol %}}
 
-{{< image src="./todo-model-selection-flowchart.png" max-h="30vh" alt="TODO picture: left-to-right funnel/flowchart. Start: 'all models in the zoo' → filter by deployment & data protection → filter by license → filter by modalities & capabilities → filter by context window & language → 'shortlist (3-5 models)' → 'evaluate on your own test set' → 'pick the cheapest one above the quality threshold'. Each filter drawn as a narrowing funnel stage." >}}
+{{< mermaid >}}
+%%{init: {'flowchart': {'htmlLabels': false}}}%%
+flowchart LR
+    Z[("All models
+    in the zoo")] --> D[/"Deployment &
+    data protection"\] --> L[/"License"\] --> C[/"Modalities &
+    capabilities"\] --> X[/"Context window
+    & language"\] --> S["Shortlist
+    (3-5 models)"] --> E["Evaluate on
+    your own test set"] --> P(["Pick the cheapest one
+    above the quality threshold"])
+{{< /mermaid >}}
 
 ---
 

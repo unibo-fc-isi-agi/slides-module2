@@ -203,7 +203,7 @@ outputs = ["Reveal"]
 - the _KV cache_ stores intermediate results for all tokens in the current context: the __longer the context__, the more memory is needed
     + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
 
-{{< image src="./todo-memory-footprint.png" max-h="30vh" alt="TODO picture: stacked bar chart of memory needed to run a 7B, 14B, 32B, and 70B model, each at 16-bit, 8-bit, and 4-bit precision; each bar split into 'weights' (large) and 'KV cache' (smaller, growing with context length). Horizontal dashed lines mark typical devices: 8 GB, 16 GB, 24 GB, 48 GB, 80 GB." >}}
+{{< image src="./memory-footprint.svg" max-h="30vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
 
 ---
 
@@ -240,7 +240,7 @@ outputs = ["Reveal"]
     + _loss of precision_ $\implies$ some _quality degradation_, which is often negligible at 8 bits, noticeable at 4 bits, and severe below 3 bits
     + degradation is task-dependent (e.g. worse for maths, code, and non-English languages)
 
-{{< image src="./todo-quantization.png" max-h="40vh" alt="TODO picture: on the left, a histogram of real-valued weights (bell-shaped, fp16); in the middle, arrows mapping value ranges onto 16 discrete levels (4-bit integers 0..15) plus a scale factor per block; on the right, the same histogram rebuilt with visible 'steps'. Caption: 'fp16 weights → int4 codes + scale → approximate weights'." >}}
+{{< image src="./quantization.svg" max-h="40vh" alt="A bell-shaped histogram of fp16 weights mapped onto 16 four-bit codes plus a per-block scale, yielding an approximate, stepped histogram" >}}
 
 ---
 
@@ -498,7 +498,25 @@ You may think that __token $\approx$ word__, but this actually depends on the sp
 
 ## Chat Completion: an intuitive example
 
-{{< image src="./todo-chat-completion-sequence.png" max-h="65vh" alt="TODO picture: sequence diagram with three lifelines: User, Program (client), LLM provider (server). 1) User types 'hi, what time is it?'; Program appends {user: ...} to its local 'history' box (already containing {system: 'be friendly'}); Program sends POST /chat/completions {model, messages:[system, user]} to the provider; provider replies {choices:[{message:{assistant: 'I have no clock, where are you?'}}], usage:{...}}; Program appends the assistant message to history and shows it to the User. 2) User types 'Cesena, Italy'; Program appends it and sends the WHOLE history (system, user, assistant, user) in a new request; provider replies again. Highlight that the history box lives on the client side and grows at each turn, while the server keeps nothing between requests." >}}
+{{< mermaid >}}
+sequenceDiagram
+    actor U as User
+    participant P as Program (client)
+    participant L as LLM provider (server)
+    Note over P: history = [system: "be friendly"]
+    U->>P: "hi, what time is it?"
+    Note over P: history += [user: "hi, what time is it?"]
+    P->>L: POST /chat/completions {model, messages: [system, user]}
+    L-->>P: {choices: [{message: {assistant: "I have no clock, where are you?"}}], usage: {...}}
+    Note over P: history += [assistant: "I have no clock, ..."]
+    P->>U: "I have no clock, where are you?"
+    U->>P: "Cesena, Italy"
+    Note over P: history += [user: "Cesena, Italy"]
+    P->>L: POST /chat/completions {model, messages: [system, user, assistant, user]}
+    Note over L: keeps nothing between requests: the WHOLE history is re-sent
+    L-->>P: {choices: [{message: {assistant: "It's ... in Cesena"}}], usage: {...}}
+    P->>U: "It's ... in Cesena"
+{{< /mermaid >}}
 
 - Notice that the __same__ interaction is implemented by _all_ providers, only the _syntax_ changes (endpoint names, field names, where the system prompt goes, etc.)
 

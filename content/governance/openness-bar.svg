@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 440" width="1600" height="440" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<text x="448.0" y="66" font-size="22" fill="#222222" text-anchor="middle">weights</text>
+<text x="624.0" y="40" font-size="22" fill="#222222" text-anchor="middle">inference</text>
+<text x="624.0" y="66" font-size="22" fill="#222222" text-anchor="middle">code</text>
+<text x="800.0" y="40" font-size="22" fill="#222222" text-anchor="middle">training</text>
+<text x="800.0" y="66" font-size="22" fill="#222222" text-anchor="middle">code</text>
+<text x="976.0" y="40" font-size="22" fill="#222222" text-anchor="middle">training</text>
+<text x="976.0" y="66" font-size="22" fill="#222222" text-anchor="middle">data</text>
+<text x="1152.0" y="40" font-size="22" fill="#222222" text-anchor="middle">data</text>
+<text x="1152.0" y="66" font-size="22" fill="#222222" text-anchor="middle">information</text>
+<text x="1328.0" y="66" font-size="22" fill="#222222" text-anchor="middle">documentation</text>
+<text x="1504.0" y="66" font-size="22" fill="#222222" text-anchor="middle">licenses</text>
+<text x="340" y="112" font-size="26" font-weight="bold" fill="#222222" text-anchor="end">closed API model</text>
+<text x="340" y="140" font-size="21" fill="#555555" text-anchor="end">e.g. GPT, Claude, Gemini</text>
+<rect x="363" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="448.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="539" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="624.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="715" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="800.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="891" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="976.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="1067" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="1152.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="1243" y="80" width="170" height="72" rx="10" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="1328.0" y="129.0" font-size="38" font-weight="bold" fill="#a88600" text-anchor="middle">≈</text>
+<rect x="1419" y="80" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="1504.0" y="129.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<text x="340" y="202" font-size="26" font-weight="bold" fill="#222222" text-anchor="end">open-weights model</text>
+<text x="340" y="230" font-size="21" fill="#555555" text-anchor="end">e.g. Llama 4</text>
+<rect x="363" y="170" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="448.0" y="219.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="539" y="170" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="624.0" y="219.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="715" y="170" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="800.0" y="219.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="891" y="170" width="170" height="72" rx="10" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="976.0" y="219.0" font-size="38" font-weight="bold" fill="#d64541" text-anchor="middle">✗</text>
+<rect x="1067" y="170" width="170" height="72" rx="10" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="1152.0" y="219.0" font-size="38" font-weight="bold" fill="#a88600" text-anchor="middle">≈</text>
+<rect x="1243" y="170" width="170" height="72" rx="10" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="1328.0" y="219.0" font-size="38" font-weight="bold" fill="#a88600" text-anchor="middle">≈</text>
+<rect x="1419" y="170" width="170" height="72" rx="10" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="1504.0" y="219.0" font-size="38" font-weight="bold" fill="#a88600" text-anchor="middle">≈</text>
+<text x="340" y="292" font-size="26" font-weight="bold" fill="#222222" text-anchor="end">fully open model</text>
+<text x="340" y="320" font-size="21" fill="#555555" text-anchor="end">e.g. OLMo 3</text>
+<rect x="363" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="448.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="539" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="624.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="715" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="800.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="891" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="976.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="1067" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="1152.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="1243" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="1328.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="1419" y="260" width="170" height="72" rx="10" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="1504.0" y="309.0" font-size="38" font-weight="bold" fill="#3a9e4f" text-anchor="middle">✓</text>
+<rect x="360" y="380" width="30" height="30" rx="6" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="402" y="403" font-size="22" fill="#222222">open</text>
+<rect x="510" y="380" width="30" height="30" rx="6" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="552" y="403" font-size="22" fill="#222222">partial / restricted</text>
+<rect x="780" y="380" width="30" height="30" rx="6" fill="#f7d9d8" stroke="#d64541" stroke-width="3"/>
+<text x="822" y="403" font-size="22" fill="#222222">closed</text>
+<text x="1592" y="404" font-size="28" font-weight="bold" fill="#222222" text-anchor="end">Downloadable weights ≠ open model</text>
+</svg>

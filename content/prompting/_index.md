@@ -51,7 +51,7 @@ outputs = ["Reveal"]
 
 ## Anatomy of a prompt: an intuitive example
 
-{{< image src="./todo-prompt-anatomy.png" max-h="65vh" alt="TODO picture: the two messages of the letter-evaluator prompt (the 'system' message and the 'user' message) drawn as two chat bubbles, one above the other. Parts of their text are highlighted with four colors, with a legend on the right: 1) 'instructions' (e.g. 'Your goal is to help assess recommendation letters', 'Evaluate the following letter'); 2) 'context' (e.g. 'You are assisting the admission committee of University of Bologna PhD programmes'); 3) 'input data' (the '<letter> ... </letter>' block, with the letter text elided); 4) 'output indicator' (e.g. 'extract structured information in JSON', plus a small attached box labelled 'JSON Schema' hanging off the request). Arrows mark that the system message is fixed across requests, whereas the input data changes at every request (it is a placeholder in a prompt template)." >}}
+{{< image src="./prompt-anatomy.svg" max-h="65vh" alt="The system and user messages of the letter-evaluator prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" >}}
 
 - The __system__ prompt commonly contains the _stable_ parts (context, general instructions, output format)
 - The __user__ prompt commonly contains the _variable_ parts (input data, specific instructions)
@@ -255,7 +255,7 @@ From _weakest_ to _strongest_ guarantees:
 4. __Tool-calling trick__: declare a (fake) _tool_ whose parameters are the target schema, and _force_ the model to call it
     + the tool-call _arguments_ are the structured output (common before providers supported (3))
 
-{{< image src="./todo-constrained-decoding.png" max-h="30vh" alt="TODO picture: constrained decoding, step by step. On the left, a partial JSON output being generated: '{\"name\": \"Mario Rossi\", \"age\": '. In the middle, the model's probability distribution over the next token as a bar chart, with candidate tokens such as '\"', '42', 'forty', '}', 'null'. On the right, a JSON Schema snippet ('age: integer'). Bars of the tokens that would violate the schema ('\"', 'forty', '}', 'null') are greyed out and crossed, only numeric tokens ('42') remain allowed; the chosen token is highlighted. Caption: 'the schema is compiled into a grammar, which masks invalid tokens at each step'." >}}
+{{< image src="./constrained-decoding.svg" max-h="30vh" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" >}}
 
 ---
 
@@ -502,7 +502,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Prompting techniques: an intuitive example
 
-{{< image src="./todo-prompting-techniques.png" max-h="65vh" alt="TODO picture: four columns, one per technique, all applied to the same task 'classify the tone of a recommendation letter as enthusiastic / lukewarm / critical'. Each column shows the messages sent to the model (as chat bubbles) and the model's output. 1) Zero-shot: system bubble with the instructions and the three labels, user bubble with the letter, assistant bubble answering 'lukewarm'. 2) Few-shot: same system bubble, then three pairs of user/assistant bubbles with short example letters and their labels (enthusiastic, lukewarm, critical), then the user bubble with the actual letter, assistant answering 'critical'. 3) Chain-of-thought: same as zero-shot, but the assistant bubble contains a JSON object with a long 'reasoning' field (quoting 'she sometimes needed reminders...' and discussing it) followed by 'label: critical'. 4) Self-consistency: the chain-of-thought request fanned out into five parallel copies, producing labels critical, critical, lukewarm, critical, critical, which flow into a ballot box icon that outputs 'critical (4/5)'." >}}
+{{< image src="./prompting-techniques.svg" max-h="65vh" alt="Zero-shot, few-shot, chain-of-thought and self-consistency applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, down to a 4/5 majority vote for critical" >}}
 
 ---
 
@@ -626,7 +626,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Reasoning models: an intuitive example
 
-{{< image src="./todo-reasoning-tokens.png" max-h="60vh" alt="TODO picture: three horizontal timelines, one per reasoning effort level (low, medium, high), for the same request 'rank the three candidates by their letters'. Each timeline is a bar made of two segments: a grey segment of 'reasoning tokens' (short for low, medium for medium, long for high), and a colored segment of 'answer tokens' (roughly the same length in all three). Above each grey segment, a speech bubble with a faded excerpt of the hidden thinking (e.g. 'Mario's letter is very positive, but... Jean's letter mentions deadlines...'). On the right of each bar, labels for elapsed time (e.g. 2 s, 6 s, 15 s) and cost. A bracket below all bars notes that both segments are billed as output tokens, while only the colored one is shown to the user." >}}
+{{< image src="./reasoning-tokens.svg" max-h="60vh" alt="The same ranking request at low, medium and high reasoning effort: hidden reasoning tokens grow from 250 to 3500 while the answer stays around 250 tokens, so latency and output cost grow accordingly" >}}
 
 ---
 
@@ -816,7 +816,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Context management: an intuitive example
 
-{{< image src="./todo-context-growth.png" max-h="65vh" alt="TODO picture: two stacked-bar charts side by side, sharing the same y axis 'tokens sent per request' and x axis 'turn number' (1 to 10). A horizontal dashed red line marks the 'context budget'. Left chart, 'no context management': each bar is the whole history (a thin grey 'system' slice at the bottom, then alternating blue 'user' and green 'assistant' slices), bars grow linearly and cross the budget line at turn 7, where the bar is marked with an error icon. Right chart, 'with compaction': bars grow until they approach the budget at turn 5, then drop: the oldest slices are replaced by a single orange 'summary' slice right above the system slice, while the last 4 messages stay verbatim; the pattern repeats at turn 9. Below both charts, a small legend also marks the bottom-most slices (system + summary) with a lock icon labelled 'stable prefix: cacheable'." >}}
+{{< image src="./context-growth.svg" max-h="65vh" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" >}}
 
 ---
 
@@ -944,7 +944,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Validating generative software: an intuitive example
 
-{{< image src="./todo-evaluation-pipeline.png" max-h="65vh" alt="TODO picture: an evaluation pipeline, left to right. 1) A table titled 'golden set' with three rows (Mario Rossi, Jean Dupont, Mohammed Ali), columns 'input' (a letter icon) and 'expectations' (e.g. 'applicant = Mario Rossi', 'score >= 4', 'has weaknesses = no'). 2) An arrow into a box 'system under test' containing 'prompt template + model', producing, for each row, a small JSON document (the LetterInfo). 3) Three kinds of scorers stacked vertically, each receiving input, output and expectations: a gear icon 'deterministic checks' (name matches, score in range), a scale icon 'relational check' (Mario's score is the highest), and a robot-with-gavel icon 'LLM-as-a-judge: are strengths and weaknesses grounded in the letter?'. 4) A report table on the right, with a green tick or red cross per row and scorer, and aggregated pass rates at the bottom (e.g. 'fields: 8/9, relation: 1/1, groundedness: 3/3'). A dashed feedback arrow goes from the report back to the prompt template, labelled 'change prompt or model, then re-run'." >}}
+{{< image src="./evaluation-pipeline.svg" max-h="65vh" alt="An evaluation pipeline: a golden set of three letters with expectations goes through the prompt template and model; outputs are checked by deterministic, relational and LLM-as-a-judge scorers, and the pass/fail report feeds back into the prompt" >}}
 
 ---
 

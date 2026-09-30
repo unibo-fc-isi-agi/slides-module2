@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 420" width="1800" height="420" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+<rect x="10" y="10" width="1000" height="400" rx="16" fill="#eadff3" stroke="#8e5bb5" stroke-width="3"/>
+<text x="30" y="45" font-size="24" font-weight="bold">GDPR (personal data)</text>
+<circle cx="1010" cy="37" r="7" fill="#8e5bb5"/>
+<line x1="1010" y1="37" x2="1080" y2="37" stroke="#8e5bb5" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="1095" y="45" font-size="28" font-style="italic">may I process these data? how?</text>
+<rect x="65" y="60" width="890" height="334" rx="16" fill="#d6e8fb" stroke="#2690e7" stroke-width="3"/>
+<text x="85" y="95" font-size="24" font-weight="bold">EU AI Act (AI systems &amp; GPAI models)</text>
+<circle cx="955" cy="87" r="7" fill="#2690e7"/>
+<line x1="955" y1="87" x2="1080" y2="87" stroke="#2690e7" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="1095" y="95" font-size="28" font-style="italic">is my use high-risk? which obligations?</text>
+<rect x="120" y="110" width="780" height="268" rx="16" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="3"/>
+<text x="140" y="145" font-size="24" font-weight="bold">national law (L. 132/2025)</text>
+<circle cx="900" cy="137" r="7" fill="#3a9e4f"/>
+<line x1="900" y1="137" x2="1080" y2="137" stroke="#3a9e4f" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="1095" y="145" font-size="28" font-style="italic">who supervises? what&#8217;s a crime?</text>
+<rect x="175" y="160" width="670" height="202" rx="16" fill="#fbf1c7" stroke="#e6b800" stroke-width="3"/>
+<text x="195" y="195" font-size="24" font-weight="bold">institutional policy (UniBo)</text>
+<circle cx="845" cy="187" r="7" fill="#e6b800"/>
+<line x1="845" y1="187" x2="1080" y2="187" stroke="#e6b800" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="1095" y="195" font-size="28" font-style="italic">how may staff/students use GenAI?</text>
+<rect x="230" y="210" width="560" height="136" rx="16" fill="#fbe7cf" stroke="#e8871e" stroke-width="3"/>
+<text x="250" y="245" font-size="24" font-weight="bold">licenses &amp; terms of service</text>
+<circle cx="790" cy="237" r="7" fill="#e8871e"/>
+<line x1="790" y1="237" x2="1080" y2="237" stroke="#e8871e" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="1095" y="245" font-size="28" font-style="italic">may I use this model?</text>
+<rect x="300" y="262" width="420" height="70" rx="14" fill="#ffffff" stroke="#222222" stroke-width="3"/>
+<text x="510.0" y="306.0" text-anchor="middle" font-size="26" font-weight="bold">LLM-powered application</text>
+</svg>
