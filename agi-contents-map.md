@@ -30,12 +30,12 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
         * [x] System prompt / user prompt, completion API, conversation — `llmaas` (Chat Completion API, message roles), `prompting` (prompt anatomy)
         * [x] Structured outputs & related technicalities (pydantic, JSON, etc) — `prompting` (example 1 with OpenAI, 1 bis with LangChain, constrained decoding)
         * [x] Multimodal input (e.g. images) — `prompting` (exercise 2)
-        * [ ] Context management: context window limits, token budgets, prompt caching, conversation summarization/compaction
-        * [ ] Validating generative software (scorers + LLM-as-a-Judge) (LLM-as-a-Judge only named in `genai`)
-            + examples on selected tecnologies (e.g. `deepeval`, `mlflow`, etc)
+        * [x] Context management: context window limits, token budgets, prompt caching, conversation summarization/compaction — `prompting` (example 4: CLI chat with compaction)
+        * [x] Validating generative software (scorers + LLM-as-a-Judge) — `prompting`
+            + [x] examples on selected tecnologies (e.g. `deepeval`, `mlflow`, etc) — `prompting` (example 5 with DeepEval, 5 bis with MLflow)
     - Exercises
         * [x] E1.1: Similar to E0.2, but with clear system/user prompt, structured outputs, and multiple queries for precisions — `prompting` (exercise 2, field-by-field voting; exercise 1 does checklist scoring of letters)
-        * [ ] E1.2: Set-up testing infrastructure for E1.1 with target testing framework
+        * [x] E1.2: Set-up testing infrastructure for E1.1 with target testing framework — `prompting` (exercise 3)
 
 2. Tools and agents
     - Topics:
