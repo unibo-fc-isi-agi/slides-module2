@@ -1,6 +1,6 @@
 Coverage legend: `[x]` covered by slides (lecture dir in backticks), `[ ]` not covered yet (notes say what partially exists).
 
-Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas` exercises on request caching and retry with exponential backoff.
+Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas` exercises on request caching and retry with exponential backoff; `llmaas` exercise 5 (comparing models on the running example); `llmaas` Example 1 bis (Anthropic Messages API via Ollama) + cross-provider API comparison table.
 
 0. Programmatic interfaces for LLMaaS
     - Topics:
@@ -9,14 +9,14 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
         * [x] API keys, cost models, service providers (e.g. OR) — `llmaas`
             + [x] analogies and differences among API standards — `llmaas`
         * [x] Ollama and local deployment — `llmaas`
-            + [ ] commonly recommended hardware/software requirements (only supported platforms are listed)
-                - [ ] quantization (e.g. GGUF) and model size vs. VRAM/RAM
-        * [ ] Model zoo (Ollama's and OR's zoos are only browsed in examples)
-            + [ ] how to choose a model for a given task
-                - [ ] how to evaluate models
-            + [ ] italian / european initiatives for open-models (maturity, issues, etc.)
+            + [x] commonly recommended hardware/software requirements — `llmaas`
+                - [x] quantization (e.g. GGUF) and model size vs. VRAM/RAM — `llmaas`
+        * [x] Model zoo — `llmaas`
+            + [x] how to choose a model for a given task — `llmaas`
+                - [x] how to evaluate models — `llmaas` (benchmarks, leaderboards, task-specific evaluation; exercise 5)
+            + [ ] italian / european initiatives for open-models (maturity, issues, etc.) (to be covered in `governance`)
                 - [ ] eg. OpenLLM, ALT-EDIC, LLMs4EU, Minerva
-            + [ ] open weights vs. open source: licensing of models _(proposed)_
+            + [ ] open weights vs. open source: licensing of models _(proposed)_ (to be covered in `governance`)
     - Exercises:
         * [x] E0.1: building CLI for LLM — `llmaas` (examples 1 and 2: sync and async/streaming CLI chat)
         * [x] E0.2: extract structured information from pictures with text (`llmaas` exercise 4 does that with ID documents)

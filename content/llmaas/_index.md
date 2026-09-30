@@ -65,6 +65,7 @@ outputs = ["Reveal"]
 
 0. Ensure you have the __required hardware__ (e.g. Nvidia GPU, Apple Silicon, etc.)
     + details and configuration caveats: <https://docs.ollama.com/gpu>
+    + how to tell whether a model _fits_ your machine: see [Running models locally](#/local-requirements) below
 
 1. __Install__ Ollama on your machine:
 
@@ -132,7 +133,7 @@ outputs = ["Reveal"]
 
 ---
 
-## On-premise Example with Ollama pt. 3
+## On-premise Example with Ollama pt. 4
 
 6. Should you ever want to use the model _programmatically_, you can use Ollama's __API__, which is _partially_ compatible with OpenAI's API
     * e.g. it supports the same `/v1/chat/completions` endpoint, but not all the features of OpenAI's API, e.g. fine-tuning, custom models, etc.
@@ -178,6 +179,140 @@ outputs = ["Reveal"]
         completion_tokens: 121
         total_tokens: 150
         ```
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="local-requirements" >}}
+
+## Running models locally: what does it take? (pt. 1)
+
+### The general concept: a model is a (huge) array of numbers
+
+- An LLM is essentially a collection of __parameters__ (a.k.a. _weights_), i.e. numbers learned during training
+    + model _size_ is expressed in number of parameters: e.g. `7B` = 7 billion parameters, `70B` = 70 billion
+- To __run__ a model (_inference_), all its weights must be loaded in the _memory_ of the device doing the computation
+    + ideally, the GPU's memory (__VRAM__), as GPUs are much faster than CPUs at the matrix multiplications LLMs are made of
+- Hence, the __memory footprint__ of a model is roughly:
+
+> __memory__ ≈ (number of params × bits per param / 8) [_weights_] + _KV cache_ [grows with context length] + _overhead_
+
+- the _KV cache_ stores intermediate results for all tokens in the current context: the __longer the context__, the more memory is needed
+    + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
+
+{{< image src="./todo-memory-footprint.png" max-h="30vh" alt="TODO picture: stacked bar chart of memory needed to run a 7B, 14B, 32B, and 70B model, each at 16-bit, 8-bit, and 4-bit precision; each bar split into 'weights' (large) and 'KV cache' (smaller, growing with context length). Horizontal dashed lines mark typical devices: 8 GB, 16 GB, 24 GB, 48 GB, 80 GB." >}}
+
+---
+
+## Running models locally: what does it take? (pt. 2)
+
+### Rule of thumb for the weights alone
+
+| Model size | 32-bit (`fp32`) | 16-bit (`fp16`/`bf16`) | 8-bit (`int8`, `Q8_0`) | ~4-bit (`Q4_K_M`) |
+|-----------:|----------------:|-----------------------:|-----------------------:|------------------:|
+| 1B  | 4 GB   | 2 GB   | ~1 GB  | ~0.6 GB |
+| 7B  | 28 GB  | 14 GB  | ~7.5 GB | ~4.3 GB |
+| 14B | 56 GB  | 28 GB  | ~15 GB | ~8.6 GB |
+| 32B | 128 GB | 64 GB  | ~34 GB | ~20 GB  |
+| 70B | 280 GB | 140 GB | ~74 GB | ~43 GB  |
+
+- i.e. GB ≈ billions of params × bits per weight / 8 (`Q8_0` ≈ 8.5 bits, `Q4_K_M` ≈ 4.9 bits, cf. [llama.cpp's quantize docs](https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md))
+- add ~10–30% on top for the KV cache and the runtime (more for long contexts)
+- models are _trained_ in 16/32 bits, but most local users run them at __8 or 4 bits__: this is called _quantization_
+
+{{% fragment %}}
+> Before pulling a model, __do the math__: if it does not fit in VRAM, it will either _fail_ to load, or be (partially) _offloaded_ to the CPU, becoming _much slower_
+{{% /fragment %}}
+
+---
+
+## Quantization (pt. 1): the concept
+
+- __Quantization__ = representing the model's weights with _fewer bits_ (e.g. 4-bit integers instead of 16-bit floats)
+    + by mapping _ranges_ of real values onto a small set of _discrete levels_, plus some _scaling factors_ (stored per _block_ of weights)
+- Why?
+    + _less memory_ $\implies$ bigger models on the same hardware
+    + _faster_ inference, as moving weights around in memory is the main bottleneck
+- At what price?
+    + _loss of precision_ $\implies$ some _quality degradation_, which is often negligible at 8 bits, noticeable at 4 bits, and severe below 3 bits
+    + degradation is task-dependent (e.g. worse for maths, code, and non-English languages)
+
+{{< image src="./todo-quantization.png" max-h="40vh" alt="TODO picture: on the left, a histogram of real-valued weights (bell-shaped, fp16); in the middle, arrows mapping value ranges onto 16 discrete levels (4-bit integers 0..15) plus a scale factor per block; on the right, the same histogram rebuilt with visible 'steps'. Caption: 'fp16 weights → int4 codes + scale → approximate weights'." >}}
+
+---
+
+## Quantization (pt. 2): the technological landscape
+
+Several _quantization methods_ and _file formats_ exist, bound to specific __runtimes__:
+
+| Format / method | Typical runtime | Notes |
+|-----------------|-----------------|-------|
+| [GGUF](https://huggingface.co/docs/hub/gguf) | [llama.cpp](https://github.com/ggml-org/llama.cpp), Ollama, LM Studio | single file with weights + metadata; runs on CPU, GPU, Apple Silicon; many quant _levels_ |
+| [GPTQ](https://arxiv.org/abs/2210.17323) | vLLM, Hugging Face Transformers | post-training quantization calibrated on sample data; GPU-oriented |
+| [AWQ](https://arxiv.org/abs/2306.00978) | vLLM, Hugging Face Transformers | preserves the most "salient" weights; GPU-oriented |
+| [bitsandbytes](https://github.com/bitsandbytes-foundation/bitsandbytes) ([LLM.int8()](https://arxiv.org/abs/2208.07339)) | Hugging Face Transformers | quantizes _on the fly_ when loading; used for fine-tuning too |
+| [MLX](https://github.com/ml-explore/mlx) | MLX, LM Studio | Apple Silicon only |
+
+### Decoding GGUF quantization labels (as seen in Ollama's tags)
+
+- `F16` / `BF16`: no quantization (16-bit)
+- `Q8_0`: 8-bit (~8.5 bits per weight, including block scales), nearly lossless
+- `Q4_K_M`: ~4.9 bits per weight on average; `K` = _k-quants_ (super-blocks of weights whose sub-block scales are quantized too, __not__ k-means!); `M`edium mix (a few sensitive tensors kept at higher precision): the usual __default__ trade-off
+- `Q2_K`, `Q3_K_S`, ... : smaller and increasingly lossy (`S`mall, `M`edium, `L`arge mixes)
+- `IQ*`: _importance-matrix_ quants, calibrated on sample text to lose less at very low bit-widths
+
+e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags like `...-q8_0` or `...-fp16` select a specific one (see the _"Tags"_ tab of each model on [Ollama's zoo](https://ollama.com/models))
+
+---
+
+## Running models locally: hardware & software (pt. 1)
+
+### Hardware
+
+- __Nvidia GPUs__ (CUDA): the reference platform; the VRAM size is what matters most (e.g. 8, 12, 16, 24 GB for consumer cards; 40–80+ GB for data-center ones)
+- __AMD GPUs__ (ROCm): supported, with fewer models of cards and more caveats
+- __Apple Silicon__ (Metal): CPU and GPU share a _unified memory_, so the whole RAM (minus what the OS needs) is usable by the model
+- __CPU only__: works for small models, but expect _few tokens per second_
+- __Partial offloading__: layers that do not fit in VRAM run on the CPU, which works but is much slower
+
+(cf. <https://docs.ollama.com/gpu> for the supported GPUs)
+
+### Mixture-of-Experts (MoE) models
+
+- Some models activate only a _subset_ of their parameters for each token
+    + e.g. `gemma-4-26b-a4b-it` = 26B _total_ parameters, ~4B _active_ per token
+- __Memory__ depends on the _total_ parameters (all experts must be loaded), __speed__ depends on the _active_ ones
+
+---
+
+## Running models locally: hardware & software (pt. 2)
+
+### What fits where? (indicative, at ~4-bit quantization, moderate context)
+
+| Machine | Comfortable model size |
+|---------|-----------------------|
+| laptop, 8 GB RAM, no GPU | ≤ 3B (slow) |
+| laptop, 16 GB unified memory (Apple Silicon) | ≤ 8B |
+| desktop, 12–16 GB VRAM GPU | ≤ 14B |
+| workstation, 24 GB VRAM GPU (or 32–64 GB unified memory) | ≤ 32B |
+| server, 2× 80 GB GPUs | ≤ 70B at 8-bit, larger with 4-bit or MoE |
+
+### Software
+
+- up-to-date __GPU drivers__ (CUDA for Nvidia, ROCm for AMD; Metal is built into macOS)
+- a __runtime__: [Ollama](https://ollama.com) (simplest), [LM Studio](https://lmstudio.ai/) (GUI), [llama.cpp](https://github.com/ggml-org/llama.cpp) (lowest level), [vLLM](https://docs.vllm.ai/) (server-grade, high throughput, many concurrent users)
+    + all of them expose an _OpenAI-compatible_ Web API, so client code does not change
+- check what is running, and _where_, with `ollama ps` (illustrative output):
+
+    ```text
+    NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL
+    gemma4:e2b    a1b2c3d4e5f6    7.2 GB    100% GPU     4096       4 minutes from now
+    ```
+
+    + `PROCESSOR` tells whether the model is fully on the GPU, or split between CPU and GPU (e.g. `48%/52% CPU/GPU`)
 
 {{% /section %}}
 
@@ -343,6 +478,32 @@ You may think that __token $\approx$ word__, but this actually depends on the sp
 
 {{% section %}}
 
+{{< slide id="chat-completion-concept" >}}
+
+## The general concept: _Chat Completion_ as a request–response API
+
+- Regardless of the provider, programmatic access to an LLM follows the same _request–response_ scheme (HTTP + JSON):
+    1. the __client__ (your program) sends a __request__ containing
+        * the _name_ of the model to be used
+        * the _conversation_ so far, as an ordered list of __messages__, each with a _role_ (`system`, `user`, `assistant`, `tool`) and some _content_
+        * optional _generation parameters_ (e.g. temperature, max tokens, output format, available tools)
+    2. the __server__ (the provider) lets the model generate the _next message_ of the conversation
+    3. the server sends a __response__ containing the generated message, plus _metadata_ (e.g. token usage, finish reason)
+- The model is __stateless__: it does _not_ remember previous requests
+    + to have a _conversation_, the __client__ keeps the history, and re-sends it _all_ at each request (appending the model's answers to it)
+    + hence, the cost and latency of each request _grow_ with the conversation length (every request re-processes all tokens)
+- A _chat_ is just the special case where the next message is shown to a human, and the human's reply is appended to the history
+
+---
+
+## Chat Completion: an intuitive example
+
+{{< image src="./todo-chat-completion-sequence.png" max-h="65vh" alt="TODO picture: sequence diagram with three lifelines: User, Program (client), LLM provider (server). 1) User types 'hi, what time is it?'; Program appends {user: ...} to its local 'history' box (already containing {system: 'be friendly'}); Program sends POST /chat/completions {model, messages:[system, user]} to the provider; provider replies {choices:[{message:{assistant: 'I have no clock, where are you?'}}], usage:{...}}; Program appends the assistant message to history and shows it to the User. 2) User types 'Cesena, Italy'; Program appends it and sends the WHOLE history (system, user, assistant, user) in a new request; provider replies again. Highlight that the history box lives on the client side and grows at each turn, while the server keeps nothing between requests." >}}
+
+- Notice that the __same__ interaction is implemented by _all_ providers, only the _syntax_ changes (endpoint names, field names, where the system prompt goes, etc.)
+
+---
+
 ## What to expect in general from Web APIs of LLM-as-a-Service providers?
 
 1. __Pick__ among a variety of __models__ (by _name_), with different features, capabilities (and prices)
@@ -400,7 +561,7 @@ when this is the case, the client will fail at run-time, complaining about unsup
 
 ---
 
-## About LLMs' Web API Compatibility (pt. 3) – Anthropic Clade API
+## About LLMs' Web API Compatibility (pt. 3) – Anthropic Claude API
 
 * **Shape**: `/v1/messages`
 * **Abstraction**: messages plus content blocks and top-level system instruction
@@ -488,7 +649,7 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
     1. __Env vars__ (or command line arguments): to parametrize your program w.r.t. _API keys_, API providers' _base urls_, _model names_, etc.
     2. __Client__: an object of type `openai.OpenAI` (for _sync_) or `openai.AsyncClient` (for _async_) by which you interact with a model as provided by some provider
         - documented "by example" at <https://github.com/openai/openai-python/blob/main/README.md>
-    3. __Conversation history__: literally a _list_ of _dictionaries_, each one having two keys: `role` (e.g. "system", "user", "assistant") and `content` (actual text) 
+    3. __Conversation history__: literally a _list_ of _dictionaries_, each one having two keys: `role` (e.g. "system", "user", "assistant") and `content` (actual text)
     4. __Chat completion request__: a call to the `client.chat.completions.create()` method, accepting the conversation hystory as input plus some additional parameters (e.g. `temperature`, `max_tokens`, etc.) and returing either the full response (sync) or a stream of response parts (async), depending the parameter `stream` (respectively `False` or `True`)
         + documented here <https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create>
     5. __Chat completion response__: a dictionary containing the model's response, including the generated content (e.g. in `.choices[0].message.content`), plus some additional metadata (e.g. `usage`, `model`, etc.)
@@ -505,7 +666,7 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
 ## Example 1: Sync CLI Chat (pt. 1)
 
 1. Let's first create the client out of OR's base URL, API key, and target model:
-    
+
     {{% code path="content/llmaas/repl_chat_openai_chatcompletions.py" from="1" to="9" %}}
 
     notice that:
@@ -533,7 +694,7 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
     notice that:
 
     1. external `try-except` block is used to catch user's `KeyboardInterrupt` (e.g. Ctrl+C) or `EOFError` (e.g. Ctrl+D) to exit gracefully from the loop
-    1. user input is first looked for _sub-commands_ (e.g. `/exit`, `/retry`, etc.) 
+    1. user input is first looked for _sub-commands_ (e.g. `/exit`, `/retry`, etc.)
     1. _non_-sub-command _input_ is then used to create a new message with role `user`, which is appended to the conversation history (`messages` list)
     1. then, a chat completion _request_ is sent to the `model` via `client.chat.completions.create(...)`, with the conversation history as input
     1. the model's _response_ is supposed to contain a _single choice_ (`response.choices[0]`), whose `.message.content` is what we show to the user
@@ -557,7 +718,7 @@ assistant> Hi! I don’t have a real-time clock on my end. Could you tell me you
 
 you> it's Cesena, in Italy
 
-assistant> In Cesena, Italy right now it’s Central European Summer Time (CEST), which is UTC+2. I can’t see the exact current time here, but if you tell me the current UTC time (or your device’s time), I’ll convert it to Cesena time for you. 
+assistant> In Cesena, Italy right now it’s Central European Summer Time (CEST), which is UTC+2. I can’t see the exact current time here, but if you tell me the current UTC time (or your device’s time), I’ll convert it to Cesena time for you.
 
 Example: if UTC is 13:00, then Cesena is 15:00. Want me to convert a specific time? Or you can just check your phone or a world clock for the exact minute and second.
 
@@ -568,7 +729,7 @@ you> ^CGoodbye!
     - time to get a response from the model (latency)
     - you have no way to know which model is actually serving your request, do you?
     - the model does not have access to real-time information, so it cannot answer questions about (e.g.) the current time
-    
+
 {{% /section %}}
 
 ---
@@ -638,10 +799,10 @@ you> ^CGoodbye!
     - value `none` means that the model cannot use any tool, and should rely on its own knowledge and capabilities to answer the user's question
     - value `auto` (default) means that the model can decide autonomously which tools to use, if any, based on the conversation history and the task at hand
     - value `required` means that the model must use at least one tool to answer the user's question, and cannot rely solely on its own knowledge and capabilities
-    - further variants are available to finely control which tools the model can use 
+    - further variants are available to finely control which tools the model can use
 
 - `tools` (list of dicts): the list of tools that the model can use, each one described by a dictionary containing at least a `name` and a `description`, and optionally some additional fields (e.g. `parameters_schema` to describe the expected input for the tool, etc.)
-    
+
     ```python
 
     tools=[
@@ -716,7 +877,7 @@ choices: # list of choices generated by the model for this chat completion, each
         id: call_current_time_001 # a unique identifier for this tool call, which can
   finish_reason: stop # the reason why the model stopped generating tokens for this choice, which can be "stop" (if the model reached a stop sequence), "length" (if the model reached the max_completion_tokens limit), "tool_call" (if the model made a tool call and stopped), or other reasons
   logprobs: # the log probabilities of the generated tokens for this choice, which can be useful for analyzing the model's confidence and behavior (not always present in the response)
-response_format: 
+response_format:
 ```
 
 - most commonly, one cares about the first choice (`choices[0]`), and in particular about the generated message (`choices[0].message.content`), but the rest of the metadata can be useful for debugging, analysis, and cost control purposes
@@ -786,7 +947,7 @@ assistant> Sure—do you want the first 20 lines from Inferno, Canto I in Henry 
 you> yeah that's fine
 
 assistant> Here are the first 20 lines of Inferno, Canto I, from Henry Wadsworth Longfellow's translation of Dante Alighieri's *Divine Comedy*:
-assistant> 
+assistant>
 assistant> Midway upon the journey of our life
 assistant> I found myself within a forest dark,
 assistant> For the strayed path had filled my soul with strife.
@@ -799,7 +960,7 @@ assistant> I'll speak of other things that there appeared.
 assistant> I know not how I entered it, so deep
 assistant> I had become in slumber at that hour
 assistant> When I had wandered from the path of truth.
-assistant> 
+assistant>
 assistant> But after I had reached a hill’s low foot,
 assistant> Where the long valley terminating had
 assistant> My fear, a place, I say, that any heart
@@ -808,7 +969,7 @@ assistant> I saw its highest point already clothed
 assistant> With rays of the planet that guides man aright
 assistant> On every path. Then was the fear a while
 assistant> Abated.
-assistant> 
+assistant>
 assistant> Let me know if you’d like more!
 
 you> Goodbye!
@@ -816,6 +977,88 @@ you> Goodbye!
 
 6. When you run it, pay attention to:
     - perceived latency (first token arrives earlier than full-response mode)
+
+{{% /section %}}
+
+---
+
+## Focus on Anthropic's Client Library for Python
+
+---
+
+{{% section %}}
+
+{{< slide id="anthropic-example" >}}
+
+## Example 1 (bis): the same CLI Chat with Anthropic's Messages API (pt. 1)
+
+> __Goal__: re-implement [Example 1](./repl_chat_openai_chatcompletions.py) with a _different_ API and client library, to appreciate _analogies_ and _differences_
+
+- We use the official [`anthropic` Python SDK](https://github.com/anthropics/anthropic-sdk-python) (`pip install anthropic`), which speaks Anthropic's [Messages API](https://docs.anthropic.com/en/api/messages) (`POST /v1/messages`)
+- No need for an Anthropic account: [Ollama exposes an Anthropic-compatible API](https://docs.ollama.com/api/anthropic-compatibility) too, so we can run everything __locally__ (and for free)
+    + Open Router supports the Messages API as well ([docs](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)): set `ANTHROPIC_BASE_URL=https://openrouter.ai/api` and your OR key
+
+1. Client creation is _analogous_ to the OpenAI one (base URL, API key, model name):
+
+    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="1" to="9" %}}
+
+    - the API key is _mandatory_ for the SDK, but _ignored_ by Ollama (any string works)
+    - the SDK appends `/v1/messages` to the base URL by itself
+
+2. __Difference__: the _system prompt_ is __not__ a message, but a separate parameter, hence the history starts _empty_:
+
+    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="10" to="11" %}}
+
+---
+
+## Example 1 (bis): the same CLI Chat with Anthropic's Messages API (pt. 2)
+
+3. The REPL loop is _identical_ to Example 1, except for the request–response step:
+
+    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="25" to="32" %}}
+
+    notice that:
+    - `client.messages.create(...)` replaces `client.chat.completions.create(...)`
+    - `system=...` is passed _aside_ `messages=...`
+    - `max_tokens` is __mandatory__ (raise it for _reasoning_ models, as thinking tokens count too: an empty answer is the typical symptom)
+    - the response has no `choices`: `response.content` is directly a __list of typed content blocks__ (`text`, `thinking`, `tool_use`, ...), so we concatenate the `text` ones
+    - messages in the history still have `role` (`user` or `assistant`) and `content` (a string, or a list of blocks)
+
+4. Full code [here](./repl_chat_anthropic_messages.py): run it with `ollama serve` active and `gemma4:e2b` pulled
+
+```text
+Using model: gemma4:e2b
+Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
+you> say hi in 3 words
+assistant> Hi there!
+you> and now in italian
+assistant> Ciao a tutti!
+you> Goodbye!
+```
+
+---
+
+## Analogies and differences among providers' APIs
+
+| Feature | OpenAI Chat Completions | OpenAI Responses | Anthropic Messages | Google `generateContent` |
+|---|---|---|---|---|
+| __Endpoint__ | `POST /v1/chat/completions` | `POST /v1/responses` | `POST /v1/messages` | `POST /v1beta/models/{model}:generateContent` |
+| __Python SDK call__ | `client.chat.completions.create(...)` | `client.responses.create(...)` | `client.messages.create(...)` | `client.models.generate_content(...)` |
+| __System prompt__ | message with `role="system"` (or `developer`) | `instructions=...` parameter | `system=...` parameter | `config.system_instruction` |
+| __History__ | `messages=[{role, content}]` | `input=[typed items]` (or `previous_response_id`, server-side state) | `messages=[{role, content}]` | `contents=[{role, parts}]` |
+| __Roles__ | `system`, `user`, `assistant`, `tool` | `user`, `assistant` + typed items | `user`, `assistant` | `user`, `model` |
+| __Output__ | `choices[0].message.content` | `output_text` / `output` items | `content` (list of typed blocks) | `candidates[0].content.parts` (SDK: `.text`) |
+| __Max tokens__ | optional (`max_completion_tokens`) | optional (`max_output_tokens`) | __mandatory__ (`max_tokens`) | optional (`max_output_tokens`) |
+| __Tools__ | `tools` + `tool_calls` / `role="tool"` messages | `tools` + `function_call` / `function_call_output` items | `tools` + `tool_use` / `tool_result` blocks | `tools` + `functionCall` / `functionResponse` parts |
+| __Structured output__ | `response_format` (JSON schema) | `text.format` (JSON schema) | tool-based, or JSON schema output (newer models) | `response_mime_type` + `response_schema` |
+| __Streaming__ | `stream=True` (deltas) | `stream=True` (typed events) | `stream=True` / `messages.stream(...)` (typed events) | `generate_content_stream(...)` |
+| __Supported by Ollama__ | {{< tick >}} | {{< tick >}} (partially) | {{< tick >}} (partially) | {{< cross >}} |
+
+(cf. [OpenAI](https://developers.openai.com/api/reference), [Anthropic](https://docs.anthropic.com/en/api/messages), [Google](https://ai.google.dev/api/generate-content) API references; [Ollama's OpenAI](https://docs.ollama.com/api/openai-compatibility) and [Anthropic](https://docs.ollama.com/api/anthropic-compatibility) compatibility pages)
+
+{{% fragment %}}
+> Same __metamodel__ everywhere (model + instructions + ordered history of role-tagged, possibly multimodal, messages $\rightarrow$ next message + usage), different __syntax__: switching provider means rewriting the _adapter_ layer, not the application logic
+{{% /fragment %}}
 
 {{% /section %}}
 
@@ -840,9 +1083,9 @@ you> Goodbye!
 
 ### Decision points and hints
 
-- Where to store the cache? 
+- Where to store the cache?
     * e.g. in local untrucked folder, temp folder, home sub-folder, etc.
-- How to index the caches? A.k.a. when a cache is hit? 
+- How to index the caches? A.k.a. when a cache is hit?
     * same last message? same conversation history? same model and parameters? same temperature? same model?
 - How to store the cache?
     * e.g. as YAML/JSON files, with a naming convention based on the cache index?
@@ -860,7 +1103,7 @@ you> Goodbye!
 
 {{% section %}}
 
-## Exercise 2: Retry and Exponential Backoff 
+## Exercise 2: Retry and Exponential Backoff
 
 > __Problem__: when interacting with LLMs via Web APIs, it may happen that some requests _fail_ due to _transient issues_ (e.g. network errors, <u>rate limits</u>, etc.)
 
@@ -868,7 +1111,7 @@ you> Goodbye!
 
 ### TO-DO List
 
-1. Implement a retry + delay mechanism for the Sync CLI Chat program, so that 
+1. Implement a retry + delay mechanism for the Sync CLI Chat program, so that
     - when a request to the model fails, the program _automatically retries_ the request after a _certain delay_, up to a _maximum_ number of _retries_
     - the _delay_ between retries _increases exponentially_ (e.g. 1s, 2s, 4s, 8s, etc.) to avoid overwhelming the server and to give it some time to recover from transient issues
 2. Let all these parameters (e.g. number of retries, initial delay, backoff factor, etc.) be configurable via env vars or command line arguments (with smart defaults)
@@ -879,7 +1122,7 @@ you> Goodbye!
 
 ### Decision points and hints
 
-- How to detect a failed request? 
+- How to detect a failed request?
     * e.g. catch exceptions from the client library, check HTTP status codes, etc.
 - How to implement the retry mechanism?
     * e.g. with a simple loop and `try-except` block, or with a more sophisticated library like `tenacity`?
@@ -912,7 +1155,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 1. __Natural language description__: describe the target format in natural language
     - e.g. "the output should be a JSON object with the following fields: name (string), age (integer), email (string), etc."
 
-2. __Example-based description__: provide one or more examples of the target format, 
+2. __Example-based description__: provide one or more examples of the target format,
     - e.g. "the output should look like this: `{ "name": "John Doe", "age": 30, "email": "john.doe@example.com" }`
 
 3. __Schema-based description__: provide a formal schema (e.g. JSON Schema) describing the target format, e.g. "the output should match the following JSON Schema (written in YAML for better readability):
@@ -933,7 +1176,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 4. In _strongly-typed_ programming languages (e.g. Java), client libraries may _reverse-engineer_ the schema from the _type definitions_ in the code, using __reflection__, or leverage serialization libraries such as [Jackson](https://github.com/FasterXML/jackson)
 
 5. In _Python_, one can use [libraries like `pydantic`](https://docs.pydantic.dev/) to define _data models_ with validation logic, and then __generate__ JSON Schemas from them
-    + this is so common, that LLM-aaS Client Libraries (there including `openai`) often have built-in support for `pydantic` models 
+    + this is so common, that LLM-aaS Client Libraries (there including `openai`) often have built-in support for `pydantic` models
 
 ---
 
@@ -1034,7 +1277,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
             anyOf:
             - type: string
             - type: 'null'
-            default: 
+            default:
             description: The user's email address
             title: Email
         required:
@@ -1060,7 +1303,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 - In particular:
     + information about the _applicant_ (name, strengths, weaknesses, etc.), to see whether the letter is actually _positive_
     + information about the _authors_ of the letter (e.g. name, position, relationship with the applicant, etc.), to see whether the letter is actually _credible_
-    + give a reproducible and grounded _recipe_ for __scoring__ the letter based on these aspects 
+    + give a reproducible and grounded _recipe_ for __scoring__ the letter based on these aspects
 
 {{% fragment %}}
 
@@ -1113,9 +1356,9 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
     notice that:
 
     - function `client.chat.completions.`<u>`parse`</u>`(...)` is called in place of `.create(...)`
-        + to automatically parse the model's response into an instance of the `LetterInfo` 
+        + to automatically parse the model's response into an instance of the `LetterInfo`
     - the `response_format` parameter is set to a _reference_ to the `LetterInfo` class
-        + `openai` will automatically generate the corresponding JSON Schema from the class definition, and include it in the request 
+        + `openai` will automatically generate the corresponding JSON Schema from the class definition, and include it in the request
 
 ---
 
@@ -1124,7 +1367,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 7. Full code [here](./letter_evaluator_openai.py)
 
 8. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `evaluate_letter(...)` $\rightarrow$ print the evaluation):
-    
+
     {{% code path="content/llmaas/letter_evaluator_openai.py" from="79" to="92" %}}
 
 9. Possible results below:
@@ -1251,6 +1494,152 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
     <!-- ![](./openai-image-input-limits.png) -->
     {{< image src="./openai-image-input-limits.png" alt="OpenAI image input limits" class="img-fluid" >}}
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="model-zoos" >}}
+
+## Model zoos (pt. 1): the general concept
+
+- A __model zoo__ (a.k.a. model _hub_, _catalog_, _library_) is a _searchable collection_ of models made available by some provider, each one with:
+    + a __name__ (and _versions_/_variants_), to be used in API calls or downloads
+    + a __model card__: a document describing the model's _purpose_, _training data_, _evaluation_ results, _limitations_, and _intended uses_ (cf. [Mitchell et al., 2019](https://arxiv.org/abs/1810.03993))
+    + _technical metadata_: size, _context window_, supported _modalities_ (text, image, audio), support for _tools_ / _structured output_ / _reasoning_
+    + _economic_ and _legal_ metadata: price per token (for on-cloud zoos), __license__ (for downloadable models)
+- Zoos are the _entry point_ for __model selection__, which is a recurring activity in GenAI engineering (cf. [GenAI workflow](../genai/#/genai-workflow))
+
+{{< image src="./todo-model-card.png" max-h="45vh" alt="TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) 'Files and versions' tab with GGUF/safetensors files; 5) description + intended uses; 6) evaluation table; 7) 'Use this model' button with code snippets." >}}
+
+---
+
+## Model zoos (pt. 2): the technological landscape
+
+| | [Hugging Face Hub](https://huggingface.co/models) | [Ollama library](https://ollama.com/models) | [Open Router](https://openrouter.ai/models) |
+|---|---|---|---|
+| __Kind__ | download (+ some hosted inference) | download, run locally | on-cloud, pay per token |
+| __Size__ | millions of models (any task, any modality) | hundreds of curated LLMs | hundreds of LLMs from dozens of providers |
+| __Naming__ | `organization/model-name` | `model:variant` (e.g. `gemma4:e2b`) | `provider/model[:tier]` (e.g. `google/gemma-4-26b-a4b-it:free`) |
+| __Variants__ | separate repositories (e.g. `...-GGUF`, `...-AWQ`) | _tags_ for size and quantization | one entry per model, served by several providers |
+| __Metadata__ | full model card, files, license, community | size, context, capabilities, quantization | price, context, latency/throughput stats, supported parameters |
+| __License__ | per model (shown as a tag) | per model (in the model page) | provider's _terms of service_ apply |
+
+### Recurring naming conventions (worth decoding)
+
+- _family_ + _version_: `llama-3.1`, `qwen3`, `gemma-4`
+- _size_: `8b`, `70b`, or `26b-a4b` (MoE: total vs. active parameters)
+- _flavour_: `base` (pure next-token predictor) vs. `instruct` / `it` / `chat` (tuned to follow instructions: __this is what you want__ for Chat Completion), or `coder`, `vl` / `vision`, `thinking`
+- _quantization_ / _format_: `Q4_K_M`, `GGUF`, `AWQ`, `fp8`
+- _date_ / _snapshot_: `gpt-4o-2024-08-06` (pin it for _reproducibility_!)
+
+---
+
+## How to choose a model for a given task?
+
+{{% multicol %}}
+{{% col %}}
+
+### Hard constraints (filter)
+
+1. __Deployment__: on-premise (hardware available?) or on-cloud (budget available?)
+2. __Data protection__: can the data leave your premises? which jurisdiction? (cf. GDPR)
+3. __License__: is the intended use (e.g. commercial) permitted?
+4. __Modalities__: text only? images? audio?
+5. __Capabilities__: tool calling? structured output? reasoning?
+6. __Context window__: will prompts + documents + history fit?
+7. __Languages__: e.g. is Italian supported well enough?
+
+{{% /col %}}
+{{% col %}}
+
+### Soft criteria (rank)
+
+- _quality_ on __your__ task (see next slide)
+- _latency_ (time to first token, tokens per second)
+- _cost_ per request (tokens × price, or hardware amortization)
+- _stability_ of the offer (will the model be deprecated soon?)
+- _ecosystem_ (client libraries, documentation, community)
+
+{{% fragment %}}
+> __Rule of thumb__: start from the _smallest/cheapest_ model satisfying the hard constraints, measure its quality on your task, and move to _bigger_ models only if needed
+{{% /fragment %}}
+
+{{% /col %}}
+{{% /multicol %}}
+
+{{< image src="./todo-model-selection-flowchart.png" max-h="30vh" alt="TODO picture: left-to-right funnel/flowchart. Start: 'all models in the zoo' → filter by deployment & data protection → filter by license → filter by modalities & capabilities → filter by context window & language → 'shortlist (3-5 models)' → 'evaluate on your own test set' → 'pick the cheapest one above the quality threshold'. Each filter drawn as a narrowing funnel stage." >}}
+
+---
+
+## How to evaluate models?
+
+### 1. Public __benchmarks__ and __leaderboards__ (generic, cheap to consult)
+
+- _benchmarks_: fixed datasets + metrics for some capability
+    + e.g. knowledge ([MMLU](https://arxiv.org/abs/2009.03300)), expert reasoning ([GPQA](https://arxiv.org/abs/2311.12022)), coding ([SWE-bench](https://www.swebench.com/)), tool use, long context...
+    + holistic frameworks like [HELM](https://arxiv.org/abs/2211.09110) evaluate many models on many scenarios and metrics (not just accuracy)
+- _leaderboards_: rankings aggregating benchmark results or human preferences
+    + e.g. [Arena](https://arena.ai/) (formerly Chatbot Arena / LMArena: humans blindly compare pairs of answers, cf. [Chiang et al., 2024](https://arxiv.org/abs/2403.04132); but see also the critique by [Singh et al., 2025](https://arxiv.org/abs/2504.20879)), [Artificial Analysis](https://artificialanalysis.ai/) (quality vs. price vs. speed)
+- __caveats__:
+    + _data contamination_: benchmark items may have leaked into training data (cf. [Xu et al., 2024](https://arxiv.org/abs/2406.04244))
+    + _saturation_: top models all score near 100%, so benchmarks stop discriminating (e.g. Hugging Face [retired](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/discussions/1135) its Open LLM Leaderboard in 2025)
+    + _Goodhart's law_: once a benchmark becomes a target, it stops being a good measure
+    + benchmarks measure _generic_ skills, possibly _not_ the ones your task requires
+
+### 2. __Task-specific__ evaluation (the one that really matters)
+
+- build a small _validation set_ of realistic inputs for __your__ task (with expected outputs, when possible)
+- run each shortlisted model on it, and _score_ outputs: exact match, schema validity, custom checks, or _LLM-as-a-Judge_
+- measure _latency_ and _cost_ too (both reported in the API responses' metadata, e.g. `usage`)
+- (systematic infrastructure for this will be discussed in the _prompt engineering_ lecture)
+
+---
+
+## Exercise 5: Comparing Models on the Running Example (pt. 1)
+
+> __Goal__: the admission committee wants to pick the model to be used for letter evaluation (cf. [Example 3](./letter_evaluator_openai.py)), based on _evidence_ rather than on hype
+
+### TO-DO List
+
+1. __Shortlist__ 3 models, e.g.:
+    + one small _free_ model on Open Router,
+    + one larger (possibly free) model on Open Router,
+    + one _local_ model via Ollama (if your hardware allows it)
+2. Run the letter evaluator on __all 3 letters__ of the running example, __5 times__ per letter per model
+    + the script is already parametric w.r.t. the model: just change `OPENAI_MODEL` (and `OPENAI_BASE_URL` for Ollama)
+3. For each model, __collect__:
+    + the _scores_ (average, and _variance_ across the 5 runs: is the model _consistent_?)
+    + the _agreement_ among models (do they rank candidates in the same way?)
+    + the number of _failures_ (e.g. invalid JSON, validation errors)
+    + _latency_ (wall-clock time per request) and _tokens_ used (from `response.usage`), hence _cost_
+4. Summarize the results in a __table__, and motivate your choice
+
+---
+
+## Exercise 5: Comparing Models on the Running Example (pt. 2)
+
+### Decision points and hints
+
+- How to automate the runs?
+    * e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file
+    * reuse the caching mechanism of Exercise 1? (careful: caching would hide the variance!)
+- How to measure time?
+    * e.g. `time.perf_counter()` before and after the request
+- How to compute costs?
+    * `evaluate_letter(...)` only returns the parsed `LetterInfo`: adapt it to also return the whole `response` (or its `usage`)
+    * multiply `usage.prompt_tokens` and `usage.completion_tokens` by the prices listed in the zoo (Open Router also reports `usage.cost` directly)
+- How to deal with rate limits of free models?
+    * reuse the retry mechanism of Exercise 2
+- What if models disagree?
+    * which one is _right_? you need a __reference__: e.g. score the letters yourself, and compare each model against your scores
+
+### How to test it?
+
+- the table should contain 3 models × 3 letters × 5 runs = 45 rows (minus failures, which should be _counted_, not hidden)
+- re-running the script with a _different temperature_ (e.g. `0` vs. `1`) should visibly affect the variance
 
 {{% /section %}}
 
