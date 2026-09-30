@@ -339,7 +339,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 | [OSI Open Source AI Definition](https://opensource.org/ai/open-source-ai-definition) | does a system meet a _normative_ definition of "open source AI"? (next slide) |
 
 - __Open-washing__: presenting a model as "open" or "open source" based on _one_ disclosed component (typically the weights), while the artifacts or legal freedoms needed to study, reproduce, modify, or freely use it are missing
-    + e.g. _Llama 4_ (downloadable weights, restrictive license), _Gemma 3_ (custom terms with use restrictions), _Mistral 3_ (called "open-source" by its vendor: Apache 2.0 weights, undisclosed training data)
+    + e.g. _Llama 4_ (downloadable weights, restrictive license), _Gemma 3_ (custom terms with use restrictions), _Mistral 3_ (called ["open-source"](https://mistral.ai/news/mistral-3/) by its vendor: Apache 2.0 weights, undisclosed training data)
     + by contrast, OpenAI calls [gpt-oss](https://openai.com/index/introducing-gpt-oss/) "_open-weight_": the more accurate term
 
 ---
@@ -368,7 +368,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 | Category | Examples | What is open | Main limitation |
 |---|---|---|---|
 | __Closed__ (API-only) | GPT, Claude, Gemini, Mistral's "Premier" models | API + documentation | no weights; usage governed by _terms of service_ |
-| __Open weights, restrictive license__ | [Llama 4](https://www.llama.com/llama4/license/), [Gemma 3](https://ai.google.dev/gemma/terms), [Teuken v0.6](https://huggingface.co/openGPT-X), BLOOM ([RAIL](https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE)) | weights, inference code | use-based, geographic, commercial, or downstream restrictions: _not_ "any purpose" |
+| __Open weights, restrictive license__ | [Llama 4](https://www.llama.com/llama4/license/), [Gemma 3](https://ai.google.dev/gemma/terms), [Teuken v0.6](https://huggingface.co/openGPT-X/Teuken-7B-instruct-v0.6), BLOOM ([RAIL](https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE)) | weights, inference code | use-based, geographic, commercial, or downstream restrictions: _not_ "any purpose" |
 | __Open weights, permissive license__ | [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Qwen3](https://huggingface.co/Qwen/Qwen3-8B), [DeepSeek-R1](https://huggingface.co/deepseek-ai/DeepSeek-R1), [gpt-oss](https://huggingface.co/openai/gpt-oss-120b), [Mistral Large 3 / Small 4](https://docs.mistral.ai/getting-started/models/) | weights under Apache 2.0 or MIT | training data and full pipeline _not_ released |
 | __Fully (or nearly) open__ | [OLMo 3](https://allenai.org/blog/olmo3), [Apertus](https://www.apertus-ai.org/), [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | weights + code + data (or data pipeline) + docs | reproduction still needs _enormous_ compute |
 
@@ -384,7 +384,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 | __DeepSeek-V3__ | original V3: custom DeepSeek Model Agreement | V3-0324: [relicensed under __MIT__](https://api-docs.deepseek.com/news/news250325) (March 2025) |
 | __Mistral__ | historically mixed | _still_ mixed: Large 3 and Small 4 Apache 2.0, Medium 3.5 "Modified MIT", several models proprietary |
 | __Teuken__ | v0.4-commercial: Apache 2.0 | v0.6: __non-commercial__ ("newer" does not mean "more permissive") |
-| __iGenius → Domyn__ | Italia 9B: MIT; Italia 10B: custom, non-open license | rebranded Domyn (June 2025); [Domyn Small 10B](https://huggingface.co/domyn/Domyn-Small-v1.0) (May 2026): MIT |
+| __iGenius → Domyn__ | Italia 9B: MIT; Italia 10B: [custom, non-open license](https://secure.igenius.ai/legal/iGenius%2BLicense%2BItalia%2B10B.pdf) | [rebranded Domyn](https://www.domyn.com/news/introducing-domyn) (June 2025); [Domyn Small 10B](https://www.domyn.com/news/introducing-domyn-small-an-open-european-reasoning-llm-built-for-ai-ownership) (May 2026): MIT |
 
 ---
 
@@ -392,7 +392,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 
 | License | On-premise use | Fine-tuning | Hosted service | Redistribution |
 |---|---|---|---|---|
-| __Llama 4__ ([license](https://www.llama.com/llama4/license/), [AUP](https://www.llama.com/llama4/use-policy/)) | yes, __except__ multimodal models for individuals/companies _based in the EU_ | yes | yes (EU _end users_ of products are carved out) | _"Built with Llama"_ attribution; derived models named _"Llama..."_; separate license above 700M monthly active users |
+| __Llama 4__ ([license](https://github.com/meta-llama/llama-models/blob/main/models/llama4/LICENSE), [AUP](https://github.com/meta-llama/llama-models/blob/main/models/llama4/USE_POLICY.md)) | yes, __except__ multimodal models for individuals/companies _based in the EU_ | yes | yes (EU _end users_ of products are carved out) | _"Built with Llama"_ attribution; derived models named _"Llama..."_; separate license above 700M monthly active users |
 | __Gemma 3__ ([terms](https://ai.google.dev/gemma/terms)) | yes, within the prohibited-use policy | yes, derivatives inherit the restrictions | counts as _distribution_ | restrictions must be passed to downstream users; Google may restrict use _"remotely or otherwise"_ (a contractual right, not a kill switch) |
 | __OpenRAIL__ ([OpenRAIL-M](https://www.licenses.ai/blog/2022/8/26/bigscience-open-rail-m-license)) | yes, for permitted purposes | yes, for permitted purposes | yes, users bound to use restrictions | use restrictions must be passed on |
 | __Apache 2.0 / MIT__ | yes | yes | yes | yes, with attribution/notices (and patent clauses, for Apache) |
@@ -432,6 +432,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 - To qualify, the model must be released under a license allowing _access, use, modification, and distribution_, with weights, architecture, and usage information _public_
     + this is much __weaker__ than OSAID: no training data or training code needed
 - Non-EU providers of open-source GPAI are also exempted from appointing an EU _authorized representative_ ([Art. 54(6)](https://artificialintelligenceact.eu/article/54/)), unless the model poses systemic risk
+- cf. the Commission's [AI Act Service Desk FAQ](https://ai-act-service-desk.ec.europa.eu/en/ai-act/faq/how-does-ai-act-apply-general-purpose-ai-models-released-open-source) on open-source GPAI models
 
 > The AI Act gives open-source GPAI a __documentation discount__: __not__ a copyright exemption, __not__ a training-data-summary exemption, and __not__ a systemic-risk exemption
 
