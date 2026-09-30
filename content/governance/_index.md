@@ -61,7 +61,7 @@ Every choice about an AI-powered system implies a trade-off among:
 
 ## Running example: a governance perspective
 
-Recall the [running example](../llmaas/#/running-example) (PhD admission committee assistant):
+Recall the [running example](../prompting/#/running-example) (PhD admission committee assistant):
 
 - __Data__: passports, transcripts, and presentation letters of the candidates
     + these are _personal data_ (even _identity documents_!)
@@ -760,7 +760,7 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 
 ## Exercise 1: Comparing Models on the Running Example (pt. 1)
 
-> __Goal__: the admission committee wants to pick the model to be used for letter evaluation (cf. [Example 3 of the LLM-as-a-Service lecture](../llmaas/letter_evaluator_openai.py)), based on _evidence_ rather than on hype
+> __Goal__: the admission committee wants to pick the model to be used for letter evaluation (cf. [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-evaluator)), based on _evidence_ rather than on hype
 
 ### TO-DO List
 

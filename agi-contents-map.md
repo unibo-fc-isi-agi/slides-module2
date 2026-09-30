@@ -19,22 +19,22 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
             + [x] open weights vs. open source: licensing of models _(proposed)_ — `governance`
     - Exercises:
         * [x] E0.1: building CLI for LLM — `llmaas` (examples 1 and 2: sync and async/streaming CLI chat)
-        * [x] E0.2: extract structured information from pictures with text (`llmaas` exercise 4 does that with ID documents)
+        * [x] E0.2: extract structured information from pictures with text — `prompting` (exercise 2, with ID documents)
 
 1. Prompt engineering & structured outputs
     - Topics:
-        * [ ] Fundamentals of prompt engineering (input, context, expected output)
-        * [ ] Overview on prompt engineering techniques
-            + [ ] few-shot prompting, chain-of-thought
-            + [ ] reasoning models (reasoning effort, reasoning tokens)
-        * [x] System prompt / user prompt, completion API, conversation — `llmaas` (Chat Completion API, message roles)
-        * [x] Structured outputs & related technicalities (pydantic, JSON, etc) — `llmaas`
-        * [x] Multimodal input (e.g. images) — `llmaas` (exercise 4)
+        * [x] Fundamentals of prompt engineering (input, context, expected output) — `prompting` (anatomy of a prompt, best practices)
+        * [x] Overview on prompt engineering techniques — `prompting` (+ self-consistency, prompt chaining; example 2)
+            + [x] few-shot prompting, chain-of-thought — `prompting`
+            + [x] reasoning models (reasoning effort, reasoning tokens) — `prompting` (example 3)
+        * [x] System prompt / user prompt, completion API, conversation — `llmaas` (Chat Completion API, message roles), `prompting` (prompt anatomy)
+        * [x] Structured outputs & related technicalities (pydantic, JSON, etc) — `prompting` (example 1 with OpenAI, 1 bis with LangChain, constrained decoding)
+        * [x] Multimodal input (e.g. images) — `prompting` (exercise 2)
         * [ ] Context management: context window limits, token budgets, prompt caching, conversation summarization/compaction
         * [ ] Validating generative software (scorers + LLM-as-a-Judge) (LLM-as-a-Judge only named in `genai`)
             + examples on selected tecnologies (e.g. `deepeval`, `mlflow`, etc)
     - Exercises
-        * [x] E1.1: Similar to E0.2, but with clear system/user prompt, structured outputs, and multiple queries for precisions (`llmaas` example 3 and exercise 3 do structured scoring of presentation letters instead)
+        * [x] E1.1: Similar to E0.2, but with clear system/user prompt, structured outputs, and multiple queries for precisions — `prompting` (exercise 2, field-by-field voting; exercise 1 does checklist scoring of letters)
         * [ ] E1.2: Set-up testing infrastructure for E1.1 with target testing framework
 
 2. Tools and agents
