@@ -280,7 +280,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 {{% multicol %}}
 {{% col class="col-6" %}}
-{{< image src="./logo-openai.svg" height="2em" >}}
+{{< image src="./todo-logo-openai.svg" height="2em" alt="TODO picture: OpenAI logo (SVG), same style as the other logos" >}}
 ```python
 import asyncio
 from openai import AsyncOpenAI
@@ -408,6 +408,7 @@ Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, C
 
 ---
 
+
 ## What do engineers do with GenAI?
 
 Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and govern the behavior of __pre-trained__ (_foundation_) models, in order to:
@@ -517,6 +518,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 ---
 
 {{% section %}}
+
+{{< slide id="genai-workflow" >}}
 
 ## The GenAI workflow
 
