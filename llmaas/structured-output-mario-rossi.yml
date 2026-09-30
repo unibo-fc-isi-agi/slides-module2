@@ -1,0 +1,34 @@
+applicant:
+  name: Mario Rossi
+  degree: Master's degree in Computer Science and Engineering
+  alma_mater: 
+  attended: [ "Machine Learning and Data Mining" ]
+  skills:
+  - algorithms
+  - probability
+  - statistics
+  - machine learning
+  - database systems
+  - programming
+  - experimental evaluation
+  - designing reproducible computational experiments
+  strengths:
+  - strong analytical ability
+  - intellectual discipline
+  - capacity to connect theoretical material with implementation
+  - independence
+  - reliability in deadlines
+  - clear communication
+  - constructive and precise in group settings
+  - methodical and capable of sustained work on open-ended problems
+  weaknesses: []
+author:
+  name: Alessandro Bianchi
+  affiliation: Department of Computer Science and Engineering, University of Bologna
+  position: Associate Professor of Computer Science
+  seniority: 3
+  email: alessandro.bianchi@example.edu
+  nationality: 
+  relationship_with_applicant: Course instructor and thesis supervisor
+application_for: PhD Programme in Data Science
+score: 5

@@ -1,0 +1,922 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+<title>[AgI] Generative AI 101</title>
+<meta name="description" content="Gentle Introduction to Generative AI">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
+<link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.6a2da703beb4c248b55ece2fb94d21e40b889aee2721699edf1b09a61d0a42f7.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/gh/DanySK/css-blur-animation/blur.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+<script src="https://unibo-fc-isi-agi.github.io/slides-module2/plantuml.js"></script>
+
+  </head>
+  <body>
+    
+    <div class="reveal">
+      <div class="slides">
+  
+
+    <section><h1 id="generative-ai-101">Generative AI 101</h1>
+<br>
+<h2 id="hahahugoshortcode1s0hbhb">Intelligent Agents — Module 2</h2>
+<h3 id="hahahugoshortcode1s1hbhb">A.Y. 2026/2027</h3>
+<h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
+<br>
+<br>
+<p>Compiled on: 2026-09-30
+ — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
+<p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="intro">
+  
+<h2 id="genai-generative-artificial-intelligence"><strong>GenAI</strong>: <em>Generative</em> Artificial Intelligence</h2>
+<!-- > [Systems based on] <br> -->
+<p><em>AI</em> algorithms capable of <strong>automatically generating</strong> <em>content</em>, e.g.:</p>
+<ul>
+<li><em>text</em></li>
+<li>images</li>
+<li>audio and/or video</li>
+<li>[source] code</li>
+<li>…</li>
+</ul>
+<p>(cf. <a href="https://www.unibo.it/it/allegati/policy-per-un-uso-etico-e-responsabile-dell2019intelligenza-artificiale-generativa-nelle-attivita-di-didattica-e-ricerca/@@download/file/Policy-Generative-AI.pdf">Policy for the ethical and responsible use of Generative Artificial Intelligence in teaching and research activities</a>)</p>
+</section><section>
+<h2 id="genai-through-foundation-models-fm">GenAI through <em>Foundation Models</em> (FM)</h2>
+<ul>
+<li>Large <em>neural networks</em> that learn to <em>process</em>, <em>“understand”</em>, and <em>produce</em> [not necessarily] <strong>structured</strong> and <strong>unstructured</strong> data</li>
+<li><strong>trained</strong> on <em>large</em> amounts of data, and with <em>large</em> computational resources, to <strong>do a bit of everything</strong>
+<ul>
+<li>with the idea that they can later be <strong>specialized</strong> for <em>specific tasks</em></li>
+</ul>
+</li>
+</ul>
+<br>
+
+
+
+
+
+<img src="./foundation-models.png" alt="Foundation models concept" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+
+</section><section>
+<h2 id="terminology-foundation-models-vs-large-language-models"><strong>Terminology</strong>: Foundation Models vs. <em>Large Language Models</em></h2>
+
+
+
+
+
+<a href="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404">
+
+<img src="./fm-vs-llm.webp" alt="Venn diagram explaining how LLMs are a specific case of foundation models" style="width: 80%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+
+</a>
+
+</section><section>
+<h2 id="basic-operation-of-llms">Basic Operation of LLMs</h2>
+<!-- ![Next word prediction](./next-word-prediction.png) -->
+
+
+
+
+
+<img src="./next-word-prediction.png" alt="Next word prediction concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+
+<ul>
+<li>LLMs have learned to <strong>predict</strong> the <em>next word</em> in a <em>text</em> given the <em>previous context</em>
+<ul>
+<li>similar to the <em>predictive</em> keyboard on mobile phones, but much more <em>complex</em> and <em>powerful</em></li>
+</ul>
+</li>
+<li>In other words, LLMs have learned how to use <strong>natural language</strong></li>
+<li>Foundation models can combine input/output text with other modalities (e.g. images, audio, video)
+<ul>
+<li>e.g. accepting text + image as input, and producing text + image as output, or any combination of these modalities</li>
+</ul>
+</li>
+<li>This makes them very good at dealing with <strong>unstructured</strong> data, either in input or output</li>
+</ul>
+</section><section>
+<h2 id="language-and-reasoning">Language and Reasoning</h2>
+<ul>
+<li>
+<p><strong>Natural language</strong> helps people <em>communicate</em></p>
+</li>
+<li>
+<p>It can be used to express <em>complex</em> or <em>abstract</em> concepts</p>
+</li>
+<li>
+<p>It can be used to <em>reason</em> about <em>problems</em> and <em>solutions</em></p>
+<ul>
+<li>however it admits <strong>imprecisions</strong>, due to <em>ambiguity</em>, variable interpretations, subjectivity, etc.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Natural language allows LLMs to use <strong>intuition</strong> in <em>reasoning</em>, like humans do
+<br> (thus <strong>making mistakes</strong> like humans do)</p>
+</blockquote>
+<ul>
+<li>
+<p>$\implies$ LLMs can be very confident in themselves, while saying <em>incorrect</em>, <em>imprecise</em>, or <em>made-up</em> things</p>
+</li>
+<li>
+<p>better would be to combine LLMs with <strong>symbolic</strong> AI tools, to get the best of both worlds</p>
+</li>
+</ul>
+</section><section>
+<h2 id="analogy-with-dual-system-theory">Analogy with Dual-System theory</h2>
+
+
+
+
+
+<img src="./dual-system.png" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 90vh; object-fit: contain;">
+
+<p>(cf. <a href="https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow">Thinking, Fast and Slow</a>)</p>
+</section><section>
+
+
+<section data-shortcode-section="">
+<h2 id="genai-with-an-as-a-service-consumption-model">GenAI with an <em>as-a-Service</em> consumption model</h2>
+<img src="./llm-concept.svg" alt="'As-a-Service' consumption model for foundation models" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+</section><section>
+<h2 id="genai-with-an-as-a-service-consumption-model-1">GenAI with an <em>as-a-Service</em> consumption model</h2>
+<ul>
+<li>
+<p><strong>Cost</strong> models:</p>
+<ul>
+<li><strong>subscription-based</strong>: you pay a fixed monthly/annual <em>fee</em> to access the service
+<ul>
+<li>it often still includes <em>usage</em> limits</li>
+</ul>
+</li>
+<li><strong>usage-based</strong>: you pay <em>in proportion</em> to the actual use of the service</li>
+</ul>
+</li>
+<li>
+<p><strong>Consumption</strong> is measured based on the <em>computational effort</em> required to serve the request:</p>
+<ul>
+<li>processed <em>tokens</em> (for text)</li>
+<li>number of <em>requests</em> made per unit of time (minute, hour, day, month)</li>
+<li><em>size</em> of the processed data (for images, audio, video)</li>
+<li><em>complexity</em> of the specific <em>model</em> used to serve the request</li>
+</ul>
+</li>
+<li>
+<p><strong>Generation</strong> should be considered a <em>stochastic</em> process by construction</p>
+</li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<ul>
+<li>The <strong>quality</strong> of the service is subject to randomness and <em>fluctuations</em> due to:
+<ul>
+<li>service <em>load</em></li>
+<li>model choice, and its related <em>updates</em></li>
+<li>service <em>limits</em> possibly reached in the current <em>time window</em></li>
+<li>chance</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</span>
+
+</section>
+</section><section>
+
+
+<section data-shortcode-section="">
+<h2 id="genai-learning-cycle">GenAI <em>learning</em> cycle</h2>
+<img src="./dataflow.svg" alt="GenAI learning cycle" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+</section><section>
+<h2 id="genai-learning-cycle--consequences-pt-1">GenAI <em>learning</em> cycle — <strong>Consequences</strong> (pt. 1)</h2>
+<ul>
+<li>
+<p><strong>Sampling</strong> <strong>bias</strong>: GenAI knows <em>only</em> what it has been <em>trained</em> on + the pious hope that it learns to <em>generalize</em></p>
+</li>
+<li>
+<p>Learning uses data taken <strong>from the Web</strong> + possible provider-owned <strong>company data</strong></p>
+<ul>
+<li>there is documented use of previous users’ <em>interactions</em> as <em>feedback</em> for subsequent training</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h2></h2>
+<blockquote>
+<ul>
+<li><strong>Niche</strong> information may <u>not</u> be learned correctly (or at all)</li>
+<li>It is essential to <strong>avoid sharing</strong> <em>sensitive</em>, <em>confidential</em>, or <em>copyrighted</em> information</li>
+</ul>
+</blockquote>
+</span>
+</section><section>
+<h2 id="genai-learning-cycle--consequences-pt-2">GenAI <em>learning</em> cycle — <strong>Consequences</strong> (pt. 2)</h2>
+<ul>
+<li>
+<p>Learning cycles are extremely <strong>expensive</strong> in terms of <em>money</em> and <em>computational resources</em>…</p>
+</li>
+<li>
+<p>… performed <strong>periodically</strong> (weeks? months?) to improve the <em>quality</em> of the service</p>
+<ul>
+<li>the <em>as-a-Service</em> consumption model gives the user transparent access to the <em>updated</em> service</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h2></h2>
+<blockquote>
+<ul>
+<li><strong>Recent</strong> information may <u>not</u> have been <em>learned</em> yet</li>
+<li>There is a risk of receiving <strong>outdated</strong> or <em>incomplete</em> answers from GenAI</li>
+<li>GenAI gives the <em>impression</em> of learning <strong>during the conversation</strong>, but it actually does so <em>offline</em></li>
+</ul>
+</blockquote>
+</span>
+</section><section>
+<h2 id="some-technological-solutions-let-you-choose-pt-1">Some technological solutions let you <em>choose</em> (pt. 1)</h2>
+<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<br>
+<img src="./chatgpt-settings/no-learn-1.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+</section><section>
+<h2 id="some-technological-solutions-let-you-choose-pt-2">Some technological solutions let you <em>choose</em> (pt. 2)</h2>
+<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<br>
+<img src="./chatgpt-settings/no-learn-2.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+</section><section>
+<h2 id="some-technological-solutions-let-you-choose-pt-3">Some technological solutions let you <em>choose</em> (pt. 3)</h2>
+<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<br>
+<img src="./chatgpt-settings/no-learn-3.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+</section><section>
+<h2 id="some-technological-solutions-let-you-choose-pt-4">Some technological solutions let you <em>choose</em> (pt. 4)</h2>
+<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<br>
+<img src="./chatgpt-settings/no-learn-4.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+
+</section>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="interfaces">
+  
+<h1 id="main-technological-solutions">Main <strong>technological</strong> solutions</h1>
+<h2 id="categorized-by-type-of-interface">Categorized by type of <strong>interface</strong></h2>
+<ul>
+<li><em>Conversational</em>: e.g. <a href="https://chatgpt.com/">ChatGPT</a>, <a href="https://claude.ai/login?returnTo=%2F%3F">Claude</a>, <a href="https://scite.ai">Scite</a></li>
+<li><em>Auto-completion</em>: e.g. <a href="https://github.com/features/copilot">GitHub Copilot</a></li>
+<li><em>Programmatic</em>: e.g. <a href="https://openai.com/api/">OpenAI Platform</a>, <a href="https://huggingface.co/">Hugging Face</a></li>
+<li><em>In-App</em>: e.g. <a href="https://www.microsoft.com/it-it/microsoft-365/copilot?market=it">Microsoft 365 Copilot</a></li>
+<li><em>Audio/video editing</em>: e.g. <a href="https://suno.com/">Suno</a>, <a href="https://runwayml.com/">Runway</a></li>
+<li><em>Inspection of generated material</em>: e.g. <a href="https://gptzero.me/">GPTZero</a>, <a href="https://www.zerogpt.com/">ZeroGPT</a></li>
+</ul>
+<p><span style="color: red;">Non-exhaustive list!</span></p>
+</section><section>
+<h2 id="conversational-interface"><strong>Conversational</strong> interface</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<a href="https://chatgpt.com/share/6798dd04-8a98-8008-a751-bc374318bd9e">
+<img src="./interface-conversational.png" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+</a>
+</div>
+<div class="col " style="text-align: left;"><br>
+<ul>
+<li><em>Textual</em> interaction that mimics a (<strong>chat</strong>) <em>exchange</em>
+<ul>
+<li>the user asks, the AI responds <em>reactively</em></li>
+</ul>
+</li>
+<li>The interface allows entering a <strong>prompt</strong>
+<ul>
+<li>optionally including <em>attachments</em> (e.g. images, documents)</li>
+</ul>
+</li>
+<li>Responses are <strong>contextual</strong>
+<ul>
+<li>i.e., the conversation <em>history</em> affects <em>future</em> responses</li>
+</ul>
+</li>
+<li>The response contains <strong>text</strong> (often <em>formatted</em>)
+<ul>
+<li>optionally: <em>images</em>, URLs, code</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="sometimes">Sometimes…</h3>
+<ul>
+<li>… before responding, the AI performs a <strong>Web</strong> <em>search</em></li>
+<li>important for obtaining <em>up-to-date</em> results</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="auto-completion-interface"><strong>Auto-completion</strong> interface</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./interface-autocompletion.gif" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+</div>
+<div class="col " style="text-align: left;"><br>
+<ul>
+<li>The AI <em>suggests</em> a <strong>completion</strong> for the entered text
+<ul>
+<li>e.g., code, text, URLs</li>
+</ul>
+</li>
+<li>The user <strong>accepts</strong> (even partially) or <em>ignores</em> the suggestion</li>
+<li>Used especially for <strong>programming</strong> <em>code</em></li>
+</ul>
+<span class="fragment ">
+  <h3 id="attention">Attention…</h3>
+<ul>
+<li>… <strong>subscription</strong> pricing model (see <a href="https://github.com/features/copilot/plans">here</a>)</li>
+<li>… potential <strong>leaks</strong> of <em>sensitive</em> information</li>
+<li>… non-negligible <strong>lock-in</strong> risk</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="programmatic-interface"><strong>Programmatic</strong> interface</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col col-6" style="text-align: left;"><img src="./logo-openai.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">asyncio</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">AsyncOpenAI</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">AsyncOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"sk-1234567890abcdef1234567890abcdef"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">():</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">await</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"gpt-4"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>                 <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"European countries, one by line"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">chunk</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">", "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">asyncio</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">main</span><span style="color:#000;font-weight:bold">())</span>
+</span></span></code></pre></div><p>Output:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Kosovo, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Moldova, Monaco, Montenegro, Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Russia, San Marino, Serbia, Slovakia, Slovenia, Spain, Sweden, Switzerland, Turkey, Ukraine, United Kingdom, Vatican City (Holy See),
+</span></span></code></pre></div></div>
+<div class="col " style="text-align: left;"><ul>
+<li>
+<p><strong>Programming language</strong> interacting with AI</p>
+<ul>
+<li>e.g., <em>Python</em>, JavaScript</li>
+</ul>
+</li>
+<li>
+<p>The interaction remains of the <em>request-response</em> type</p>
+<ul>
+<li>the <strong>program</strong> sends a <em>request</em>, the AI <em>responds</em></li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="enables">Enables</h3>
+<ul>
+<li>
+<p><strong>Parametric</strong> prompts, responses processed <em>automatically</em></p>
+<ul>
+<li>e.g. <code>list of LOCALITIES in AREA, one by line</code>
+<ul>
+<li>where <code>LOCALITIES</code> $\in$ {<code>cities</code>, <code>regions</code>, <code>states</code>}</li>
+<li>and <code>AREA</code> $\in$ {<code>Europe</code>, <code>Asia</code>, <code>Africa</code>, <code>America</code>, <code>Oceania</code>}</li>
+<li>results <em>sorted alphabetically</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Writing <strong>software</strong> that uses AI as a <strong>service</strong></p>
+<ul>
+<li>useful in both <em>industry</em> and <em>research</em></li>
+</ul>
+</li>
+</ul>
+</span>
+<span class="fragment ">
+  <h3 id="attention">Attention…</h3>
+<ul>
+<li>… <strong>usage-based</strong> pricing model (see <a href="https://openai.com/api/pricing/">here</a>)
+<ul>
+<li>proportional to the number of processed <em>tokens</em></li>
+<li>prices vary <em>by model</em></li>
+</ul>
+</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="in-app-interface"><strong>In-app</strong> interface</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot-office.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./interface-inapp.gif" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+</div>
+<div class="col " style="text-align: left;"><br>
+<ul>
+<li>
+<p>GenAI integrated into <strong>desktop</strong> or <em>web</em> <strong>applications</strong></p>
+<ul>
+<li>e.g., <em>Microsoft Office</em> (Word, Excel, Outlook)</li>
+</ul>
+</li>
+<li>
+<p>support for an internal <strong>conversational</strong> interface</p>
+<ul>
+<li>a conversation that is intrinsically <em>contextualized</em></li>
+</ul>
+</li>
+<li>
+<p>AI <strong>automates</strong> <em>complex operations</em> (within the app)</p>
+<ul>
+<li>e.g., draft <em>writing</em></li>
+<li>e.g., <em>generation</em> of formulas, charts</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="attention">Attention…</h3>
+<ul>
+<li>… <strong>subscription</strong> pricing model (see <a href="https://www.microsoft.com/it-it/microsoft-365/copilot?market=it#plans">here</a>)</li>
+<li>… potential <strong>leaks</strong> of <em>sensitive</em> information</li>
+<li>… non-negligible <strong>lock-in</strong> risk</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="interface-for-editing-audiovideo-content-eg-music">Interface for <strong>editing</strong> audio/video content (e.g. <em>music</em>)</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-suno.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./generate-song-1.png" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+</div>
+<div class="col " style="text-align: left;"><ul>
+<li>
+<p><strong>One-shot</strong> interaction to generate content</p>
+<ul>
+<li><em>input</em>: textual description of the content</li>
+<li><em>output</em>: content</li>
+</ul>
+</li>
+<li>
+<p>The interface then allows</p>
+<ul>
+<li><em>playback</em> of the content</li>
+<li><strong>editing</strong> of the content
+<ul>
+<li>e.g., <em>cutting</em> parts, <em>changing</em> key</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="example">Example</h3>
+<ul>
+<li><a href="https://it.wikipedia.org/wiki/Il_trionfo_di_Bacco_e_Arianna_(poesia)">“Song of Bacchus” (Lorenzo de’ Medici, 1490)</a>, rock
+<ul>
+<li><a href="https://suno.com/song/cce33ee7-a581-47ae-b9d1-806902e88e47">https://suno.com/song/cce33ee7-a581-47ae-b9d1-806902e88e47</a></li>
+</ul>
+</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="what-do-engineers-do-with-genai">What do engineers do with GenAI?</h2>
+<p>Combine <em>prompts</em>, <em>tools</em>, <em>vector stores</em>, and <em>agents</em> to constrain and govern the behavior of <strong>pre-trained</strong> (<em>foundation</em>) models, in order to:</p>
+<ul>
+<li><strong>generate</strong> contents (text, images, code, etc.) for a specific purpose
+<ul>
+<li>e.g. bring unstructured data into a particular format</li>
+<li>e.g. produce summaries, reports, highlights</li>
+</ul>
+</li>
+<li><strong>interpret</strong> unstructured data and <em>grasp information</em> from it
+<ul>
+<li>e.g. extract entities, relations, sentiments</li>
+<li>e.g. answer questions about a document</li>
+</ul>
+</li>
+<li><strong>automate</strong> data-processing tasks which are <em>hard to code</em> explicitly
+<ul>
+<li>e.g. the task is ill-defined (<code>write an evaluation paragraph for each student's work</code>)</li>
+<li>e.g. the task requires mining information from unstructured data (<code>find the parties involved in this contract</code>)</li>
+<li>e.g. the task is complex yet too narrow to allow for general purpose coding (<code>plan a vacation itinerary based on user preferences</code>)</li>
+</ul>
+</li>
+<li><strong>interact</strong> with users via <em>natural language</em>
+<ul>
+<li>e.g. chatbots, virtual assistants</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="lets-explain-the-nomenclature">Let’s explain the nomenclature</h2>
+<ul>
+<li>
+<p><strong><u>Pre-trained</u> foundation models</strong> (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. ‘understanding’ and generating text, images, code), most commonly accessed -as-a-Service- via API, as provided by third-party companies</p>
+<ul>
+<li>e.g. GPT, PaLM, LLaMA, etc.</li>
+</ul>
+</li>
+<li>
+<p><strong>Prompts</strong>: carefully <em>crafted textual inputs</em> that guide some PFM to produce <em>desired outputs</em></p>
+<ul>
+<li>prompt <strong>templates</strong> are prompts with <em>named placeholders</em> to be filled with specific data at runtime
+<ul>
+<li>e.g. <code>Write a summary of the following article: {article_text}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Tools</strong>: external <em>software components</em> (e.g. WebAPIs, databases, search engines) that can be <em>invoked</em> by PFMs to perform specific tasks or retrieve information</p>
+<ul>
+<li>e.g. a calculator API, a weather API, a database query interface</li>
+</ul>
+</li>
+<li>
+<p><strong>Vector stores</strong>: specialized databases that store and retrieve <em>high-dimensional vectors</em> (embeddings) for the sake of <em>information retrieval</em> via <em>similarity search</em></p>
+<ul>
+<li>e.g. to support <em>retrieval-augmented generation</em> (RAG)</li>
+</ul>
+</li>
+<li>
+<p><strong>Agents</strong>: software systems that <em>orchestrate</em> the interaction between PFMs and tools, enabling dynamic decision-making and task execution based on the context and user input</p>
+<ul>
+<li>e.g. a chatbot that uses a PFM for conversation and invokes a weather API when asked about the weather</li>
+<li>e.g. an assistant that uses a PFM to understand user requests and a database to fetch relevant information</li>
+</ul>
+</li>
+</ul>
+</section><section>
+
+
+<section data-shortcode-section="">
+<h2 id="what-does-an-ai-powered-application-include">What does an AI-powered application include?</h2>
+<ol start="0">
+<li>
+<p>FM are commonly <u>not</u> produced in-house, but rather <em>accessed</em> via APIs… yet the choice of <strong>what model(s) to use</strong> is crucial</p>
+<ul>
+<li>must be available, configured, and most commonly imply <em>costs</em> (per call, per token, etc.)</li>
+<li>imply the choice of some <strong>client library</strong>, and the related <em>programmatic interface</em>
+<ul>
+<li>e.g. <a href="https://github.com/openai/openai-python">OpenAI Python SDK</a>, <a href="https://huggingface.co/docs/transformers/index">Hugging Face Transformers</a>, etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>A set of <strong>prompt templates</strong> (text files, or code snippets) that are known to work well for the tasks at hand</p>
+<ul>
+<li>commonly assessed via semi-automatic <em>evaluations</em> on a <em>validation set</em> of inputs</li>
+</ul>
+</li>
+<li>
+<p>A set of <strong>tool servers</strong> implementing the <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP protocol</a> so that tools can be <em>invoked</em> by PFMs</p>
+<ul>
+<li>these are <em>software modules</em>, somewhat similar to ordinary Web services, offering one endpoint per tool</li>
+</ul>
+</li>
+<li>
+<p>A set of <strong>agents</strong>, implementing the logic to orchestrate the interaction between PFMs and tools</p>
+<ul>
+<li>these are <em>software modules</em>, commonly implemented via libraries such as <a href="https://python.langchain.com/en/latest/index.html">LangChain</a> or <a href="https://gpt-index.readthedocs.io/en/latest/">LlamaIndex</a></li>
+</ul>
+</li>
+<li>
+<p>A set of <strong>vector stores</strong> (if needed), populated with relevant data, and accessible by the agents</p>
+<ul>
+<li>there are <em>software modules</em>, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks <em>indexed by</em> their <em>embeddings</em></li>
+</ul>
+</li>
+<li>
+<p>LLM-as-a-Judge <strong>evaluations</strong> to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents</p>
+<ul>
+<li>e.g. by comparing the output to a <em>reference</em> answer, and by assigning a score based on some <em>criterion</em></li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="concept-prompt-templates">Concept: Prompt Templates</h2>
+<p><img src="./prompt-templates.jpg" alt=""></p>
+</section><section>
+<h2 id="concept-agents-calling-external-tools">Concept: Agents Calling External Tools</h2>
+<p><img src="./tools.png" alt=""></p>
+</section><section>
+<h2 id="concept-model-context-protocol-mcp">Concept: Model-Context Protocol (MCP)</h2>
+<!-- ![](./mcp.png) -->
+<img src="./mcp.png" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<ul>
+<li>MCP $\approx$ <em>standard</em> protocol for LLM-based agents to <em>call</em> <strong>external tools</strong></li>
+<li>Allow for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
+<li>Most commonly there is a <strong>server</strong> (a.k.a. <em>gateway</em>) where tools are registered (names, purpose, data schemas, etc.)</li>
+<li>Clients are agents willing to <em>discover</em> or <em>invoke</em> tools provided by some server</li>
+</ul>
+</section><section>
+<h2 id="concept-retrieval-augmented-generation-rag">Concept: Retrieval-Augmented Generation (RAG)</h2>
+<p><img src="./rag.png" alt=""></p>
+</section><section>
+<h2 id="concept-llm-as-a-judge">Concept: LLM-as-a-Judge</h2>
+<!-- ![](./llm-as-a-judge.png) -->
+<img src="./llm-as-a-judge.png" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<ul>
+<li>Exploiting an LLM to <em>evaluate</em> the quality of some other LLM’s output…</li>
+<li>… based on some <em>informal</em> <strong>criterion</strong> (e.g. <em>relevance</em>, <em>accuracy</em>, <em>completeness</em>, etc.)</li>
+<li>… by comparing the output to some <em>reference</em> (e.g. a human-written checklist)</li>
+</ul>
+
+</section>
+</section><section>
+
+
+<section data-shortcode-section="">
+<h2 id="the-genai-workflow">The GenAI workflow</h2>
+<p>(Similar to the ML workflow in the sense that the goal is to process data, but different in many details e.g. <em>no training</em> is involved)</p>
+<p><img src="./genai-workflow.png" alt=""></p>
+<ul>
+<li>there could be <strong>many iterations</strong> (e.g. for PFM selection, and prompt tuning)</li>
+<li>the whole workflow may be <strong>re-started</strong> upon <em>data changes</em>, or <em>task changes</em>, or new <em>PFM availability</em></li>
+<li>the <strong>interplay</strong> between prompts, models, tasks, and data may need to be <em>monitored</em> and <em>adjusted</em> continuously</li>
+<li>the <strong>data-flow</strong> between components (agents, PFM, tools, vector stores) may need to be <em>tracked</em> for the sake of <em>debugging</em> and <em>monitoring</em></li>
+</ul>
+</section><section>
+<h2 id="peculiar-activities-in-a-typical-genai-workflow">Peculiar activities in a typical GenAI workflow</h2>
+<ol>
+<li>
+<p><strong>Foundation model selection</strong>: choose the most suitable pre-trained model(s) based on task requirements, performance, cost, data protection, and availability</p>
+<ul>
+<li>implies trying out prompts (even manually) on different models</li>
+</ul>
+</li>
+<li>
+<p><strong>Prompt engineering</strong>: design, test, and refine prompt templates to elicit the desired responses</p>
+<ul>
+<li>implies engineering variables, lengths, formats, contents, etc</li>
+</ul>
+</li>
+<li>
+<p><strong>Evaluations</strong>: establish assertions and metrics to assess PFM responses to prompts (attained by instantiating templates over actual data)</p>
+<ul>
+<li>somewhat similar to <em>unit tests</em> in ordinary software</li>
+<li>important when automatic, as they allow quick evaluations on prompt/model combinations</li>
+</ul>
+</li>
+<li>
+<p><strong>Tracking</strong> the <em>data-flow</em> between components (agents, PFM, tools, vector stores) to monitor <em>costs</em>, <em>latency</em>, and to <em>debug</em> unexpected behaviors</p>
+<ul>
+<li>also useful for the sake of <em>auditing</em> and <em>governance</em></li>
+<li>commonly performed via <em>logging</em> and <em>tracing</em> tools, e.g. <a href="https://smith.langchain.com/">LangSmith</a>, or <a href="https://mlflow.org/">MLflow</a></li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="example-of-genai-workflow-pt-1">Example of GenAI workflow (pt. 1)</h2>
+<blockquote>
+<p>Support public officers in managing tenders through a GenAI assistant that understands and compares procurement decisions transparently.</p>
+</blockquote>
+<ol>
+<li>
+<p><strong>Problem Framing</strong>:</p>
+<ul>
+<li><em>Content Generation</em>: draft and justify <em>comparisons</em> among suppliers’ offers vs. technical specs</li>
+<li><em>Interpretation</em>: understand regulatory documents and technical language</li>
+<li><em>Automation</em>: retrieve relevant laws, norms, and prior tender examples</li>
+<li><em>Interaction</em>: enable officers to query and validate results through natural language</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Collection</strong>: past tenders’ technical specifications, acts, etc; regulatory documents, etc.</p>
+</li>
+<li>
+<p><strong>Data Preparation</strong>:</p>
+<ul>
+<li>devise useful data schema &amp; extract relevant data from documents</li>
+<li>anonymize sensitive info (suppliers, personal data)</li>
+<li>segment documents and index by topic (law, SLA, price table, etc.)</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="example-of-genai-workflow-pt-2">Example of GenAI workflow (pt. 2)</h2>
+<ol start="4">
+<li>
+<p><strong>Prompt Engineering</strong>:</p>
+<ol>
+<li>design prompt templates for comparison, justification, and Q&amp;A
+<ul>
+<li>use role-based system prompts (<code>You are a procurement evaluator…</code>)</li>
+</ul>
+</li>
+<li>allocate placeholders for RAG-retrieved data chunks</li>
+<li>iterate on template design based on manual tests</li>
+</ol>
+</li>
+<li>
+<p><strong>Foundation Model Selection</strong>: multi-lingual? specialized in legal/technical text? cost constraints? support for tools?</p>
+</li>
+<li>
+<p><strong>Vector stores</strong>: storing embeddings for tender documents &amp; specs, legal texts &amp; guidelines, previous evaluation, templates</p>
+<ol>
+<li>choose embedding model, chunking strategy, and populate vector store</li>
+<li>engineer retrieval strategies to fetch relevant chunks</li>
+</ol>
+</li>
+<li>
+<p><strong>Tools</strong>:</p>
+<ul>
+<li>regulation lookup API + tender database query API</li>
+<li>report generation out of document templates</li>
+<li>automate scoring calculations via spreadsheet or Python scripts generation</li>
+</ul>
+</li>
+<li>
+<p><strong>Agents</strong>:</p>
+<ol>
+<li>exploit LLM to extract structured check-lists out of technical specs</li>
+<li>orchestrate RAG, tool invocations, and prompt templates to score each offer</li>
+<li>generate comparison reports</li>
+<li>…</li>
+</ol>
+</li>
+</ol>
+
+</section>
+</section><section>
+<h1 id="lecture-is-over">Lecture is Over</h1>
+<br>
+<p>Compiled on: 2026-09-30
+ — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
+<p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
+</section>
+
+  
+
+
+</div>
+      
+
+    </div>
+<script type="text/javascript" src="/slides-module2/reveal-hugo/object-assign.js"></script>
+
+<a href="/slides-module2/reveal-js/dist/print/" id="print-location" style="display: none;"></a>
+
+<script type="application/json" id="reveal-hugo-site-params">{"custom_theme":"custom-theme.scss","custom_theme_compile":true,"custom_theme_options":{"enablesourcemap":true,"targetpath":"css/custom-theme.css"},"height":"1080","highlight_theme":"solarized-dark","history":true,"mermaid":[{}],"slide_number":true,"theme":"league","transition":"slide","transition_speed":"fast","width":"1920"}</script>
+<script type="application/json" id="reveal-hugo-page-params">null</script>
+
+<script src="/slides-module2/reveal-js/dist/reveal.js"></script>
+
+
+  
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/markdown/markdown.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/highlight/highlight.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/zoom/zoom.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/notes/notes.js"></script>
+  
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/notes/notes.js"></script>
+
+
+
+
+<script type="text/javascript">
+  
+  
+  function camelize(map) {
+    if (map) {
+      Object.keys(map).forEach(function(k) {
+        newK = k.replace(/(\_\w)/g, function(m) { return m[1].toUpperCase() });
+        if (newK != k) {
+          map[newK] = map[k];
+          delete map[k];
+        }
+      });
+    }
+    return map;
+  }
+
+  var revealHugoDefaults = { center: true, controls: true, history: true, progress: true, transition: "slide" };
+
+  var revealHugoPlugins = {
+    plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom ]
+   };
+  var revealHugoSiteParams = JSON.parse(document.getElementById('reveal-hugo-site-params').innerHTML);
+  var revealHugoPageParams = JSON.parse(document.getElementById('reveal-hugo-page-params').innerHTML);
+  
+  var options = Object.assign({},
+    camelize(revealHugoDefaults),
+    camelize(revealHugoSiteParams),
+    camelize(revealHugoPageParams),
+    camelize(revealHugoPlugins));
+  Reveal.initialize(options);
+</script>
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+</script>
+
+<script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script>
+  if (/.*?(\?|&)print-pdf/.test(window.location.toString())) {
+      var ytVideos = document.getElementsByTagName("iframe")
+      for (let i = 0; i < ytVideos.length; i++) {
+          var videoFrame = ytVideos[i]
+          var isYouTube = /^https?:\/\/(www.)youtube\.com\/.*/.test(videoFrame.src)
+          if (isYouTube) {
+              console.log(`Removing ${videoFrame.src}`)
+              var parent = videoFrame.parentElement
+              videoFrame.remove()
+              var p = document.createElement('p')
+              p.append(
+                  document.createTextNode(
+                      "There was an embedded video here, but it is disabled in the printed version of the slides."
+                  )
+              )
+              p.append(document.createElement('br'))
+              p.append(
+                  document.createTextNode(
+                      `Visit instead ${
+                          videoFrame.src
+                      } or ${
+                          videoFrame.src.replace(
+                              /(^https?:\/\/(www.)youtube\.com)\/(embed\/)(\w+).*/,
+                              "https://www.youtube.com/watch?v=$4"
+                          )
+                      }`
+                  )
+              )
+              parent.appendChild(p)
+          }
+      }
+  }
+</script>
+
+
+    
+  
+
+</body></html>
