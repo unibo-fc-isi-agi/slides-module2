@@ -85,7 +85,7 @@
 </span>
 </section><section>
 <h2 id="running-example-a-governance-perspective">Running example: a governance perspective</h2>
-<p>Recall the <a href="../llmaas/#/running-example">running example</a> (PhD admission committee assistant):</p>
+<p>Recall the <a href="../prompting/#/running-example">running example</a> (PhD admission committee assistant):</p>
 <ul>
 <li><strong>Data</strong>: passports, transcripts, and presentation letters of the candidates
 <ul>
@@ -1315,7 +1315,7 @@
 <section data-noprocess="" data-shortcode-slide="" id="compare-models">
 <h2 id="exercise-1-comparing-models-on-the-running-example-pt-1">Exercise 1: Comparing Models on the Running Example (pt. 1)</h2>
 <blockquote>
-<p><strong>Goal</strong>: the admission committee wants to pick the model to be used for letter evaluation (cf. <a href="../llmaas/letter_evaluator_openai.py">Example 3 of the LLM-as-a-Service lecture</a>), based on <em>evidence</em> rather than on hype</p>
+<p><strong>Goal</strong>: the admission committee wants to pick the model to be used for letter evaluation (cf. <a href="../prompting/#/letter-evaluator">Example 1 of the Prompt Engineering lecture</a>), based on <em>evidence</em> rather than on hype</p>
 </blockquote>
 <h3 id="to-do-list">TO-DO List</h3>
 <ol>
@@ -1499,11 +1499,7 @@
   
 
   
-  
-
-  
-  
-
+    
   
   
 
@@ -1516,7 +1512,40 @@
   
   
 
+  
+  
 
+  
+  
+
+  
+  
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({});
+
+    let render = (event) => {
+      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
+      if (!mermaidElems.length){
+          return
+      }
+      mermaidElems.forEach(mermaidElem => {
+          let processed = mermaidElem.getAttribute('data-processed');
+          if (!processed){
+              
+              mermaid.init(undefined, mermaidElem);
+          }
+      });
+    };
+    
+    render({currentSlide: Reveal.getCurrentSlide()});
+
+    Reveal.on('slidechanged', render);
+    Reveal.on('ready', render);
+  </script>
 
 
 
