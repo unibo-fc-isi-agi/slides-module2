@@ -1,0 +1,1573 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+<title>[AgI] AI Governance 101</title>
+<meta name="description" content="Trade-offs, regulation, and technology selection for LLM-based software">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
+<link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.6a2da703beb4c248b55ece2fb94d21e40b889aee2721699edf1b09a61d0a42f7.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/gh/DanySK/css-blur-animation/blur.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+<script src="https://unibo-fc-isi-agi.github.io/slides-module2/plantuml.js"></script>
+
+  </head>
+  <body>
+    
+    <div class="reveal">
+      <div class="slides">
+  
+
+    <section><h1 id="ai-governance-101">AI Governance 101</h1>
+<br>
+<h2 id="hahahugoshortcode1s0hbhb">Intelligent Agents — Module 2</h2>
+<h3 id="hahahugoshortcode1s1hbhb">A.Y. 2026/2027</h3>
+<h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
+<br>
+<br>
+<p>Compiled on: 2026-09-30
+ — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
+<p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
+</section><section>
+<h2 id="outline">Outline</h2>
+<ol>
+<li>What is <em>AI governance</em>, and why should engineers care?</li>
+<li><em>Where</em> should the model run? (cloud vs. on-premise)</li>
+<li><em>Regulation</em>: GDPR, EU AI Act, national law, UniBo policy</li>
+<li><em>Open</em> models, licensing, and “sovereignty”</li>
+<li><em>Which technique</em>? Prompting vs. RAG vs. fine-tuning vs. agents</li>
+<li><em>Which model</em>? Selection, documentation, and evaluation</li>
+<li>Exercises</li>
+</ol>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="governance-concept">
+<h2 id="what-is-ai-governance">What is <em>AI governance</em>?</h2>
+<ul>
+<li><strong>AI governance</strong> = the set of <em>decisions</em>, <em>policies</em>, and <em>controls</em> determining
+<ul>
+<li><em>which</em> AI systems (models, providers, techniques) an organization uses,</li>
+<li><em>how</em> and <em>where</em> they are deployed,</li>
+<li><em>who</em> is accountable for their outputs, and</li>
+<li>how they are <em>monitored</em> over time</li>
+</ul>
+</li>
+<li>It is <strong>not</strong> (only) a legal matter: most governance decisions are <em>engineering</em> decisions, taken (often implicitly) while designing the system
+<ul>
+<li>e.g. choosing a provider, a model, a deployment option, or whether a human reviews the outputs</li>
+</ul>
+</li>
+<li>Making these decisions <em>explicit</em>, <em>motivated</em>, and <em>documented</em> is what distinguishes governance from improvisation</li>
+</ul>
+</section><section>
+<h2 id="the-five-dimensions-of-the-trade-off">The five dimensions of the trade-off</h2>
+<p>Every choice about an AI-powered system implies a trade-off among:</p>
+<ol>
+<li><strong>Quality</strong>: how <em>good</em> (accurate, reliable, consistent) are the outputs for the task at hand?</li>
+<li><strong>Cost</strong>: how much do <em>development</em>, <em>operation</em> (per request, per month), and <em>maintenance</em> cost?</li>
+<li><strong>Control</strong>: how much can we <em>inspect</em>, <em>customize</em>, <em>reproduce</em>, and <em>keep running</em> the system, regardless of third parties?</li>
+<li><strong>Compliance</strong>: does the system respect <em>laws</em> (e.g. GDPR, AI Act), <em>contracts</em>, and <em>internal policies</em>?</li>
+<li><strong>Time-to-market</strong>: how quickly can we <em>ship</em> (and <em>change</em>) the system?</li>
+</ol>
+<img src="./todo-tradeoff-radar.png" alt="TODO picture: radar (spider) chart with five axes: quality, cost (inverted: cheaper = further out), control, compliance, time-to-market. Two overlapping polygons: 'frontier cloud API' (high quality, fast time-to-market, low control, medium compliance, medium cost) and 'small open model on-premise' (medium quality, high control, high compliance, slow time-to-market, low running cost). Legend below." style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+<span class="fragment ">
+  <blockquote>
+<p>There is <strong>no</strong> option dominating all the others: governance is about choosing the <em>right compromise</em> for the <em>use case</em> at hand, and <strong>writing down why</strong></p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="running-example-a-governance-perspective">Running example: a governance perspective</h2>
+<p>Recall the <a href="../llmaas/#/running-example">running example</a> (PhD admission committee assistant):</p>
+<ul>
+<li><strong>Data</strong>: passports, transcripts, and presentation letters of the candidates
+<ul>
+<li>these are <em>personal data</em> (even <em>identity documents</em>!)</li>
+</ul>
+</li>
+<li><strong>Task</strong>: extract information, summarize, and <em>score</em> candidates
+<ul>
+<li>outputs contribute to decisions affecting people’s <em>access to education</em></li>
+</ul>
+</li>
+<li><strong>Stakeholders</strong>: candidates, committee members, the university (as the responsible organization), the AI provider(s)</li>
+</ul>
+<span class="fragment ">
+  <h3 id="governance-questions-to-be-answered-throughout-this-lecture">Governance questions (to be answered throughout this lecture)</h3>
+<ul>
+<li>Can we send these documents to a cloud provider? Under which conditions?</li>
+<li>Is this system subject to specific regulations? Which obligations follow?</li>
+<li>Should the committee blindly trust the scores? Who is accountable for them?</li>
+<li>Which model, technique, and deployment option are appropriate? How do we <em>justify</em> the choice?</li>
+</ul>
+</span>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="deployment-options">
+<h2 id="where-should-the-model-run-the-general-concept">Where should the model run? The general concept</h2>
+<p>Three main <strong>deployment options</strong>, differing in <em>who</em> runs the model, and <em>where</em> data goes:</p>
+<ol>
+<li><strong>Proprietary cloud API</strong>: the model is owned <em>and</em> run by its provider (e.g. OpenAI, Anthropic, Google)
+<ul>
+<li>you only get an <em>API</em>; data is processed on the provider’s infrastructure</li>
+</ul>
+</li>
+<li><strong>Open model, hosted by a third party</strong>: an open-weights model run by a cloud provider or aggregator (e.g. via Open Router, Hugging Face Inference Endpoints, cloud GPU rental)
+<ul>
+<li>same model could be moved elsewhere; data still leaves your premises</li>
+</ul>
+</li>
+<li><strong>On-premise</strong> (a.k.a. <em>self-hosted</em>, <em>local</em>): an open-weights model run on <em>your own</em> hardware (e.g. via Ollama, vLLM)
+<ul>
+<li>data never leaves your premises; you are responsible for hardware, operation, and updates</li>
+</ul>
+</li>
+</ol>
+<p>(cf. <a href="../llmaas/">on-premise vs. on-cloud</a> in the LLM-as-a-Service lecture)</p>
+</section><section>
+<h2 id="where-should-the-model-run-an-intuitive-example">Where should the model run? An intuitive example</h2>
+<img src="./todo-deployment-options.png" alt="TODO picture: three side-by-side architecture diagrams of the SAME running-example pipeline (committee member → admission assistant program → LLM). (1) Proprietary cloud API: the LLM box sits inside a cloud labelled 'provider, possibly outside the EU'; arrows carrying 'passport, transcript, letter' cross the organization's boundary (dashed line) and a 'jurisdiction' flag is shown. (2) Hosted open model: the LLM box (labelled 'open weights, e.g. Qwen/Gemma') sits in a cloud labelled 'EU hosting provider'; data still crosses the boundary, but the model could be moved (arrow 'portable'). (3) On-premise: the LLM box sits inside the university boundary, on a GPU server icon; no data arrow crosses the boundary. Under each diagram, small icons for: who pays what (per token / per hour / hardware purchase), who can see the data." style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
+</section><section>
+<h2 id="deployment-options-comparison">Deployment options: comparison</h2>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>Proprietary cloud API</th>
+					<th>Hosted open model</th>
+					<th>On-premise</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Quality</strong></td>
+					<td>highest (frontier models)</td>
+					<td>good (best open models lag the frontier)</td>
+					<td>limited by the hardware (smaller models)</td>
+			</tr>
+			<tr>
+					<td><strong>Cost structure</strong></td>
+					<td>pay per token, no fixed costs</td>
+					<td>pay per token or per GPU-hour</td>
+					<td>hardware purchase + energy + staff; ~zero marginal cost</td>
+			</tr>
+			<tr>
+					<td><strong>Scalability</strong></td>
+					<td>virtually unlimited (within rate limits)</td>
+					<td>high</td>
+					<td>bounded by owned hardware</td>
+			</tr>
+			<tr>
+					<td><strong>Control</strong></td>
+					<td>low: models may change or be retired; no access to weights</td>
+					<td>medium: model is portable, provider is replaceable</td>
+					<td>full: versions pinned, runs offline</td>
+			</tr>
+			<tr>
+					<td><strong>Privacy</strong></td>
+					<td>data processed by provider (contracts, retention, jurisdiction matter)</td>
+					<td>same concerns, possibly with an EU provider</td>
+					<td>data stays in-house</td>
+			</tr>
+			<tr>
+					<td><strong>Lock-in</strong></td>
+					<td>high (proprietary features, prices)</td>
+					<td>low</td>
+					<td>low (but lock-in on hardware skills)</td>
+			</tr>
+			<tr>
+					<td><strong>Time-to-market</strong></td>
+					<td>minutes</td>
+					<td>hours</td>
+					<td>days to weeks (procurement, setup)</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><em>Hybrid</em> solutions are common: e.g. <em>on-premise</em> for sensitive data, <em>cloud</em> for the rest; or a <em>gateway</em> routing requests according to data sensitivity</li>
+</ul>
+</section><section>
+<h2 id="deployment-options-a-worked-cost-example">Deployment options: a worked cost example</h2>
+<p>Let’s estimate the yearly cost of the running example, under explicit (and rough) <strong>assumptions</strong>:</p>
+<ul>
+<li>500 applications per year; each one = passport picture + transcript + letter ≈ 6k input tokens, plus ~1k tokens of prompts</li>
+<li>5 requests per application (extraction, validation, scoring, …) $\implies$ ~35k <em>input</em> + ~5k <em>output</em> tokens per application</li>
+<li>hence, per year: <strong>17.5M input</strong> + <strong>2.5M output</strong> tokens</li>
+</ul>
+<table>
+	<thead>
+			<tr>
+					<th>Option</th>
+					<th>Price (USD per 1M input / output tokens)</th>
+					<th>Yearly cost</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>frontier proprietary model (e.g. <a href="https://platform.claude.com/docs/en/about-claude/pricing">Claude Opus 5.5</a>)</td>
+					<td>$4 / $20</td>
+					<td>17.5 × 4 + 2.5 × 20 ≈ <strong>$120</strong></td>
+			</tr>
+			<tr>
+					<td>small proprietary model (e.g. <a href="https://platform.claude.com/docs/en/about-claude/pricing">Claude Haiku 4.5</a>)</td>
+					<td>$1 / $5</td>
+					<td>≈ <strong>$30</strong></td>
+			</tr>
+			<tr>
+					<td>hosted open model (e.g. <a href="https://openrouter.ai/openai/gpt-oss-120b"><code>openai/gpt-oss-120b</code> on Open Router</a>)</td>
+					<td>$0.04 / $0.17</td>
+					<td>≈ <strong>$1</strong></td>
+			</tr>
+			<tr>
+					<td>rented GPU, on demand (e.g. 24 GB GPU on <a href="https://www.runpod.io/pricing">RunPod</a>)</td>
+					<td>~$0.35–0.75 per hour</td>
+					<td>a few hours per year ≈ <strong>$5</strong> (+ setup effort)</td>
+			</tr>
+			<tr>
+					<td>on-premise (a 24 GB GPU workstation)</td>
+					<td>~€2–2.5k for the GPU alone</td>
+					<td><strong>€2.5k+</strong> upfront, + energy, + maintenance</td>
+			</tr>
+	</tbody>
+</table>
+<p>(prices as of September 2026: they change every few months, always re-check them)</p>
+<span class="fragment ">
+  <blockquote>
+<p>At <em>this</em> scale, <strong>cost is not the deciding factor</strong>: compliance and control are. Things change at scale: e.g. one 80 GB GPU rented 24/7 costs ~$2k/month, which buys ~100M <em>output</em> tokens of a frontier model per month. The <strong>break-even</strong> depends on <em>volume</em>, <em>utilization</em>, and <em>model size</em></p>
+</blockquote>
+</span>
+
+</section>
+</section><section>
+<h1 id="regulatory-framework">Regulatory framework</h1>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="regulation">
+<h2 id="regulation-the-general-picture">Regulation: the general picture</h2>
+<p>AI-powered software is subject to (at least) four <em>layers</em> of rules, each with a different <em>object</em>:</p>
+<ol>
+<li>the <strong>GDPR</strong> (<a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj">Reg. (EU) 2016/679</a>) regulates the processing of <strong>personal data</strong>, whatever the technology</li>
+<li>the <strong>EU AI Act</strong> (<a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Reg. (EU) 2024/1689</a>) regulates <strong>AI systems</strong> (by <em>risk</em> of their <em>use</em>) and <strong>general-purpose AI models</strong></li>
+<li><strong>national laws</strong>, e.g. the Italian AI law (<a href="https://www.gazzettaufficiale.it/eli/id/2025/09/25/25G00143/sg">Legge 132/2025</a>)</li>
+<li><strong>institutional policies</strong>, e.g. the <a href="https://www.unibo.it/it/ateneo/statuto-norme-strategie-bilanci/intelligenza-artificiale">UniBo GenAI policy</a></li>
+</ol>
+<p>plus <em>contracts</em> (e.g. providers’ terms of service, data processing agreements) and <em>licenses</em> (of models, and of data)</p>
+<img src="./todo-regulation-layers.png" alt="TODO picture: concentric (or stacked) layers around a small 'LLM-powered application' box: innermost 'licenses &amp; terms of service', then 'institutional policy (UniBo)', then 'national law (L. 132/2025)', then 'EU AI Act (AI systems &amp; GPAI models)', outermost 'GDPR (personal data)'. Next to each layer, a short question it answers: 'may I use this model?', 'how may staff/students use GenAI?', 'who supervises? what's a crime?', 'is my use high-risk? which obligations?', 'may I process these data? how?'." style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+<blockquote>
+<p>Disclaimer: this is an <em>engineer’s</em> overview, <strong>not</strong> legal advice: in real projects, involve your organization’s <em>legal office</em> and <em>Data Protection Officer</em> (DPO)</p>
+</blockquote>
+</section><section>
+<h2 id="gdpr-for-llm-powered-applications-key-concepts">GDPR for LLM-powered applications: key concepts</h2>
+<ul>
+<li><strong>Personal data</strong> = any information about an identified or identifiable person (e.g. names, passports, grades, <em>letters about someone</em>)</li>
+<li><strong>Controller</strong> (who decides <em>why</em> and <em>how</em> data is processed: e.g. the University) vs. <strong>processor</strong> (who processes data <em>on behalf</em> of the controller: e.g. the LLM provider)
+<ul>
+<li>a <strong>Data Processing Agreement</strong> (DPA, <a href="https://gdpr-info.eu/art-28-gdpr/">Art. 28</a>) with the provider is <em>mandatory</em></li>
+</ul>
+</li>
+<li><strong>Principles</strong> (<a href="https://gdpr-info.eu/art-5-gdpr/">Art. 5</a>): lawfulness, purpose limitation, <strong>data minimisation</strong> (send the LLM only what it needs!), accuracy, storage limitation, security
+<ul>
+<li><em>privacy by design and by default</em> (<a href="https://gdpr-info.eu/art-25-gdpr/">Art. 25</a>): e.g. strip or pseudonymize personal data before sending prompts</li>
+</ul>
+</li>
+<li><strong>International transfers</strong> (<a href="https://gdpr-info.eu/chapter-5/">Chapter V</a>): data leaving the EU need an <em>adequacy decision</em> (e.g. the <a href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-transfers_en">EU–US Data Privacy Framework</a>, upheld by the General Court in 2025, appeal pending) or other safeguards (e.g. standard contractual clauses)</li>
+<li><strong>Data Protection Impact Assessment</strong> (DPIA, <a href="https://gdpr-info.eu/art-35-gdpr/">Art. 35</a>): required for high-risk processing, e.g. new technologies used to <em>evaluate</em> or <em>score</em> people</li>
+<li><strong>Automated decisions</strong> (<a href="https://gdpr-info.eu/art-22-gdpr/">Art. 22</a>): people have the right <strong>not</strong> to be subject to decisions based <em>solely</em> on automated processing, with legal or similarly significant effects
+<ul>
+<li>e.g. an admission <em>rejection</em> decided by an LLM alone</li>
+</ul>
+</li>
+<li>About the <strong>models</strong> themselves: <a href="https://www.edpb.europa.eu/documents/opinion-of-the-board-art-64/opinion-282024-on-certain-data-protection-aspects-related-to_en">EDPB Opinion 28/2024</a> states that a model trained on personal data is <em>anonymous</em> only if extracting those data is very unlikely, and that an <em>unlawfully</em> developed model may taint its later use</li>
+</ul>
+</section><section>
+<h2 id="gdpr-in-practice-providers-and-enforcement">GDPR in practice: providers and enforcement</h2>
+<h3 id="what-providers-offer-as-of-september-2026">What providers offer (as of September 2026)</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Provider</th>
+					<th>EU data residency</th>
+					<th>Zero data retention (ZDR)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://help.openai.com/en/articles/10503543-data-residency-for-the-openai-api">OpenAI</a></td>
+					<td>yes (new projects, EU regional endpoints, surcharge)</td>
+					<td>for eligible customers, upon agreement</td>
+			</tr>
+			<tr>
+					<td><a href="https://platform.claude.com/docs/en/manage-claude/data-residency">Anthropic</a></td>
+					<td>not on the first-party API; yes via cloud partners (AWS Bedrock, Google Vertex)</td>
+					<td>upon agreement</td>
+			</tr>
+			<tr>
+					<td><a href="https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/data-residency">Google Vertex AI</a></td>
+					<td>yes (EU multi-region)</td>
+					<td>yes, disabling default caching</td>
+			</tr>
+			<tr>
+					<td><a href="https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types">Microsoft Azure</a></td>
+					<td>yes (“Data Zone EU” deployments)</td>
+					<td>upon request (modified abuse monitoring)</td>
+			</tr>
+			<tr>
+					<td><a href="https://docs.mistral.ai/inference/regional-inference">Mistral</a></td>
+					<td>yes (EU or US regional inference)</td>
+					<td>upon request (default: 30 days retention for abuse monitoring)</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><em>Free tiers</em> and <em>consumer</em> apps often allow providers to use your data for <em>training</em>: never send personal data there</li>
+</ul>
+<h3 id="the-italian-data-protection-authority-garante-at-work">The Italian Data Protection Authority (Garante) at work</h3>
+<ul>
+<li><a href="https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9870847">March 2023</a>: ChatGPT temporarily <em>blocked</em> in Italy (lawful basis, transparency, age verification), then reopened under <a href="https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9874751">conditions</a></li>
+<li><a href="https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/10085432">December 2024</a>: €15M fine to OpenAI, later <em>annulled</em> by the Court of Rome (March 2026) since the competent authority was the Irish one (<em>one-stop-shop</em> mechanism)</li>
+<li><a href="https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/10098477">January 2025</a>: urgent <em>limitation</em> of processing for DeepSeek</li>
+</ul>
+</section><section>
+<h2 id="eu-ai-act-a-risk-based-approach">EU AI Act: a risk-based approach</h2>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><ul>
+<li><strong>Unacceptable risk</strong> $\rightarrow$ <em>prohibited</em> (<a href="https://artificialintelligenceact.eu/article/5/">Art. 5</a>)
+<ul>
+<li>e.g. social scoring, manipulative techniques, <strong>emotion recognition</strong> in workplaces and <strong>education</strong>, untargeted scraping of facial images</li>
+</ul>
+</li>
+<li><strong>High risk</strong> $\rightarrow$ strict <em>obligations</em> (<a href="https://artificialintelligenceact.eu/article/6/">Art. 6</a> and <a href="https://artificialintelligenceact.eu/annex/3/">Annex III</a>)
+<ul>
+<li>e.g. CV screening, credit scoring, and <strong>education</strong>: systems to <em>determine access or admission</em> to educational institutions (Annex III, point 3(a)), to <em>evaluate learning outcomes</em> (3(b)), or to <em>proctor</em> exams (3(d))</li>
+</ul>
+</li>
+<li><strong>Transparency risk</strong> $\rightarrow$ <em>disclosure</em> obligations (<a href="https://artificialintelligenceact.eu/article/50/">Art. 50</a>)
+<ul>
+<li>e.g. chatbots must disclose they are AI; synthetic content must be <em>marked</em>; deepfakes must be <em>labelled</em></li>
+</ul>
+</li>
+<li><strong>Minimal risk</strong> $\rightarrow$ no specific obligations
+<ul>
+<li>e.g. spam filters, AI in video games</li>
+</ul>
+</li>
+<li>Orthogonally: <strong>general-purpose AI (GPAI) models</strong>, with obligations for their <em>providers</em> (<a href="https://artificialintelligenceact.eu/article/53/">Art. 53</a>, <a href="https://artificialintelligenceact.eu/article/55/">Art. 55</a>)</li>
+</ul>
+</div>
+<div class="col " style="text-align: left;"><img src="./todo-ai-act-pyramid.png" alt="TODO picture: the classic AI Act risk pyramid with four levels (top to bottom): 'Unacceptable — prohibited' (red), 'High — conformity &amp; obligations' (orange), 'Transparency — disclosure' (yellow), 'Minimal — no obligations' (green), with 2 example icons per level. A pin labelled 'our PhD admission assistant (Annex III, 3(a))' placed on the high-risk level. A separate side box labelled 'GPAI models (e.g. GPT, Claude, Gemini, Llama)' with an arrow 'used inside' pointing to the systems in the pyramid." style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+</div>
+</div>
+</div>
+<span class="fragment ">
+  <blockquote>
+<p>Our <strong>running example is high-risk</strong>: it contributes to deciding <em>admission</em> to a PhD programme. The same LLM, used to summarize news, would be <em>minimal</em> risk: the Act regulates the <strong>use</strong>, not the technology</p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="eu-ai-act-who-must-do-what">EU AI Act: who must do what?</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Role</th>
+					<th>Who is it?</th>
+					<th>Main obligations (for high-risk systems)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Provider</strong></td>
+					<td>who <em>develops</em> the system and puts it on the market / into service under its name</td>
+					<td>risk management (Art. 9), data governance (Art. 10), technical documentation (Art. 11), automatic <strong>logging</strong> (Art. 12), instructions for use (Art. 13), <strong>human oversight by design</strong> (Art. 14), accuracy &amp; robustness (Art. 15), quality management, conformity assessment, registration, post-market monitoring</td>
+			</tr>
+			<tr>
+					<td><strong>Deployer</strong></td>
+					<td>who <em>uses</em> the system under its authority</td>
+					<td>use it as instructed; assign <strong>human oversight</strong> to competent, trained people; ensure input data are relevant; <strong>monitor</strong> it; keep <strong>logs</strong> for ≥ 6 months; <strong>inform</strong> affected people (Art. 26); public bodies: <strong>fundamental rights impact assessment</strong> (Art. 27)</td>
+			</tr>
+			<tr>
+					<td><strong>Affected person</strong></td>
+					<td>e.g. the candidate</td>
+					<td>right to an <strong>explanation</strong> of decisions based on high-risk AI output (Art. 86)</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>Beware: a deployer <strong>becomes a provider</strong> if it <em>substantially modifies</em> a system, or puts its <em>own name</em> on it (Art. 25)
+<ul>
+<li>e.g. a University building its own admission assistant on top of an LLM API is the <em>provider</em> <strong>and</strong> the <em>deployer</em> of that system</li>
+</ul>
+</li>
+<li><strong>GPAI model providers</strong> (e.g. OpenAI, Mistral) must provide technical documentation to downstream providers, a <em>copyright policy</em>, and a public <em>summary of training data</em> (Art. 53); models with <em>systemic risk</em> (&gt; 10<sup>25</sup> FLOPs of training) also need evaluations, adversarial testing, incident reporting (Art. 55)
+<ul>
+<li><em>open-source</em> GPAI models are exempted from the documentation duties only, and only if they do not pose systemic risk (Art. 53(2), details <a href="#/open-models-ai-act">later</a>)</li>
+<li>a voluntary <a href="https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai">GPAI Code of Practice</a> (July 2025) details how to comply</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="eu-ai-act-timeline-literacy-penalties">EU AI Act: timeline, literacy, penalties</h2>
+<h3 id="timeline-as-amended-by-the-digital-omnibus-on-ai-reg-eu-20261744">Timeline (as amended by the <em>Digital Omnibus on AI</em>, <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">Reg. (EU) 2026/1744</a>)</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Date</th>
+					<th>What applies</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>1 Aug 2024</td>
+					<td>entry into force</td>
+			</tr>
+			<tr>
+					<td>2 Feb 2025</td>
+					<td>prohibitions (Art. 5), AI literacy (Art. 4)</td>
+			</tr>
+			<tr>
+					<td>2 Aug 2025</td>
+					<td>GPAI model obligations, governance structures</td>
+			</tr>
+			<tr>
+					<td>2 Aug 2026</td>
+					<td>general application, including transparency (Art. 50; until 2 Dec 2026 for systems already on the market)</td>
+			</tr>
+			<tr>
+					<td><strong>2 Dec 2027</strong></td>
+					<td>high-risk systems of <em>Annex III</em> (e.g. education), postponed from 2 Aug 2026</td>
+			</tr>
+			<tr>
+					<td>2 Aug 2028</td>
+					<td>high-risk systems of <em>Annex I</em> (safety components of regulated products), postponed from 2 Aug 2027</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="other-relevant-points">Other relevant points</h3>
+<ul>
+<li><strong>AI literacy</strong> (Art. 4): providers and deployers must support the AI literacy of their <em>staff</em> (this course is part of it!)</li>
+<li><strong>Penalties</strong> (Art. 99): up to €35M or 7% of worldwide turnover for prohibited practices; up to €15M or 3% for most other violations</li>
+<li><strong>Transparency</strong>: a <a href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content">Code of Practice on AI-generated content</a> details marking and labelling</li>
+</ul>
+</section><section>
+<h2 id="national-law-and-institutional-policies">National law and institutional policies</h2>
+<h3 id="italy-legge-23-settembre-2025-n-132-in-force-since-10-oct-2025">Italy: <a href="https://www.gazzettaufficiale.it/eli/id/2025/09/25/25G00143/sg">Legge 23 settembre 2025, n. 132</a> (in force since 10 Oct 2025)</h3>
+<ul>
+<li>complements the AI Act: <a href="https://www.agid.gov.it/">AgID</a> and <a href="https://www.acn.gov.it/">ACN</a> are the national <em>AI authorities</em> (Art. 20)</li>
+<li><em>public administration</em>: AI is only <em>instrumental</em>, the human official remains solely <em>responsible</em> for decisions (Art. 14)</li>
+<li><em>intellectual professions</em>: AI only for <em>supporting</em> activities, and clients must be <em>informed</em> (Art. 13)</li>
+<li><em>minors</em>: under 14s need parental consent to use AI (Art. 4)</li>
+<li><em>copyright</em>: only <em>human</em> works are protected (AI-assisted ones are, if they result from the author’s intellectual effort); rules on text and data mining (Art. 25)</li>
+<li>new <em>crime</em>: unlawful dissemination of AI-generated <em>deepfakes</em> (Art. 26)</li>
+</ul>
+<h3 id="university-of-bologna-genai-policy-for-teaching-and-research">University of Bologna: <a href="https://www.unibo.it/it/allegati/policy-per-un-uso-etico-e-responsabile-dell2019intelligenza-artificiale-generativa-nelle-attivita-di-didattica-e-ricerca/@@download/file/Policy-Generative-AI.pdf">GenAI policy for teaching and research</a></h3>
+<ul>
+<li>GenAI use is <em>allowed</em>: principles of human centrality, transparency, accountability, accuracy, respect for rights</li>
+<li><strong>substantial</strong> uses (e.g. AI-written papers, theses, or assessed work) must be <strong>declared</strong>; GenAI cannot be an <em>author</em></li>
+<li><strong>no substantial use</strong> where it <em>affects others</em>: e.g. <em>peer review</em>, <em>evaluating</em> research projects, <strong>grading students</strong></li>
+<li><strong>no personal data</strong> of third parties, confidential or unpublished material in online GenAI tools, without a legal basis and guarantees</li>
+<li>a separate <a href="https://www.unibo.it/it/allegati/PolicyUsoAI_Amministrazione.pdf">policy for administrative staff</a> exists</li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p>For the running example: scores must remain <em>suggestions</em> to the committee, candidates’ data must not go to consumer chatbots, and the University is accountable for the whole process</p>
+</blockquote>
+</span>
+
+</section>
+</section><section>
+<h1 id="open-models-licensing-and-sovereignty">Open models, licensing, and “sovereignty”</h1>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="open-models">
+<h2 id="what-makes-a-model--the-general-concept">What makes a model <em>“open”</em>? The general concept</h2>
+<p>A model release is a <strong>bundle</strong> of separately <em>openable</em> artifacts: downloading one of them (usually the weights) says little about the others</p>
+<table>
+	<thead>
+			<tr>
+					<th>Component</th>
+					<th>What a useful release contains</th>
+					<th>What it enables</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Weights</strong></td>
+					<td>final parameters (ideally also intermediate checkpoints)</td>
+					<td>local inference, fine-tuning, independent hosting</td>
+			</tr>
+			<tr>
+					<td><strong>Inference code</strong></td>
+					<td>architecture, tokenizer, generation code, configuration</td>
+					<td>actually <em>running</em> the weights</td>
+			</tr>
+			<tr>
+					<td><strong>Training code &amp; recipe</strong></td>
+					<td>data processing, hyper-parameters, training and post-training (SFT, RL) pipelines</td>
+					<td>understanding <em>how</em> the weights arose; re-training</td>
+			</tr>
+			<tr>
+					<td><strong>Training data</strong></td>
+					<td>the actual training mixture, in training-ready form</td>
+					<td>data auditing, contamination analysis, exact reproduction</td>
+			</tr>
+			<tr>
+					<td><strong>Data information</strong></td>
+					<td>provenance, sources, filtering and selection processes</td>
+					<td>a (weaker) substitute when data cannot be redistributed</td>
+			</tr>
+			<tr>
+					<td><strong>Documentation</strong></td>
+					<td>model card, technical report, evaluations, limitations</td>
+					<td>auditability, downstream risk assessment</td>
+			</tr>
+			<tr>
+					<td><strong>Licenses</strong></td>
+					<td><em>separate</em> licenses for weights, code, and data</td>
+					<td>knowing what you may <em>legally</em> do with all the above</td>
+			</tr>
+	</tbody>
+</table>
+</section><section>
+<h2 id="openness-is-graded-not-binary">Openness is <em>graded</em>, not binary</h2>
+<img src="./todo-openness-bar.png" alt="TODO picture: three horizontal bars, one per model, each split into 7 segments (weights, inference code, training code, training data, data information, documentation, licenses), colored green (open) / yellow (partial or restricted) / red (closed): 'closed API model' (all red, documentation yellow); 'open-weights model, e.g. Llama 4' (weights and inference code green, license yellow, everything else red or yellow); 'fully open model, e.g. OLMo 3' (all green). Caption: 'Downloadable weights ≠ open model'." style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+<table>
+	<thead>
+			<tr>
+					<th>Framework</th>
+					<th>Question it answers</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://doi.org/10.1145/3630106.3659005">Liesenfeld &amp; Dingemanse, FAccT 2024</a></td>
+					<td>how open is a release <em>in practice</em>? (14 dimensions, 40 text LLMs + 6 text-to-image models)</td>
+			</tr>
+			<tr>
+					<td><a href="https://osai-index.eu/database/">European Open Source AI Index</a></td>
+					<td>which open-science artifacts were actually released? (graded score; top ranks in July 2026: YuLan-Mini, BLOOMZ, OLMo 3, Apertus)</td>
+			</tr>
+			<tr>
+					<td><a href="https://crfm.stanford.edu/fmti/December-2025/index.html">Stanford Foundation Model Transparency Index</a> (Dec. 2025)</td>
+					<td>how <em>transparent</em> are providers? (mean score 41/100, down 17 from 2024; IBM 95, DeepSeek 32, Alibaba 26: open weights $\neq$ transparency)</td>
+			</tr>
+			<tr>
+					<td><a href="https://opensource.org/ai/open-source-ai-definition">OSI Open Source AI Definition</a></td>
+					<td>does a system meet a <em>normative</em> definition of “open source AI”? (next slide)</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><strong>Open-washing</strong>: presenting a model as “open” or “open source” based on <em>one</em> disclosed component (typically the weights), while the artifacts or legal freedoms needed to study, reproduce, modify, or freely use it are missing
+<ul>
+<li>e.g. <em>Llama 4</em> (downloadable weights, restrictive license), <em>Gemma 3</em> (custom terms with use restrictions), <em>Mistral 3</em> (called “open-source” by its vendor: Apache 2.0 weights, undisclosed training data)</li>
+<li>by contrast, OpenAI calls <a href="https://openai.com/index/introducing-gpt-oss/">gpt-oss</a> “<em>open-weight</em>”: the more accurate term</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="the-osi-open-source-ai-definition-osaid-10-oct-2024">The OSI Open Source AI Definition (OSAID 1.0, Oct. 2024)</h2>
+<ul>
+<li>Users must be able, <em>without asking permission</em>, to:
+<ol>
+<li><strong>use</strong> the system for <em>any</em> purpose</li>
+<li><strong>study</strong> how it works</li>
+<li><strong>modify</strong> it for any purpose</li>
+<li><strong>share</strong> it, with or without modifications</li>
+</ol>
+</li>
+<li>This requires the <em>preferred form for making modifications</em>:
+<ul>
+<li><strong>data information</strong>: enough detail on training data for a skilled person to build a <em>substantially equivalent</em> system</li>
+<li><strong>code</strong>: the <em>complete</em> training and inference pipeline</li>
+<li><strong>parameters</strong>: weights and configuration, under open terms</li>
+</ul>
+</li>
+<li><strong>Controversy</strong>: OSAID does <strong>not</strong> require releasing the training data itself (cf. <a href="https://opensource.org/ai/faq">OSI’s FAQ</a>)
+<ul>
+<li>OSI: data may be personal, copyrighted, or confidential, so requiring it would exclude too many systems</li>
+<li>critics: without the data, exact reproduction and data-level auditing are impossible</li>
+</ul>
+</li>
+<li>OSI’s <a href="https://opensource.org/ai/final-board-report">initial validation</a> found that <em>Pythia</em>, <em>OLMo</em>, <em>Amber</em>, <em>CrystalCoder</em>, and <em>T5</em> passed, while <em>Llama 2</em>, <em>Grok</em>, <em>Phi-2</em>, and <em>Mixtral</em> did not
+<ul>
+<li>a <em>snapshot</em> of 2024, <strong>not</strong> a certification registry for later versions</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="the-licensing-landscape-as-of-september-2026">The licensing landscape (as of September 2026)</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Category</th>
+					<th>Examples</th>
+					<th>What is open</th>
+					<th>Main limitation</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Closed</strong> (API-only)</td>
+					<td>GPT, Claude, Gemini, Mistral’s “Premier” models</td>
+					<td>API + documentation</td>
+					<td>no weights; usage governed by <em>terms of service</em></td>
+			</tr>
+			<tr>
+					<td><strong>Open weights, restrictive license</strong></td>
+					<td><a href="https://www.llama.com/llama4/license/">Llama 4</a>, <a href="https://ai.google.dev/gemma/terms">Gemma 3</a>, <a href="https://huggingface.co/openGPT-X">Teuken v0.6</a>, BLOOM (<a href="https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE">RAIL</a>)</td>
+					<td>weights, inference code</td>
+					<td>use-based, geographic, commercial, or downstream restrictions: <em>not</em> “any purpose”</td>
+			</tr>
+			<tr>
+					<td><strong>Open weights, permissive license</strong></td>
+					<td><a href="https://ai.google.dev/gemma/docs/core/model_card_4">Gemma 4</a>, <a href="https://huggingface.co/Qwen/Qwen3-8B">Qwen3</a>, <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">DeepSeek-R1</a>, <a href="https://huggingface.co/openai/gpt-oss-120b">gpt-oss</a>, <a href="https://docs.mistral.ai/getting-started/models/">Mistral Large 3 / Small 4</a></td>
+					<td>weights under Apache 2.0 or MIT</td>
+					<td>training data and full pipeline <em>not</em> released</td>
+			</tr>
+			<tr>
+					<td><strong>Fully (or nearly) open</strong></td>
+					<td><a href="https://allenai.org/blog/olmo3">OLMo 3</a>, <a href="https://www.apertus-ai.org/">Apertus</a>, <a href="https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0">Minerva</a></td>
+					<td>weights + code + data (or data pipeline) + docs</td>
+					<td>reproduction still needs <em>enormous</em> compute</td>
+			</tr>
+	</tbody>
+</table>
+</section><section>
+<h2 id="the-licensing-landscape-as-of-september-2026-1">The licensing landscape (as of September 2026)</h2>
+<h3 id="licenses-change-across-versions-always-check-the-exact-checkpoint">Licenses change across versions: always check the <strong>exact checkpoint</strong></h3>
+<table>
+	<thead>
+			<tr>
+					<th>Model</th>
+					<th>Before</th>
+					<th>Now</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Gemma</strong></td>
+					<td>Gemma 3: custom Gemma Terms, with cascading use restrictions</td>
+					<td>Gemma 4 (2026): <strong>Apache 2.0</strong></td>
+			</tr>
+			<tr>
+					<td><strong>DeepSeek-V3</strong></td>
+					<td>original V3: custom DeepSeek Model Agreement</td>
+					<td>V3-0324: <a href="https://api-docs.deepseek.com/news/news250325">relicensed under <strong>MIT</strong></a> (March 2025)</td>
+			</tr>
+			<tr>
+					<td><strong>Mistral</strong></td>
+					<td>historically mixed</td>
+					<td><em>still</em> mixed: Large 3 and Small 4 Apache 2.0, Medium 3.5 “Modified MIT”, several models proprietary</td>
+			</tr>
+			<tr>
+					<td><strong>Teuken</strong></td>
+					<td>v0.4-commercial: Apache 2.0</td>
+					<td>v0.6: <strong>non-commercial</strong> (“newer” does not mean “more permissive”)</td>
+			</tr>
+			<tr>
+					<td><strong>iGenius → Domyn</strong></td>
+					<td>Italia 9B: MIT; Italia 10B: custom, non-open license</td>
+					<td>rebranded Domyn (June 2025); <a href="https://huggingface.co/domyn/Domyn-Small-v1.0">Domyn Small 10B</a> (May 2026): MIT</td>
+			</tr>
+	</tbody>
+</table>
+</section><section>
+<h2 id="what-do-restrictive-licenses-mean-in-practice">What do restrictive licenses mean in practice?</h2>
+<table>
+	<thead>
+			<tr>
+					<th>License</th>
+					<th>On-premise use</th>
+					<th>Fine-tuning</th>
+					<th>Hosted service</th>
+					<th>Redistribution</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Llama 4</strong> (<a href="https://www.llama.com/llama4/license/">license</a>, <a href="https://www.llama.com/llama4/use-policy/">AUP</a>)</td>
+					<td>yes, <strong>except</strong> multimodal models for individuals/companies <em>based in the EU</em></td>
+					<td>yes</td>
+					<td>yes (EU <em>end users</em> of products are carved out)</td>
+					<td><em>“Built with Llama”</em> attribution; derived models named <em>“Llama…”</em>; separate license above 700M monthly active users</td>
+			</tr>
+			<tr>
+					<td><strong>Gemma 3</strong> (<a href="https://ai.google.dev/gemma/terms">terms</a>)</td>
+					<td>yes, within the prohibited-use policy</td>
+					<td>yes, derivatives inherit the restrictions</td>
+					<td>counts as <em>distribution</em></td>
+					<td>restrictions must be passed to downstream users; Google may restrict use <em>“remotely or otherwise”</em> (a contractual right, not a kill switch)</td>
+			</tr>
+			<tr>
+					<td><strong>OpenRAIL</strong> (<a href="https://www.licenses.ai/blog/2022/8/26/bigscience-open-rail-m-license">OpenRAIL-M</a>)</td>
+					<td>yes, for permitted purposes</td>
+					<td>yes, for permitted purposes</td>
+					<td>yes, users bound to use restrictions</td>
+					<td>use restrictions must be passed on</td>
+			</tr>
+			<tr>
+					<td><strong>Apache 2.0 / MIT</strong></td>
+					<td>yes</td>
+					<td>yes</td>
+					<td>yes</td>
+					<td>yes, with attribution/notices (and patent clauses, for Apache)</td>
+			</tr>
+	</tbody>
+</table>
+<span class="fragment ">
+  <blockquote>
+<p><strong>Running example</strong>: the admission assistant must read <em>passport pictures</em>, hence needs a <strong>multimodal</strong> model. The University of Bologna is an EU organization: under Llama 4’s acceptable use policy, it is <strong>not</strong> granted the right to use Llama 4’s multimodal models. Gemma 4, Qwen3, or Mistral’s Apache models raise no such issue</p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="derivatives-fine-tunes-distillation-merges-data-outputs">Derivatives: fine-tunes, distillation, merges, data, outputs</h2>
+<ul>
+<li><strong>Fine-tunes</strong> remain subject to the base model’s license: easy for Apache/MIT, restrictions <em>propagate</em> for Gemma 3 and Llama</li>
+<li><strong>Distillation</strong> is license-specific:
+<ul>
+<li>Gemma 3 counts models trained on Gemma’s <em>outputs</em> (synthetic data) as <em>Model Derivatives</em></li>
+<li>DeepSeek-R1 (MIT) allows distillation, but its published <em>distills</em> are fine-tunes of other models, and <strong>inherit their licenses</strong> (<a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">Qwen</a> → Apache 2.0, <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">Llama</a> → Llama license)</li>
+</ul>
+</li>
+<li><strong>Merges</strong>: a merge of models A and B must (conservatively) satisfy <strong>both</strong> licenses; a restrictive component is not “washed away”
+<ul>
+<li>whether weights are copyrightable at all is still legally <em>unsettled</em></li>
+</ul>
+</li>
+<li><strong>Training data</strong> has its <em>own</em> license: e.g. OLMo 3 is Apache 2.0, but its dataset <a href="https://huggingface.co/datasets/allenai/dolma3_mix-6T">Dolma 3</a> is ODC-By (attribution required), and its sources may carry further terms</li>
+<li><strong>Outputs</strong>: “the vendor claims no rights on outputs” $\neq$ “outputs are free of restrictions”
+<ul>
+<li>e.g. using Llama <em>outputs</em> to train a distributed model triggers Llama’s <em>naming</em> requirement</li>
+</ul>
+</li>
+</ul>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="open-models-ai-act">
+<h2 id="open-models-under-the-eu-ai-act">Open models under the EU AI Act</h2>
+<table>
+	<thead>
+			<tr>
+					<th>GPAI provider duty (<a href="https://artificialintelligenceact.eu/article/53/">Art. 53</a>)</th>
+					<th>Ordinary GPAI</th>
+					<th>Free/open-source GPAI</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>(a) technical documentation (for the AI Office)</td>
+					<td>required</td>
+					<td><strong>exempt</strong></td>
+			</tr>
+			<tr>
+					<td>(b) information for downstream providers</td>
+					<td>required</td>
+					<td><strong>exempt</strong></td>
+			</tr>
+			<tr>
+					<td>(c) policy to comply with EU <em>copyright</em> law (incl. text-and-data-mining opt-outs)</td>
+					<td>required</td>
+					<td><strong>still required</strong></td>
+			</tr>
+			<tr>
+					<td>(d) public <em>summary of training content</em> (AI Office template)</td>
+					<td>required</td>
+					<td><strong>still required</strong></td>
+			</tr>
+			<tr>
+					<td>systemic-risk obligations (<a href="https://artificialintelligenceact.eu/article/55/">Art. 55</a>)</td>
+					<td>if &gt; 10<sup>25</sup> FLOPs</td>
+					<td><strong>no exemption</strong></td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>To qualify, the model must be released under a license allowing <em>access, use, modification, and distribution</em>, with weights, architecture, and usage information <em>public</em>
+<ul>
+<li>this is much <strong>weaker</strong> than OSAID: no training data or training code needed</li>
+</ul>
+</li>
+<li>Non-EU providers of open-source GPAI are also exempted from appointing an EU <em>authorized representative</em> (<a href="https://artificialintelligenceact.eu/article/54/">Art. 54(6)</a>), unless the model poses systemic risk</li>
+</ul>
+<blockquote>
+<p>The AI Act gives open-source GPAI a <strong>documentation discount</strong>: <strong>not</strong> a copyright exemption, <strong>not</strong> a training-data-summary exemption, and <strong>not</strong> a systemic-risk exemption</p>
+</blockquote>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="sovereignty">
+<h2 id="sovereign-ai-a-framing-and-its-limits">“Sovereign AI”: a framing, and its limits</h2>
+<ul>
+<li>Several European and Italian actors frame open, locally-developed models as a matter of <strong>digital sovereignty</strong>
+<ul>
+<li>reduce dependency on US and Chinese providers; better support for EU <em>languages</em>; compliance with EU <em>law</em></li>
+</ul>
+</li>
+<li>The framing mixes (at least) three <strong>distinct</strong> goals, which should <em>not</em> be conflated:
+<ol>
+<li><strong>where</strong> a model is <em>developed</em> (nationality of the developer)</li>
+<li><strong>where</strong> it is <em>executed</em>, and data are processed (<em>operational</em> control)</li>
+<li>whether its making can be <em>inspected</em> and <em>reproduced</em> (<em>auditability</em>)</li>
+</ol>
+</li>
+<li>Goals 2 and 3 do <strong>not</strong> require goal 1:
+<ul>
+<li><em>any</em> open-weights model (e.g. Qwen3, gpt-oss, OLMo 3) can run in an EU data centre</li>
+<li>the most reproducible models are not necessarily European (e.g. OLMo 3, from the US), and a European vendor may disclose little (e.g. Mistral)</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p>Skeptical reading: for an engineer, <em>where the model runs</em> and <em>what its license allows</em> matter much more than <em>who trained it</em>. The evidence (next slides) suggests that EU and Italian models are mostly <strong>small</strong>, <strong>late</strong>, and <strong>not competitive</strong> with the frontier, nor with the best global open-weights models</p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="italian-initiatives">Italian initiatives</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Model</th>
+					<th>Who</th>
+					<th>What</th>
+					<th>License</th>
+					<th>Status (Sep. 2026)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0">Minerva</a></td>
+					<td>Sapienza NLP, within the <a href="https://fondazione-fair.it/">FAIR</a> PNRR project; trained on CINECA’s Leonardo</td>
+					<td>up to <strong>7B</strong>, from scratch; 1.14T Italian + 1.14T English + 200B code tokens</td>
+					<td>Apache 2.0, open data</td>
+					<td>7B presented in Nov. 2024; still the flagship, research-grade</td>
+			</tr>
+			<tr>
+					<td><a href="https://huggingface.co/swap-uniba/LLaMAntino-3-ANITA-8B-Inst-DPO-ITA">LLaMAntino / ANITA</a></td>
+					<td>Univ. of Bari</td>
+					<td><em>fine-tunes</em> of Llama, Mistral, gpt-oss for Italian (not trained from scratch)</td>
+					<td>inherited; <a href="https://huggingface.co/m-polignano/ANITA-NEXT-24B-Magistral-2506-ITA">ANITA-NEXT</a>’s metadata says Apache 2.0, its card says “research only”</td>
+					<td>active research project; license hygiene is weak</td>
+			</tr>
+			<tr>
+					<td><a href="https://huggingface.co/Almawave/Velvet-14B">Velvet</a></td>
+					<td>Almawave (private); trained on Leonardo</td>
+					<td>2B and 14B, 6 languages (~23% Italian for the 14B)</td>
+					<td>Apache 2.0</td>
+					<td>released Jan.–Feb. 2025, static since</td>
+			</tr>
+			<tr>
+					<td><a href="https://huggingface.co/sapienzanlp/modello-italia-9b">Italia</a> → <a href="https://huggingface.co/domyn/Domyn-Small-v1.0">Domyn Small</a></td>
+					<td>iGenius (private), renamed Domyn in June 2025</td>
+					<td>Italia 9B (2024), then 10B; Domyn Small 10B (May 2026), 50+ languages</td>
+					<td>Italia 9B: MIT; Italia 10B: <em>custom, non-open</em>; Domyn Small: MIT</td>
+					<td>company focus moved to <em>proprietary</em> large models</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>A “<strong>national</strong>” model says nothing about its <em>openness</em>: compare Minerva (Apache, open data) with Italia 10B (restrictive license)</li>
+<li>All Italian models are in the <strong>2–24B</strong> range: one or two orders of magnitude below frontier models</li>
+</ul>
+</section><section>
+<h2 id="european-initiatives">European initiatives</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Initiative</th>
+					<th>Who</th>
+					<th>What</th>
+					<th>License</th>
+					<th>Status (Sep. 2026)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://huggingface.co/utter-project/EuroLLM-22B-2512">EuroLLM</a></td>
+					<td>IST Lisbon, Univ. of Edinburgh, Unbabel, et al.; EuroHPC and Horizon Europe funding</td>
+					<td>1.7B, 9B, 22B; 35 languages (all 24 EU ones), ~4T tokens</td>
+					<td>Apache 2.0</td>
+					<td>22B released Feb. 2026</td>
+			</tr>
+			<tr>
+					<td><a href="https://openeurollm.eu/">OpenEuroLLM</a></td>
+					<td>20 members, led by Charles University and AMD Silo AI; Digital Europe grant (Feb. 2025, 3 years)</td>
+					<td>“truly open” models for all EU languages</td>
+					<td>open (planned)</td>
+					<td>so far only small <em>reference</em> models (e.g. <a href="https://openeurollm.eu/blog/hplt-oellm-38-reference-models">38 monolingual 2.15B</a>, with HPLT); flagship still pending</td>
+			</tr>
+			<tr>
+					<td><a href="https://openllm-france.fr/en/main-page-en/">OpenLLM-France</a></td>
+					<td>French consortium, Bpifrance funding</td>
+					<td><a href="https://huggingface.co/OpenLLM-France/Lucie-7B">Lucie-7B</a>, then <a href="https://huggingface.co/collections/OpenLLM-France/luciole-llm">Luciole</a> 1B/8B/23B (~30% French)</td>
+					<td>open data, weights, code</td>
+					<td>research project</td>
+			</tr>
+			<tr>
+					<td><a href="https://www.iais.fraunhofer.de/en/industries_and_cross-sector_solutions/cross-sector_solutions/generative-ai/opengpt-x.html">Teuken / OpenGPT-X</a></td>
+					<td>Fraunhofer, FZ Jülich, et al.; ~€14M from the German government</td>
+					<td>7B, 24 EU languages</td>
+					<td>v0.4: Apache 2.0; v0.6: non-commercial</td>
+					<td>project <strong>ended</strong> in March 2025; models still downloadable</td>
+			</tr>
+			<tr>
+					<td><a href="https://www.apertus-ai.org/">Apertus</a></td>
+					<td>ETH Zurich, EPFL, CSCS (Swiss AI Initiative: CHF 20M + 10M GPU-hours)</td>
+					<td>8B, 70B; 1.5 (July 2026) adds images, reasoning, tools</td>
+					<td>Apache 2.0, fully open</td>
+					<td>the most complete open release in Europe; 2.0 planned for 2027</td>
+			</tr>
+			<tr>
+					<td><a href="https://docs.mistral.ai/getting-started/models/">Mistral AI</a></td>
+					<td>French private company</td>
+					<td>from small to large MoE models</td>
+					<td>mixed: Apache 2.0, Modified MIT, proprietary</td>
+					<td>the European vendor closest to the frontier; little training disclosure</td>
+			</tr>
+	</tbody>
+</table>
+</section><section>
+<h2 id="infrastructure-and-policy">Infrastructure and policy</h2>
+<ul>
+<li><strong>EuroHPC AI Factories</strong>: supercomputing centres opened to AI training and use
+<ul>
+<li><a href="https://www.hpc.cineca.it/projects/it4lia/">IT4LIA</a>, at CINECA in Bologna (with Austria and Slovenia), was among the <a href="https://eurohpc-ju.europa.eu/selection-first-seven-ai-factories-drive-europes-leadership-ai-2024-12-10_en">first seven</a> selected in Dec. 2024 (€1.5bn in total, EU + national funds)</li>
+<li>beware: IT4LIA is an AI <strong>Factory</strong>, <strong>not</strong> an AI <em>Gigafactory</em>: the <a href="https://www.eurohpc-ju.europa.eu/eurohpc-joint-undertaking-launches-ai-gigafactories-call-2026-07-30_en">Gigafactories call</a> (for frontier-scale training) opened only in July 2026, with a Nov. 2026 deadline</li>
+</ul>
+</li>
+<li><strong>Data</strong>: <a href="https://www.alt-edic.eu/">ALT-EDIC</a>’s <a href="https://www.alt-edic.eu/projects/llms4eu/">LLMs4EU</a> (March 2025, 3 years, 20+ countries) collects language resources for all EU languages, and targets sector-specific models</li>
+<li><strong>Italian policy</strong>: the <a href="https://www.agid.gov.it/sites/agid/files/2024-07/Strategia_italiana_per_l_Intelligenza_artificiale_2024-2026.pdf">Italian AI Strategy 2024–2026</a> and <a href="#/regulation">Law 132/2025</a> call for technology “tailored to the Italian context” and open research artifacts</li>
+</ul>
+<img src="./todo-europe-timeline.png" alt="TODO picture: a timeline 2023–2027 with two parallel lanes. Top lane 'global frontier': releases of GPT-4 (2023), Llama 3 / Qwen2 (2024), DeepSeek-R1 (Jan 2025), gpt-oss / Qwen3 (2025), Gemma 4 (2026). Bottom lane 'EU / Italy': Minerva-7B (Nov 2024), Teuken-7B (Nov 2024), Velvet (Jan 2025), OpenEuroLLM start (Feb 2025), OpenGPT-X end (Mar 2025), Apertus 1.0 (Sep 2025), EuroLLM-22B (Feb 2026), Gigafactories call (Jul 2026), OpenEuroLLM flagship ('pending'). Each release annotated with its size (e.g. 7B vs. hundreds of B). The visual message: EU releases are smaller and later." style="max-width: 95vw; max-height: 35vh; object-fit: contain;">
+</section><section>
+<h2 id="how-good-are-italian-models">How good are Italian models?</h2>
+<ul>
+<li>Measuring it is hard: translated English benchmarks are <em>not</em> enough
+<ul>
+<li><a href="https://aclanthology.org/2024.clicit-1.67/">ITA-Bench</a> (CLiC-it 2024) mixes translated tasks with native Italian datasets</li>
+<li><a href="https://arxiv.org/abs/2502.02289">Evalita-LLM</a> (2025) uses <em>native</em> Italian tasks, and multiple prompts per task, since rankings are <em>sensitive</em> to prompt wording (<a href="https://huggingface.co/spaces/evalitahf/evalita_llm_leaderboard">leaderboard</a>)</li>
+</ul>
+</li>
+<li>Published numbers show that small Italian models can be <em>useful</em>, e.g. <a href="https://huggingface.co/Almawave/Velvet-2B">Velvet-2B</a> reports 39.6 on Italian MMLU and 61.9–86.6 on ITA-Bench tasks…</li>
+<li>… but there is <strong>no robust evidence</strong> that Italian models outperform large multilingual open models (e.g. Qwen3, Gemma 4), let alone frontier ones, <em>even on Italian</em></li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p>Leaderboard positions change every few months: when citing a rank, always write the <strong>snapshot date</strong></p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="recurring-issues-of-european-open-models">Recurring issues of European open models</h2>
+<ol>
+<li><strong>Data</strong>: too little high-quality text in less-resourced languages (the very reason for LLMs4EU and for synthetic data)</li>
+<li><strong>Compute</strong>: every project depends on a public supercomputer allocation (Leonardo, MareNostrum 5, JUWELS, Alps); an “open” model is not <em>reproducible</em> by anyone who lacks one</li>
+<li><strong>Scale and timing</strong>: models of 2–24B parameters, released <em>months to years</em> after comparable global open models; flagships “planned” or “pending”</li>
+<li><strong>Maintenance</strong>: projects have <em>finite</em> funding (e.g. OpenGPT-X ended in 2025): who fixes, updates, and re-evaluates the models afterwards?</li>
+<li><strong>Adoption</strong>: public-administration use is mostly <em>aspirational</em> in the sources, not a demonstrated large-scale deployment</li>
+</ol>
+<span class="fragment ">
+  <blockquote>
+<p>These initiatives are valuable for <strong>research</strong>, <strong>openness</strong>, and <strong>language coverage</strong>; they are (still) <strong>not</strong> a production-grade alternative to global models. An EU organization can get operational control by running a <em>global</em> open-weights model on <em>EU</em> infrastructure</p>
+</blockquote>
+</span>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="open-models-checklist">
+<h2 id="engineering-take-aways-pre-adoption-checklist">Engineering take-aways: pre-adoption checklist</h2>
+<p>The compliance unit is <strong>checkpoint + license version + code licenses + data licenses + deployment + intended use</strong>, not a brand name</p>
+<table>
+	<thead>
+			<tr>
+					<th>Question</th>
+					<th>What to check</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>exactly <em>which</em> artifact?</td>
+					<td>repository, checkpoint hash, release date, license version</td>
+			</tr>
+			<tr>
+					<td>commercial use?</td>
+					<td>Apache/MIT: yes; CC-BY-NC: no; custom licenses: read the use restrictions</td>
+			</tr>
+			<tr>
+					<td>on-premise use?</td>
+					<td>the license, not the availability of files (e.g. Llama 4 multimodal in the EU)</td>
+			</tr>
+			<tr>
+					<td>fine-tuning, distillation, merging?</td>
+					<td>whether derivatives inherit restrictions; license of <em>each</em> parent model</td>
+			</tr>
+			<tr>
+					<td>hosted service or redistribution?</td>
+					<td>whether serving an API counts as distribution (it does for Gemma 3); attribution and naming duties</td>
+			</tr>
+			<tr>
+					<td>geography or scale limits?</td>
+					<td>e.g. Llama 4: EU multimodal clause, 700M monthly users</td>
+			</tr>
+			<tr>
+					<td>training and fine-tuning data?</td>
+					<td>provenance, licenses (e.g. ODC-By), personal data</td>
+			</tr>
+			<tr>
+					<td>AI Act role?</td>
+					<td>are <em>we</em> becoming a GPAI provider (e.g. by fine-tuning and distributing)? does the open-source exemption apply?</td>
+			</tr>
+			<tr>
+					<td>reproducibility needed?</td>
+					<td>self-hosting: permissive weights suffice; audit or research: prefer fully open models (OLMo 3, Apertus)</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>Mnemonic: <strong>weights → license → recipe → data → regulatory role</strong>: a model is only as open as the layer that matters for your use</p>
+</blockquote>
+</section><section>
+<h2 id="engineering-take-aways-three-scenarios">Engineering take-aways: three scenarios</h2>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><h3 id="a-unibo-lab-on-premise">A UniBo lab, on-premise</h3>
+<ul>
+<li>wants: local RAG/chat, fine-tuning on university material, reproducible experiments</li>
+<li>good fits: OLMo 3, Apertus (reproducibility); Gemma 4, Qwen3, gpt-oss, Mistral Apache models (weights only suffice); Minerva (Italian-centric research)</li>
+<li>ruled out: Llama 4 <em>multimodal</em> (EU clause)</li>
+</ul>
+</div>
+<div class="col " style="text-align: left;"><h3 id="an-italian-startup-reselling-a-fine-tune">An Italian startup reselling a fine-tune</h3>
+<ul>
+<li>wants: fine-tune, host, sell the model</li>
+<li>good fits: Apache/MIT weights (Gemma 4, Qwen3, gpt-oss, DeepSeek-R1, Mistral Large 3, OLMo 3, Domyn Small)</li>
+<li>beware: R1 <em>distills</em> (Llama-based ones inherit Llama’s license); Gemma 3 (restrictions flow to customers); Teuken v0.6 (non-commercial)</li>
+</ul>
+</div>
+<div class="col " style="text-align: left;"><h3 id="a-public-administration">A public administration</h3>
+<ul>
+<li>wants: EU-controlled deployment and auditability</li>
+<li><em>auditability</em>: Apertus, OLMo 3, Minerva</li>
+<li><em>operational control</em>: any permissively licensed model on EU infrastructure (incl. Mistral, EuroLLM, Velvet, Domyn Small)</li>
+<li>beware: IT4LIA/CINECA provides <em>compute</em>, not a model license</li>
+</ul>
+</div>
+</div>
+</div>
+
+</section>
+</section><section>
+<h1 id="agentic-technique-selection-criteria">Agentic Technique Selection Criteria</h1>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="technique-selection">
+<h2 id="which-technique-the-general-concept">Which technique? The general concept</h2>
+<p>Given a model, there are several ways to make it <em>behave</em> as your task requires, ordered by increasing <em>effort</em>:</p>
+<ol>
+<li><strong>Prompting</strong>: instructions, examples, and output formats in the prompt (cf. <em>prompt engineering</em> lecture)
+<ul>
+<li>changes the model’s <em>behaviour</em>, at <em>no</em> training cost; limited by what the model already <em>knows</em> and by the <em>context window</em></li>
+</ul>
+</li>
+<li><strong>Tools</strong> and <strong>agents</strong>: let the model <em>act</em> (call APIs, query databases, run code) and iterate (cf. <em>tools and agents</em> lecture)
+<ul>
+<li>gives access to <em>live</em> data and <em>actions</em>; adds complexity, latency, and <em>security</em> concerns</li>
+</ul>
+</li>
+<li><strong>Retrieval-Augmented Generation</strong> (RAG): retrieve relevant documents and put them in the prompt (<a href="https://arxiv.org/abs/2005.11401">Lewis et al., 2020</a>; cf. <em>RAG</em> lecture)
+<ul>
+<li>gives access to <em>private</em> or <em>up-to-date</em> knowledge; adds an indexing pipeline to maintain</li>
+</ul>
+</li>
+<li><strong>Skills</strong> and <strong>workflows</strong>: package instructions, tools, and steps into reusable procedures (cf. <em>skills</em> and <em>workflows</em> lectures)
+<ul>
+<li>trade <em>flexibility</em> (skills: the agent decides) for <em>predictability</em> (workflows: the engineer decides)</li>
+</ul>
+</li>
+<li><strong>Fine-tuning</strong>: further <em>train</em> the model on task-specific examples
+<ul>
+<li>changes <em>style</em>, <em>format</em>, and <em>narrow skills</em> reliably; costly, needs data, and ties you to a model (and a license allowing it!)</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="which-technique-an-intuitive-example">Which technique? An intuitive example</h2>
+<img src="./todo-technique-decision-tree.png" alt="TODO picture: decision tree starting from 'Is prompting (with good instructions and a few examples) good enough on your validation set?' → yes: 'stop, use prompting'. no → 'What is missing?' branching into: 'knowledge the model does not have (private / recent documents)' → RAG; 'ability to act or to get live data' → tools / agents; 'a multi-step procedure to be followed reliably' → workflow (if steps are fixed) or skill (if the agent should decide when to apply it); 'a consistent style, format, or narrow skill that prompting cannot elicit' → fine-tuning (only if data, budget and license allow). Each leaf annotated with an example from the running example: 'answer questions about the PhD regulations' (RAG), 'check the candidate's university in a ranking API' (tools), 'extract → validate → score → report pipeline' (workflow), 'write evaluations in the committee's house style' (fine-tuning)." style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<p>(cf. OpenAI’s <a href="https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy">optimizing LLM accuracy</a> guide, and Anthropic’s <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a>)</p>
+</section><section>
+<h2 id="which-technique-trade-offs">Which technique? Trade-offs</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Technique</th>
+					<th>Quality</th>
+					<th>Cost</th>
+					<th>Control</th>
+					<th>Compliance</th>
+					<th>Time-to-market</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Prompting</strong></td>
+					<td>good, if the model knows enough</td>
+					<td>low (but long prompts cost tokens at each request)</td>
+					<td>high: prompts are versioned text</td>
+					<td>easy to audit</td>
+					<td>fastest</td>
+			</tr>
+			<tr>
+					<td><strong>Tools / agents</strong></td>
+					<td>high for tasks needing actions or live data</td>
+					<td>medium (more requests per task)</td>
+					<td>medium: behaviour is less predictable</td>
+					<td>needs <em>least privilege</em> and logging</td>
+					<td>medium</td>
+			</tr>
+			<tr>
+					<td><strong>RAG</strong></td>
+					<td>high for knowledge-intensive tasks</td>
+					<td>medium (indexing + longer prompts)</td>
+					<td>high: knowledge base is inspectable and updatable</td>
+					<td>data stays in <em>your</em> store; access control needed</td>
+					<td>medium</td>
+			</tr>
+			<tr>
+					<td><strong>Skills</strong></td>
+					<td>high, if the agent picks the right skill</td>
+					<td>low–medium</td>
+					<td>medium: the agent decides when to apply them</td>
+					<td>depends on the tools the skill allows</td>
+					<td>fast (write a document)</td>
+			</tr>
+			<tr>
+					<td><strong>Workflows</strong></td>
+					<td>high and <em>consistent</em></td>
+					<td>medium</td>
+					<td>highest: steps are fixed by the engineer</td>
+					<td>easy to audit step by step</td>
+					<td>slow (more code)</td>
+			</tr>
+			<tr>
+					<td><strong>Fine-tuning</strong></td>
+					<td>highest for <em>narrow</em> tasks, if data suffice</td>
+					<td>high (data, training, re-training at each model update)</td>
+					<td>low–medium: behaviour baked into weights</td>
+					<td>training data must be lawful; license must allow it</td>
+					<td>slowest</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>These options <strong>combine</strong>: e.g. a workflow whose steps use prompting, RAG, and tools</li>
+<li>Empirically, RAG tends to outperform fine-tuning at injecting <em>new knowledge</em> (<a href="https://arxiv.org/abs/2312.05934">Ovadia et al., 2023</a>), while fine-tuning is better at shaping <em>form</em></li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p><strong>Rule of thumb</strong>: start with prompting, measure, and add complexity (tools, RAG, workflows, fine-tuning) only when evaluations show that it is <em>needed</em></p>
+</blockquote>
+</span>
+
+</section>
+</section><section>
+<h1 id="model-selection-criteria">Model Selection Criteria</h1>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="model-selection">
+<h2 id="which-model-the-general-concept">Which model? The general concept</h2>
+<ul>
+<li>Choosing a model is a <em>governance</em> decision, since it affects all five dimensions at once:
+<ul>
+<li><em>quality</em> (capabilities), <em>cost</em> (price per token, or hardware), <em>control</em> (open weights? version pinning? deprecation?), <em>compliance</em> (license, provider’s jurisdiction and data policies), <em>time-to-market</em> (availability, ecosystem)</li>
+</ul>
+</li>
+<li>It requires <em>information</em> about models, which comes from:
+<ol>
+<li>their <strong>documentation</strong> (model cards, system cards, licenses, terms of service)</li>
+<li>public <strong>evaluations</strong> (benchmarks, leaderboards)</li>
+<li><strong>your own</strong> evaluations on the task at hand</li>
+</ol>
+</li>
+<li>It is <strong>not</strong> a one-off decision: models are <em>updated</em>, <em>deprecated</em>, and <em>surpassed</em> every few months, so the choice must be <em>re-assessed</em> periodically (and made <em>reproducible</em>)</li>
+</ul>
+<p>(cf. <a href="../llmaas/#/model-zoos">model zoos</a> in the LLM-as-a-Service lecture)</p>
+</section><section>
+<h2 id="model-documentation-model-cards-system-cards-datasheets">Model documentation: model cards, system cards, datasheets</h2>
+<ul>
+<li><strong>Model cards</strong> (<a href="https://arxiv.org/abs/1810.03993">Mitchell et al., 2019</a>): short documents accompanying a model, reporting
+<ul>
+<li><em>intended uses</em> and <em>out-of-scope</em> uses, <em>training data</em> (summary), <em>evaluation</em> results (also <em>disaggregated</em> by groups), <em>ethical considerations</em>, <em>limitations</em></li>
+<li>nowadays standard on model zoos (e.g. <a href="https://huggingface.co/docs/hub/model-cards">Hugging Face’s model card guide</a>)</li>
+</ul>
+</li>
+<li><strong>Datasheets for datasets</strong> (<a href="https://arxiv.org/abs/1803.09010">Gebru et al., 2021</a>): the same idea, for training data (motivation, composition, collection, recommended uses)</li>
+<li><strong>System cards</strong>: longer reports published by frontier providers for each model release, focusing on <em>safety</em> evaluations, red-teaming, and mitigations
+<ul>
+<li>e.g. <a href="https://openai.com/index/gpt-oss-model-card/">OpenAI’s</a> and <a href="https://www.anthropic.com/system-cards">Anthropic’s</a> system cards</li>
+</ul>
+</li>
+</ul>
+<img src="./todo-model-card-anatomy.png" alt="TODO picture: anatomy of a model card as a document mock-up with labelled sections (Model details, Intended use, Out-of-scope use, Training data, Evaluation (with a small disaggregated results table), Ethical considerations, Limitations, License); each section annotated with the governance dimension it informs (quality, compliance, control)." style="max-width: 95vw; max-height: 35vh; object-fit: contain;">
+<ul>
+<li><strong>What to look for</strong>, as an engineer: <em>license</em>, <em>languages</em>, <em>context window</em>, <em>knowledge cut-off</em>, <em>intended uses</em> (does yours fit?), known <em>limitations</em>, and <em>evaluations</em> relevant to your task</li>
+</ul>
+</section><section>
+<h2 id="measuring-general-capabilities-frontier-benchmarks">Measuring <em>general</em> capabilities: frontier benchmarks</h2>
+<p>As models <em>saturate</em> classic benchmarks, new ones try to measure what models <strong>cannot</strong> (yet) do:</p>
+<ul>
+<li><strong>ARC-AGI</strong> (<a href="https://arxiv.org/abs/1911.01547">Chollet, 2019</a>): intelligence as <em>skill-acquisition efficiency</em>, measured on visual puzzles that are easy for humans, and require <em>abstracting</em> rules from a few examples
+<ul>
+<li><a href="https://arxiv.org/abs/2505.11831">ARC-AGI-2</a> (2025) raised the difficulty; the <a href="https://arcprize.org/blog/arc-prize-2025-results-analysis">ARC Prize 2025</a> grand prize went <em>unclaimed</em></li>
+<li><a href="https://arcprize.org/blog/arc-agi-3-launch">ARC-AGI-3</a> (March 2026) is <em>interactive</em>: agents must explore game-like environments; at launch, humans solved all of them, frontier models almost none</li>
+</ul>
+</li>
+<li><strong>Humanity’s Last Exam</strong> (<a href="https://arxiv.org/abs/2501.14249">Phan et al., 2025</a>): 2,500 expert-written questions across disciplines, designed to be <em>un-googleable</em>
+<ul>
+<li>best models went from single digits (early 2025) to ~60% (cf. <a href="https://artificialanalysis.ai/evaluations/humanitys-last-exam">Artificial Analysis</a>, September 2026)</li>
+</ul>
+</li>
+<li><strong>METR’s time horizon</strong> (<a href="https://arxiv.org/abs/2503.14499">Kwa et al., 2025</a>): the <em>length</em> of tasks (in human-expert time) that an agent completes with 50% success
+<ul>
+<li>it has been <em>doubling</em> every ~7 months (cf. <a href="https://metr.org/time-horizons">live measurements</a>)</li>
+</ul>
+</li>
+<li><strong>Aggregated views</strong>: the <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report">Stanford AI Index 2026</a> describes a <em>jagged frontier</em>: models winning maths olympiad gold medals, yet failing at reading analog clocks</li>
+</ul>
+<img src="./todo-benchmark-saturation.png" alt="TODO picture: line chart 'best model score over time' (2019–2026) for several benchmarks: MMLU, GPQA, SWE-bench, HLE, ARC-AGI-2, each curve rising from low values and flattening near the top (saturation); a dashed 'human expert' reference line for some of them; ARC-AGI-3 shown as a new curve starting near 0% in 2026. Caption: 'each benchmark is useful until it saturates'." style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+<blockquote>
+<p><strong>Engineering take-away</strong>: frontier benchmarks tell you where the <em>state of the art</em> is, not whether a model is good for <strong>your</strong> task</p>
+</blockquote>
+</section><section>
+<h2 id="how-to-choose-a-model-for-a-given-task">How to choose a model for a given task?</h2>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><h3 id="hard-constraints-filter">Hard constraints (filter)</h3>
+<ol>
+<li><strong>Deployment</strong>: on-premise (hardware available?) or on-cloud (budget available?)</li>
+<li><strong>Data protection</strong>: can the data leave your premises? which jurisdiction? (cf. GDPR)</li>
+<li><strong>License</strong>: is the intended use (e.g. commercial) permitted?</li>
+<li><strong>Modalities</strong>: text only? images? audio?</li>
+<li><strong>Capabilities</strong>: tool calling? structured output? reasoning?</li>
+<li><strong>Context window</strong>: will prompts + documents + history fit?</li>
+<li><strong>Languages</strong>: e.g. is Italian supported well enough?</li>
+</ol>
+</div>
+<div class="col " style="text-align: left;"><h3 id="soft-criteria-rank">Soft criteria (rank)</h3>
+<ul>
+<li><em>quality</em> on <strong>your</strong> task (see next slide)</li>
+<li><em>latency</em> (time to first token, tokens per second)</li>
+<li><em>cost</em> per request (tokens × price, or hardware amortization)</li>
+<li><em>stability</em> of the offer (will the model be deprecated soon?)</li>
+<li><em>ecosystem</em> (client libraries, documentation, community)</li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p><strong>Rule of thumb</strong>: start from the <em>smallest/cheapest</em> model satisfying the hard constraints, measure its quality on your task, and move to <em>bigger</em> models only if needed</p>
+</blockquote>
+</span>
+</div>
+</div>
+</div>
+<img src="./todo-model-selection-flowchart.png" alt="TODO picture: left-to-right funnel/flowchart. Start: 'all models in the zoo' → filter by deployment &amp; data protection → filter by license → filter by modalities &amp; capabilities → filter by context window &amp; language → 'shortlist (3-5 models)' → 'evaluate on your own test set' → 'pick the cheapest one above the quality threshold'. Each filter drawn as a narrowing funnel stage." style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+</section><section>
+<h2 id="how-to-evaluate-models">How to evaluate models?</h2>
+<h3 id="1-public-benchmarks-and-leaderboards-generic-cheap-to-consult">1. Public <strong>benchmarks</strong> and <strong>leaderboards</strong> (generic, cheap to consult)</h3>
+<ul>
+<li><em>benchmarks</em>: fixed datasets + metrics for some capability
+<ul>
+<li>e.g. knowledge (<a href="https://arxiv.org/abs/2009.03300">MMLU</a>), expert reasoning (<a href="https://arxiv.org/abs/2311.12022">GPQA</a>), coding (<a href="https://www.swebench.com/">SWE-bench</a>), tool use, long context…</li>
+<li>holistic frameworks like <a href="https://arxiv.org/abs/2211.09110">HELM</a> evaluate many models on many scenarios and metrics (not just accuracy)</li>
+</ul>
+</li>
+<li><em>leaderboards</em>: rankings aggregating benchmark results or human preferences
+<ul>
+<li>e.g. <a href="https://arena.ai/">Arena</a> (formerly Chatbot Arena / LMArena: humans blindly compare pairs of answers, cf. <a href="https://arxiv.org/abs/2403.04132">Chiang et al., 2024</a>; but see also the critique by <a href="https://arxiv.org/abs/2504.20879">Singh et al., 2025</a>), <a href="https://artificialanalysis.ai/">Artificial Analysis</a> (quality vs. price vs. speed)</li>
+</ul>
+</li>
+<li><strong>caveats</strong>:
+<ul>
+<li><em>data contamination</em>: benchmark items may have leaked into training data (cf. <a href="https://arxiv.org/abs/2406.04244">Xu et al., 2024</a>)</li>
+<li><em>saturation</em>: top models all score near 100%, so benchmarks stop discriminating (e.g. Hugging Face <a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/discussions/1135">retired</a> its Open LLM Leaderboard in 2025)</li>
+<li><em>Goodhart’s law</em>: once a benchmark becomes a target, it stops being a good measure</li>
+<li>benchmarks measure <em>generic</em> skills, possibly <em>not</em> the ones your task requires</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-task-specific-evaluation-the-one-that-really-matters">2. <strong>Task-specific</strong> evaluation (the one that really matters)</h3>
+<ul>
+<li>build a small <em>validation set</em> of realistic inputs for <strong>your</strong> task (with expected outputs, when possible)</li>
+<li>run each shortlisted model on it, and <em>score</em> outputs: exact match, schema validity, custom checks, or <em>LLM-as-a-Judge</em></li>
+<li>measure <em>latency</em> and <em>cost</em> too (both reported in the API responses’ metadata, e.g. <code>usage</code>)</li>
+<li>(systematic infrastructure for this will be discussed in the <em>prompt engineering</em> lecture)</li>
+</ul>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="compare-models">
+<h2 id="exercise-1-comparing-models-on-the-running-example-pt-1">Exercise 1: Comparing Models on the Running Example (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: the admission committee wants to pick the model to be used for letter evaluation (cf. <a href="../llmaas/letter_evaluator_openai.py">Example 3 of the LLM-as-a-Service lecture</a>), based on <em>evidence</em> rather than on hype</p>
+</blockquote>
+<h3 id="to-do-list">TO-DO List</h3>
+<ol>
+<li><strong>Shortlist</strong> 3 models, e.g.:
+<ul>
+<li>one small <em>free</em> model on Open Router,</li>
+<li>one larger (possibly free) model on Open Router,</li>
+<li>one <em>local</em> model via Ollama (if your hardware allows it)</li>
+</ul>
+</li>
+<li>Run the letter evaluator on <strong>all 3 letters</strong> of the running example, <strong>5 times</strong> per letter per model
+<ul>
+<li>the script is already parametric w.r.t. the model: just change <code>OPENAI_MODEL</code> (and <code>OPENAI_BASE_URL</code> for Ollama)</li>
+</ul>
+</li>
+<li>For each model, <strong>collect</strong>:
+<ul>
+<li>the <em>scores</em> (average, and <em>variance</em> across the 5 runs: is the model <em>consistent</em>?)</li>
+<li>the <em>agreement</em> among models (do they rank candidates in the same way?)</li>
+<li>the number of <em>failures</em> (e.g. invalid JSON, validation errors)</li>
+<li><em>latency</em> (wall-clock time per request) and <em>tokens</em> used (from <code>response.usage</code>), hence <em>cost</em></li>
+</ul>
+</li>
+<li>Summarize the results in a <strong>table</strong>, and motivate your choice</li>
+</ol>
+</section><section>
+<h2 id="exercise-1-comparing-models-on-the-running-example-pt-2">Exercise 1: Comparing Models on the Running Example (pt. 2)</h2>
+<h3 id="decision-points-and-hints">Decision points and hints</h3>
+<ul>
+<li>How to automate the runs?
+<ul>
+<li>e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file</li>
+<li>reuse the caching mechanism of <a href="../llmaas/">Exercise 1 of the LLM-as-a-Service lecture</a>? (careful: caching would hide the variance!)</li>
+</ul>
+</li>
+<li>How to measure time?
+<ul>
+<li>e.g. <code>time.perf_counter()</code> before and after the request</li>
+</ul>
+</li>
+<li>How to compute costs?
+<ul>
+<li><code>evaluate_letter(...)</code> only returns the parsed <code>LetterInfo</code>: adapt it to also return the whole <code>response</code> (or its <code>usage</code>)</li>
+<li>multiply <code>usage.prompt_tokens</code> and <code>usage.completion_tokens</code> by the prices listed in the zoo (Open Router also reports <code>usage.cost</code> directly)</li>
+</ul>
+</li>
+<li>How to deal with rate limits of free models?
+<ul>
+<li>reuse the retry mechanism of <a href="../llmaas/">Exercise 2 of the LLM-as-a-Service lecture</a></li>
+</ul>
+</li>
+<li>What if models disagree?
+<ul>
+<li>which one is <em>right</em>? you need a <strong>reference</strong>: e.g. score the letters yourself, and compare each model against your scores</li>
+</ul>
+</li>
+</ul>
+<h3 id="how-to-test-it">How to test it?</h3>
+<ul>
+<li>the table should contain 3 models × 3 letters × 5 runs = 45 rows (minus failures, which should be <em>counted</em>, not hidden)</li>
+<li>re-running the script with a <em>different temperature</em> (e.g. <code>0</code> vs. <code>1</code>) should visibly affect the variance</li>
+</ul>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="decision-record">
+<h2 id="exercise-2-a-governance-decision-record-for-the-running-example-pt-1">Exercise 2: A Governance Decision Record for the Running Example (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: the University asks the committee to <em>justify</em> the adoption of the admission assistant, before using it on real applications</p>
+</blockquote>
+<h3 id="to-do-list-1">TO-DO List</h3>
+<p>Write a short (2–4 pages) <strong>decision record</strong>, answering:</p>
+<ol>
+<li><strong>Regulatory classification</strong>: is the system <em>high-risk</em> under the EU AI Act? Which <em>obligations</em> follow for the University (as <em>deployer</em>)? Which GDPR <em>obligations</em> apply to candidates’ documents?</li>
+<li><strong>Deployment</strong>: cloud API, hosted open model, or on-premise? Support the choice with a <em>cost estimate</em> (number of applications per year × tokens per application × price, vs. hardware) and <em>privacy</em> considerations</li>
+<li><strong>Model</strong>: which model? Support the choice with the results of <a href="#/compare-models">Exercise 1</a>, and with the model’s <em>documentation</em>
+<ul>
+<li>apply the <a href="#/open-models-checklist">pre-adoption checklist</a> to the <strong>exact checkpoint</strong>: license, multimodal restrictions, derivatives, AI Act role</li>
+</ul>
+</li>
+<li><strong>Technique</strong>: which parts rely on prompting / structured output / tools / RAG? Why not fine-tuning?</li>
+<li><strong>Human oversight</strong>: which outputs are <em>reviewed</em> by humans, how, and who is <em>accountable</em> for the final decision?</li>
+<li><strong>Monitoring</strong>: what is <em>logged</em>, and when is the decision <em>re-assessed</em> (e.g. model deprecation, new regulations)?</li>
+</ol>
+</section><section>
+<h2 id="exercise-2-a-governance-decision-record-for-the-running-example-pt-2">Exercise 2: A Governance Decision Record for the Running Example (pt. 2)</h2>
+<h3 id="decision-points-and-hints-1">Decision points and hints</h3>
+<ul>
+<li>Take inspiration from <em>Architecture Decision Records</em> (ADRs, cf. <a href="https://adr.github.io/">https://adr.github.io/</a>): <em>context</em>, <em>options considered</em>, <em>decision</em>, <em>consequences</em></li>
+<li>Use the <em>five dimensions</em> (quality, cost, control, compliance, time-to-market) as the evaluation criteria for each option, possibly in a table</li>
+<li>For regulation, cite the <strong>article</strong> of the law supporting each claim</li>
+<li>For costs, state your <em>assumptions</em> explicitly (e.g. tokens per document), and compute a <em>break-even</em> point</li>
+<li>Be explicit about what the system does <strong>not</strong> decide: e.g. scores as <em>suggestions</em> to the committee, never automatic rejections</li>
+</ul>
+<h3 id="how-to-assess-it">How to assess it?</h3>
+<ul>
+<li>Could a colleague <em>reproduce</em> your choice from the record alone?</li>
+<li>Would the record survive a question from the University’s <em>Data Protection Officer</em>?</li>
+<li>Does the record say <em>when</em> it should be revised?</li>
+</ul>
+
+</section>
+</section><section>
+<h1 id="lecture-is-over">Lecture is Over</h1>
+<br>
+<p>Compiled on: 2026-09-30
+ — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
+<p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
+</section>
+
+  
+
+
+</div>
+      
+
+    </div>
+<script type="text/javascript" src="/slides-module2/reveal-hugo/object-assign.js"></script>
+
+<a href="/slides-module2/reveal-js/dist/print/" id="print-location" style="display: none;"></a>
+
+<script type="application/json" id="reveal-hugo-site-params">{"custom_theme":"custom-theme.scss","custom_theme_compile":true,"custom_theme_options":{"enablesourcemap":true,"targetpath":"css/custom-theme.css"},"height":"1080","highlight_theme":"solarized-dark","history":true,"mermaid":[{}],"slide_number":true,"theme":"league","transition":"slide","transition_speed":"fast","width":"1920"}</script>
+<script type="application/json" id="reveal-hugo-page-params">null</script>
+
+<script src="/slides-module2/reveal-js/dist/reveal.js"></script>
+
+
+  
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/markdown/markdown.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/highlight/highlight.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/zoom/zoom.js"></script>
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/notes/notes.js"></script>
+  
+  
+  <script type="text/javascript" src="/slides-module2/reveal-js/plugin/notes/notes.js"></script>
+
+
+
+
+<script type="text/javascript">
+  
+  
+  function camelize(map) {
+    if (map) {
+      Object.keys(map).forEach(function(k) {
+        newK = k.replace(/(\_\w)/g, function(m) { return m[1].toUpperCase() });
+        if (newK != k) {
+          map[newK] = map[k];
+          delete map[k];
+        }
+      });
+    }
+    return map;
+  }
+
+  var revealHugoDefaults = { center: true, controls: true, history: true, progress: true, transition: "slide" };
+
+  var revealHugoPlugins = {
+    plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom ]
+   };
+  var revealHugoSiteParams = JSON.parse(document.getElementById('reveal-hugo-site-params').innerHTML);
+  var revealHugoPageParams = JSON.parse(document.getElementById('reveal-hugo-page-params').innerHTML);
+  
+  var options = Object.assign({},
+    camelize(revealHugoDefaults),
+    camelize(revealHugoSiteParams),
+    camelize(revealHugoPageParams),
+    camelize(revealHugoPlugins));
+  Reveal.initialize(options);
+</script>
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+</script>
+
+<script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script>
+  if (/.*?(\?|&)print-pdf/.test(window.location.toString())) {
+      var ytVideos = document.getElementsByTagName("iframe")
+      for (let i = 0; i < ytVideos.length; i++) {
+          var videoFrame = ytVideos[i]
+          var isYouTube = /^https?:\/\/(www.)youtube\.com\/.*/.test(videoFrame.src)
+          if (isYouTube) {
+              console.log(`Removing ${videoFrame.src}`)
+              var parent = videoFrame.parentElement
+              videoFrame.remove()
+              var p = document.createElement('p')
+              p.append(
+                  document.createTextNode(
+                      "There was an embedded video here, but it is disabled in the printed version of the slides."
+                  )
+              )
+              p.append(document.createElement('br'))
+              p.append(
+                  document.createTextNode(
+                      `Visit instead ${
+                          videoFrame.src
+                      } or ${
+                          videoFrame.src.replace(
+                              /(^https?:\/\/(www.)youtube\.com)\/(embed\/)(\w+).*/,
+                              "https://www.youtube.com/watch?v=$4"
+                          )
+                      }`
+                  )
+              )
+              parent.appendChild(p)
+          }
+      }
+  }
+</script>
+
+
+    
+  
+
+</body></html>

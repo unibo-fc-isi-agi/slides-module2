@@ -126,6 +126,7 @@
 <p>Ensure you have the <strong>required hardware</strong> (e.g. Nvidia GPU, Apple Silicon, etc.)</p>
 <ul>
 <li>details and configuration caveats: <a href="https://docs.ollama.com/gpu">https://docs.ollama.com/gpu</a></li>
+<li>how to tell whether a model <em>fits</em> your machine: see <a href="#/local-requirements">Running models locally</a> below</li>
 </ul>
 </li>
 <li>
@@ -184,7 +185,7 @@
 </span></span></code></pre></div></li>
 </ol>
 </section><section>
-<h2 id="on-premise-example-with-ollama-pt-3-1">On-premise Example with Ollama pt. 3</h2>
+<h2 id="on-premise-example-with-ollama-pt-4">On-premise Example with Ollama pt. 4</h2>
 <ol start="6">
 <li>Should you ever want to use the model <em>programmatically</em>, you can use Ollama’s <strong>API</strong>, which is <em>partially</em> compatible with OpenAI’s API
 <ul>
@@ -233,6 +234,243 @@
 </ul>
 </li>
 </ol>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="local-requirements">
+<h2 id="running-models-locally-what-does-it-take-pt-1">Running models locally: what does it take? (pt. 1)</h2>
+<h3 id="the-general-concept-a-model-is-a-huge-array-of-numbers">The general concept: a model is a (huge) array of numbers</h3>
+<ul>
+<li>An LLM is essentially a collection of <strong>parameters</strong> (a.k.a. <em>weights</em>), i.e. numbers learned during training
+<ul>
+<li>model <em>size</em> is expressed in number of parameters: e.g. <code>7B</code> = 7 billion parameters, <code>70B</code> = 70 billion</li>
+</ul>
+</li>
+<li>To <strong>run</strong> a model (<em>inference</em>), all its weights must be loaded in the <em>memory</em> of the device doing the computation
+<ul>
+<li>ideally, the GPU’s memory (<strong>VRAM</strong>), as GPUs are much faster than CPUs at the matrix multiplications LLMs are made of</li>
+</ul>
+</li>
+<li>Hence, the <strong>memory footprint</strong> of a model is roughly:</li>
+</ul>
+<blockquote>
+<p><strong>memory</strong> ≈ (number of params × bits per param / 8) [<em>weights</em>] + <em>KV cache</em> [grows with context length] + <em>overhead</em></p>
+</blockquote>
+<ul>
+<li>the <em>KV cache</em> stores intermediate results for all tokens in the current context: the <strong>longer the context</strong>, the more memory is needed
+<ul>
+<li>this is why local runtimes (e.g. Ollama) use a <em>smaller</em> default context window than the model’s maximum</li>
+</ul>
+</li>
+</ul>
+<img src="./todo-memory-footprint.png" alt="TODO picture: stacked bar chart of memory needed to run a 7B, 14B, 32B, and 70B model, each at 16-bit, 8-bit, and 4-bit precision; each bar split into 'weights' (large) and 'KV cache' (smaller, growing with context length). Horizontal dashed lines mark typical devices: 8 GB, 16 GB, 24 GB, 48 GB, 80 GB." style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+</section><section>
+<h2 id="running-models-locally-what-does-it-take-pt-2">Running models locally: what does it take? (pt. 2)</h2>
+<h3 id="rule-of-thumb-for-the-weights-alone">Rule of thumb for the weights alone</h3>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: right">Model size</th>
+					<th style="text-align: right">32-bit (<code>fp32</code>)</th>
+					<th style="text-align: right">16-bit (<code>fp16</code>/<code>bf16</code>)</th>
+					<th style="text-align: right">8-bit (<code>int8</code>, <code>Q8_0</code>)</th>
+					<th style="text-align: right">~4-bit (<code>Q4_K_M</code>)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: right">1B</td>
+					<td style="text-align: right">4 GB</td>
+					<td style="text-align: right">2 GB</td>
+					<td style="text-align: right">~1 GB</td>
+					<td style="text-align: right">~0.6 GB</td>
+			</tr>
+			<tr>
+					<td style="text-align: right">7B</td>
+					<td style="text-align: right">28 GB</td>
+					<td style="text-align: right">14 GB</td>
+					<td style="text-align: right">~7.5 GB</td>
+					<td style="text-align: right">~4.3 GB</td>
+			</tr>
+			<tr>
+					<td style="text-align: right">14B</td>
+					<td style="text-align: right">56 GB</td>
+					<td style="text-align: right">28 GB</td>
+					<td style="text-align: right">~15 GB</td>
+					<td style="text-align: right">~8.6 GB</td>
+			</tr>
+			<tr>
+					<td style="text-align: right">32B</td>
+					<td style="text-align: right">128 GB</td>
+					<td style="text-align: right">64 GB</td>
+					<td style="text-align: right">~34 GB</td>
+					<td style="text-align: right">~20 GB</td>
+			</tr>
+			<tr>
+					<td style="text-align: right">70B</td>
+					<td style="text-align: right">280 GB</td>
+					<td style="text-align: right">140 GB</td>
+					<td style="text-align: right">~74 GB</td>
+					<td style="text-align: right">~43 GB</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li>i.e. GB ≈ billions of params × bits per weight / 8 (<code>Q8_0</code> ≈ 8.5 bits, <code>Q4_K_M</code> ≈ 4.9 bits, cf. <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md">llama.cpp’s quantize docs</a>)</li>
+<li>add ~10–30% on top for the KV cache and the runtime (more for long contexts)</li>
+<li>models are <em>trained</em> in 16/32 bits, but most local users run them at <strong>8 or 4 bits</strong>: this is called <em>quantization</em></li>
+</ul>
+<span class="fragment ">
+  <blockquote>
+<p>Before pulling a model, <strong>do the math</strong>: if it does not fit in VRAM, it will either <em>fail</em> to load, or be (partially) <em>offloaded</em> to the CPU, becoming <em>much slower</em></p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="quantization-pt-1-the-concept">Quantization (pt. 1): the concept</h2>
+<ul>
+<li><strong>Quantization</strong> = representing the model’s weights with <em>fewer bits</em> (e.g. 4-bit integers instead of 16-bit floats)
+<ul>
+<li>by mapping <em>ranges</em> of real values onto a small set of <em>discrete levels</em>, plus some <em>scaling factors</em> (stored per <em>block</em> of weights)</li>
+</ul>
+</li>
+<li>Why?
+<ul>
+<li><em>less memory</em> $\implies$ bigger models on the same hardware</li>
+<li><em>faster</em> inference, as moving weights around in memory is the main bottleneck</li>
+</ul>
+</li>
+<li>At what price?
+<ul>
+<li><em>loss of precision</em> $\implies$ some <em>quality degradation</em>, which is often negligible at 8 bits, noticeable at 4 bits, and severe below 3 bits</li>
+<li>degradation is task-dependent (e.g. worse for maths, code, and non-English languages)</li>
+</ul>
+</li>
+</ul>
+<img src="./todo-quantization.png" alt="TODO picture: on the left, a histogram of real-valued weights (bell-shaped, fp16); in the middle, arrows mapping value ranges onto 16 discrete levels (4-bit integers 0..15) plus a scale factor per block; on the right, the same histogram rebuilt with visible 'steps'. Caption: 'fp16 weights → int4 codes + scale → approximate weights'." style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+</section><section>
+<h2 id="quantization-pt-2-the-technological-landscape">Quantization (pt. 2): the technological landscape</h2>
+<p>Several <em>quantization methods</em> and <em>file formats</em> exist, bound to specific <strong>runtimes</strong>:</p>
+<table>
+	<thead>
+			<tr>
+					<th>Format / method</th>
+					<th>Typical runtime</th>
+					<th>Notes</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://huggingface.co/docs/hub/gguf">GGUF</a></td>
+					<td><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a>, Ollama, LM Studio</td>
+					<td>single file with weights + metadata; runs on CPU, GPU, Apple Silicon; many quant <em>levels</em></td>
+			</tr>
+			<tr>
+					<td><a href="https://arxiv.org/abs/2210.17323">GPTQ</a></td>
+					<td>vLLM, Hugging Face Transformers</td>
+					<td>post-training quantization calibrated on sample data; GPU-oriented</td>
+			</tr>
+			<tr>
+					<td><a href="https://arxiv.org/abs/2306.00978">AWQ</a></td>
+					<td>vLLM, Hugging Face Transformers</td>
+					<td>preserves the most “salient” weights; GPU-oriented</td>
+			</tr>
+			<tr>
+					<td><a href="https://github.com/bitsandbytes-foundation/bitsandbytes">bitsandbytes</a> (<a href="https://arxiv.org/abs/2208.07339">LLM.int8()</a>)</td>
+					<td>Hugging Face Transformers</td>
+					<td>quantizes <em>on the fly</em> when loading; used for fine-tuning too</td>
+			</tr>
+			<tr>
+					<td><a href="https://github.com/ml-explore/mlx">MLX</a></td>
+					<td>MLX, LM Studio</td>
+					<td>Apple Silicon only</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="decoding-gguf-quantization-labels-as-seen-in-ollamas-tags">Decoding GGUF quantization labels (as seen in Ollama’s tags)</h3>
+<ul>
+<li><code>F16</code> / <code>BF16</code>: no quantization (16-bit)</li>
+<li><code>Q8_0</code>: 8-bit (~8.5 bits per weight, including block scales), nearly lossless</li>
+<li><code>Q4_K_M</code>: ~4.9 bits per weight on average; <code>K</code> = <em>k-quants</em> (super-blocks of weights whose sub-block scales are quantized too, <strong>not</strong> k-means!); <code>M</code>edium mix (a few sensitive tensors kept at higher precision): the usual <strong>default</strong> trade-off</li>
+<li><code>Q2_K</code>, <code>Q3_K_S</code>, … : smaller and increasingly lossy (<code>S</code>mall, <code>M</code>edium, <code>L</code>arge mixes)</li>
+<li><code>IQ*</code>: <em>importance-matrix</em> quants, calibrated on sample text to lose less at very low bit-widths</li>
+</ul>
+<p>e.g. <code>ollama pull gemma4:e2b</code> downloads the default quantization, whereas tags like <code>...-q8_0</code> or <code>...-fp16</code> select a specific one (see the <em>“Tags”</em> tab of each model on <a href="https://ollama.com/models">Ollama’s zoo</a>)</p>
+</section><section>
+<h2 id="running-models-locally-hardware--software-pt-1">Running models locally: hardware &amp; software (pt. 1)</h2>
+<h3 id="hardware">Hardware</h3>
+<ul>
+<li><strong>Nvidia GPUs</strong> (CUDA): the reference platform; the VRAM size is what matters most (e.g. 8, 12, 16, 24 GB for consumer cards; 40–80+ GB for data-center ones)</li>
+<li><strong>AMD GPUs</strong> (ROCm): supported, with fewer models of cards and more caveats</li>
+<li><strong>Apple Silicon</strong> (Metal): CPU and GPU share a <em>unified memory</em>, so the whole RAM (minus what the OS needs) is usable by the model</li>
+<li><strong>CPU only</strong>: works for small models, but expect <em>few tokens per second</em></li>
+<li><strong>Partial offloading</strong>: layers that do not fit in VRAM run on the CPU, which works but is much slower</li>
+</ul>
+<p>(cf. <a href="https://docs.ollama.com/gpu">https://docs.ollama.com/gpu</a> for the supported GPUs)</p>
+<h3 id="mixture-of-experts-moe-models">Mixture-of-Experts (MoE) models</h3>
+<ul>
+<li>Some models activate only a <em>subset</em> of their parameters for each token
+<ul>
+<li>e.g. <code>gemma-4-26b-a4b-it</code> = 26B <em>total</em> parameters, ~4B <em>active</em> per token</li>
+</ul>
+</li>
+<li><strong>Memory</strong> depends on the <em>total</em> parameters (all experts must be loaded), <strong>speed</strong> depends on the <em>active</em> ones</li>
+</ul>
+</section><section>
+<h2 id="running-models-locally-hardware--software-pt-2">Running models locally: hardware &amp; software (pt. 2)</h2>
+<h3 id="what-fits-where-indicative-at-4-bit-quantization-moderate-context">What fits where? (indicative, at ~4-bit quantization, moderate context)</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Machine</th>
+					<th>Comfortable model size</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>laptop, 8 GB RAM, no GPU</td>
+					<td>≤ 3B (slow)</td>
+			</tr>
+			<tr>
+					<td>laptop, 16 GB unified memory (Apple Silicon)</td>
+					<td>≤ 8B</td>
+			</tr>
+			<tr>
+					<td>desktop, 12–16 GB VRAM GPU</td>
+					<td>≤ 14B</td>
+			</tr>
+			<tr>
+					<td>workstation, 24 GB VRAM GPU (or 32–64 GB unified memory)</td>
+					<td>≤ 32B</td>
+			</tr>
+			<tr>
+					<td>server, 2× 80 GB GPUs</td>
+					<td>≤ 70B at 8-bit, larger with 4-bit or MoE</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="software">Software</h3>
+<ul>
+<li>
+<p>up-to-date <strong>GPU drivers</strong> (CUDA for Nvidia, ROCm for AMD; Metal is built into macOS)</p>
+</li>
+<li>
+<p>a <strong>runtime</strong>: <a href="https://ollama.com">Ollama</a> (simplest), <a href="https://lmstudio.ai/">LM Studio</a> (GUI), <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> (lowest level), <a href="https://docs.vllm.ai/">vLLM</a> (server-grade, high throughput, many concurrent users)</p>
+<ul>
+<li>all of them expose an <em>OpenAI-compatible</em> Web API, so client code does not change</li>
+</ul>
+</li>
+<li>
+<p>check what is running, and <em>where</em>, with <code>ollama ps</code> (illustrative output):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL
+</span></span><span style="display:flex;"><span>gemma4:e2b    a1b2c3d4e5f6    7.2 GB    100% GPU     4096       4 minutes from now
+</span></span></code></pre></div><ul>
+<li><code>PROCESSOR</code> tells whether the model is fully on the GPU, or split between CPU and GPU (e.g. <code>48%/52% CPU/GPU</code>)</li>
+</ul>
+</li>
+</ul>
 
 </section>
 </section><section>
@@ -418,10 +656,41 @@
 </ol>
 
 </section>
-</section><section>
+</section>
 
 
 <section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="chat-completion-concept">
+<h2 id="the-general-concept-chat-completion-as-a-requestresponse-api">The general concept: <em>Chat Completion</em> as a request–response API</h2>
+<ul>
+<li>Regardless of the provider, programmatic access to an LLM follows the same <em>request–response</em> scheme (HTTP + JSON):
+<ol>
+<li>the <strong>client</strong> (your program) sends a <strong>request</strong> containing
+<ul>
+<li>the <em>name</em> of the model to be used</li>
+<li>the <em>conversation</em> so far, as an ordered list of <strong>messages</strong>, each with a <em>role</em> (<code>system</code>, <code>user</code>, <code>assistant</code>, <code>tool</code>) and some <em>content</em></li>
+<li>optional <em>generation parameters</em> (e.g. temperature, max tokens, output format, available tools)</li>
+</ul>
+</li>
+<li>the <strong>server</strong> (the provider) lets the model generate the <em>next message</em> of the conversation</li>
+<li>the server sends a <strong>response</strong> containing the generated message, plus <em>metadata</em> (e.g. token usage, finish reason)</li>
+</ol>
+</li>
+<li>The model is <strong>stateless</strong>: it does <em>not</em> remember previous requests
+<ul>
+<li>to have a <em>conversation</em>, the <strong>client</strong> keeps the history, and re-sends it <em>all</em> at each request (appending the model’s answers to it)</li>
+<li>hence, the cost and latency of each request <em>grow</em> with the conversation length (every request re-processes all tokens)</li>
+</ul>
+</li>
+<li>A <em>chat</em> is just the special case where the next message is shown to a human, and the human’s reply is appended to the history</li>
+</ul>
+</section><section>
+<h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
+<img src="./todo-chat-completion-sequence.png" alt="TODO picture: sequence diagram with three lifelines: User, Program (client), LLM provider (server). 1) User types 'hi, what time is it?'; Program appends {user: ...} to its local 'history' box (already containing {system: 'be friendly'}); Program sends POST /chat/completions {model, messages:[system, user]} to the provider; provider replies {choices:[{message:{assistant: 'I have no clock, where are you?'}}], usage:{...}}; Program appends the assistant message to history and shows it to the User. 2) User types 'Cesena, Italy'; Program appends it and sends the WHOLE history (system, user, assistant, user) in a new request; provider replies again. Highlight that the history box lives on the client side and grows at each turn, while the server keeps nothing between requests." style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<ul>
+<li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes (endpoint names, field names, where the system prompt goes, etc.)</li>
+</ul>
+</section><section>
 <h2 id="what-to-expect-in-general-from-web-apis-of-llm-as-a-service-providers">What to expect in general from Web APIs of LLM-as-a-Service providers?</h2>
 <ol>
 <li>
@@ -504,7 +773,7 @@
 <p>when this is the case, the client will fail at run-time, complaining about unsupported features for non-reachable endopoint!</p>
 </span>
 </section><section>
-<h2 id="about-llms-web-api-compatibility-pt-3--anthropic-clade-api">About LLMs’ Web API Compatibility (pt. 3) – Anthropic Clade API</h2>
+<h2 id="about-llms-web-api-compatibility-pt-3--anthropic-claude-api">About LLMs’ Web API Compatibility (pt. 3) – Anthropic Claude API</h2>
 <ul>
 <li><strong>Shape</strong>: <code>/v1/messages</code></li>
 <li><strong>Abstraction</strong>: messages plus content blocks and top-level system instruction
@@ -734,7 +1003,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>you&gt; it's Cesena, in Italy
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>assistant&gt; In Cesena, Italy right now it’s Central European Summer Time (CEST), which is UTC+2. I can’t see the exact current time here, but if you tell me the current UTC time (or your device’s time), I’ll convert it to Cesena time for you. 
+</span></span><span style="display:flex;"><span>assistant&gt; In Cesena, Italy right now it’s Central European Summer Time (CEST), which is UTC+2. I can’t see the exact current time here, but if you tell me the current UTC time (or your device’s time), I’ll convert it to Cesena time for you.
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Example: if UTC is 13:00, then Cesena is 15:00. Want me to convert a specific time? Or you can just check your phone or a world clock for the exact minute and second.
 </span></span><span style="display:flex;"><span>
@@ -903,7 +1172,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">call_current_time_001</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for this tool call, which can</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">finish_reason</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">stop</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the reason why the model stopped generating tokens for this choice, which can be "stop" (if the model reached a stop sequence), "length" (if the model reached the max_completion_tokens limit), "tool_call" (if the model made a tool call and stopped), or other reasons</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">logprobs</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the log probabilities of the generated tokens for this choice, which can be useful for analyzing the model's confidence and behavior (not always present in the response)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">response_format</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> 
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">response_format</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
 </span></span></span></code></pre></div><ul>
 <li>most commonly, one cares about the first choice (<code>choices[0]</code>), and in particular about the generated message (<code>choices[0].message.content</code>), but the rest of the metadata can be useful for debugging, analysis, and cost control purposes</li>
 </ul>
@@ -1019,7 +1288,7 @@
 </span></span><span style="display:flex;"><span>you&gt; yeah that's fine
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>assistant&gt; Here are the first 20 lines of Inferno, Canto I, from Henry Wadsworth Longfellow's translation of Dante Alighieri's *Divine Comedy*:
-</span></span><span style="display:flex;"><span>assistant&gt; 
+</span></span><span style="display:flex;"><span>assistant&gt;
 </span></span><span style="display:flex;"><span>assistant&gt; Midway upon the journey of our life
 </span></span><span style="display:flex;"><span>assistant&gt; I found myself within a forest dark,
 </span></span><span style="display:flex;"><span>assistant&gt; For the strayed path had filled my soul with strife.
@@ -1032,7 +1301,7 @@
 </span></span><span style="display:flex;"><span>assistant&gt; I know not how I entered it, so deep
 </span></span><span style="display:flex;"><span>assistant&gt; I had become in slumber at that hour
 </span></span><span style="display:flex;"><span>assistant&gt; When I had wandered from the path of truth.
-</span></span><span style="display:flex;"><span>assistant&gt; 
+</span></span><span style="display:flex;"><span>assistant&gt;
 </span></span><span style="display:flex;"><span>assistant&gt; But after I had reached a hill’s low foot,
 </span></span><span style="display:flex;"><span>assistant&gt; Where the long valley terminating had
 </span></span><span style="display:flex;"><span>assistant&gt; My fear, a place, I say, that any heart
@@ -1041,7 +1310,7 @@
 </span></span><span style="display:flex;"><span>assistant&gt; With rays of the planet that guides man aright
 </span></span><span style="display:flex;"><span>assistant&gt; On every path. Then was the fear a while
 </span></span><span style="display:flex;"><span>assistant&gt; Abated.
-</span></span><span style="display:flex;"><span>assistant&gt; 
+</span></span><span style="display:flex;"><span>assistant&gt;
 </span></span><span style="display:flex;"><span>assistant&gt; Let me know if you’d like more!
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>you&gt; Goodbye!
@@ -1052,6 +1321,209 @@
 </ul>
 </li>
 </ol>
+
+</section>
+</section><section>
+<h2 id="focus-on-anthropics-client-library-for-python">Focus on Anthropic’s Client Library for Python</h2>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="anthropic-example">
+<h2 id="example-1-bis-the-same-cli-chat-with-anthropics-messages-api-pt-1">Example 1 (bis): the same CLI Chat with Anthropic’s Messages API (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: re-implement <a href="./repl_chat_openai_chatcompletions.py">Example 1</a> with a <em>different</em> API and client library, to appreciate <em>analogies</em> and <em>differences</em></p>
+</blockquote>
+<ul>
+<li>We use the official <a href="https://github.com/anthropics/anthropic-sdk-python"><code>anthropic</code> Python SDK</a> (<code>pip install anthropic</code>), which speaks Anthropic’s <a href="https://docs.anthropic.com/en/api/messages">Messages API</a> (<code>POST /v1/messages</code>)</li>
+<li>No need for an Anthropic account: <a href="https://docs.ollama.com/api/anthropic-compatibility">Ollama exposes an Anthropic-compatible API</a> too, so we can run everything <strong>locally</strong> (and for free)
+<ul>
+<li>Open Router supports the Messages API as well (<a href="https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message">docs</a>): set <code>ANTHROPIC_BASE_URL=https://openrouter.ai/api</code> and your OR key</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>
+<p>Client creation is <em>analogous</em> to the OpenAI one (base URL, API key, model name):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">anthropic</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Anthropic</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"ANTHROPIC_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"http://localhost:11434"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"ANTHROPIC_API_KEY"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"ollama"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"ANTHROPIC_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"gemma4:e2b"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Anthropic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li>the API key is <em>mandatory</em> for the SDK, but <em>ignored</em> by Ollama (any string works)</li>
+<li>the SDK appends <code>/v1/messages</code> to the base URL by itself</li>
+</ul>
+</li>
+<li>
+<p><strong>Difference</strong>: the <em>system prompt</em> is <strong>not</strong> a message, but a separate parameter, hence the history starts <em>empty</em>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">system</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"Just chat with the user, be friendly and helpful. Do not think. Just answer."</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-1-bis-the-same-cli-chat-with-anthropics-messages-api-pt-2">Example 1 (bis): the same CLI Chat with Anthropic’s Messages API (pt. 2)</h2>
+<ol start="3">
+<li>
+<p>The REPL loop is <em>identical</em> to Example 1, except for the request–response step:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">system</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_tokens</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2048</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">exc</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"error&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">exc</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">""</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">block</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">text</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">block</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">block</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">type</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"text"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"assistant&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">answer</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">answer</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div><p>notice that:</p>
+<ul>
+<li><code>client.messages.create(...)</code> replaces <code>client.chat.completions.create(...)</code></li>
+<li><code>system=...</code> is passed <em>aside</em> <code>messages=...</code></li>
+<li><code>max_tokens</code> is <strong>mandatory</strong> (raise it for <em>reasoning</em> models, as thinking tokens count too: an empty answer is the typical symptom)</li>
+<li>the response has no <code>choices</code>: <code>response.content</code> is directly a <strong>list of typed content blocks</strong> (<code>text</code>, <code>thinking</code>, <code>tool_use</code>, …), so we concatenate the <code>text</code> ones</li>
+<li>messages in the history still have <code>role</code> (<code>user</code> or <code>assistant</code>) and <code>content</code> (a string, or a list of blocks)</li>
+</ul>
+</li>
+<li>
+<p>Full code <a href="./repl_chat_anthropic_messages.py">here</a>: run it with <code>ollama serve</code> active and <code>gemma4:e2b</code> pulled</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Using model: gemma4:e2b
+</span></span><span style="display:flex;"><span>Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
+</span></span><span style="display:flex;"><span>you&gt; say hi in 3 words
+</span></span><span style="display:flex;"><span>assistant&gt; Hi there!
+</span></span><span style="display:flex;"><span>you&gt; and now in italian
+</span></span><span style="display:flex;"><span>assistant&gt; Ciao a tutti!
+</span></span><span style="display:flex;"><span>you&gt; Goodbye!
+</span></span></code></pre></div></section><section>
+<h2 id="analogies-and-differences-among-providers-apis">Analogies and differences among providers’ APIs</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Feature</th>
+					<th>OpenAI Chat Completions</th>
+					<th>OpenAI Responses</th>
+					<th>Anthropic Messages</th>
+					<th>Google <code>generateContent</code></th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Endpoint</strong></td>
+					<td><code>POST /v1/chat/completions</code></td>
+					<td><code>POST /v1/responses</code></td>
+					<td><code>POST /v1/messages</code></td>
+					<td><code>POST /v1beta/models/{model}:generateContent</code></td>
+			</tr>
+			<tr>
+					<td><strong>Python SDK call</strong></td>
+					<td><code>client.chat.completions.create(...)</code></td>
+					<td><code>client.responses.create(...)</code></td>
+					<td><code>client.messages.create(...)</code></td>
+					<td><code>client.models.generate_content(...)</code></td>
+			</tr>
+			<tr>
+					<td><strong>System prompt</strong></td>
+					<td>message with <code>role="system"</code> (or <code>developer</code>)</td>
+					<td><code>instructions=...</code> parameter</td>
+					<td><code>system=...</code> parameter</td>
+					<td><code>config.system_instruction</code></td>
+			</tr>
+			<tr>
+					<td><strong>History</strong></td>
+					<td><code>messages=[{role, content}]</code></td>
+					<td><code>input=[typed items]</code> (or <code>previous_response_id</code>, server-side state)</td>
+					<td><code>messages=[{role, content}]</code></td>
+					<td><code>contents=[{role, parts}]</code></td>
+			</tr>
+			<tr>
+					<td><strong>Roles</strong></td>
+					<td><code>system</code>, <code>user</code>, <code>assistant</code>, <code>tool</code></td>
+					<td><code>user</code>, <code>assistant</code> + typed items</td>
+					<td><code>user</code>, <code>assistant</code></td>
+					<td><code>user</code>, <code>model</code></td>
+			</tr>
+			<tr>
+					<td><strong>Output</strong></td>
+					<td><code>choices[0].message.content</code></td>
+					<td><code>output_text</code> / <code>output</code> items</td>
+					<td><code>content</code> (list of typed blocks)</td>
+					<td><code>candidates[0].content.parts</code> (SDK: <code>.text</code>)</td>
+			</tr>
+			<tr>
+					<td><strong>Max tokens</strong></td>
+					<td>optional (<code>max_completion_tokens</code>)</td>
+					<td>optional (<code>max_output_tokens</code>)</td>
+					<td><strong>mandatory</strong> (<code>max_tokens</code>)</td>
+					<td>optional (<code>max_output_tokens</code>)</td>
+			</tr>
+			<tr>
+					<td><strong>Tools</strong></td>
+					<td><code>tools</code> + <code>tool_calls</code> / <code>role="tool"</code> messages</td>
+					<td><code>tools</code> + <code>function_call</code> / <code>function_call_output</code> items</td>
+					<td><code>tools</code> + <code>tool_use</code> / <code>tool_result</code> blocks</td>
+					<td><code>tools</code> + <code>functionCall</code> / <code>functionResponse</code> parts</td>
+			</tr>
+			<tr>
+					<td><strong>Structured output</strong></td>
+					<td><code>response_format</code> (JSON schema)</td>
+					<td><code>text.format</code> (JSON schema)</td>
+					<td>tool-based, or JSON schema output (newer models)</td>
+					<td><code>response_mime_type</code> + <code>response_schema</code></td>
+			</tr>
+			<tr>
+					<td><strong>Streaming</strong></td>
+					<td><code>stream=True</code> (deltas)</td>
+					<td><code>stream=True</code> (typed events)</td>
+					<td><code>stream=True</code> / <code>messages.stream(...)</code> (typed events)</td>
+					<td><code>generate_content_stream(...)</code></td>
+			</tr>
+			<tr>
+					<td><strong>Supported by Ollama</strong></td>
+					<td><i class="fa-solid fa-check" style="color: green;"></i></td>
+					<td></td>
+					<td></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td><i class="fa-solid fa-check" style="color: green;"></i></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>(partially)</td>
+					<td><i class="fa-solid fa-check" style="color: green;"></i></td>
+					<td></td>
+					<td></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>(partially)</td>
+					<td><i class="fa-solid fa-xmark" style="color: red;"></i></td>
+					<td></td>
+					<td></td>
+					<td></td>
+			</tr>
+			<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+			</tr>
+	</tbody>
+</table>
+<p>(cf. <a href="https://developers.openai.com/api/reference">OpenAI</a>, <a href="https://docs.anthropic.com/en/api/messages">Anthropic</a>, <a href="https://ai.google.dev/api/generate-content">Google</a> API references; <a href="https://docs.ollama.com/api/openai-compatibility">Ollama’s OpenAI</a> and <a href="https://docs.ollama.com/api/anthropic-compatibility">Anthropic</a> compatibility pages)</p>
+<span class="fragment ">
+  <blockquote>
+<p>Same <strong>metamodel</strong> everywhere (model + instructions + ordered history of role-tagged, possibly multimodal, messages $\rightarrow$ next message + usage), different <strong>syntax</strong>: switching provider means rewriting the <em>adapter</em> layer, not the application logic</p>
+</blockquote>
+</span>
 
 </section>
 </section><section>
@@ -1298,7 +1770,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">anyOf</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span>- <span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">string</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span>- <span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#4e9a06">'null'</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> 
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">description</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">The user's email address</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">title</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">Email</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">required</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
@@ -1310,7 +1782,10 @@
 </ol>
 
 </section>
-</section><section>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="running-example">
+  
 <h2 id="running-example">Running example</h2>
 <h3 id="admission-committee-assistant-for-phd-applications-evaluation">Admission committee assistant for PhD applications evaluation</h3>
 <ul>
@@ -1751,6 +2226,94 @@
 </ul>
 
 </section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="model-zoos">
+<h2 id="model-zoos-pt-1-the-general-concept">Model zoos (pt. 1): the general concept</h2>
+<ul>
+<li>A <strong>model zoo</strong> (a.k.a. model <em>hub</em>, <em>catalog</em>, <em>library</em>) is a <em>searchable collection</em> of models made available by some provider, each one with:
+<ul>
+<li>a <strong>name</strong> (and <em>versions</em>/<em>variants</em>), to be used in API calls or downloads</li>
+<li>a <strong>model card</strong>: a document describing the model’s <em>purpose</em>, <em>training data</em>, <em>evaluation</em> results, <em>limitations</em>, and <em>intended uses</em> (cf. <a href="https://arxiv.org/abs/1810.03993">Mitchell et al., 2019</a>)</li>
+<li><em>technical metadata</em>: size, <em>context window</em>, supported <em>modalities</em> (text, image, audio), support for <em>tools</em> / <em>structured output</em> / <em>reasoning</em></li>
+<li><em>economic</em> and <em>legal</em> metadata: price per token (for on-cloud zoos), <strong>license</strong> (for downloadable models)</li>
+</ul>
+</li>
+<li>Zoos are the <em>entry point</em> for <strong>model selection</strong>, which is a recurring activity in GenAI engineering (cf. <a href="../genai/#/genai-workflow">GenAI workflow</a>)</li>
+</ul>
+<img src="./todo-model-card.png" alt="TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) 'Files and versions' tab with GGUF/safetensors files; 5) description + intended uses; 6) evaluation table; 7) 'Use this model' button with code snippets." style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+</section><section>
+<h2 id="model-zoos-pt-2-the-technological-landscape">Model zoos (pt. 2): the technological landscape</h2>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th><a href="https://huggingface.co/models">Hugging Face Hub</a></th>
+					<th><a href="https://ollama.com/models">Ollama library</a></th>
+					<th><a href="https://openrouter.ai/models">Open Router</a></th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Kind</strong></td>
+					<td>download (+ some hosted inference)</td>
+					<td>download, run locally</td>
+					<td>on-cloud, pay per token</td>
+			</tr>
+			<tr>
+					<td><strong>Size</strong></td>
+					<td>millions of models (any task, any modality)</td>
+					<td>hundreds of curated LLMs</td>
+					<td>hundreds of LLMs from dozens of providers</td>
+			</tr>
+			<tr>
+					<td><strong>Naming</strong></td>
+					<td><code>organization/model-name</code></td>
+					<td><code>model:variant</code> (e.g. <code>gemma4:e2b</code>)</td>
+					<td><code>provider/model[:tier]</code> (e.g. <code>google/gemma-4-26b-a4b-it:free</code>)</td>
+			</tr>
+			<tr>
+					<td><strong>Variants</strong></td>
+					<td>separate repositories (e.g. <code>...-GGUF</code>, <code>...-AWQ</code>)</td>
+					<td><em>tags</em> for size and quantization</td>
+					<td>one entry per model, served by several providers</td>
+			</tr>
+			<tr>
+					<td><strong>Metadata</strong></td>
+					<td>full model card, files, license, community</td>
+					<td>size, context, capabilities, quantization</td>
+					<td>price, context, latency/throughput stats, supported parameters</td>
+			</tr>
+			<tr>
+					<td><strong>License</strong></td>
+					<td>per model (shown as a tag)</td>
+					<td>per model (in the model page)</td>
+					<td>provider’s <em>terms of service</em> apply</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="recurring-naming-conventions-worth-decoding">Recurring naming conventions (worth decoding)</h3>
+<ul>
+<li><em>family</em> + <em>version</em>: <code>llama-3.1</code>, <code>qwen3</code>, <code>gemma-4</code></li>
+<li><em>size</em>: <code>8b</code>, <code>70b</code>, or <code>26b-a4b</code> (MoE: total vs. active parameters)</li>
+<li><em>flavour</em>: <code>base</code> (pure next-token predictor) vs. <code>instruct</code> / <code>it</code> / <code>chat</code> (tuned to follow instructions: <strong>this is what you want</strong> for Chat Completion), or <code>coder</code>, <code>vl</code> / <code>vision</code>, <code>thinking</code></li>
+<li><em>quantization</em> / <em>format</em>: <code>Q4_K_M</code>, <code>GGUF</code>, <code>AWQ</code>, <code>fp8</code></li>
+<li><em>date</em> / <em>snapshot</em>: <code>gpt-4o-2024-08-06</code> (pin it for <em>reproducibility</em>!)</li>
+</ul>
+</section><section>
+<h2 id="model-zoos-pt-3-what-next">Model zoos (pt. 3): what next?</h2>
+<ul>
+<li>Zoos tell you <em>which</em> models exist, and what they <em>claim</em> to be capable of</li>
+<li><strong>Choosing</strong> the right model for a given task, and <strong>evaluating</strong> it on <em>evidence</em>, are decisions with consequences on quality, cost, control, and compliance
+<ul>
+<li>hence, they are discussed in the <a href="../governance/#/model-selection">AI Governance lecture</a>, along with an exercise on comparing models on the running example</li>
+</ul>
+</li>
+</ul>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
@@ -1829,6 +2392,9 @@
 
 
 
+
+  
+  
 
   
   
