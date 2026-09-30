@@ -27,6 +27,10 @@ aliases = [
 7. _Workflows and Agent Orchestration_ (coming soon)
 8. [AI Governance 101](governance)
 
+__Appendices__
+
+- [Free Access to LLMs](free-access)
+
 ---
 
 ## Teachers
