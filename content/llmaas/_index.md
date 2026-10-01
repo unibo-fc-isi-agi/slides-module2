@@ -269,8 +269,11 @@ Reference technology: [Ollama](https://ollama.com/)
 
 > __memory__ ≈ (number of params × bits per param / 8) [_weights_] + _KV cache_ [grows with context length] + _overhead_
 
-- the _KV cache_ stores intermediate results for all tokens in the current context: the __longer the context__, the more memory is needed
-    + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
+- the __key-value (KV) cache__ stores the attention values for the tokens (keys) that the neural has processes so far...
+    + ... so that they do not need to be recomputed for every new token generated
+    + its size _grows linearly_ with the _context length_
+        + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
+- the _overhead_ covers runtime buffers, activations, and driver context: usually an extra ~10–20%
 
 {{< image src="./memory-footprint.svg" max-h="30vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
 
