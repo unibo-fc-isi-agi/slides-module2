@@ -27,7 +27,7 @@ outputs = ["Reveal"]
 1. **Service Provider**: several exist, with different offerings in terms of models, pricing, and features
     - e.g. [OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google](https://cloud.google.com/vertex-ai), [Microsoft](https://azure.microsoft.com/en-us/services/cognitive-services/), [Hugging Face](https://huggingface.co/inference-api), or aggregators like [OpenRouter](https://openrouter.ai/)
     - the choice of the service provider can depend on several factors, including:
-        + the availability of _specific models_ (e.g. GPT-4, Claude, Gemini, etc.)
+        + the availability of _specific models_ (e.g. GPT-4, Claude, Gemini, etc.) in their __model zoos__
         + the _pricing model_ and cost structure
         + the _features_ and _capabilities_ offered (e.g. fine-tuning, custom models, MCP support, etc.)
 
@@ -44,6 +44,75 @@ outputs = ["Reveal"]
 ---
 
 {{% section %}}
+
+{{< slide id="model-zoos" >}}
+
+# Model Zoos
+
+---
+
+## Model zoos (pt. 1): the general concept
+
+- A __model zoo__ (a.k.a. model _hub_, _catalog_, _library_) is a _searchable collection_ of models made available by some provider, each one with:
+    + a __name__ (and _versions_/_variants_), to be used in API calls or downloads
+    + a __model card__: a document describing the model's _purpose_, _training data_, _evaluation_ results, _limitations_, and _intended uses_ (cf. [Mitchell et al., 2019](https://arxiv.org/abs/1810.03993))
+    + _technical metadata_: size, _context window_, supported _modalities_ (text, image, audio), support for _tools_ / _structured output_ / _reasoning_
+    + _economic_ and _legal_ metadata: price per token (for on-cloud zoos), __license__ (for downloadable models)
+
+- Zoos are the _entry point_ for __model selection__, which is a recurring activity in GenAI engineering (cf. [GenAI workflow](../genai/#/genai-workflow))
+
+<!-- {{< image src="./todo-model-card.png" max-h="45vh" alt="TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) 'Files and versions' tab with GGUF/safetensors files; 5) description + intended uses; 6) evaluation table; 7) 'Use this model' button with code snippets." >}} -->
+
+### Example
+
+- [Hugging Face Hub](https://huggingface.co/models) is a model zoo with millions of models for any task and any modality,
+    - each one with a model card, technical metadata, and license information
+    - e.g. filter on "Gemma" to see the [Gemma family](https://huggingface.co/models?sort=trending&search=gemma) of LLMs, then click on one to see the card
+
+    ![Hugging Face Gemma model card screenshot](./hugging-face-model-zoo.png)
+
+---
+
+## Model zoos (pt. 2): the technological landscape
+
+| | [Hugging Face Hub](https://huggingface.co/models) | [Ollama library](https://ollama.com/models) | [Open Router](https://openrouter.ai/models) |
+|---|---|---|---|
+| __Kind__ | download (+ some hosted inference) | download, run locally | on-cloud, pay per token |
+| __Size__ | millions of models (any task, any modality) | hundreds of curated LLMs | hundreds of LLMs from dozens of providers |
+| __Naming__ | `organization/model-name` | `model:variant` (e.g. `gemma4:e2b`) | `provider/model[:tier]` (e.g. `google/gemma-4-26b-a4b-it:free`) |
+| __Variants__ | separate repositories (e.g. `...-GGUF`, `...-AWQ`) | _tags_ for size and quantization | one entry per model, served by several providers |
+| __Metadata__ | full model card, files, license, community | size, context, capabilities, quantization | price, context, latency/throughput stats, supported parameters |
+| __License__ | per model (shown as a tag) | per model (in the model page) | provider's _terms of service_ apply |
+
+### Recurring naming conventions (worth decoding)
+
+- _family_ + _version_: `llama-3.1`, `qwen3`, `gemma-4`
+- _size_: `8b`, `70b`, or `26b-a4b` (MoE: total vs. active parameters)
+- _flavour_: `base` (pure next-token predictor) vs. `instruct` / `it` / `chat` (tuned to follow instructions: __this is what you want__ for Chat Completion), or `coder`, `vl` / `vision`, `thinking`
+- _quantization_ / _format_: `Q4_K_M`, `GGUF`, `AWQ`, `fp8`
+- _date_ / _snapshot_: `gpt-4o-2024-08-06` (pin it for _reproducibility_!)
+
+---
+
+## Model zoos (pt. 3): what next?
+
+- Zoos tell you _which_ models exist, and what they _claim_ to be capable of
+- __Choosing__ the right model for a given task, and __evaluating__ it on _evidence_, are decisions with consequences on quality, cost, control, and compliance
+    + hence, they are discussed in the [AI Governance lecture](../governance/#/model-selection), along with an exercise on comparing models on the running example
+
+{{% /section %}}
+
+---
+
+# On-premise deployment
+
+Reference technology: [Ollama](https://ollama.com/)
+
+---
+
+{{% section %}}
+
+{{< slide id="ollama" >}}
 
 ## About Ollama (cf. <https://ollama.com/>)
 
@@ -256,11 +325,15 @@ Several _quantization methods_ and _file formats_ exist, bound to specific __run
 | [bitsandbytes](https://github.com/bitsandbytes-foundation/bitsandbytes) ([LLM.int8()](https://arxiv.org/abs/2208.07339)) | Hugging Face Transformers | quantizes _on the fly_ when loading; used for fine-tuning too |
 | [MLX](https://github.com/ml-explore/mlx) | MLX, LM Studio | Apple Silicon only |
 
-### Decoding GGUF quantization labels (as seen in Ollama's tags)
+---
+
+## Decoding GGUF quantization labels (as seen in Ollama's tags)
 
 - `F16` / `BF16`: no quantization (16-bit)
 - `Q8_0`: 8-bit (~8.5 bits per weight, including block scales), nearly lossless
-- `Q4_K_M`: ~4.9 bits per weight on average; `K` = _k-quants_ (super-blocks of weights whose sub-block scales are quantized too, __not__ k-means!); `M`edium mix (a few sensitive tensors kept at higher precision): the usual __default__ trade-off
+- `Q4_K_M`: ~4.9 bits per weight on average
+    - `K` = _k-quants_ (super-blocks of weights whose sub-block scales are quantized too)
+    - `M`edium mix (a few sensitive tensors kept at higher precision): the usual __default__ trade-off
 - `Q2_K`, `Q3_K_S`, ... : smaller and increasingly lossy (`S`mall, `M`edium, `L`arge mixes)
 - `IQ*`: _importance-matrix_ quants, calibrated on sample text to lose less at very low bit-widths
 
@@ -318,7 +391,16 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 
 ---
 
+# On-cloud deployment with Open Router
+
+(Reference technology: [Open Router](https://openrouter.ai/))
+
+---
+
+
 {{% section %}}
+
+{{< slide id="open-router" >}}
 
 ## About Open Router (cf. <https://openrouter.ai/>), pt. 1
 
@@ -476,6 +558,10 @@ You may think that __token $\approx$ word__, but this actually depends on the sp
 
 ---
 
+# APIs for LLMs
+
+---
+
 {{% section %}}
 
 {{< slide id="chat-completion-concept" >}}
@@ -498,27 +584,30 @@ You may think that __token $\approx$ word__, but this actually depends on the sp
 
 ## Chat Completion: an intuitive example
 
-{{< mermaid >}}
-sequenceDiagram
-    actor U as User
-    participant P as Program (client)
-    participant L as LLM provider (server)
-    Note over P: history = [system: "be friendly"]
-    U->>P: "hi, what time is it?"
-    Note over P: history += [user: "hi, what time is it?"]
-    P->>L: POST /chat/completions {model, messages: [system, user]}
-    L-->>P: {choices: [{message: {assistant: "I have no clock, where are you?"}}], usage: {...}}
-    Note over P: history += [assistant: "I have no clock, ..."]
-    P->>U: "I have no clock, where are you?"
-    U->>P: "Cesena, Italy"
-    Note over P: history += [user: "Cesena, Italy"]
-    P->>L: POST /chat/completions {model, messages: [system, user, assistant, user]}
-    Note over L: keeps nothing between requests: the WHOLE history is re-sent
-    L-->>P: {choices: [{message: {assistant: "It's ... in Cesena"}}], usage: {...}}
-    P->>U: "It's ... in Cesena"
-{{< /mermaid >}}
+{{< plantuml >}}
+@startuml
+hide footbox
+actor "User" as U
+participant "Program (client)" as P
+participant "LLM provider (server)" as L
+note over P: history = [system: "be friendly"]
+U -> P: "hi, what time is it?"
+note over P: history += [user: "hi, what time is it?"]
+P -> L: POST /chat/completions {model, messages: [system, user]}
+L --> P: {choices: [{message: {assistant: "I have no clock, where are you?"}}], usage: {...}}
+note over P: history += [assistant: "I have no clock, ..."]
+P -> U: "I have no clock, where are you?"
+U -> P: "Cesena, Italy"
+note over P: history += [user: "Cesena, Italy"]
+P -> L: POST /chat/completions {model, messages: [system, user, assistant, user]}
+note over L: keeps nothing between requests: the WHOLE history is re-sent
+L --> P: {choices: [{message: {assistant: "It's ... in Cesena"}}], usage: {...}}
+P -> U: "It's ... in Cesena"
+@enduml
+{{< /plantuml >}}
 
-- Notice that the __same__ interaction is implemented by _all_ providers, only the _syntax_ changes (endpoint names, field names, where the system prompt goes, etc.)
+- Notice that the __same__ interaction is implemented by _all_ providers, only the _syntax_ changes
+    * endpoint names, field names, where the system prompt goes, etc.
 
 ---
 
@@ -635,6 +724,12 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
 
 ---
 
+# Client-side libraries for LLMs
+
+Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/api/docs/libraries), [LangChain](https://python.langchain.com/en/latest/)
+
+---
+
 ## About client libraries
 
 - Main providers – especially the ones exposing their own Web APIs – come with their own __client libraries__
@@ -646,10 +741,6 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
     2. [LangChain](https://python.langchain.com/en/latest/) flavoured for Python and JavaScript
         + it is a _third-party_ client library, which supports [multiple providers](https://docs.langchain.com/oss/python/integrations/providers/overview) and APIs (e.g. OpenAI, Anthropic, Google, Azure, etc.)
         + it is more focused on _orchestrating_ interactions with LLMs and tools, rather than just wrapping Web APIs
-
----
-
-# Focus on OpenAI's Client Library for Python
 
 ---
 
@@ -853,9 +944,8 @@ you> ^CGoodbye!
     ]
     ```
 
-    tools descriptions can be of two sorts:
-    - `function` tools, which are described by their name, a natural language description of what they do, and a JSON schema describing the expected input for the tool (e.g. the parameters of the function)
-    - `custom` tools, which are described by their name, a natural language description of what they do, and a custom format description (e.g. a Regex describing the expected input for the tool)
+    - type=`function` tools are described by their name, a natural language description of what they do, and a JSON schema describing the expected input for the tool (e.g. the parameters of the function)
+    - type=`custom` tools use a custom format description (e.g. a Regex describing the expected input for the tool) instead of JSON schema
 
 ---
 
@@ -1058,6 +1148,7 @@ you> Goodbye!
 
 ## Analogies and differences among providers' APIs
 
+{{% small "55%" %}}
 | Feature | OpenAI Chat Completions | OpenAI Responses | Anthropic Messages | Google `generateContent` |
 |---|---|---|---|---|
 | __Endpoint__ | `POST /v1/chat/completions` | `POST /v1/responses` | `POST /v1/messages` | `POST /v1beta/models/{model}:generateContent` |
@@ -1070,7 +1161,8 @@ you> Goodbye!
 | __Tools__ | `tools` + `tool_calls` / `role="tool"` messages | `tools` + `function_call` / `function_call_output` items | `tools` + `tool_use` / `tool_result` blocks | `tools` + `functionCall` / `functionResponse` parts |
 | __Structured output__ | `response_format` (JSON schema) | `text.format` (JSON schema) | tool-based, or JSON schema output (newer models) | `response_mime_type` + `response_schema` |
 | __Streaming__ | `stream=True` (deltas) | `stream=True` (typed events) | `stream=True` / `messages.stream(...)` (typed events) | `generate_content_stream(...)` |
-| __Supported by Ollama__ | {{< tick >}} | {{< tick >}} (partially) | {{< tick >}} (partially) | {{< cross >}} |
+| __Supported by Ollama__ | ✓ | ~ | ~ | × |
+{{% /small %}}
 
 (cf. [OpenAI](https://developers.openai.com/api/reference), [Anthropic](https://docs.anthropic.com/en/api/messages), [Google](https://ai.google.dev/api/generate-content) API references; [Ollama's OpenAI](https://docs.ollama.com/api/openai-compatibility) and [Anthropic](https://docs.ollama.com/api/anthropic-compatibility) compatibility pages)
 
@@ -1101,14 +1193,14 @@ you> Goodbye!
 
 ### Decision points and hints
 
-- Where to store the cache?
+- _Where_ to store the cache?
     * e.g. in local untrucked folder, temp folder, home sub-folder, etc.
-- How to index the caches? A.k.a. when a cache is hit?
+- How to _index_ the caches? A.k.a. when a cache is _hit_?
     * same last message? same conversation history? same model and parameters? same temperature? same model?
-- How to store the cache?
+- How to _store_ the cache?
     * e.g. as YAML/JSON files, with a naming convention based on the cache index?
-    * how to simply cache lookup then?
-- How to restructure the code?
+    * how to simply cache _lookup_ then?
+- How to _restructure_ the code?
 
 ### How to test it?
 
@@ -1140,69 +1232,21 @@ you> Goodbye!
 
 ### Decision points and hints
 
-- How to detect a failed request?
+- How to _detect_ a _failed_ request?
     * e.g. catch exceptions from the client library, check HTTP status codes, etc.
-- How to implement the retry mechanism?
+- How to _implement_ the retry mechanism?
     * e.g. with a simple loop and `try-except` block, or with a more sophisticated library like `tenacity`?
-- How to implement the exponential backoff?
+- How to implement the _exponential backoff_?
     * e.g. with a simple calculation based on the retry count, or with a library like `tenacity` that has built-in support for exponential backoff
-- How to make the parameters configurable?
+- How to make the _parameters_ configurable?
     * e.g. via env vars, command line arguments, or a configuration file? consider using `argparse` for command line arguments, and `os.getenv` for env vars
-- How to restructure the code?
+- How to _restructure_ the code?
     * e.g. separate the retry logic into a decorator or a helper function, to keep the main logic of the program clean and focused on the chat interaction
 
 ### How to test it?
 
 - run the program, and simulate a transient failure (e.g. by disconnecting the network, or by sending too many requests to trigger rate limits), and see that the program retries the request with increasing delays, and eventually succeeds or gives up after the maximum number of retries
 - try to configure the parameters (e.g. number of retries, initial delay, backoff factor) and see that the retry behavior changes accordingly (e.g. more retries, longer delays, etc.)
-
-{{% /section %}}
-
----
-
-{{% section %}}
-
-{{< slide id="model-zoos" >}}
-
-## Model zoos (pt. 1): the general concept
-
-- A __model zoo__ (a.k.a. model _hub_, _catalog_, _library_) is a _searchable collection_ of models made available by some provider, each one with:
-    + a __name__ (and _versions_/_variants_), to be used in API calls or downloads
-    + a __model card__: a document describing the model's _purpose_, _training data_, _evaluation_ results, _limitations_, and _intended uses_ (cf. [Mitchell et al., 2019](https://arxiv.org/abs/1810.03993))
-    + _technical metadata_: size, _context window_, supported _modalities_ (text, image, audio), support for _tools_ / _structured output_ / _reasoning_
-    + _economic_ and _legal_ metadata: price per token (for on-cloud zoos), __license__ (for downloadable models)
-- Zoos are the _entry point_ for __model selection__, which is a recurring activity in GenAI engineering (cf. [GenAI workflow](../genai/#/genai-workflow))
-
-{{< image src="./todo-model-card.png" max-h="45vh" alt="TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) 'Files and versions' tab with GGUF/safetensors files; 5) description + intended uses; 6) evaluation table; 7) 'Use this model' button with code snippets." >}}
-
----
-
-## Model zoos (pt. 2): the technological landscape
-
-| | [Hugging Face Hub](https://huggingface.co/models) | [Ollama library](https://ollama.com/models) | [Open Router](https://openrouter.ai/models) |
-|---|---|---|---|
-| __Kind__ | download (+ some hosted inference) | download, run locally | on-cloud, pay per token |
-| __Size__ | millions of models (any task, any modality) | hundreds of curated LLMs | hundreds of LLMs from dozens of providers |
-| __Naming__ | `organization/model-name` | `model:variant` (e.g. `gemma4:e2b`) | `provider/model[:tier]` (e.g. `google/gemma-4-26b-a4b-it:free`) |
-| __Variants__ | separate repositories (e.g. `...-GGUF`, `...-AWQ`) | _tags_ for size and quantization | one entry per model, served by several providers |
-| __Metadata__ | full model card, files, license, community | size, context, capabilities, quantization | price, context, latency/throughput stats, supported parameters |
-| __License__ | per model (shown as a tag) | per model (in the model page) | provider's _terms of service_ apply |
-
-### Recurring naming conventions (worth decoding)
-
-- _family_ + _version_: `llama-3.1`, `qwen3`, `gemma-4`
-- _size_: `8b`, `70b`, or `26b-a4b` (MoE: total vs. active parameters)
-- _flavour_: `base` (pure next-token predictor) vs. `instruct` / `it` / `chat` (tuned to follow instructions: __this is what you want__ for Chat Completion), or `coder`, `vl` / `vision`, `thinking`
-- _quantization_ / _format_: `Q4_K_M`, `GGUF`, `AWQ`, `fp8`
-- _date_ / _snapshot_: `gpt-4o-2024-08-06` (pin it for _reproducibility_!)
-
----
-
-## Model zoos (pt. 3): what next?
-
-- Zoos tell you _which_ models exist, and what they _claim_ to be capable of
-- __Choosing__ the right model for a given task, and __evaluating__ it on _evidence_, are decisions with consequences on quality, cost, control, and compliance
-    + hence, they are discussed in the [AI Governance lecture](../governance/#/model-selection), along with an exercise on comparing models on the running example
 
 {{% /section %}}
 
