@@ -242,7 +242,7 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
 {{% section %}}
 
-## How is structured output _enforced_? The technological landscape (pt. 1)
+## How is structured output _enforced_? (pt. 1)
 
 From _weakest_ to _strongest_ guarantees:
 
@@ -252,14 +252,17 @@ From _weakest_ to _strongest_ guarantees:
 3. __Schema-constrained output__ (e.g. `response_format={"type": "json_schema", ..., "strict": true}`): the output is guaranteed to match the _JSON Schema_
     + commonly implemented via __constrained decoding__: at each generation step, tokens that would violate the schema are _masked out_
     + cf. [Willard & Louf (2023)](https://arxiv.org/abs/2307.09702), and libraries such as [Outlines](https://github.com/dottxt-ai/outlines), [llguidance](https://github.com/guidance-ai/llguidance), [XGrammar](https://github.com/mlc-ai/xgrammar)
+
+    {{< image src="./constrained-decoding.svg" max-h="30vh" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" >}}
+
 4. __Tool-calling trick__: declare a (fake) _tool_ whose parameters are the target schema, and _force_ the model to call it
     + the tool-call _arguments_ are the structured output (common before providers supported (3))
 
-{{< image src="./constrained-decoding.svg" max-h="30vh" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" >}}
+
 
 ---
 
-## How is structured output _enforced_? The technological landscape (pt. 2)
+## How is structured output _enforced_? (pt. 2)
 
 | Provider / tool | How to request schema-constrained output | Docs |
 |---|---|---|
@@ -274,7 +277,7 @@ From _weakest_ to _strongest_ guarantees:
 - __Different syntax__: parameter names and nesting differ across providers, and _not all models_ support all options
     + in _Python_, most client libraries accept `pydantic` classes directly, and convert them into JSON Schemas for you
 
-> [BEWARE] even with guarantees on the _format_, nothing guarantees the _content_ is correct: always _validate_ the values
+> [BEWARE] the _format_ is guaranteed to be correct, the _content_ is not: always _validate_ the values
 
 {{% /section %}}
 
@@ -502,7 +505,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Prompting techniques: an intuitive example
 
-{{< image src="./prompting-techniques.svg" max-h="65vh" alt="Zero-shot, few-shot, chain-of-thought and self-consistency applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, down to a 4/5 majority vote for critical" >}}
+{{< image src="./prompting-techniques.svg" max-h="80vh" alt="Zero-shot, few-shot, chain-of-thought, self-consistency and prompt chaining applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, from a 4/5 majority vote for critical to a two-step chain that first quotes the key sentences and then classifies them" >}}
 
 ---
 
@@ -779,6 +782,10 @@ From _weakest_ to _strongest_ guarantees:
 
 - [HINT] for field-by-field voting, `collections.Counter(getattr(r, field) for r in results).most_common(1)` is your friend
 
+---
+
+## Exercise 2: Extract Structured Information from Pictures (pt. 4)
+
 - [BEWARE] There are limitations w.r.t. input data [on OpenAI](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements) (and what about [OR](https://openrouter.ai/docs/guides/overview/multimodal/image-understanding)?)
 
     {{< image src="./openai-image-input-limits.png" alt="OpenAI image input limits" class="img-fluid" >}}
@@ -816,7 +823,7 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Context management: an intuitive example
 
-{{< image src="./context-growth.svg" max-h="65vh" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" >}}
+{{< image src="./context-growth.svg" max-h="80vh" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" >}}
 
 ---
 
@@ -845,13 +852,17 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Context management: the technological landscape
 
+{{% small %}}
+
 | Provider | Token counting | Prompt caching | Server-side compaction | Docs |
 |---|---|---|---|---|
 | OpenAI | offline, via [`tiktoken`](https://github.com/openai/tiktoken) | _automatic_ for long prompts; optional `prompt_cache_key` | `context_management` in the Responses API, or `/responses/compact` | [caching](https://developers.openai.com/api/docs/guides/prompt-caching), [compaction](https://developers.openai.com/api/docs/guides/compaction) |
 | Anthropic | `/v1/messages/count_tokens` endpoint | `cache_control`: automatic (top-level) or explicit breakpoints; cache _writes_ cost extra | beta: on demand, or at a token threshold; plus _context editing_ | [caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [compaction](https://platform.claude.com/docs/en/build-with-claude/compaction) |
 | Google Gemini | `count_tokens` method | _implicit_ (automatic), or _explicit_ caches created in advance | — | [caching](https://ai.google.dev/gemini-api/docs/caching), [tokens](https://ai.google.dev/gemini-api/docs/tokens) |
 | OpenRouter | reported in `usage` | forwarded to the underlying provider | — | [caching](https://openrouter.ai/docs/features/prompt-caching) |
-| LangChain | `count_tokens_approximately(...)`, `llm.get_num_tokens_from_messages(...)` (model-specific) | reported in `usage_metadata["input_token_details"]["cache_read"]` | `trim_messages(...)`, summarisation middleware for agents | [short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory) |
+| LangChain | `count_tokens_approximately(...)`, <br>`llm.get_num_tokens_from_messages(...)` <br> (model-specific) | reported in `usage_metadata["input_token_details"]["cache_read"]` | `trim_messages(...)`, summarisation middleware for agents | [short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory) |
+
+{{% /small %}}
 
 - __Same concepts__ everywhere; _different_ syntax, _thresholds_ (e.g. minimum cacheable length), _prices_, and _retention times_
 - Server-side compaction is convenient, but _opaque_ (e.g. OpenAI's compacted items are _encrypted_) and _provider-specific_: client-side compaction is _portable_
