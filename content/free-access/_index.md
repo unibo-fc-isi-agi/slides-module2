@@ -162,7 +162,6 @@ python free_providers.py groq openai/gpt-oss-20b "Hello!"   # one chat request
 ## Labs and courses: a _gateway_, not a shared key
 
 {{< mermaid >}}
-%%{init: {'flowchart': {'htmlLabels': false}}}%%
 flowchart LR
     U[Users, one virtual key each] --> G[Lab gateway, e.g. LiteLLM]
     G --> B[Per-user budgets + rate limits]
