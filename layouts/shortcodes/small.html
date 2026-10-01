@@ -1,0 +1,6 @@
+{{ $_hugo_config := `{ "version": 1 }` }}
+<div style='font-size: {{ .Get 0 | default "60%" }};'>
+
+{{ .Inner }}
+
+</div>

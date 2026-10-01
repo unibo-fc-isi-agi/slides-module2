@@ -43,6 +43,7 @@ Use `%` delimiters when the inner content is Markdown, `<` when it is HTML or no
 | `multicol` | `class` | Bootstrap row; wrap `col` shortcodes in it |
 | `col` | `class`, `text-align` (default `left`) | One column inside `multicol` |
 | `align-right` | `padding` | Right-aligned block |
+| `small` | positional font size (default `60%`), inner Markdown | Shrinks the inner content (e.g. a wide table); use with `%` |
 | `vspace` | positional height (default `20px`) | Vertical spacer |
 | `image` | `src`, `alt`, `width`, `height`, `max-w` (default `95vw`), `max-h` (default `80vh`), `link` | Image scaled to fit the slide, optionally a link |
 
