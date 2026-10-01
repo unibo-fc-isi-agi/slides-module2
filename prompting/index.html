@@ -46,9 +46,11 @@
 <li><a href="#/prompting-techniques">Prompting techniques</a>: zero-shot, few-shot, chain-of-thought, self-consistency, prompt chaining</li>
 <li><a href="#/reasoning-models">Reasoning models</a>: models which “think” before answering, and how to control how much they think</li>
 <li><a href="#/context-management">Context management</a>: context windows, token budgets, compaction, prompt caching</li>
-<li><a href="#/validation">Validating generative software</a>: golden sets, deterministic scorers, LLM-as-a-Judge, with DeepEval and MLflow</li>
-<li>Exercises on the running example: <a href="#/exercise-checklist">checklist scoring</a>, <a href="#/exercise-id-documents">ID documents extraction</a>, <a href="#/exercise-id-tests">testing infrastructure</a></li>
+<li>Exercises on the running example: <a href="#/exercise-checklist">checklist scoring</a>, <a href="#/exercise-id-documents">ID documents extraction</a></li>
 </ol>
+<blockquote>
+<p>Validating generative software is the topic of the <a href="../validating/">next lecture</a></p>
+</blockquote>
 <blockquote>
 <p>Recall: we assume the reader is familiar with the <a href="../llmaas/#/chat-completion-concept">Chat Completion API</a>, and with the notion of <a href="../genai/">prompt templates</a> from previous lectures</p>
 </blockquote>
@@ -76,7 +78,7 @@
 <li>
 <p>A prompt is commonly made of <em>four</em> (optional) <strong>elements</strong> (cf. <a href="https://www.promptingguide.ai/introduction/elements">Prompt Engineering Guide</a>):</p>
 <ol>
-<li><strong>instructions</strong>: the <em>task</em> to be performed, and <em>how</em> to perform it (e.g. “evaluate this letter”)</li>
+<li><strong>instructions</strong>: the <em>task</em> to be performed, and <em>how</em> to perform it (e.g. “score this letter”)</li>
 <li><strong>context</strong>: <em>background information</em> that may help the model (e.g. “you are assisting a PhD admission committee”)</li>
 <li><strong>input data</strong>: the <em>specific</em> data to be processed (e.g. the text of the letter)</li>
 <li><strong>output indicator</strong>: the <em>format</em> or <em>type</em> of the expected output (e.g. “answer in JSON, with fields …”)</li>
@@ -85,7 +87,7 @@
 </ul>
 </section><section>
 <h2 id="anatomy-of-a-prompt-an-intuitive-example">Anatomy of a prompt: an intuitive example</h2>
-<img src="./prompt-anatomy.svg" alt="The system and user messages of the letter-evaluator prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<img src="./prompt-anatomy.svg" alt="The system and user messages of the letter-scoring prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
 <ul>
 <li>The <strong>system</strong> prompt commonly contains the <em>stable</em> parts (context, general instructions, output format)</li>
 <li>The <strong>user</strong> prompt commonly contains the <em>variable</em> parts (input data, specific instructions)
@@ -180,30 +182,30 @@
 </ul>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><p><img src="../passport-mario-rossi.png" alt=""></p>
+    <div class="row "><div class="col " style="text-align: left;"><p><img src="../data/passport-mario-rossi.png" alt=""></p>
 <ul>
-<li><a href="../transcript-mario-rossi.png">Transcript of records</a></li>
-<li><a href="../letter-mario-rossi.txt">Presentation letter</a>
+<li><a href="../data/transcript-mario-rossi.png">Transcript of records</a></li>
+<li><a href="../data/letter-mario-rossi.txt">Presentation letter</a>
 <ul>
 <li>letter is very positive</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../passport-jean-dupont.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../data/passport-jean-dupont.png" alt=""></p>
 <ul>
-<li><a href="../transcript-jean-dupont.png">Transcript of records</a></li>
-<li><a href="../letter-jean-dupont.txt">Presentation letter</a>
+<li><a href="../data/transcript-jean-dupont.png">Transcript of records</a></li>
+<li><a href="../data/letter-jean-dupont.txt">Presentation letter</a>
 <ul>
 <li>letter contains some criticisms</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../passport-mohammed-ali.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../data/passport-mohammed-ali.png" alt=""></p>
 <ul>
-<li><a href="../transcript-mohammed-ali.png">Transcript of records</a></li>
-<li><a href="../letter-mohammed-ali.txt">Presentation letter</a>
+<li><a href="../data/transcript-mohammed-ali.png">Transcript of records</a></li>
+<li><a href="../data/letter-mohammed-ali.txt">Presentation letter</a>
 <ul>
 <li>letter is positive but shallow</li>
 </ul>
@@ -373,30 +375,35 @@
 
 
 <section data-shortcode-section="">
-<h2 id="how-is-structured-output-enforced-the-technological-landscape-pt-1">How is structured output <em>enforced</em>? The technological landscape (pt. 1)</h2>
+<h2 id="how-is-structured-output-enforced-pt-1">How is structured output <em>enforced</em>? (pt. 1)</h2>
 <p>From <em>weakest</em> to <em>strongest</em> guarantees:</p>
 <ol>
-<li><strong>Prompt-only</strong>: describe the format in the prompt, then <em>parse</em> (and <em>validate</em>) the response
+<li>
+<p><strong>Prompt-only</strong>: describe the format in the prompt, then <em>parse</em> (and <em>validate</em>) the response</p>
 <ul>
 <li>works with <em>any</em> model, yet the output may be <em>malformed</em> (missing fields, extra text, Markdown fences around JSON…)</li>
 </ul>
 </li>
-<li><strong>JSON mode</strong> (e.g. <code>response_format={"type": "json_object"}</code>): the output is guaranteed to be <em>valid JSON</em>, but not to match your <em>schema</em></li>
-<li><strong>Schema-constrained output</strong> (e.g. <code>response_format={"type": "json_schema", ..., "strict": true}</code>): the output is guaranteed to match the <em>JSON Schema</em>
+<li>
+<p><strong>JSON mode</strong> (e.g. <code>response_format={"type": "json_object"}</code>): the output is guaranteed to be <em>valid JSON</em>, but not to match your <em>schema</em></p>
+</li>
+<li>
+<p><strong>Schema-constrained output</strong> (e.g. <code>response_format={"type": "json_schema", ..., "strict": true}</code>): the output is guaranteed to match the <em>JSON Schema</em></p>
 <ul>
 <li>commonly implemented via <strong>constrained decoding</strong>: at each generation step, tokens that would violate the schema are <em>masked out</em></li>
 <li>cf. <a href="https://arxiv.org/abs/2307.09702">Willard &amp; Louf (2023)</a>, and libraries such as <a href="https://github.com/dottxt-ai/outlines">Outlines</a>, <a href="https://github.com/guidance-ai/llguidance">llguidance</a>, <a href="https://github.com/mlc-ai/xgrammar">XGrammar</a></li>
 </ul>
+ <img src="./constrained-decoding.svg" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
 </li>
-<li><strong>Tool-calling trick</strong>: declare a (fake) <em>tool</em> whose parameters are the target schema, and <em>force</em> the model to call it
+<li>
+<p><strong>Tool-calling trick</strong>: declare a (fake) <em>tool</em> whose parameters are the target schema, and <em>force</em> the model to call it</p>
 <ul>
 <li>the tool-call <em>arguments</em> are the structured output (common before providers supported (3))</li>
 </ul>
 </li>
 </ol>
-<img src="./constrained-decoding.svg" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
 </section><section>
-<h2 id="how-is-structured-output-enforced-the-technological-landscape-pt-2">How is structured output <em>enforced</em>? The technological landscape (pt. 2)</h2>
+<h2 id="how-is-structured-output-enforced-pt-2">How is structured output <em>enforced</em>? (pt. 2)</h2>
 <table>
 	<thead>
 			<tr>
@@ -447,7 +454,7 @@
 </li>
 </ul>
 <blockquote>
-<p>[BEWARE] even with guarantees on the <em>format</em>, nothing guarantees the <em>content</em> is correct: always <em>validate</em> the values</p>
+<p>[BEWARE] the <em>format</em> is guaranteed to be correct, the <em>content</em> is not: always <em>validate</em> the values</p>
 </blockquote>
 
 </section>
@@ -455,7 +462,7 @@
 
 
 <section data-shortcode-section="">
-<section data-noprocess="" data-shortcode-slide="" id="letter-evaluator">
+<section data-noprocess="" data-shortcode-slide="" id="letter-scoring">
 <h2 id="example-1-structured-output-with-pydantic-classes-pt-1">Example 1: Structured Output with Pydantic Classes (pt. 1)</h2>
 <blockquote>
 <p><strong>Goal</strong>: let’s <em>extract</em> structured information from the candidates’ <em>presentation letters</em></p>
@@ -532,12 +539,12 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">relationship_with_applicant</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Optional</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Relationship of the author with the applicant, according to the letter."</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div></li>
 <li>
-<p>A class for the overall <em>evaluation</em> of the letter, including the extracted information and the final score:</p>
+<p>A class for the overall <em>scoring</em> of the letter, including the extracted information and the final score:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">BaseModel</span><span style="color:#000;font-weight:bold">):</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">applicant</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ApplicantInfo</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Information about the person the letter is about, i.e., the one applying for the PhD programme."</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">author</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">AuthorInfo</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Information about the person who wrote the letter, i.e., the one recommending the applicant for the PhD programme."</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">application_for</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The PhD programme for which the applicant is applying."</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">score</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"The score assigned to the letter by the evaluator according to the following rules.</span><span style="color:#4e9a06">{</span><span style="color:#000">scoring_instructions</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">score</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"The score assigned to the letter according to the following rules.</span><span style="color:#4e9a06">{</span><span style="color:#000">scoring_instructions</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
 <li>notice that instructions for scoring are contained in another string</li>
 </ul>
@@ -563,13 +570,13 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">"""</span>
 </span></span></code></pre></div></li>
 <li>
-<p>With these ingredients in mind, the automatic evaluation logic is as simple as a <em>single request–response interaction</em> with the LLM:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">OpenAI</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
+<p>With these ingredients in mind, the automatic scoring logic is as simple as a <em>single request–response interaction</em> with the LLM:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">OpenAI</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parse</span><span style="color:#000;font-weight:bold">(</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"system"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">general_instructions</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Evaluate the following letter:</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">letter_text</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Score the following letter:</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">letter_text</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">],</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">response_format</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">)</span>
@@ -596,23 +603,23 @@
 <h2 id="example-1-structured-output-with-pydantic-classes-pt-4">Example 1: Structured Output with Pydantic Classes (pt. 4)</h2>
 <ol start="6">
 <li>
-<p>Full code <a href="./letter_evaluator_openai.py">here</a></p>
+<p>Full code <a href="../scripts/letter_scoring_openai.py">here</a></p>
 </li>
 <li>
-<p>At this point, the logic of the program is trivial (load letter file $\rightarrow$ call <code>evaluate_letter(...)</code> $\rightarrow$ print the evaluation):</p>
+<p>At this point, the logic of the program is trivial (load letter file $\rightarrow$ call <code>score_letter(...)</code> $\rightarrow$ print the result):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Using model: </span><span style="color:#4e9a06">{</span><span style="color:#000">model</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Enter the path to the letter to evaluate: "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Enter the path to the letter to score: "</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_path</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">letter_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">is_file</span><span style="color:#000;font-weight:bold">():</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"File </span><span style="color:#4e9a06">{</span><span style="color:#000">letter_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> is not a file."</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_text</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">))</span>
 </span></span></code></pre></div></li>
 <li>
@@ -734,6 +741,23 @@
 </span></span></span></code></pre></div></div>
 </div>
 </div>
+</section><section>
+<h2 id="example-1-project-structure">Example 1: Project Structure</h2>
+<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_scoring_openai.py">letter_scoring_openai.py</a>    # the letter-scoring system
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+</ul>
 
 </section>
 </section>
@@ -778,7 +802,7 @@
 </li>
 </ul>
 </section><section>
-<h2 id="example-1-bis-the-same-letter-evaluator-with-langchain-pt-1">Example 1 (bis): the same Letter Evaluator with LangChain (pt. 1)</h2>
+<h2 id="example-1-bis-the-same-letter-scoring-system-with-langchain-pt-1">Example 1 (bis): the same Letter Scoring System with LangChain (pt. 1)</h2>
 <ol>
 <li>
 <p>Let’s import LangChain’s chat model for OpenAI-compatible APIs, and initialize it (notice that the <em>same</em> environment variables are used):</p>
@@ -802,7 +826,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You'll be provided with the text of each letter,
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">and you'll have to analyse it to extract structured information in JSON.
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">"""</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"Evaluate the following letter:</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{letter_text}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"Score the following letter:</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{letter_text}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">])</span>
 </span></span></code></pre></div><ul>
 <li><code>ChatPromptTemplate.from_messages</code> accepts a list of <code>(role, template)</code> pairs</li>
@@ -810,18 +834,18 @@
 </ul>
 </li>
 <li>
-<p><code>pydantic</code> classes and scoring instructions are <em>exactly the same</em> as in the OpenAI version (full code <a href="./letter_evaluator_langchain.py">here</a>)</p>
+<p><code>pydantic</code> classes and scoring instructions are <em>exactly the same</em> as in the OpenAI version (full code <a href="../scripts/letter_scoring_langchain.py">here</a>)</p>
 </li>
 </ol>
 </section><section>
-<h2 id="example-1-bis-the-same-letter-evaluator-with-langchain-pt-2">Example 1 (bis): the same Letter Evaluator with LangChain (pt. 2)</h2>
+<h2 id="example-1-bis-the-same-letter-scoring-system-with-langchain-pt-2">Example 1 (bis): the same Letter Scoring System with LangChain (pt. 2)</h2>
 <ol start="4">
 <li>
-<p>The evaluation logic is a <strong>chain</strong>: <em>prompt template</em> $\rightarrow$ <em>chat model</em> constrained to produce <code>LetterInfo</code> instances:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">evaluator</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">prompt</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">)</span>
+<p>The scoring logic is a <strong>chain</strong>: <em>prompt template</em> $\rightarrow$ <em>chat model</em> constrained to produce <code>LetterInfo</code> instances:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">scoring_chain</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">prompt</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">evaluator</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"letter_text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">})</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">scoring_chain</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"letter_text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">})</span>
 </span></span></code></pre></div><p>notice that:</p>
 <ul>
 <li><code>llm.with_structured_output(LetterInfo)</code> returns a <em>new runnable</em>, whose output is an instance of <code>LetterInfo</code>
@@ -831,14 +855,31 @@
 </ul>
 </li>
 <li><code>prompt | ...</code> creates a <em>sequence</em>: the output of the template (messages) is the input of the model</li>
-<li><code>evaluator.invoke({...})</code> runs the whole chain, <code>evaluator.batch([{...}, {...}])</code> runs it on <em>many</em> inputs, in <em>parallel</em></li>
+<li><code>scoring_chain.invoke({...})</code> runs the whole chain, <code>scoring_chain.batch([{...}, {...}])</code> runs it on <em>many</em> inputs, in <em>parallel</em></li>
 </ul>
 </li>
 <li>
 <p>The <code>main</code> part of the program is unchanged:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python letter_evaluator_langchain.py ../../static/letter-mario-rossi.txt
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/letter_scoring_langchain.py data/letter-mario-rossi.txt
 </span></span></code></pre></div></li>
 </ol>
+</section><section>
+<h2 id="example-1-bis-project-structure">Example 1 (bis): Project Structure</h2>
+<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # the letter-scoring system
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+</ul>
 </section><section>
 <h2 id="openai-client-vs-langchain-analogies-and-differences">OpenAI client vs. LangChain: analogies and differences</h2>
 <table>
@@ -911,7 +952,7 @@
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
-<li>start from the <a href="./letter_evaluator_langchain.py">LangChain version</a> of the letter evaluator</li>
+<li>start from the <a href="../scripts/letter_scoring_langchain.py">LangChain version</a> of the letter-scoring system</li>
 <li>let’s turn the scoring recipe into a <em>checklist</em> of criteria</li>
 <li>let’s have a Pydantic class with as many <strong>boolean fields</strong> as the criteria in the checklist</li>
 <li>let’s ask the <em>LLM</em> to set the boolean fields by analysing the <em>input letter</em></li>
@@ -982,7 +1023,7 @@
 </ul>
 </section><section>
 <h2 id="prompting-techniques-an-intuitive-example">Prompting techniques: an intuitive example</h2>
-<img src="./prompting-techniques.svg" alt="Zero-shot, few-shot, chain-of-thought and self-consistency applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, down to a 4/5 majority vote for critical" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<img src="./prompting-techniques.svg" alt="Zero-shot, few-shot, chain-of-thought, self-consistency and prompt chaining applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, from a 4/5 majority vote for critical to a two-step chain that first quotes the key sentences and then classifies them" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </section><section>
 <h2 id="prompting-techniques-in-langchain-the-technological-landscape">Prompting techniques in LangChain: the technological landscape</h2>
 <ul>
@@ -1135,16 +1176,33 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">votes</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">most_common</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">][</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">votes</span>
 </span></span></code></pre></div></li>
 <li>
-<p>Let’s try it (full code <a href="./letter_tone.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python letter_tone.py zero-shot ../../static/letter-jean-dupont.txt
-</span></span><span style="display:flex;"><span>python letter_tone.py few-shot ../../static/letter-jean-dupont.txt
-</span></span><span style="display:flex;"><span>python letter_tone.py cot ../../static/letter-jean-dupont.txt <span style="color:#0000cf;font-weight:bold">5</span>     <span style="color:#8f5902;font-style:italic"># CoT + self-consistency, 5 samples</span>
+<p>Let’s try it (full code <a href="../scripts/letter_tone.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/letter_tone.py zero-shot data/letter-jean-dupont.txt
+</span></span><span style="display:flex;"><span>python scripts/letter_tone.py few-shot data/letter-jean-dupont.txt
+</span></span><span style="display:flex;"><span>python scripts/letter_tone.py cot data/letter-jean-dupont.txt <span style="color:#0000cf;font-weight:bold">5</span>     <span style="color:#8f5902;font-style:italic"># CoT + self-consistency, 5 samples</span>
 </span></span></code></pre></div><ul>
 <li>the script also <em>prints</em> the prompt template, so you can see what each technique actually sends</li>
 <li>try with the other letters, and with <em>different models</em>: which technique makes the answers most <em>stable</em>?</li>
 </ul>
 </li>
 </ol>
+</section><section>
+<h2 id="example-2-project-structure">Example 2: Project Structure</h2>
+<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_tone.py">letter_tone.py</a>              # tone classification
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+</ul>
 </section><section>
 <h2 id="prompting-techniques-trade-offs">Prompting techniques: trade-offs</h2>
 <table>
@@ -1323,7 +1381,7 @@
 <h2 id="example-3-reasoning-effort-vs-latency-and-cost-pt-2">Example 3: Reasoning Effort vs. Latency and Cost (pt. 2)</h2>
 <ol start="3">
 <li>
-<p>Let’s run it on all letters (full code <a href="./reasoning_effort.py">here</a>):</p>
+<p>Let’s run it on all letters (full code <a href="../scripts/reasoning_effort.py">here</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
@@ -1334,7 +1392,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Using model: </span><span style="color:#4e9a06">{</span><span style="color:#000">model</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">effort</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"low"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"medium"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"high"</span><span style="color:#000;font-weight:bold">]:</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">ask</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">question</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letters</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letters</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">effort</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python reasoning_effort.py ../../static/letter-*.txt
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/reasoning_effort.py data/letter-*.txt
 </span></span></code></pre></div></li>
 <li>
 <p>Things to observe:</p>
@@ -1345,6 +1403,23 @@
 </ul>
 </li>
 </ol>
+</section><section>
+<h2 id="example-3-project-structure">Example 3: Project Structure</h2>
+<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/reasoning_effort.py">reasoning_effort.py</a>         # ranking at several efforts
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+</ul>
 </section><section>
 <h2 id="reasoning-models-when-and-how-to-use-them">Reasoning models: when and how to use them?</h2>
 <ul>
@@ -1447,13 +1522,17 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">SystemMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"You are an assistant that extracts structured information from ID documents."</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">message_with_image</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Please extract the information from this ID document."</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"../../static/passport-mario-rossi.png"</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">message_with_image</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Please extract the information from this ID document."</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"data/passport-mario-rossi.png"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">extractor</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">batch</span><span style="color:#000;font-weight:bold">([</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># 5 samples, for voting</span>
 </span></span></code></pre></div></li>
 <li>
 <p>[HINT] for field-by-field voting, <code>collections.Counter(getattr(r, field) for r in results).most_common(1)</code> is your friend</p>
 </li>
+</ul>
+</section><section>
+<h2 id="exercise-2-extract-structured-information-from-pictures-pt-4">Exercise 2: Extract Structured Information from Pictures (pt. 4)</h2>
+<ul>
 <li>
 <p>[BEWARE] There are limitations w.r.t. input data <a href="https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements">on OpenAI</a> (and what about <a href="https://openrouter.ai/docs/guides/overview/multimodal/image-understanding">OR</a>?)</p>
   <img src="./openai-image-input-limits.png" alt="OpenAI image input limits" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
@@ -1502,7 +1581,7 @@
 </ul>
 </section><section>
 <h2 id="context-management-an-intuitive-example">Context management: an intuitive example</h2>
-<img src="./context-growth.svg" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<img src="./context-growth.svg" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </section><section>
 <h2 id="prompt-caching-the-general-concept">Prompt caching: the general concept</h2>
 <ul>
@@ -1559,6 +1638,7 @@
 </table>
 </section><section>
 <h2 id="context-management-the-technological-landscape">Context management: the technological landscape</h2>
+<div style="font-size: 60%;">
 <table>
 	<thead>
 			<tr>
@@ -1600,13 +1680,14 @@
 			</tr>
 			<tr>
 					<td>LangChain</td>
-					<td><code>count_tokens_approximately(...)</code>, <code>llm.get_num_tokens_from_messages(...)</code> (model-specific)</td>
+					<td><code>count_tokens_approximately(...)</code>, <br><code>llm.get_num_tokens_from_messages(...)</code> <br> (model-specific)</td>
 					<td>reported in <code>usage_metadata["input_token_details"]["cache_read"]</code></td>
 					<td><code>trim_messages(...)</code>, summarisation middleware for agents</td>
 					<td><a href="https://docs.langchain.com/oss/python/langchain/short-term-memory">short-term memory</a></td>
 			</tr>
 	</tbody>
 </table>
+</div>
 <ul>
 <li><strong>Same concepts</strong> everywhere; <em>different</em> syntax, <em>thresholds</em> (e.g. minimum cacheable length), <em>prices</em>, and <em>retention times</em></li>
 <li>Server-side compaction is convenient, but <em>opaque</em> (e.g. OpenAI’s compacted items are <em>encrypted</em>) and <em>provider-specific</em>: client-side compaction is <em>portable</em></li>
@@ -1685,8 +1766,8 @@
 <h2 id="example-4-cli-chat-with-context-compaction-pt-3">Example 4: CLI Chat with Context Compaction (pt. 3)</h2>
 <ol start="5">
 <li>
-<p>Let’s try it (full code <a href="./chat_with_compaction.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">CONTEXT_BUDGET</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">300</span> python chat_with_compaction.py
+<p>Let’s try it (full code <a href="../scripts/chat_with_compaction.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">CONTEXT_BUDGET</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">300</span> python scripts/chat_with_compaction.py
 </span></span></code></pre></div></li>
 <li>
 <p>Things to observe:</p>
@@ -1704,442 +1785,27 @@
 </ul>
 </li>
 </ol>
-
-</section>
-</section>
-
-
-<section data-shortcode-section="">
-<section data-noprocess="" data-shortcode-slide="" id="validation">
-<h2 id="validating-generative-software-the-general-concept">Validating generative software: the general concept</h2>
-<ul>
-<li>
-<p>LLM-based software is hard to test:</p>
-<ul>
-<li>outputs are <em>non-deterministic</em> (same input, different outputs)</li>
-<li>outputs are <em>open-ended</em> (many correct answers, no single expected value)</li>
-<li>behaviour changes whenever the <em>prompt</em>, the <em>model</em>, or the <em>provider</em> changes, even silently</li>
-</ul>
-</li>
-<li>
-<p>Hence, rather than <em>unit tests</em>, we need <strong>evaluations</strong> (a.k.a. <em>evals</em>): measuring <em>how often</em>, and <em>how well</em>, the system behaves as expected, on a <em>dataset</em> of representative inputs</p>
-</li>
-<li>
-<p>Ingredients of an evaluation:</p>
-<ol>
-<li>a <strong>dataset</strong> of inputs, possibly with <em>expectations</em> (a <em>golden set</em>, written by humans)</li>
-<li>the <strong>system under test</strong> (prompt + model + code)</li>
-<li><strong>scorers</strong> (a.k.a. <em>metrics</em>), mapping each (input, output, expectation) to a <em>score</em> or a <em>pass/fail</em>:
-<ul>
-<li><strong>deterministic</strong> scorers: schema validity, exact match, ranges, regular expressions, invariants and <em>relations</em> among outputs</li>
-<li><strong>statistical</strong> scorers: similarity to a reference (e.g. <a href="https://aclanthology.org/P02-1040/">BLEU</a>, <a href="https://aclanthology.org/W04-1013/">ROUGE</a>, embedding similarity)</li>
-<li><strong>LLM-as-a-Judge</strong>: another LLM grades the output, according to a natural language <em>rubric</em></li>
-<li><strong>humans</strong>: the most reliable, and the most expensive</li>
-</ul>
-</li>
-<li>an <strong>aggregation</strong> (e.g. pass rate, mean score), to be compared across <em>versions</em> of the system (<em>regression testing</em>)</li>
-</ol>
-</li>
-<li>
-<p>Structured outputs make evaluation <em>much</em> easier: most fields can be checked with <em>code</em></p>
-</li>
-</ul>
 </section><section>
-<h2 id="validating-generative-software-an-intuitive-example">Validating generative software: an intuitive example</h2>
-<img src="./evaluation-pipeline.svg" alt="An evaluation pipeline: a golden set of three letters with expectations goes through the prompt template and model; outputs are checked by deterministic, relational and LLM-as-a-judge scorers, and the pass/fail report feeds back into the prompt" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
-</section><section>
-<h2 id="llm-as-a-judge">LLM-as-a-Judge</h2>
-<ul>
-<li>
-<p>Idea: use a (strong) LLM to <em>grade</em> outputs, according to some <em>criteria</em> (cf. <a href="https://arxiv.org/abs/2306.05685">Zheng et al. (2023)</a>, and the survey by <a href="https://arxiv.org/abs/2411.15594">Gu et al. (2024)</a>)</p>
-<ul>
-<li><em>pointwise</em> (grade one output on a scale), or <em>pairwise</em> (which of two outputs is better?), with or without a <em>reference</em> answer</li>
-<li>the judge’s prompt is a <em>rubric</em>, and its answer is (ideally) a <strong>structured output</strong>: score + rationale</li>
-<li>asking for the <em>rationale first</em> helps (cf. <a href="#/letter-tone">chain-of-thought</a>); <a href="https://arxiv.org/abs/2303.16634">G-Eval</a> goes further, by first generating <em>evaluation steps</em> from the criteria</li>
-</ul>
-</li>
-<li>
-<p>Known <strong>biases</strong> of judges:</p>
-<ul>
-<li><em>position</em> bias (preferring the first, or the second, option in pairwise comparisons), cf. <a href="https://arxiv.org/abs/2305.17926">Wang et al. (2023)</a></li>
-<li><em>verbosity</em> bias (preferring longer answers), and <em>self-preference</em> (preferring outputs of the <em>same</em> model family)</li>
-</ul>
-</li>
-<li>
-<p>Good practices:</p>
-<ul>
-<li>use a <em>different</em> (and possibly stronger) model as judge, with <em>low</em> temperature</li>
-<li>prefer <em>narrow</em>, <em>binary</em> criteria (e.g. “is every strength supported by the letter?”) over vague ones (e.g. “is it good?”)</li>
-<li><strong>validate the judge</strong>: compare its grades with <em>human</em> grades, on a small sample, before trusting it</li>
-<li>use judges only for what <em>cannot</em> be checked with code</li>
-</ul>
-</li>
-</ul>
-</section><section>
-<h2 id="evaluation-frameworks-the-technological-landscape">Evaluation frameworks: the technological landscape</h2>
-<table>
-	<thead>
-			<tr>
-					<th>Tool</th>
-					<th>Style</th>
-					<th>Scorers / judges</th>
-					<th>Results in</th>
-					<th>Docs</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td><a href="https://github.com/confident-ai/deepeval">DeepEval</a></td>
-					<td><em>unit-test</em> like, on top of <code>pytest</code></td>
-					<td>many built-in metrics (G-Eval, hallucination, RAG, agents), custom ones</td>
-					<td>terminal; optional cloud dashboard</td>
-					<td><a href="https://deepeval.com/docs/getting-started">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://mlflow.org/">MLflow</a> GenAI</td>
-					<td><em>experiment</em> tracking: runs, datasets, traces</td>
-					<td>code scorers (<code>@scorer</code>), built-in and custom judges (<code>make_judge</code>)</td>
-					<td>local (or remote) tracking server, with web UI</td>
-					<td><a href="https://mlflow.org/docs/latest/genai/eval-monitor/">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://www.promptfoo.dev/">promptfoo</a></td>
-					<td><em>declarative</em> (YAML), CLI, language-agnostic</td>
-					<td>assertions, model-graded rubrics, red-teaming</td>
-					<td>terminal, local web UI</td>
-					<td><a href="https://www.promptfoo.dev/docs/intro/">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://github.com/openai/evals">OpenAI Evals</a></td>
-					<td>registry of evals + platform</td>
-					<td>templates, model-graded</td>
-					<td>OpenAI dashboard</td>
-					<td><a href="https://developers.openai.com/api/docs/guides/evals">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://docs.ragas.io/">Ragas</a></td>
-					<td>library of metrics</td>
-					<td>focused on <em>RAG</em> and agents</td>
-					<td>Python objects, dataframes</td>
-					<td><a href="https://docs.ragas.io/">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://inspect.aisi.org.uk/">Inspect</a></td>
-					<td>framework for <em>benchmarks</em> and safety evals</td>
-					<td>solvers + scorers, model-graded</td>
-					<td>log viewer</td>
-					<td><a href="https://inspect.aisi.org.uk/">link</a></td>
-			</tr>
-			<tr>
-					<td><a href="https://www.langchain.com/langsmith">LangSmith</a></td>
-					<td>tracing + evals, by LangChain</td>
-					<td>code and LLM evaluators</td>
-					<td>cloud dashboard</td>
-					<td><a href="https://docs.langchain.com/langsmith/evaluation">link</a></td>
-			</tr>
-	</tbody>
-</table>
-<ul>
-<li><strong>Same metamodel</strong> everywhere: <em>dataset</em> $\times$ <em>system under test</em> $\rightarrow$ <em>outputs</em> $\rightarrow$ <em>scorers</em> $\rightarrow$ <em>report</em></li>
-<li><strong>Differences</strong>: <em>how</em> datasets and scorers are declared (code vs. configuration), <em>where</em> results go (terminal, local UI, cloud), and <em>batteries included</em> (built-in metrics)</li>
-</ul>
-
-</section>
-</section>
-
-
-<section data-shortcode-section="">
-<section data-noprocess="" data-shortcode-slide="" id="test-deepeval">
-<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-1">Example 5: Testing the Letter Evaluator with DeepEval (pt. 1)</h2>
-<blockquote>
-<p><strong>Goal</strong>: set up a <em>test suite</em> for the <a href="#/langchain">LangChain letter evaluator</a> of Example 1 (bis)</p>
-</blockquote>
-<ol>
-<li>
-<p>The <strong>golden set</strong> is written by <em>humans</em>, and shared among test suites (full code <a href="./golden.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Golden set, written by humans (the committee): what a correct evaluation of each letter must contain</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">GOLDEN</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-mario-rossi.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Mario Rossi"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Alessandro Bianchi"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Data Science"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">has_weaknesses</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">min_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-jean-dupont.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Jean Dupont"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Claire Moreau"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Artificial Intelligence"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">has_weaknesses</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"letter-mohammed-ali.txt"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Mohammed Ali"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Kareem Al-Haddad"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>         <span style="color:#000">programme</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Cyber Security"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_score</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">LETTERS_DIR</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"letter"</span><span style="color:#000;font-weight:bold">])</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
+<h2 id="example-4-project-structure">Example 4: Project Structure</h2>
+<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+├── scripts/
+│   └── <a href="../scripts/chat_with_compaction.py">chat_with_compaction.py</a>     # the CLI chat
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt
 </span></span></code></pre></div><ul>
-<li>notice that expectations are <em>partial</em> and <em>tolerant</em>: e.g. <em>ranges</em> for scores, “contains” for names</li>
-</ul>
-</li>
-<li>
-<p>Imports: DeepEval runs on top of <code>pytest</code>, and the system under test is imported <em>as is</em>:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai deepeval pytest</span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: pytest test_letter_evaluator.py   (or: deepeval test run test_letter_evaluator.py)</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pytest</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">assert_test</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.metrics</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GEval</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.models</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">OpenRouterModel</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.test_case</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">golden</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_evaluator_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">evaluate</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">functools</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">cache</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># one LLM call per letter, shared by all tests</span>
-</span></span></code></pre></div><ul>
-<li><code>functools.cache</code> avoids calling the LLM <em>once per test</em>: each letter is evaluated once, and outputs are shared</li>
-</ul>
-</li>
-</ol>
-</section><section>
-<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-2">Example 5: Testing the Letter Evaluator with DeepEval (pt. 2)</h2>
-<ol start="3">
-<li>
-<p><strong>Deterministic</strong> scorers are just <code>pytest</code> assertions on the <em>fields</em> of the structured output:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. deterministic scorers: plain assertions on the fields of the structured output</span>
-</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@pytest.mark.parametrize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"golden"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ids</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">])</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_extracted_fields</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">):</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">))</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"author"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"programme"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">application_for</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">golden</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"min_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">score</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">golden</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"max_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#4e9a06">"has_weaknesses"</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">weaknesses</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">golden</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"has_weaknesses"</span><span style="color:#000;font-weight:bold">]</span>
-</span></span></code></pre></div></li>
-<li>
-<p><strong>Relational</strong> properties hold <em>across</em> inputs (a.k.a. <em>metamorphic</em> testing): they are robust to the variability of single scores</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 2. relational property: holds across inputs, even if single scores may vary</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_best_letter_is_mario_rossi</span><span style="color:#000;font-weight:bold">():</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">scores</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]:</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">))</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">score</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">g</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">scores</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"Mario Rossi"</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87">max</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">scores</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">())</span>
-</span></span></code></pre></div></li>
-</ol>
-</section><section>
-<h2 id="example-5-testing-the-letter-evaluator-with-deepeval-pt-3">Example 5: Testing the Letter Evaluator with DeepEval (pt. 3)</h2>
-<ol start="5">
-<li>
-<p><strong>LLM-as-a-Judge</strong>, via DeepEval’s <em>G-Eval</em> metric: the judge scores (in $[0, 1]$) how much the output satisfies the <em>criteria</em>, and the test passes if the score is above the <em>threshold</em></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 3. LLM-as-a-judge: a (different) model grades what is hard to check with code</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">judge</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenRouterModel</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"JUDGE_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openai/gpt-oss-120b"</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">groundedness</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">GEval</span><span style="color:#000;font-weight:bold">(</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Groundedness"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">criteria</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Every skill, strength, and weakness listed in the actual output must be explicitly supported by the letter in the input. "</span>
-</span></span><span style="display:flex;"><span>             <span style="color:#4e9a06">"Penalise any invented, exaggerated, or misattributed item."</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">evaluation_params</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">INPUT</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ACTUAL_OUTPUT</span><span style="color:#000;font-weight:bold">],</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">judge</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@pytest.mark.parametrize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"golden"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ids</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">])</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">test_groundedness</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">):</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">golden</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">assert_test</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">actual_output</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">()),</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
-</span></span></code></pre></div><ul>
-<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it)</li>
-<li><code>evaluation_params</code> selects which parts of the test case the judge can <em>see</em></li>
-</ul>
-</li>
-<li>
-<p>Let’s run it (full code <a href="./test_letter_evaluator.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>pytest test_letter_evaluator.py -v
-</span></span></code></pre></div><ul>
-<li>would the outputs of <a href="#/letter-evaluator">Example 1</a> pass? <strong>No</strong>: Mohammed Ali’s shallow letter got score 4, whereas the committee expects at most 3
-<ul>
-<li>a test failure is <em>information</em>: fix the <em>prompt</em> (e.g. with <a href="#/exercise-checklist">Exercise 1</a>), or the <em>model</em>, and re-run</li>
-</ul>
-</li>
-<li>run the suite <em>several times</em>: which tests are <em>flaky</em>? Flakiness is a <em>measure</em> of the system’s (in)consistency</li>
-</ul>
-</li>
-</ol>
-
-</section>
-</section>
-
-
-<section data-shortcode-section="">
-<section data-noprocess="" data-shortcode-slide="" id="evaluate-mlflow">
-<h2 id="example-5-bis-evaluating-the-letter-evaluator-with-mlflow-pt-1">Example 5 (bis): Evaluating the Letter Evaluator with MLflow (pt. 1)</h2>
-<ol>
-<li>
-<p>Same golden set, rearranged as MLflow wants it: <code>inputs</code> (for the system) + <code>expectations</code> (for the scorers)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai mlflow</span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: python evaluate_mlflow.py   then browse results with: mlflow ui</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">typing</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Literal</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">mlflow</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">scorer</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai.judges</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">make_judge</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">golden</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_evaluator_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">inputs</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">g</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">g</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">GOLDEN</span><span style="color:#000;font-weight:bold">]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 2. the system under test (outputs must be serialisable)</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">evaluate_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">()</span>
-</span></span></code></pre></div><ul>
-<li>the system under test is a <em>function</em> (<code>predict_fn</code>), called with the <code>inputs</code> as keyword arguments</li>
-</ul>
-</li>
-<li>
-<p>Deterministic scorers are <em>functions</em> decorated with <code>@scorer</code>, whose parameters are <em>named</em> after what they need (<code>inputs</code>, <code>outputs</code>, <code>expectations</code>, <code>trace</code>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 3. deterministic scorers</span>
-</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@scorer</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">applicant_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"applicant"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@scorer</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_in_range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expectations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"min_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">outputs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"score"</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"max_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div></li>
-</ol>
-</section><section>
-<h2 id="example-5-bis-evaluating-the-letter-evaluator-with-mlflow-pt-2">Example 5 (bis): Evaluating the Letter Evaluator with MLflow (pt. 2)</h2>
-<ol start="3">
-<li>
-<p>The judge is created via <code>make_judge</code>, with <em>template variables</em> in the instructions, and a <em>structured</em> feedback type:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 4. LLM-as-a-judge (the API key is read from OPENAI_API_KEY)</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">groundedness</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">make_judge</span><span style="color:#000;font-weight:bold">(</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"groundedness"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">instructions</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The {{ inputs }} contain a recommendation letter, and the {{ outputs }} the information extracted from it. "</span>
-</span></span><span style="display:flex;"><span>                 <span style="color:#4e9a06">"Answer 'yes' if every skill, strength, and weakness in the outputs is explicitly supported by the letter, 'no' otherwise."</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"openai:/</span><span style="color:#4e9a06">{</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">'JUDGE_MODEL'</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">'openai/gpt-oss-120b'</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">feedback_value_type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">Literal</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"yes"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"no"</span><span style="color:#000;font-weight:bold">],</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">generate_rationale_first</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div><ul>
-<li><code>generate_rationale_first=True</code>: rationale <em>before</em> verdict (cf. <a href="#/letter-tone">chain-of-thought</a>)</li>
-<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API</li>
-</ul>
-</li>
-<li>
-<p>Evaluation is a <em>single call</em>, whose results are logged as an MLflow <em>run</em> (full code <a href="./evaluate_mlflow.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_experiment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"letter-evaluator"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">genai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">predict_fn</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">scorers</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">applicant_name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">score_in_range</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">results</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">metrics</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python evaluate_mlflow.py   <span style="color:#8f5902;font-style:italic"># prints aggregated metrics, e.g. {'score_in_range/mean': 0.67, ...}</span>
-</span></span><span style="display:flex;"><span>mlflow ui                   <span style="color:#8f5902;font-style:italic"># then open http://localhost:5000, to browse runs, traces, and judges' rationales</span>
-</span></span></code></pre></div> <img src="./todo-mlflow-ui.png" alt="TODO picture: screenshot of the MLflow UI, 'letter-evaluator' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." style="max-width: 95vw; max-height: 25vh; object-fit: contain;">
-</li>
-</ol>
-</section><section>
-<h2 id="deepeval-vs-mlflow-analogies-and-differences">DeepEval vs. MLflow: analogies and differences</h2>
-<table>
-	<thead>
-			<tr>
-					<th>Aspect</th>
-					<th>DeepEval</th>
-					<th>MLflow GenAI</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td>Mental model</td>
-					<td><em>tests</em>: pass / fail, in CI</td>
-					<td><em>experiments</em>: runs to be <em>compared</em> over time</td>
-			</tr>
-			<tr>
-					<td>Dataset</td>
-					<td>test cases (<code>LLMTestCase</code>), or <code>pytest</code> parameters</td>
-					<td>list of dicts (<code>inputs</code>, <code>expectations</code>), dataframes, or managed datasets</td>
-			</tr>
-			<tr>
-					<td>System under test</td>
-					<td>called by you, inside the test</td>
-					<td><code>predict_fn</code>, called by the framework (and <em>traced</em>)</td>
-			</tr>
-			<tr>
-					<td>Deterministic scorers</td>
-					<td>plain <code>assert</code>s</td>
-					<td><code>@scorer</code> functions, returning <code>bool</code>, numbers, or <code>Feedback</code></td>
-			</tr>
-			<tr>
-					<td>LLM judges</td>
-					<td><code>GEval(criteria=..., threshold=...)</code>, plus many ready-made metrics</td>
-					<td><code>make_judge(instructions=..., feedback_value_type=...)</code>, plus built-in judges</td>
-			</tr>
-			<tr>
-					<td>Judge model</td>
-					<td><code>DeepEvalBaseLLM</code> subclasses (OpenAI, OpenRouter, Ollama, …)</td>
-					<td>model URIs (<code>openai:/...</code>, <code>anthropic:/...</code>), plus <code>base_url</code></td>
-			</tr>
-			<tr>
-					<td>Results</td>
-					<td>terminal (+ optional cloud platform)</td>
-					<td>tracking server + web UI (local, self-hosted, or managed)</td>
-			</tr>
-			<tr>
-					<td>Best for</td>
-					<td><em>regression</em> tests in CI pipelines</td>
-					<td><em>comparing</em> prompts / models, and <em>monitoring</em> in production</td>
-			</tr>
-	</tbody>
-</table>
-<ul>
-<li>Same <em>concepts</em> (golden set, deterministic scorers, judges, aggregation), different <em>workflows</em>: the two can <em>coexist</em> in a project</li>
-</ul>
-
-</section>
-</section>
-
-
-<section data-shortcode-section="">
-<section data-noprocess="" data-shortcode-slide="" id="exercise-id-tests">
-<h2 id="exercise-3-testing-infrastructure-for-id-document-extraction-pt-1">Exercise 3: Testing Infrastructure for ID Document Extraction (pt. 1)</h2>
-<blockquote>
-<p><strong>Goal</strong>: the committee wants <em>evidence</em> that the extractor of <a href="#/exercise-id-documents">Exercise 2</a> is reliable, and wants to be <em>warned</em> whenever a change in prompt or model makes it worse</p>
-</blockquote>
-<span class="fragment ">
-  <h3 id="to-do-list">TO-DO List</h3>
-<ol>
-<li>build a <strong>golden set</strong> from the 3 passports of the <a href="#/running-example">running example</a>: for each picture, write down the <em>expected</em> values of all fields (name, date of birth, ID number, expiration date)</li>
-<li>pick a framework (DeepEval <em>or</em> MLflow), and write <strong>deterministic scorers</strong>:
-<ul>
-<li><em>exact match</em> for ID numbers and dates, <em>normalised</em> match for names (case, accents, order of first/family name)</li>
-<li><em>invariants</em>: date of birth &lt; expiration date, candidate is of age, etc.</li>
-</ul>
-</li>
-<li>measure <strong>consistency</strong>: run the extractor $N$ times per picture, and report the <em>agreement rate</em> per field
-<ul>
-<li>compare single queries vs. <em>majority voting</em> (as in Exercise 2): does voting improve <em>accuracy</em>?</li>
-</ul>
-</li>
-<li>add an <strong>LLM-as-a-Judge</strong> <em>only</em> where code can’t help (e.g. “is the document <em>legible</em> enough to trust the extraction?”), and <em>validate</em> it against your own judgement</li>
-<li>run the suite with at least <strong>two models</strong>, and write down which one you’d pick, and why (cf. the <a href="../governance/#/compare-models">Governance lecture</a>)</li>
-</ol>
-</span>
-</section><section>
-<h2 id="exercise-3-testing-infrastructure-for-id-document-extraction-pt-2">Exercise 3: Testing Infrastructure for ID Document Extraction (pt. 2)</h2>
-<h3 id="decision-points-and-hints">Decision points and hints</h3>
-<ul>
-<li><em>Where</em> should the golden set live? (code, YAML/JSON file, a managed dataset?) Who is allowed to change it?</li>
-<li><em>Tolerance</em>: which fields must be exactly right, and which ones may be <em>flagged</em> for human review instead?</li>
-<li><em>Cost</em>: $N$ samples $\times$ 3 pictures $\times$ $M$ models $\times$ (1 + judge) requests: keep $N$ small while developing, and use <code>:free</code> models (cf. <a href="../free-access/">Free Access to LLMs</a>)</li>
-<li><em>Flakiness</em>: a test that fails 1 time out of 10 is telling you something; consider asserting on <em>rates</em> (e.g. “at least 4 out of 5 runs are correct”) rather than on single runs</li>
-<li>Do <strong>not</strong> cache LLM responses while measuring consistency (cf. <a href="../llmaas/">Exercise 1 of the LLM-as-a-Service lecture</a>)</li>
-</ul>
-<h3 id="how-to-test-it">How to test it?</h3>
-<ul>
-<li>deliberately <em>break</em> the system (e.g. remove the field descriptions from the Pydantic class, or use a tiny model) and check that the suite <em>catches</em> it</li>
-<li>run it in CI (e.g. GitHub Actions), with the API key stored as a <em>secret</em></li>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>, <code>CONTEXT_BUDGET</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 
 </section>
 </section><section>
 <h2 id="whats-next">What’s next?</h2>
 <ul>
-<li>In this lecture, the LLM only <em>reads</em> and <em>writes</em> text (or JSON)</li>
-<li>Next, we’ll let it <strong>act</strong>: calling <em>tools</em> (functions) to get data or change the world, i.e. building <strong>agents</strong>
+<li>How do we know whether a prompt (or a model) is <em>good enough</em>, and whether a change made it <em>better</em> or <em>worse</em>?</li>
+<li>Next, we’ll see how to <strong>validate</strong> generative software: test datasets, scorers, LLM-as-a-Judge (cf. <a href="../validating/">Validating Generative Software</a>)</li>
+<li>Then, we’ll let the LLM <strong>act</strong>: calling <em>tools</em> (functions), i.e. building <strong>agents</strong>
 <ul>
 <li>structured output is the <em>enabling</em> technology: a tool call is nothing but a structured output, matching the tool’s <em>signature</em></li>
 </ul>
@@ -2231,6 +1897,9 @@
 
   
     
+  
+  
+
   
   
 

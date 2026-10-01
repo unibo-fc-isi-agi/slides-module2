@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2040 900" width="2040" height="900" font-family="'Signika Negative', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#222222">
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#222222"/>
@@ -193,8 +193,54 @@
   <rect x="1335" y="726" width="220" height="50" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
   <text x="1445" y="759" font-size="24" font-weight="bold" text-anchor="middle">critical (4/5)</text>
 
-  <!-- legend -->
+  <!-- ========== col 5: prompt chaining ========== -->
+  <text x="1810" y="40" font-size="30" font-weight="bold" text-anchor="middle">5. Prompt chaining</text>
+  <!-- step 1 -->
   <g font-size="22">
+    <rect x="1620" y="60" width="380" height="104" rx="12" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="1636" y="90"><tspan font-weight="bold">Step 1:</tspan> quote the sentences</text>
+    <text x="1636" y="118">about the applicant's</text>
+    <text x="1636" y="146">strengths and weaknesses</text>
+  </g>
+  <rect x="1620" y="176" width="380" height="70" rx="12" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+  <text x="1636" y="206" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20">&lt;letter&gt;…&lt;/letter&gt;</text>
+  <text x="1636" y="234" font-size="20" fill="#555555" font-style="italic">Jean Dupont's letter</text>
+  <rect x="1620" y="346" width="380" height="138" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="18" fill="#555555" xml:space="preserve">
+    <text x="1632" y="374">- "less comfortable when</text>
+    <text x="1632" y="398">  asked to define a problem</text>
+    <text x="1632" y="422">  independently"</text>
+    <text x="1632" y="446">- "would benefit from a</text>
+    <text x="1632" y="470">  structured research group"</text>
+  </g>
+  <!-- step 2 -->
+  <g font-size="22">
+    <rect x="1620" y="500" width="380" height="76" rx="12" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
+    <text x="1636" y="530"><tspan font-weight="bold">Step 2:</tspan> classify the tone</text>
+    <text x="1636" y="558">of the quotes <tspan fill="#555555" font-size="20">(+ definitions)</tspan></text>
+  </g>
+  <rect x="1620" y="588" width="380" height="44" rx="12" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>
+  <text x="1636" y="617" font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="20">&lt;quotes&gt;…&lt;/quotes&gt;</text>
+  <rect x="1710" y="732" width="200" height="50" rx="12" fill="#dcf0e0" stroke="#3a9e4f" stroke-width="2"/>
+  <text x="1810" y="765" font-size="24" font-weight="bold" text-anchor="middle">critical</text>
+  <!-- calls -->
+  <g stroke="#222222" stroke-width="2.5" marker-end="url(#arr)">
+    <line x1="1810" y1="248" x2="1810" y2="271"/>
+    <line x1="1810" y1="320" x2="1810" y2="343"/>
+    <line x1="1810" y1="634" x2="1810" y2="657"/>
+    <line x1="1810" y1="706" x2="1810" y2="729"/>
+  </g>
+  <g font-size="22" font-weight="bold" text-anchor="middle">
+    <rect x="1750" y="274" width="120" height="44" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1810" y="304">LLM</text>
+    <rect x="1750" y="660" width="120" height="44" rx="10" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+    <text x="1810" y="690">LLM</text>
+  </g>
+  <!-- output of step 1 becomes input of step 2 -->
+  <path d="M2000 415 H2026 V610 H2006" fill="none" stroke="#222222" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arr)"/>
+
+  <!-- legend -->
+  <g font-size="22" transform="translate(220 0)">
     <rect x="440" y="848" width="36" height="26" rx="6" fill="#eceef1" stroke="#8a8f98" stroke-width="2"/>
     <text x="486" y="869">system</text>
     <rect x="600" y="848" width="36" height="26" rx="6" fill="#d6e8fb" stroke="#2690e7" stroke-width="2"/>

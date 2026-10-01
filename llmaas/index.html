@@ -374,11 +374,17 @@
 <p><strong>memory</strong> ≈ (number of params × bits per param / 8) [<em>weights</em>] + <em>KV cache</em> [grows with context length] + <em>overhead</em></p>
 </blockquote>
 <ul>
-<li>the <em>KV cache</em> stores intermediate results for all tokens in the current context: the <strong>longer the context</strong>, the more memory is needed
+<li>the <strong>key-value (KV) cache</strong> stores the attention values for the tokens (keys) that the neural has processes so far…
+<ul>
+<li>… so that they do not need to be recomputed for every new token generated</li>
+<li>its size <em>grows linearly</em> with the <em>context length</em>
 <ul>
 <li>this is why local runtimes (e.g. Ollama) use a <em>smaller</em> default context window than the model’s maximum</li>
 </ul>
 </li>
+</ul>
+</li>
+<li>the <em>overhead</em> covers runtime buffers, activations, and driver context: usually an extra ~10–20%</li>
 </ul>
 <img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
 </section><section>
@@ -812,7 +818,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1790851880726050799" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1790870245828337553" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -834,7 +840,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1790851880726050799");
+    handlePlantumlFigureByID("plantuml-figure-1790870245828337553");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1854,6 +1860,9 @@ P -&gt; U: “It’s … in Cesena”
 
   
     
+  
+  
+
   
   
 

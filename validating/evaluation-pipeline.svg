@@ -44,7 +44,7 @@
 
   <!-- stage headers -->
   <g font-size="28" font-weight="bold" text-anchor="middle">
-    <text x="205" y="44">1. golden set</text>
+    <text x="205" y="44">1. test dataset</text>
     <text x="545" y="44">2. system under test</text>
     <text x="825" y="100">outputs</text>
     <text x="1175" y="44">3. scorers</text>
@@ -52,7 +52,7 @@
   </g>
   <text x="1175" y="80" font-size="20" fill="#555555" text-anchor="middle">input + output + expectations</text>
 
-  <!-- ===== 1. golden set ===== -->
+  <!-- ===== 1. test dataset ===== -->
   <rect x="10" y="70" width="390" height="490" rx="12" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
   <path d="M10 110 V82 Q10 70 22 70 H388 Q400 70 400 82 V110 Z" fill="#eceef1"/>
   <g stroke="#8a8f98" stroke-width="2">
