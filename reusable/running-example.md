@@ -8,24 +8,24 @@
 
 {{% multicol %}}
 {{% col %}}
-![](../passport-mario-rossi.png)
+![](../data/passport-mario-rossi.png)
 
-- [Transcript of records](../transcript-mario-rossi.png)
-- [Presentation letter](../letter-mario-rossi.txt)
+- [Transcript of records](../data/transcript-mario-rossi.png)
+- [Presentation letter](../data/letter-mario-rossi.txt)
     + letter is very positive
 {{% /col %}}
 {{% col %}}
-![](../passport-jean-dupont.png)
+![](../data/passport-jean-dupont.png)
 
-- [Transcript of records](../transcript-jean-dupont.png)
-- [Presentation letter](../letter-jean-dupont.txt)
+- [Transcript of records](../data/transcript-jean-dupont.png)
+- [Presentation letter](../data/letter-jean-dupont.txt)
     - letter contains some criticisms
 {{% /col %}}
 {{% col %}}
-![](../passport-mohammed-ali.png)
+![](../data/passport-mohammed-ali.png)
 
-- [Transcript of records](../transcript-mohammed-ali.png)
-- [Presentation letter](../letter-mohammed-ali.txt)
+- [Transcript of records](../data/transcript-mohammed-ali.png)
+- [Presentation letter](../data/letter-mohammed-ali.txt)
     - letter is positive but shallow
 {{% /col %}}
 {{% /multicol %}}

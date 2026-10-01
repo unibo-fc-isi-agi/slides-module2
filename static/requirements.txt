@@ -1,0 +1,7 @@
+openai
+langchain-openai
+pydantic
+pyyaml
+pytest
+deepeval
+mlflow

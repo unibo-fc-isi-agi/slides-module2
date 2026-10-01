@@ -1,5 +1,5 @@
-# pip install langchain-openai deepeval pytest
-# run with: PYTHONPATH=../prompting pytest test_letter_scoring.py   (or: deepeval test run test_letter_scoring.py)
+# pip install langchain-openai deepeval pytest pyyaml
+# run with: PYTHONPATH=scripts pytest test/test_letter_scoring.py   (from the project root)
 import functools
 import os
 import pytest
@@ -7,27 +7,27 @@ from deepeval import assert_test
 from deepeval.metrics import GEval
 from deepeval.models import OpenRouterModel
 from deepeval.test_case import LLMTestCase, SingleTurnParams
-from golden import GOLDEN, read_letter
+from dataset import TEST_CASES, read_letter
 from letter_scoring_langchain import score_letter, api_key, base_url
 
-score = functools.cache(score_letter)  # one LLM call per letter, shared by all tests
+score = functools.cache(score_letter)  # this is the scoring function under test!
 
 
 # 1. deterministic scorers: plain assertions on the fields of the structured output
-@pytest.mark.parametrize("golden", GOLDEN, ids=lambda g: g["applicant"])
-def test_extracted_fields(golden):
-    info = score(read_letter(golden))
-    assert golden["applicant"].lower() in info.applicant.name.lower()
-    assert golden["author"].lower() in info.author.name.lower()
-    assert golden["programme"].lower() in info.application_for.lower()
-    assert golden.get("min_score", 0) <= info.score <= golden.get("max_score", 5)
-    if "has_weaknesses" in golden:
-        assert bool(info.applicant.weaknesses) == golden["has_weaknesses"]
+@pytest.mark.parametrize("case", TEST_CASES, ids=lambda c: c["expectations"]["applicant"])
+def test_extracted_fields(case):
+    info, expected = score(read_letter(case)), case["expectations"]
+    assert expected["applicant"].lower() in info.applicant.name.lower()
+    assert expected["author"].lower() in info.author.name.lower()
+    assert expected["programme"].lower() in info.application_for.lower()
+    assert expected.get("min_score", 0) <= info.score <= expected.get("max_score", 5)
+    if "has_weaknesses" in expected:
+        assert bool(info.applicant.weaknesses) == expected["has_weaknesses"]
 
 
 # 2. relational property: holds across inputs, even if single scores may vary
 def test_best_letter_is_mario_rossi():
-    scores = {g["applicant"]: score(read_letter(g)).score for g in GOLDEN}
+    scores = {c["expectations"]["applicant"]: score(read_letter(c)).score for c in TEST_CASES}
     assert scores["Mario Rossi"] == max(scores.values())
 
 
@@ -43,8 +43,8 @@ groundedness = GEval(
     threshold=0.7,
 )
 
-@pytest.mark.parametrize("golden", GOLDEN, ids=lambda g: g["applicant"])
-def test_groundedness(golden):
-    letter = read_letter(golden)
+@pytest.mark.parametrize("case", TEST_CASES, ids=lambda c: c["expectations"]["applicant"])
+def test_groundedness(case):
+    letter = read_letter(case)
     info = score(letter)
     assert_test(LLMTestCase(input=letter, actual_output=info.applicant.model_dump_json()), [groundedness])

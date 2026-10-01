@@ -1,0 +1,22 @@
+# Test dataset, designed by humans (the committee) BEFORE testing: known inputs (the letters), each with the results expected from a correct scoring.
+# Expectations are partial and tolerant: ranges for scores, "contains" for names.
+- input: letter-mario-rossi.txt
+  expectations:
+    applicant: Mario Rossi
+    author: Alessandro Bianchi
+    programme: Data Science
+    has_weaknesses: false
+    min_score: 4
+- input: letter-jean-dupont.txt
+  expectations:
+    applicant: Jean Dupont
+    author: Claire Moreau
+    programme: Artificial Intelligence
+    has_weaknesses: true
+    max_score: 4
+- input: letter-mohammed-ali.txt
+  expectations:
+    applicant: Mohammed Ali
+    author: Kareem Al-Haddad
+    programme: Cyber Security
+    max_score: 3

@@ -300,11 +300,11 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's import `openai` and initialize the client as usual:
 
-    {{% code path="content/prompting/letter_scoring_openai.py" from="1" to="8" %}}
+    {{% code path="static/scripts/letter_scoring_openai.py" from="1" to="8" %}}
 
 2. Let's design a system prompt to contain general instructions for the model
 
-    {{% code path="content/prompting/letter_scoring_openai.py" from="11" to="16" %}}
+    {{% code path="static/scripts/letter_scoring_openai.py" from="11" to="16" %}}
 
 {{% /fragment %}}
 
@@ -316,19 +316,19 @@ From _weakest_ to _strongest_ guarantees:
 
     - Imports:
 
-        {{% code path="content/prompting/letter_scoring_openai.py" from="31" to="32" %}}
+        {{% code path="static/scripts/letter_scoring_openai.py" from="31" to="32" %}}
 
     - A class for the _applicant_'s information:
 
-        {{% code path="content/prompting/letter_scoring_openai.py" from="34" to="43" %}}
+        {{% code path="static/scripts/letter_scoring_openai.py" from="34" to="43" %}}
 
     - A class for the _author_'s information:
 
-        {{% code path="content/prompting/letter_scoring_openai.py" from="45" to="55" %}}
+        {{% code path="static/scripts/letter_scoring_openai.py" from="45" to="55" %}}
 
     - A class for the overall _scoring_ of the letter, including the extracted information and the final score:
 
-        {{% code path="content/prompting/letter_scoring_openai.py" from="57" to="61" %}}
+        {{% code path="static/scripts/letter_scoring_openai.py" from="57" to="61" %}}
 
         * notice that instructions for scoring are contained in another string
 
@@ -338,11 +338,11 @@ From _weakest_ to _strongest_ guarantees:
 
 4. _Instructions_ for _scoring_ can be provided as well in _natural language_, yet better to be precise and give the LLM a _"recipe"_ for scoring
 
-    {{% code path="content/prompting/letter_scoring_openai.py" from="18" to="28" %}}
+    {{% code path="static/scripts/letter_scoring_openai.py" from="18" to="28" %}}
 
 5. With these ingredients in mind, the automatic scoring logic is as simple as a _single request–response interaction_ with the LLM:
 
-    {{% code path="content/prompting/letter_scoring_openai.py" from="64" to="76" %}}
+    {{% code path="static/scripts/letter_scoring_openai.py" from="64" to="76" %}}
 
     notice that:
 
@@ -355,11 +355,11 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 1: Structured Output with Pydantic Classes (pt. 4)
 
-6. Full code [here](./letter_scoring_openai.py)
+6. Full code [here](../scripts/letter_scoring_openai.py)
 
 7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `score_letter(...)` $\rightarrow$ print the result):
 
-    {{% code path="content/prompting/letter_scoring_openai.py" from="79" to="92" %}}
+    {{% code path="static/scripts/letter_scoring_openai.py" from="79" to="92" %}}
 
 8. Possible results below:
 
@@ -374,6 +374,29 @@ From _weakest_ to _strongest_ guarantees:
 {{% code path="content/prompting/structured-output-mohammed-ali.yml" %}}
 {{% /col %}}
 {{% /multicol %}}
+
+---
+
+## Example 1: Project Structure
+
+Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+<pre><code>&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_scoring_openai.py">letter_scoring_openai.py</a>    # the letter-scoring system
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre>
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 {{% /section %}}
 
@@ -409,16 +432,16 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
 
-    {{% code path="content/prompting/letter_scoring_langchain.py" from="1" to="10" %}}
+    {{% code path="static/scripts/letter_scoring_langchain.py" from="1" to="10" %}}
 
 2. Let's define the prompt as a __template__, with a _named placeholder_ (`{letter_text}`) for the input data:
 
-    {{% code path="content/prompting/letter_scoring_langchain.py" from="13" to="21" %}}
+    {{% code path="static/scripts/letter_scoring_langchain.py" from="13" to="21" %}}
 
     - `ChatPromptTemplate.from_messages` accepts a list of `(role, template)` pairs
     - `prompt.invoke({"letter_text": "..."})` would produce the _list of messages_ to be sent to the model
 
-3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](./letter_scoring_langchain.py))
+3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](../scripts/letter_scoring_langchain.py))
 
 ---
 
@@ -426,7 +449,7 @@ From _weakest_ to _strongest_ guarantees:
 
 4. The scoring logic is a __chain__: _prompt template_ $\rightarrow$ _chat model_ constrained to produce `LetterInfo` instances:
 
-    {{% code path="content/prompting/letter_scoring_langchain.py" from="69" to="72" %}}
+    {{% code path="static/scripts/letter_scoring_langchain.py" from="69" to="72" %}}
 
     notice that:
 
@@ -439,8 +462,31 @@ From _weakest_ to _strongest_ guarantees:
 5. The `main` part of the program is unchanged:
 
     ```bash
-    python letter_scoring_langchain.py ../../static/letter-mario-rossi.txt
+    python scripts/letter_scoring_langchain.py data/letter-mario-rossi.txt
     ```
+
+---
+
+## Example 1 (bis): Project Structure
+
+Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+<pre><code>&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # the letter-scoring system
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre>
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 ---
 
@@ -472,7 +518,7 @@ From _weakest_ to _strongest_ guarantees:
 
 {{% fragment %}}
 ### TO-DO List
-1. start from the [LangChain version](./letter_scoring_langchain.py) of the letter-scoring system
+1. start from the [LangChain version](../scripts/letter_scoring_langchain.py) of the letter-scoring system
 2. let's turn the scoring recipe into a _checklist_ of criteria
 3. let's have a Pydantic class with as many __boolean fields__ as the criteria in the checklist
 4. let's ask the _LLM_ to set the boolean fields by analysing the _input letter_
@@ -540,11 +586,11 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's initialize the chat model (notice `temperature=1.0`: we want _variability_, for self-consistency):
 
-    {{% code path="content/prompting/letter_tone.py" from="9" to="13" %}}
+    {{% code path="static/scripts/letter_tone.py" from="9" to="13" %}}
 
 2. The system prompt defines the _labels_; the output is constrained to them via a `Literal` type:
 
-    {{% code path="content/prompting/letter_tone.py" from="15" to="25" %}}
+    {{% code path="static/scripts/letter_tone.py" from="15" to="25" %}}
 
     - the __zero-shot__ prompt is just _system instructions_ + _user input_
 
@@ -554,7 +600,7 @@ From _weakest_ to _strongest_ guarantees:
 
 3. The __few-shot__ prompt adds _solved examples_, rendered as _past turns_ of the conversation (user asks, assistant answers):
 
-    {{% code path="content/prompting/letter_tone.py" from="27" to="43" %}}
+    {{% code path="static/scripts/letter_tone.py" from="27" to="43" %}}
 
     - examples should be _diverse_ (one per label, at least), _short_, and _representative_ of real inputs
     - the _format_ and the _label distribution_ of examples matter at least as much as their correctness (cf. [Min et al. (2022)](https://arxiv.org/abs/2202.12837))
@@ -565,7 +611,7 @@ From _weakest_ to _strongest_ guarantees:
 
 4. __Chain-of-thought__ via structured output: a `reasoning` field is placed _before_ the `label` field:
 
-    {{% code path="content/prompting/letter_tone.py" from="45" to="57" %}}
+    {{% code path="static/scripts/letter_tone.py" from="45" to="57" %}}
 
     - models generate JSON fields __in order__: the label is produced _after_ (and _conditioned on_) the reasoning
         + putting `reasoning` _after_ `label` would make it a mere _post-hoc justification_
@@ -577,18 +623,41 @@ From _weakest_ to _strongest_ guarantees:
 
 5. __Self-consistency__: run _the same_ chain $N$ times, in parallel, and take the _majority_ vote:
 
-    {{% code path="content/prompting/letter_tone.py" from="59" to="63" %}}
+    {{% code path="static/scripts/letter_tone.py" from="59" to="63" %}}
 
-6. Let's try it (full code [here](./letter_tone.py)):
+6. Let's try it (full code [here](../scripts/letter_tone.py)):
 
     ```bash
-    python letter_tone.py zero-shot ../../static/letter-jean-dupont.txt
-    python letter_tone.py few-shot ../../static/letter-jean-dupont.txt
-    python letter_tone.py cot ../../static/letter-jean-dupont.txt 5     # CoT + self-consistency, 5 samples
+    python scripts/letter_tone.py zero-shot data/letter-jean-dupont.txt
+    python scripts/letter_tone.py few-shot data/letter-jean-dupont.txt
+    python scripts/letter_tone.py cot data/letter-jean-dupont.txt 5     # CoT + self-consistency, 5 samples
     ```
 
     - the script also _prints_ the prompt template, so you can see what each technique actually sends
     - try with the other letters, and with _different models_: which technique makes the answers most _stable_?
+
+---
+
+## Example 2: Project Structure
+
+Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+<pre><code>&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/letter_tone.py">letter_tone.py</a>              # tone classification
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre>
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 ---
 
@@ -656,11 +725,11 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's pick a _reasoning_ model by default (e.g. [`openai/gpt-oss-20b`](https://openrouter.ai/openai/gpt-oss-20b)), and write the question as a template:
 
-    {{% code path="content/prompting/reasoning_effort.py" from="6" to="13" %}}
+    {{% code path="static/scripts/reasoning_effort.py" from="6" to="13" %}}
 
 2. For each effort level, let's create a chat model passing OpenRouter's `reasoning` parameter via `extra_body`, then measure _time_ and _tokens_:
 
-    {{% code path="content/prompting/reasoning_effort.py" from="16" to="25" %}}
+    {{% code path="static/scripts/reasoning_effort.py" from="16" to="25" %}}
 
     - `extra_body` is LangChain's _escape hatch_ to send provider-specific parameters, not (yet) modelled by `ChatOpenAI`
     - `usage_metadata` is LangChain's _provider-agnostic_ view of token usage
@@ -669,18 +738,41 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 3: Reasoning Effort vs. Latency and Cost (pt. 2)
 
-3. Let's run it on all letters (full code [here](./reasoning_effort.py)):
+3. Let's run it on all letters (full code [here](../scripts/reasoning_effort.py)):
 
-    {{% code path="content/prompting/reasoning_effort.py" from="28" to="37" %}}
+    {{% code path="static/scripts/reasoning_effort.py" from="28" to="37" %}}
 
     ```bash
-    python reasoning_effort.py ../../static/letter-*.txt
+    python scripts/reasoning_effort.py data/letter-*.txt
     ```
 
 4. Things to observe:
     - how do _latency_ and _reasoning tokens_ grow with effort?
     - does the _ranking_ change? Is it more _stable_ across runs at higher efforts?
     - what happens with a _non-reasoning_ model (e.g. set `OPENAI_MODEL` accordingly)?
+
+---
+
+## Example 3: Project Structure
+
+Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+<pre><code>&lt;root dir&gt;/
+├── data/
+│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+├── scripts/
+│   └── <a href="../scripts/reasoning_effort.py">reasoning_effort.py</a>         # ranking at several efforts
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre>
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 ---
 
@@ -776,7 +868,7 @@ From _weakest_ to _strongest_ guarantees:
 
     messages = [
         SystemMessage("You are an assistant that extracts structured information from ID documents."),
-        message_with_image("Please extract the information from this ID document.", "../../static/passport-mario-rossi.png"),
+        message_with_image("Please extract the information from this ID document.", "data/passport-mario-rossi.png"),
     ]
     results = extractor.batch([messages] * 5)  # 5 samples, for voting
     ```
@@ -882,13 +974,13 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's configure the chat model, the _budget_, and how many recent messages to keep _verbatim_:
 
-    {{% code path="content/prompting/chat_with_compaction.py" from="7" to="17" %}}
+    {{% code path="static/scripts/chat_with_compaction.py" from="7" to="17" %}}
 
     - the _state_ of the conversation is a (running) `summary`, plus the recent `history`
 
 2. The _context_ sent at each request is: system instructions + summary (if any) + recent history:
 
-    {{% code path="content/prompting/chat_with_compaction.py" from="20" to="22" %}}
+    {{% code path="static/scripts/chat_with_compaction.py" from="20" to="22" %}}
 
 ---
 
@@ -896,11 +988,11 @@ From _weakest_ to _strongest_ guarantees:
 
 3. __Compaction__ is itself an LLM call, asking to summarise the _older_ messages (and the previous summary):
 
-    {{% code path="content/prompting/chat_with_compaction.py" from="25" to="30" %}}
+    {{% code path="static/scripts/chat_with_compaction.py" from="25" to="30" %}}
 
 4. The main loop compacts the context whenever its (approximate) size exceeds the budget, and prints _token usage_ at each turn:
 
-    {{% code path="content/prompting/chat_with_compaction.py" from="33" to="46" %}}
+    {{% code path="static/scripts/chat_with_compaction.py" from="33" to="46" %}}
 
     - `count_tokens_approximately` is _provider-agnostic_ (it assumes $\approx$ 4 characters per token): good enough for _budgeting_, not for _billing_
     - `usage_metadata` reports the _actual_ counts, including _cached_ input tokens (if the provider supports caching)
@@ -909,10 +1001,10 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 4: CLI Chat with Context Compaction (pt. 3)
 
-5. Let's try it (full code [here](./chat_with_compaction.py)):
+5. Let's try it (full code [here](../scripts/chat_with_compaction.py)):
 
     ```bash
-    CONTEXT_BUDGET=300 python chat_with_compaction.py
+    CONTEXT_BUDGET=300 python scripts/chat_with_compaction.py
     ```
 
 6. Things to observe:
@@ -924,6 +1016,25 @@ From _weakest_ to _strongest_ guarantees:
     - compact in the _background_, while the user is typing
     - _trim_ instead of summarising, via LangChain's [`trim_messages`](https://docs.langchain.com/oss/python/langchain/short-term-memory), and compare the two strategies
 
+---
+
+## Example 4: Project Structure
+
+Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+<pre><code>&lt;root dir&gt;/
+├── scripts/
+│   └── <a href="../scripts/chat_with_compaction.py">chat_with_compaction.py</a>     # the CLI chat
+├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+└── .venv/                          # virtual environment (created below)</code></pre>
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `CONTEXT_BUDGET`), cf. [Free Access to LLMs](../free-access/)
+
 {{% /section %}}
 
 ---
@@ -931,7 +1042,7 @@ From _weakest_ to _strongest_ guarantees:
 ## What's next?
 
 - How do we know whether a prompt (or a model) is _good enough_, and whether a change made it _better_ or _worse_?
-- Next, we'll see how to __validate__ generative software: golden sets, scorers, LLM-as-a-Judge (cf. [Validating Generative Software](../validating/))
+- Next, we'll see how to __validate__ generative software: test datasets, scorers, LLM-as-a-Judge (cf. [Validating Generative Software](../validating/))
 - Then, we'll let the LLM __act__: calling _tools_ (functions), i.e. building __agents__
     + structured output is the _enabling_ technology: a tool call is nothing but a structured output, matching the tool's _signature_
 

@@ -39,7 +39,7 @@ Alternative: `docker compose up` (runs `shared-slides/serve.sh` in a container).
 | `layouts/partials/reveal-hugo/{head,body}.html` | Extra CSS/JS injected in every presentation (Bootstrap, FontAwesome, MathJax, QR codes, PlantUML, print-mode tweaks) |
 | `assets/custom-theme.scss` | Main stylesheet, compiled by Hugo extended |
 | `reusable/` | Markdown snippets imported into slides (see below) |
-| `static/` | Resources shared across lectures, served at the site root (e.g. running-example documents) |
+| `static/` | Resources shared across lectures, served at the site root; also hosts the **students' project** of the running example (see below) |
 | `themes/reveal-hugo/` | Theme (git submodule, do not edit) |
 | `shared-slides/` | Build/serve/PDF scripts shared across courses (git submodule, do not edit) |
 | `agi-contents-map.md` | **Desired ToC** of the whole module (topics + exercises per lecture), with coverage tracked as checkboxes (`[x]` + lecture dir) |
@@ -53,7 +53,7 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
 - `footer.md` — course/A.Y./teacher block placed under a lecture's `# Title` on its first slide
 - `back.md` — closing "Lecture is Over" slide with print link and back-to-ToC link
 - `running-example.md` — the **running example** (PhD admission committee assistant: 3 candidates
-  with passport, transcript, letter, stored in `static/`); import it with `{{< import ... >}}`
+  with passport, transcript, letter, stored in `static/data/`); import it with `{{< import ... >}}`
   (`<`, not `%`) since it contains HTML
 
 ## Writing a lecture
@@ -101,6 +101,13 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
   `{{% code path="content/<lecture>/file.py" from="10" to="20" %}}` rather than pasting code;
   also link the full file (`[here](./file.py)`). When editing a script, **re-check the `from`/`to` line
   ranges** of every `code` shortcode pointing to it.
+- Code of the __running example__ (from `prompting` on) lives in `static/`, laid out as the plain Python project
+  students re-create: `data/` (letters, passports, transcripts), `scripts/` (the programs), `test/` (test code and test data),
+  `requirements.txt`. Excerpts use `{{% code path="static/scripts/file.py" ... %}}`, links use `../scripts/file.py`,
+  and commands are written as run from the project root (e.g. `python scripts/x.py data/letter-mario-rossi.txt`).
+  Never mention the site's own layout (`content/`, `static/`) in slides. Each example ends with a "Project Structure" slide
+  (a `tree`-like `<pre>` block linking each file). Running the code in `static/` creates `__pycache__`/`.venv` there:
+  delete them, or they get published.
 - Resources in `static/` are referenced from lectures with `../<file>` (lectures live one level down).
 - Layout in columns: `{{% multicol %}}{{% col %}}...{{% /col %}}{{% col %}}...{{% /col %}}{{% /multicol %}}`.
 - Diagrams: mermaid code fences (inlined by CI), or `{{< plantuml >}}`; `.graphml` sources exported to `.svg`/`.png`.

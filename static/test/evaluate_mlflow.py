@@ -1,15 +1,15 @@
-# pip install langchain-openai mlflow
-# run with: PYTHONPATH=../prompting python evaluate_mlflow.py   then browse results with: mlflow ui
+# pip install langchain-openai mlflow pyyaml
+# run with: PYTHONPATH=scripts python test/evaluate_mlflow.py   (from the project root), then browse results with: mlflow ui
 import os
 from typing import Literal
 import mlflow
 from mlflow.genai import scorer
 from mlflow.genai.judges import make_judge
-from golden import GOLDEN, read_letter
+from dataset import TEST_CASES, read_letter
 from letter_scoring_langchain import score_letter, base_url
 
 # 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers
-data = [dict(inputs=dict(letter_text=read_letter(g)), expectations=g) for g in GOLDEN]
+data = [dict(inputs=dict(letter_text=read_letter(c)), expectations=c["expectations"]) for c in TEST_CASES]
 
 # 2. the system under test (outputs must be serialisable)
 def predict_fn(letter_text: str) -> dict:
