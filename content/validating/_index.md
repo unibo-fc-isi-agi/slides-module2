@@ -129,8 +129,9 @@ outputs = ["Reveal"]
 
 2. Imports: DeepEval runs on top of `pytest`, and the system under test is imported _as is_:
 
-    {{% code path="static/test/test_letter_scoring.py" from="1" to="13" %}}
+    {{% code path="static/test/test_letter_scoring.py" from="1" to="16" %}}
 
+    - `sys.path.append(...)` makes the modules in `scripts/` importable from `test/`, so that everything runs from the project's root, with no further configuration
     - `functools.cache` accepts a Python function (`score_letter`) and returns a _cached_ version of it (`score`):
         1. each time `score(l)` is called, the cache checks if the same letter `l` has already been scored
         2. if yes, the cached output is returned; if not, the function `score_letter` is called and the output is cached
@@ -138,7 +139,7 @@ outputs = ["Reveal"]
 
 3. __Deterministic__ scorers are just `pytest` assertions on the _fields_ of the structured output:
 
-    {{% code path="static/test/test_letter_scoring.py" from="16" to="25" %}}
+    {{% code path="static/test/test_letter_scoring.py" from="19" to="28" %}}
 
 ---
 
@@ -146,11 +147,11 @@ outputs = ["Reveal"]
 
 4. __Relational__ properties hold _across_ inputs (a.k.a. _metamorphic_ testing): they are robust to the variability of single scores
 
-    {{% code path="static/test/test_letter_scoring.py" from="28" to="31" %}}
+    {{% code path="static/test/test_letter_scoring.py" from="31" to="34" %}}
 
 5. __LLM-as-a-Judge__, via DeepEval's _G-Eval_ metric: the judge scores (in $[0, 1]$) how much the output satisfies the _criteria_, and the test passes if the score is above the _threshold_
 
-    {{% code path="static/test/test_letter_scoring.py" from="34" to="50" %}}
+    {{% code path="static/test/test_letter_scoring.py" from="37" to="53" %}}
 
     - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
     - `evaluation_params` selects which parts of the test case the judge can _see_
@@ -159,10 +160,33 @@ outputs = ["Reveal"]
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 4)
 
-6. Let's run it (full code [here](../test/test_letter_scoring.py)), from the project's root directory:
+6. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+    ├── data/
+    │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+    │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+    │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+    ├── scripts/
+    │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
+    ├── test/
+    │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
+    │   ├── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
+    │   └── <a href="../test/test_letter_scoring.py">test_letter_scoring.py</a>      # the test suite
+    ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+    └── .venv/                          # virtual environment (created below)</code></pre></div>
 
     ```bash
-    PYTHONPATH=scripts pytest test/test_letter_scoring.py -v   # PYTHONPATH makes scripts/ importable
+    python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
+
+    - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
+
+7. Let's run it (full code [here](../test/test_letter_scoring.py)), from the project's root directory:
+
+    ```bash
+    pytest test/test_letter_scoring.py -v
     ```
 
     - would the outputs of [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) pass? __No__: Mohammed Ali's shallow letter got score 4, whereas the committee expects at most 3
@@ -173,28 +197,7 @@ outputs = ["Reveal"]
 
 ## Example 1: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
-├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
-├── test/
-│   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
-│   ├── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
-│   └── <a href="../test/test_letter_scoring.py">test_letter_scoring.py</a>      # the test suite
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 {{% /section %}}
 
@@ -208,13 +211,13 @@ pip install -r requirements.txt
 
 1. Same test dataset, rearranged as MLflow wants it: `inputs` (for the system) + `expectations` (for the scorers)
 
-    {{% code path="static/test/evaluate_mlflow.py" from="1" to="16" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="1" to="19" %}}
 
     - the system under test is a _function_ (`predict_fn`), called with the `inputs` as keyword arguments
 
 2. Deterministic scorers are _functions_ decorated with `@scorer`, whose parameters are _named_ after what they need (`inputs`, `outputs`, `expectations`, `trace`):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="18" to="25" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="21" to="28" %}}
 
 ---
 
@@ -222,18 +225,18 @@ pip install -r requirements.txt
 
 3. The judge is created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
-    {{% code path="static/test/evaluate_mlflow.py" from="27" to="36" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="30" to="39" %}}
 
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
     - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API
 
 4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (full code [here](../test/evaluate_mlflow.py)):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="39" to="42" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="42" to="45" %}}
 
     ```bash
-    PYTHONPATH=scripts python test/evaluate_mlflow.py   # prints aggregated metrics, e.g. {'score_in_range/mean': 0.67, ...}
-    mlflow ui                                         # then open http://localhost:5000, to browse runs, traces, and judges' rationales
+    python test/evaluate_mlflow.py   # prints aggregated metrics, e.g. {'score_in_range/mean': 0.67, ...}
+    mlflow ui                        # then open http://localhost:5000, to browse runs, traces, and judges' rationales
     ```
 
     {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
@@ -244,7 +247,7 @@ pip install -r requirements.txt
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── data/
 │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
 │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
@@ -256,7 +259,7 @@ Re-create the following project, by downloading (or copy-pasting) the files belo
 │   ├── <a href="../test/evaluate_mlflow.py">evaluate_mlflow.py</a>          # the evaluation
 │   └── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate

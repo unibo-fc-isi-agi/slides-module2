@@ -1,11 +1,14 @@
 # pip install langchain-openai mlflow pyyaml
-# run with: PYTHONPATH=scripts python test/evaluate_mlflow.py   (from the project root), then browse results with: mlflow ui
+# run with: python test/evaluate_mlflow.py   (from the project root), then browse results with: mlflow ui
 import os
+import pathlib
+import sys
 from typing import Literal
 import mlflow
 from mlflow.genai import scorer
 from mlflow.genai.judges import make_judge
 from dataset import TEST_CASES, read_letter
+sys.path.append(str(pathlib.Path(__file__).parent.parent / "scripts"))  # makes <root dir>/scripts/ importable
 from letter_scoring_langchain import score_letter, base_url
 
 # 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers

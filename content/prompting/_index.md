@@ -381,7 +381,7 @@ From _weakest_ to _strongest_ guarantees:
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── data/
 │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
 │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
@@ -389,7 +389,7 @@ Re-create the following project, by downloading (or copy-pasting) the files belo
 ├── scripts/
 │   └── <a href="../scripts/letter_scoring_openai.py">letter_scoring_openai.py</a>    # the letter-scoring system
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
@@ -471,7 +471,7 @@ pip install -r requirements.txt
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── data/
 │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
 │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
@@ -479,7 +479,7 @@ Re-create the following project, by downloading (or copy-pasting) the files belo
 ├── scripts/
 │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # the letter-scoring system
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
@@ -642,7 +642,7 @@ pip install -r requirements.txt
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── data/
 │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
 │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
@@ -650,7 +650,7 @@ Re-create the following project, by downloading (or copy-pasting) the files belo
 ├── scripts/
 │   └── <a href="../scripts/letter_tone.py">letter_tone.py</a>              # tone classification
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
@@ -757,7 +757,7 @@ pip install -r requirements.txt
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── data/
 │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
 │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
@@ -765,7 +765,7 @@ Re-create the following project, by downloading (or copy-pasting) the files belo
 ├── scripts/
 │   └── <a href="../scripts/reasoning_effort.py">reasoning_effort.py</a>         # ranking at several efforts
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
@@ -1022,11 +1022,11 @@ pip install -r requirements.txt
 
 Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
-<pre><code>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
 ├── scripts/
 │   └── <a href="../scripts/chat_with_compaction.py">chat_with_compaction.py</a>     # the CLI chat
 ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre>
+└── .venv/                          # virtual environment (created below)</code></pre></div>
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate

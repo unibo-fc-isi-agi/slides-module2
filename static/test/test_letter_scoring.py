@@ -1,13 +1,16 @@
 # pip install langchain-openai deepeval pytest pyyaml
-# run with: PYTHONPATH=scripts pytest test/test_letter_scoring.py   (from the project root)
+# run with: pytest test/test_letter_scoring.py   (from the project root)
 import functools
 import os
+import pathlib
+import sys
 import pytest
 from deepeval import assert_test
 from deepeval.metrics import GEval
 from deepeval.models import OpenRouterModel
 from deepeval.test_case import LLMTestCase, SingleTurnParams
 from dataset import TEST_CASES, read_letter
+sys.path.append(str(pathlib.Path(__file__).parent.parent / "scripts"))  # makes <root dir>/scripts/ importable
 from letter_scoring_langchain import score_letter, api_key, base_url
 
 score = functools.cache(score_letter)  # this is the scoring function under test!
