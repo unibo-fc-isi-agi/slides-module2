@@ -21,11 +21,12 @@ aliases = [
 1. [Generative AI 101](genai)
 2. [LLM-as-a-Service](llmaas)
 3. [Prompt Engineering & Structured Outputs](prompting)
-4. _Tools and Agents_ (coming soon)
-5. _Retrieval-Augmented Generation (RAG)_ (coming soon)
-6. _Agentic Skills_ (coming soon)
-7. _Workflows and Agent Orchestration_ (coming soon)
-8. [AI Governance 101](governance)
+4. [Validating Generative Software](validating)
+5. _Tools and Agents_ (coming soon)
+6. _Retrieval-Augmented Generation (RAG)_ (coming soon)
+7. _Agentic Skills_ (coming soon)
+8. _Workflows and Agent Orchestration_ (coming soon)
+9. [AI Governance 101](governance)
 
 __Appendices__
 

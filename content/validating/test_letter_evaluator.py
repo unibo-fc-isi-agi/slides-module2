@@ -1,5 +1,5 @@
 # pip install langchain-openai deepeval pytest
-# run with: pytest test_letter_evaluator.py   (or: deepeval test run test_letter_evaluator.py)
+# run with: PYTHONPATH=../prompting pytest test_letter_evaluator.py   (or: deepeval test run test_letter_evaluator.py)
 import functools
 import os
 import pytest

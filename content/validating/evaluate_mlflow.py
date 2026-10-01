@@ -1,5 +1,5 @@
 # pip install langchain-openai mlflow
-# run with: python evaluate_mlflow.py   then browse results with: mlflow ui
+# run with: PYTHONPATH=../prompting python evaluate_mlflow.py   then browse results with: mlflow ui
 import os
 from typing import Literal
 import mlflow
