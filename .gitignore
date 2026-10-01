@@ -12,3 +12,6 @@ _gen/
 .deepeval/
 mlruns/
 mlflow.db
+
+*.pyc
+__pycache__/
