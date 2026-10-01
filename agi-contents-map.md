@@ -35,7 +35,7 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
             + [x] examples on selected tecnologies (e.g. `deepeval`, `mlflow`, etc) — `validating` (example 1 with DeepEval, 1 bis with MLflow)
     - Exercises
         * [x] E1.1: Similar to E0.2, but with clear system/user prompt, structured outputs, and multiple queries for precisions — `prompting` (exercise 2, field-by-field voting; exercise 1 does checklist scoring of letters)
-        * [x] E1.2: Set-up testing infrastructure for E1.1 with target testing framework — `validating` (exercise 1)
+        * [x] E1.2: Set-up testing infrastructure for E1.1 with target testing framework — `validating` (exercise 2; exercise 1 completes the test suite of the letter-scoring system, field by field)
 
 2. Tools and agents
     - Topics:

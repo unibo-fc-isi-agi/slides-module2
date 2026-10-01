@@ -19,31 +19,41 @@ data = [dict(inputs=dict(letter_text=read_letter(c)), expectations=c["expectatio
 def predict_fn(letter_text: str) -> dict:
     return score_letter(letter_text).model_dump()
 
-# 3. deterministic scorers
+# 3. deterministic scorers, on some fields of the structured output
 @scorer
-def applicant_name(outputs, expectations) -> bool:
-    return expectations["applicant"].lower() in outputs["applicant"]["name"].lower()
+def names_and_email(outputs, expectations) -> bool:  # exact match
+    return (outputs["applicant"]["name"] == expectations["applicant_name"]
+            and outputs["author"]["name"] == expectations["author_name"]
+            and outputs["author"]["email"] == expectations["author_email"])
 
 @scorer
-def score_in_range(outputs, expectations) -> bool:
+def score_in_range(outputs, expectations) -> bool:  # tolerant match
     return expectations.get("min_score", 0) <= outputs["score"] <= expectations.get("max_score", 5)
 
 # 4. LLM-as-a-judge (the API key is read from OPENAI_API_KEY)
-groundedness = make_judge(
+judge_options = dict(model=f"openai:/{os.environ.get('JUDGE_MODEL', 'openai/gpt-oss-120b')}", base_url=base_url,
+                     feedback_value_type=Literal["yes", "no"], generate_rationale_first=True)
+
+relationship = make_judge(  # reference-based: the judge compares outputs with expectations
+    name="relationship",
+    instructions="The {{ outputs }} contain the information extracted from a recommendation letter, and the {{ expectations }} what a human expects. "
+                 "Answer 'yes' if the author's relationship_with_applicant in the outputs is consistent with the relationship_with_applicant "
+                 "in the expectations (no contradictions, no omitted key facts, no invented facts), 'no' otherwise.",
+    **judge_options,
+)
+
+groundedness = make_judge(  # reference-free: the judge compares outputs with inputs
     name="groundedness",
     instructions="The {{ inputs }} contain a recommendation letter, and the {{ outputs }} the information extracted from it. "
-                 "Answer 'yes' if every skill, strength, and weakness in the outputs is explicitly supported by the letter, 'no' otherwise.",
-    model=f"openai:/{os.environ.get('JUDGE_MODEL', 'openai/gpt-oss-120b')}",
-    base_url=base_url,
-    feedback_value_type=Literal["yes", "no"],
-    generate_rationale_first=True,
+                 "Answer 'yes' if every skill, strength, and weakness of the applicant in the outputs is explicitly supported by the letter, 'no' otherwise.",
+    **judge_options,
 )
 
 
 if __name__ == "__main__":
     mlflow.set_experiment("letter-scoring")
     with mlflow.start_run(run_name=datetime.now().isoformat(timespec="seconds")):  # e.g. "2026-10-01T17:36:26"
-        results = mlflow.genai.evaluate(data=data, predict_fn=predict_fn, scorers=[applicant_name, score_in_range, groundedness])
+        results = mlflow.genai.evaluate(data=data, predict_fn=predict_fn, scorers=[names_and_email, score_in_range, relationship, groundedness])
     print(results.metrics)  # fraction of test cases passing each scorer, e.g. {'score_in_range/mean': 0.67, ...}
     failed = [name for name, value in results.metrics.items() if value != 1]  # also catches NaN (scorer errors)
     if failed:

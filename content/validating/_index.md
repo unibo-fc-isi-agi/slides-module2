@@ -17,7 +17,7 @@ outputs = ["Reveal"]
 1. [The general concept](#/validation): why LLM-based software is hard to test, and what an _evaluation_ is made of
 2. [LLM-as-a-Judge](#/llm-as-a-judge), and the [technological landscape](#/eval-frameworks) of evaluation frameworks
 3. Examples: testing the letter-scoring system with [DeepEval](#/test-deepeval) and [MLflow](#/evaluate-mlflow)
-4. Exercise on the running example: [testing infrastructure](#/exercise-id-tests)
+4. Exercises on the running example: [complete the test suite of the letter-scoring system](#/exercise-all-fields), [testing infrastructure for ID documents extraction](#/exercise-id-tests)
 
 > Recall: we assume the reader is familiar with [structured outputs](../prompting/#/structured-output) and with the [running example](../prompting/#/running-example), from the previous lecture
 
@@ -103,7 +103,7 @@ outputs = ["Reveal"]
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 1)
 
-> __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture
+> __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture, checking _some_ fields of the `LetterInfo` objects it produces
 
 1. __First__, design the __test dataset__: _known_ inputs (the letters), each with the results _expected_ from a correct scoring
     + written by _humans_ (the committee), as a _data file_ ([`test_data.yml`](../test/test_data.yml)) shared among test suites
@@ -114,8 +114,10 @@ outputs = ["Reveal"]
 - _adding_ a test case = adding an entry to the file, no code changes
 {{% /col %}}
 {{% col class="col-6" %}}
-- notice that expectations are _partial_ and _tolerant_
-    * e.g. _ranges_ for scores, "contains" for names
+- notice that each expectation is meant for a specific _kind_ of check:
+    * __exact__ match: names and emails
+    * __tolerant__ match: _ranges_ for scores
+    * __LLM-as-a-Judge__: _descriptions_ in natural language (e.g. the author's relationship with the applicant), as there are many correct ways to phrase them
 - the file is loaded in Python as a list of `dict`s
     * full code [here](../test/dataset.py):
 
@@ -129,38 +131,58 @@ outputs = ["Reveal"]
 
 2. Imports: DeepEval runs on top of `pytest`, and the system under test is imported _as is_:
 
-    {{% code path="static/test/test_letter_scoring.py" from="1" to="16" %}}
+    {{% code path="static/test/test_letter_scoring.py" from="1" to="17" %}}
 
     - `sys.path.append(...)` makes the modules in `scripts/` importable from `test/`, so that everything runs from the project's root, with no further configuration
     - `functools.cache` accepts a Python function (`score_letter`) and returns a _cached_ version of it (`score`):
         1. each time `score(l)` is called, the cache checks if the same letter `l` has already been scored
         2. if yes, the cached output is returned; if not, the function `score_letter` is called and the output is cached
     - this approach allows to run multiple tests on the same letter without making multiple LLM calls
-
-3. __Deterministic__ scorers are just `pytest` assertions on the _fields_ of the structured output:
-
-    {{% code path="static/test/test_letter_scoring.py" from="19" to="28" %}}
+    - `for_each_case` is a _decorator_ making a test run once per test case (named after the applicant)
 
 ---
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 3)
 
+3. __Deterministic__ scorers are just `pytest` assertions on _some_ fields of the structured output:
+
+    {{% code path="static/test/test_letter_scoring.py" from="20" to="31" %}}
+
+    - names and emails must match _exactly_; scores may vary within a _range_
+
 4. __Relational__ properties hold _across_ inputs (a.k.a. _metamorphic_ testing): they are robust to the variability of single scores
 
-    {{% code path="static/test/test_letter_scoring.py" from="31" to="34" %}}
-
-5. __LLM-as-a-Judge__, via DeepEval's _G-Eval_ metric: the judge scores (in $[0, 1]$) how much the output satisfies the _criteria_, and the test passes if the score is above the _threshold_
-
-    {{% code path="static/test/test_letter_scoring.py" from="37" to="53" %}}
-
-    - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
-    - `evaluation_params` selects which parts of the test case the judge can _see_
+    {{% code path="static/test/test_letter_scoring.py" from="34" to="37" %}}
 
 ---
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 4)
 
-6. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+5. __LLM-as-a-Judge__, via DeepEval's _G-Eval_ metric: the judge scores (in $[0, 1]$) how much the output satisfies the _criteria_, and the test passes if the score is above the _threshold_
+
+    {{% code path="static/test/test_letter_scoring.py" from="40" to="59" %}}
+
+    - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
+    - `evaluation_params` selects which parts of the test case the judge can _see_:
+        * _reference-based_ judge (`relationship`): compares the actual output with the _expected_ one, written by humans
+        * _reference-free_ judge (`groundedness`): compares the actual output with the _input_, no expectation needed
+
+---
+
+## Example 1: Testing the Letter Scoring System with DeepEval (pt. 5)
+
+6. Judges are used within tests, via `assert_test`, on _test cases_ (`LLMTestCase`) built from _some_ fields of the structured output:
+
+    {{% code path="static/test/test_letter_scoring.py" from="61" to="71" %}}
+
+    - `relationship_with_applicant` is compared with the _expected_ description
+    - `skills`, `strengths`, and `weaknesses` are checked against the _letter_ (are they _grounded_ in it?)
+
+---
+
+## Example 1: Testing the Letter Scoring System with DeepEval (pt. 6)
+
+7. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
     <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
     ├── data/
@@ -183,7 +205,7 @@ outputs = ["Reveal"]
 
     - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
-7. Let's run it (full code [here](../test/test_letter_scoring.py)), from the project's root directory:
+8. Let's run it (full code [here](../test/test_letter_scoring.py)), from the project's root directory:
 
     ```bash
     pytest test/test_letter_scoring.py -v
@@ -211,29 +233,34 @@ outputs = ["Reveal"]
 
 2. Deterministic scorers are _functions_ decorated with `@scorer`, whose parameters are _named_ after what they need (`inputs`, `outputs`, `expectations`, `trace`):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="22" to="29" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="22" to="31" %}}
 
 ---
 
 ## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 2)
 
-3. The judge is created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
+3. Judges are created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
-    {{% code path="static/test/evaluate_mlflow.py" from="31" to="40" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="33" to="50" %}}
 
+    - `{{ expectations }}` makes the judge _reference-based_ (`relationship`), `{{ inputs }}` makes it _reference-free_ (`groundedness`)
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
     - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API
 
+---
+
+## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 3)
+
 4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (named after the current date and time, in ISO format):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="43" to="50" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="53" to="60" %}}
 
     - `results.metrics` reports, for each scorer, the _fraction_ of test cases passing it (judges' `"yes"` count as 1)
     - if some scorer does not pass on _every_ test case, the script fails (non-zero exit code), just like a failing test suite
 
 ---
 
-## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 3)
+## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 4)
 
 5. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
 
@@ -265,7 +292,7 @@ outputs = ["Reveal"]
     mlflow ui                        # then open http://localhost:5000, to browse runs, traces, and judges' rationales
     ```
 
-    {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
+    {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (names_and_email, score_in_range, relationship, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
 
 ---
 
@@ -290,9 +317,49 @@ outputs = ["Reveal"]
 
 {{% section %}}
 
+{{< slide id="exercise-all-fields" >}}
+
+## Exercise 1: Complete the Test Suite of the Letter Scoring System (pt. 1)
+
+> __Goal__: the examples above only check _some_ fields of `LetterInfo`; extend _one_ of the two test suites (DeepEval _or_ MLflow, your choice) so that _every_ field is checked
+
+{{% fragment %}}
+### TO-DO List
+1. start from the [project](#/test-deepeval) of Example 1 (or 1 bis), and list the fields which are _not_ checked yet (cf. the `pydantic` classes in [`letter_scoring_langchain.py`](../scripts/letter_scoring_langchain.py)):
+    + `ApplicantInfo`: `degree`, `alma_mater`, `attended`
+    + `AuthorInfo`: `affiliation`, `position`, `seniority`, `nationality`
+    + `LetterInfo`: `application_for`
+2. for each field, decide _how_ to check it, and _why_: __exact__ match, __tolerant__ match (normalisation, "contains", ranges, set inclusion, ...), or __LLM-as-a-Judge__ (reference-based or reference-free)
+3. read the [letters](../prompting/#/running-example) _yourself_, and extend [`test_data.yml`](../test/test_data.yml) with the expectations for each field of each letter
+4. write the corresponding scorers (tests, or `@scorer` functions, or judges), and run the suite
+5. for each failure, decide whether the _system_ or the _expectation_ is wrong, and fix the right one
+{{% /fragment %}}
+
+---
+
+## Exercise 1: Complete the Test Suite of the Letter Scoring System (pt. 2)
+
+### Decision points and hints
+
+- _Optional_ fields (e.g. `nationality`, `alma_mater`): what is the expected value when the letter does _not_ mention it? How do you write it in YAML?
+- _Normalisation_: "Université de Lyon" vs. "University of Lyon", "Associate Professor" vs. "Assoc. Prof.": are they _the same_ for the committee?
+- _Scales_: `seniority` is an integer, defined by the field's description: is the description _unambiguous_ for every letter?
+- _Lists_ (e.g. `attended`): should every expected item be there? Should _every_ extracted item be expected? Is the _order_ relevant?
+- _Cost_: one judge per field and per letter means many requests; could a _single_ judge check several fields at once? What would you lose?
+
+### How to test it?
+
+- deliberately _break_ an expectation in `test_data.yml` (e.g. a wrong affiliation), and check that the suite _catches_ it
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
 {{< slide id="exercise-id-tests" >}}
 
-## Exercise 1: Testing Infrastructure for ID Document Extraction (pt. 1)
+## Exercise 2: Testing Infrastructure for ID Document Extraction (pt. 1)
 
 > __Goal__: the committee wants _evidence_ that the extractor of [Exercise 2 of the Prompt Engineering lecture](../prompting/#/exercise-id-documents) is reliable, and wants to be _warned_ whenever a change in prompt or model makes it worse
 
@@ -310,7 +377,7 @@ outputs = ["Reveal"]
 
 ---
 
-## Exercise 1: Testing Infrastructure for ID Document Extraction (pt. 2)
+## Exercise 2: Testing Infrastructure for ID Document Extraction (pt. 2)
 
 ### Decision points and hints
 
