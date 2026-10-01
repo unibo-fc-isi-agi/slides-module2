@@ -193,12 +193,6 @@ outputs = ["Reveal"]
         * a test failure is _information_: fix the _prompt_ (e.g. with [Exercise 1 of the Prompt Engineering lecture](../prompting/#/exercise-checklist)), or the _model_, and re-run
     - run the suite _several times_: which tests are _flaky_? Flakiness is a _measure_ of the system's (in)consistency
 
----
-
-## Example 1: Project Structure
-
-
-
 {{% /section %}}
 
 ---
@@ -211,13 +205,13 @@ outputs = ["Reveal"]
 
 1. Same test dataset, rearranged as MLflow wants it: `inputs` (for the system) + `expectations` (for the scorers)
 
-    {{% code path="static/test/evaluate_mlflow.py" from="1" to="19" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="1" to="20" %}}
 
     - the system under test is a _function_ (`predict_fn`), called with the `inputs` as keyword arguments
 
 2. Deterministic scorers are _functions_ decorated with `@scorer`, whose parameters are _named_ after what they need (`inputs`, `outputs`, `expectations`, `trace`):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="21" to="28" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="22" to="29" %}}
 
 ---
 
@@ -225,48 +219,53 @@ outputs = ["Reveal"]
 
 3. The judge is created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
-    {{% code path="static/test/evaluate_mlflow.py" from="30" to="39" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="31" to="40" %}}
 
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
     - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API
 
-4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (full code [here](../test/evaluate_mlflow.py)):
+4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (named after the current date and time, in ISO format):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="42" to="45" %}}
+    {{% code path="static/test/evaluate_mlflow.py" from="43" to="50" %}}
+
+    - `results.metrics` reports, for each scorer, the _fraction_ of test cases passing it (judges' `"yes"` count as 1)
+    - if some scorer does not pass on _every_ test case, the script fails (non-zero exit code), just like a failing test suite
+
+---
+
+## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 3)
+
+5. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+
+    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+    ├── data/
+    │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
+    │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+    │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+    ├── scripts/
+    │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
+    ├── test/
+    │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
+    │   ├── <a href="../test/evaluate_mlflow.py">evaluate_mlflow.py</a>          # the evaluation
+    │   └── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
+    ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
+    └── .venv/                          # virtual environment (created below)</code></pre></div>
 
     ```bash
-    python test/evaluate_mlflow.py   # prints aggregated metrics, e.g. {'score_in_range/mean': 0.67, ...}
+    python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
+
+    - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
+
+6. Let's run it (full code [here](../test/evaluate_mlflow.py)), from the project's root directory:
+
+    ```bash
+    python test/evaluate_mlflow.py   # prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]
     mlflow ui                        # then open http://localhost:5000, to browse runs, traces, and judges' rationales
     ```
 
     {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
-
----
-
-## Example 1 (bis): Project Structure
-
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
-
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
-├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
-├── test/
-│   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
-│   ├── <a href="../test/evaluate_mlflow.py">evaluate_mlflow.py</a>          # the evaluation
-│   └── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
 ---
 

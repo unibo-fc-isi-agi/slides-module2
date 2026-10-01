@@ -3,6 +3,7 @@
 import os
 import pathlib
 import sys
+from datetime import datetime
 from typing import Literal
 import mlflow
 from mlflow.genai import scorer
@@ -41,5 +42,9 @@ groundedness = make_judge(
 
 if __name__ == "__main__":
     mlflow.set_experiment("letter-scoring")
-    results = mlflow.genai.evaluate(data=data, predict_fn=predict_fn, scorers=[applicant_name, score_in_range, groundedness])
-    print(results.metrics)
+    with mlflow.start_run(run_name=datetime.now().isoformat(timespec="seconds")):  # e.g. "2026-10-01T17:36:26"
+        results = mlflow.genai.evaluate(data=data, predict_fn=predict_fn, scorers=[applicant_name, score_in_range, groundedness])
+    print(results.metrics)  # fraction of test cases passing each scorer, e.g. {'score_in_range/mean': 0.67, ...}
+    failed = [name for name, value in results.metrics.items() if value != 1]  # also catches NaN (scorer errors)
+    if failed:
+        sys.exit(f"Failed scorers: {failed}")  # non-zero exit code, as a failing test suite (e.g. to make CI fail)
