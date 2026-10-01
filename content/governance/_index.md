@@ -799,7 +799,7 @@ flowchart LR
 
 ## Exercise 1: Comparing Models on the Running Example (pt. 1)
 
-> __Goal__: the admission committee wants to pick the model to be used for letter evaluation (cf. [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-evaluator)), based on _evidence_ rather than on hype
+> __Goal__: the admission committee wants to pick the model to be used for letter scoring (cf. [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring)), based on _evidence_ rather than on hype
 
 ### TO-DO List
 
@@ -807,7 +807,7 @@ flowchart LR
     + one small _free_ model on Open Router,
     + one larger (possibly free) model on Open Router,
     + one _local_ model via Ollama (if your hardware allows it)
-2. Run the letter evaluator on __all 3 letters__ of the running example, __5 times__ per letter per model
+2. Run the letter-scoring system on __all 3 letters__ of the running example, __5 times__ per letter per model
     + the script is already parametric w.r.t. the model: just change `OPENAI_MODEL` (and `OPENAI_BASE_URL` for Ollama)
 3. For each model, __collect__:
     + the _scores_ (average, and _variance_ across the 5 runs: is the model _consistent_?)
@@ -828,7 +828,7 @@ flowchart LR
 - How to measure time?
     * e.g. `time.perf_counter()` before and after the request
 - How to compute costs?
-    * `evaluate_letter(...)` only returns the parsed `LetterInfo`: adapt it to also return the whole `response` (or its `usage`)
+    * `score_letter(...)` only returns the parsed `LetterInfo`: adapt it to also return the whole `response` (or its `usage`)
     * multiply `usage.prompt_tokens` and `usage.completion_tokens` by the prices listed in the zoo (Open Router also reports `usage.cost` directly)
 - How to deal with rate limits of free models?
     * reuse the retry mechanism of [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/)

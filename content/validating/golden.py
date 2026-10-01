@@ -2,7 +2,7 @@ import pathlib
 
 LETTERS_DIR = pathlib.Path(__file__).parent.parent.parent / "static"
 
-# Golden set, written by humans (the committee): what a correct evaluation of each letter must contain
+# Golden set, written by humans (the committee): what a correct scoring of each letter must contain
 GOLDEN = [
     dict(letter="letter-mario-rossi.txt", applicant="Mario Rossi", author="Alessandro Bianchi",
          programme="Data Science", has_weaknesses=False, min_score=4),

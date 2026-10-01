@@ -16,7 +16,7 @@ outputs = ["Reveal"]
 
 1. [The general concept](#/validation): why LLM-based software is hard to test, and what an _evaluation_ is made of
 2. [LLM-as-a-Judge](#/llm-as-a-judge), and the [technological landscape](#/eval-frameworks) of evaluation frameworks
-3. Examples: testing the letter evaluator with [DeepEval](#/test-deepeval) and [MLflow](#/evaluate-mlflow)
+3. Examples: testing the letter-scoring system with [DeepEval](#/test-deepeval) and [MLflow](#/evaluate-mlflow)
 4. Exercise on the running example: [testing infrastructure](#/exercise-id-tests)
 
 > Recall: we assume the reader is familiar with [structured outputs](../prompting/#/structured-output) and with the [running example](../prompting/#/running-example), from the previous lecture
@@ -101,9 +101,9 @@ outputs = ["Reveal"]
 
 {{< slide id="test-deepeval" >}}
 
-## Example 1: Testing the Letter Evaluator with DeepEval (pt. 1)
+## Example 1: Testing the Letter Scoring System with DeepEval (pt. 1)
 
-> __Goal__: set up a _test suite_ for the [LangChain letter evaluator](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture
+> __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture
 
 1. The __golden set__ is written by _humans_, and shared among test suites (full code [here](./golden.py)):
 
@@ -113,40 +113,40 @@ outputs = ["Reveal"]
 
 2. Imports: DeepEval runs on top of `pytest`, and the system under test is imported _as is_:
 
-    {{% code path="content/validating/test_letter_evaluator.py" from="1" to="13" %}}
+    {{% code path="content/validating/test_letter_scoring.py" from="1" to="13" %}}
 
     - `functools.cache` avoids calling the LLM _once per test_: each letter is evaluated once, and outputs are shared
 
 ---
 
-## Example 1: Testing the Letter Evaluator with DeepEval (pt. 2)
+## Example 1: Testing the Letter Scoring System with DeepEval (pt. 2)
 
 3. __Deterministic__ scorers are just `pytest` assertions on the _fields_ of the structured output:
 
-    {{% code path="content/validating/test_letter_evaluator.py" from="16" to="25" %}}
+    {{% code path="content/validating/test_letter_scoring.py" from="16" to="25" %}}
 
 4. __Relational__ properties hold _across_ inputs (a.k.a. _metamorphic_ testing): they are robust to the variability of single scores
 
-    {{% code path="content/validating/test_letter_evaluator.py" from="28" to="31" %}}
+    {{% code path="content/validating/test_letter_scoring.py" from="28" to="31" %}}
 
 ---
 
-## Example 1: Testing the Letter Evaluator with DeepEval (pt. 3)
+## Example 1: Testing the Letter Scoring System with DeepEval (pt. 3)
 
 5. __LLM-as-a-Judge__, via DeepEval's _G-Eval_ metric: the judge scores (in $[0, 1]$) how much the output satisfies the _criteria_, and the test passes if the score is above the _threshold_
 
-    {{% code path="content/validating/test_letter_evaluator.py" from="34" to="50" %}}
+    {{% code path="content/validating/test_letter_scoring.py" from="34" to="50" %}}
 
     - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
     - `evaluation_params` selects which parts of the test case the judge can _see_
 
-6. Let's run it (full code [here](./test_letter_evaluator.py)):
+6. Let's run it (full code [here](./test_letter_scoring.py)):
 
     ```bash
-    pytest test_letter_evaluator.py -v
+    pytest test_letter_scoring.py -v
     ```
 
-    - would the outputs of [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-evaluator) pass? __No__: Mohammed Ali's shallow letter got score 4, whereas the committee expects at most 3
+    - would the outputs of [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) pass? __No__: Mohammed Ali's shallow letter got score 4, whereas the committee expects at most 3
         * a test failure is _information_: fix the _prompt_ (e.g. with [Exercise 1 of the Prompt Engineering lecture](../prompting/#/exercise-checklist)), or the _model_, and re-run
     - run the suite _several times_: which tests are _flaky_? Flakiness is a _measure_ of the system's (in)consistency
 
@@ -158,7 +158,7 @@ outputs = ["Reveal"]
 
 {{< slide id="evaluate-mlflow" >}}
 
-## Example 1 (bis): Evaluating the Letter Evaluator with MLflow (pt. 1)
+## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 1)
 
 1. Same golden set, rearranged as MLflow wants it: `inputs` (for the system) + `expectations` (for the scorers)
 
@@ -172,7 +172,7 @@ outputs = ["Reveal"]
 
 ---
 
-## Example 1 (bis): Evaluating the Letter Evaluator with MLflow (pt. 2)
+## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 2)
 
 3. The judge is created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
@@ -190,7 +190,7 @@ outputs = ["Reveal"]
     mlflow ui                   # then open http://localhost:5000, to browse runs, traces, and judges' rationales
     ```
 
-    {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-evaluator' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
+    {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (applicant_name, score_in_range, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
 
 ---
 

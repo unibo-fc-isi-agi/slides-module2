@@ -6,14 +6,14 @@ import mlflow
 from mlflow.genai import scorer
 from mlflow.genai.judges import make_judge
 from golden import GOLDEN, read_letter
-from letter_evaluator_langchain import evaluate_letter, base_url
+from letter_scoring_langchain import score_letter, base_url
 
 # 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers
 data = [dict(inputs=dict(letter_text=read_letter(g)), expectations=g) for g in GOLDEN]
 
 # 2. the system under test (outputs must be serialisable)
 def predict_fn(letter_text: str) -> dict:
-    return evaluate_letter(letter_text).model_dump()
+    return score_letter(letter_text).model_dump()
 
 # 3. deterministic scorers
 @scorer
@@ -37,6 +37,6 @@ groundedness = make_judge(
 
 
 if __name__ == "__main__":
-    mlflow.set_experiment("letter-evaluator")
+    mlflow.set_experiment("letter-scoring")
     results = mlflow.genai.evaluate(data=data, predict_fn=predict_fn, scorers=[applicant_name, score_in_range, groundedness])
     print(results.metrics)

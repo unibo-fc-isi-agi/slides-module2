@@ -43,7 +43,7 @@ outputs = ["Reveal"]
     + hence, it is only meaningful when paired with some form of _evaluation_ (more on this in the next lectures)
 
 - A prompt is commonly made of _four_ (optional) __elements__ (cf. [Prompt Engineering Guide](https://www.promptingguide.ai/introduction/elements)):
-    1. __instructions__: the _task_ to be performed, and _how_ to perform it (e.g. "evaluate this letter")
+    1. __instructions__: the _task_ to be performed, and _how_ to perform it (e.g. "score this letter")
     2. __context__: _background information_ that may help the model (e.g. "you are assisting a PhD admission committee")
     3. __input data__: the _specific_ data to be processed (e.g. the text of the letter)
     4. __output indicator__: the _format_ or _type_ of the expected output (e.g. "answer in JSON, with fields ...")
@@ -52,7 +52,7 @@ outputs = ["Reveal"]
 
 ## Anatomy of a prompt: an intuitive example
 
-{{< image src="./prompt-anatomy.svg" max-h="65vh" alt="The system and user messages of the letter-evaluator prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" >}}
+{{< image src="./prompt-anatomy.svg" max-h="65vh" alt="The system and user messages of the letter-scoring prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" >}}
 
 - The __system__ prompt commonly contains the _stable_ parts (context, general instructions, output format)
 - The __user__ prompt commonly contains the _variable_ parts (input data, specific instructions)
@@ -286,7 +286,7 @@ From _weakest_ to _strongest_ guarantees:
 
 {{% section %}}
 
-{{< slide id="letter-evaluator" >}}
+{{< slide id="letter-scoring" >}}
 
 ## Example 1: Structured Output with Pydantic Classes (pt. 1)
 
@@ -300,11 +300,11 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's import `openai` and initialize the client as usual:
 
-    {{% code path="content/prompting/letter_evaluator_openai.py" from="1" to="8" %}}
+    {{% code path="content/prompting/letter_scoring_openai.py" from="1" to="8" %}}
 
 2. Let's design a system prompt to contain general instructions for the model
 
-    {{% code path="content/prompting/letter_evaluator_openai.py" from="11" to="16" %}}
+    {{% code path="content/prompting/letter_scoring_openai.py" from="11" to="16" %}}
 
 {{% /fragment %}}
 
@@ -316,19 +316,19 @@ From _weakest_ to _strongest_ guarantees:
 
     - Imports:
 
-        {{% code path="content/prompting/letter_evaluator_openai.py" from="31" to="32" %}}
+        {{% code path="content/prompting/letter_scoring_openai.py" from="31" to="32" %}}
 
     - A class for the _applicant_'s information:
 
-        {{% code path="content/prompting/letter_evaluator_openai.py" from="34" to="43" %}}
+        {{% code path="content/prompting/letter_scoring_openai.py" from="34" to="43" %}}
 
     - A class for the _author_'s information:
 
-        {{% code path="content/prompting/letter_evaluator_openai.py" from="45" to="55" %}}
+        {{% code path="content/prompting/letter_scoring_openai.py" from="45" to="55" %}}
 
-    - A class for the overall _evaluation_ of the letter, including the extracted information and the final score:
+    - A class for the overall _scoring_ of the letter, including the extracted information and the final score:
 
-        {{% code path="content/prompting/letter_evaluator_openai.py" from="57" to="61" %}}
+        {{% code path="content/prompting/letter_scoring_openai.py" from="57" to="61" %}}
 
         * notice that instructions for scoring are contained in another string
 
@@ -338,11 +338,11 @@ From _weakest_ to _strongest_ guarantees:
 
 4. _Instructions_ for _scoring_ can be provided as well in _natural language_, yet better to be precise and give the LLM a _"recipe"_ for scoring
 
-    {{% code path="content/prompting/letter_evaluator_openai.py" from="18" to="28" %}}
+    {{% code path="content/prompting/letter_scoring_openai.py" from="18" to="28" %}}
 
-5. With these ingredients in mind, the automatic evaluation logic is as simple as a _single request–response interaction_ with the LLM:
+5. With these ingredients in mind, the automatic scoring logic is as simple as a _single request–response interaction_ with the LLM:
 
-    {{% code path="content/prompting/letter_evaluator_openai.py" from="64" to="76" %}}
+    {{% code path="content/prompting/letter_scoring_openai.py" from="64" to="76" %}}
 
     notice that:
 
@@ -355,11 +355,11 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 1: Structured Output with Pydantic Classes (pt. 4)
 
-6. Full code [here](./letter_evaluator_openai.py)
+6. Full code [here](./letter_scoring_openai.py)
 
-7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `evaluate_letter(...)` $\rightarrow$ print the evaluation):
+7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `score_letter(...)` $\rightarrow$ print the result):
 
-    {{% code path="content/prompting/letter_evaluator_openai.py" from="79" to="92" %}}
+    {{% code path="content/prompting/letter_scoring_openai.py" from="79" to="92" %}}
 
 8. Possible results below:
 
@@ -405,28 +405,28 @@ From _weakest_ to _strongest_ guarantees:
 
 ---
 
-## Example 1 (bis): the same Letter Evaluator with LangChain (pt. 1)
+## Example 1 (bis): the same Letter Scoring System with LangChain (pt. 1)
 
 1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
 
-    {{% code path="content/prompting/letter_evaluator_langchain.py" from="1" to="10" %}}
+    {{% code path="content/prompting/letter_scoring_langchain.py" from="1" to="10" %}}
 
 2. Let's define the prompt as a __template__, with a _named placeholder_ (`{letter_text}`) for the input data:
 
-    {{% code path="content/prompting/letter_evaluator_langchain.py" from="13" to="21" %}}
+    {{% code path="content/prompting/letter_scoring_langchain.py" from="13" to="21" %}}
 
     - `ChatPromptTemplate.from_messages` accepts a list of `(role, template)` pairs
     - `prompt.invoke({"letter_text": "..."})` would produce the _list of messages_ to be sent to the model
 
-3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](./letter_evaluator_langchain.py))
+3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](./letter_scoring_langchain.py))
 
 ---
 
-## Example 1 (bis): the same Letter Evaluator with LangChain (pt. 2)
+## Example 1 (bis): the same Letter Scoring System with LangChain (pt. 2)
 
-4. The evaluation logic is a __chain__: _prompt template_ $\rightarrow$ _chat model_ constrained to produce `LetterInfo` instances:
+4. The scoring logic is a __chain__: _prompt template_ $\rightarrow$ _chat model_ constrained to produce `LetterInfo` instances:
 
-    {{% code path="content/prompting/letter_evaluator_langchain.py" from="69" to="72" %}}
+    {{% code path="content/prompting/letter_scoring_langchain.py" from="69" to="72" %}}
 
     notice that:
 
@@ -434,12 +434,12 @@ From _weakest_ to _strongest_ guarantees:
         + the `method` argument selects _how_ structure is enforced: `"json_schema"` (default for OpenAI), `"function_calling"` (tool-calling trick), or `"json_mode"`
         + `include_raw=True` returns the _raw_ response too (useful to inspect token usage, or parsing errors)
     - `prompt | ...` creates a _sequence_: the output of the template (messages) is the input of the model
-    - `evaluator.invoke({...})` runs the whole chain, `evaluator.batch([{...}, {...}])` runs it on _many_ inputs, in _parallel_
+    - `scoring_chain.invoke({...})` runs the whole chain, `scoring_chain.batch([{...}, {...}])` runs it on _many_ inputs, in _parallel_
 
 5. The `main` part of the program is unchanged:
 
     ```bash
-    python letter_evaluator_langchain.py ../../static/letter-mario-rossi.txt
+    python letter_scoring_langchain.py ../../static/letter-mario-rossi.txt
     ```
 
 ---
@@ -472,7 +472,7 @@ From _weakest_ to _strongest_ guarantees:
 
 {{% fragment %}}
 ### TO-DO List
-1. start from the [LangChain version](./letter_evaluator_langchain.py) of the letter evaluator
+1. start from the [LangChain version](./letter_scoring_langchain.py) of the letter-scoring system
 2. let's turn the scoring recipe into a _checklist_ of criteria
 3. let's have a Pydantic class with as many __boolean fields__ as the criteria in the checklist
 4. let's ask the _LLM_ to set the boolean fields by analysing the _input letter_

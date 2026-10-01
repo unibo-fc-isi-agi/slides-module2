@@ -27,7 +27,7 @@
   <rect x="62" y="425" width="414" height="33" rx="6" fill="#eadff3" stroke="#8e5bb5" stroke-width="2"/>
   <rect x="62" y="461" width="300" height="105" rx="6" fill="#fbf1c7" stroke="#e6b800" stroke-width="2"/>
   <g font-family="'JetBrains Mono', Menlo, Consolas, monospace" font-size="22">
-    <text x="70" y="450">Evaluate the following letter:</text>
+    <text x="70" y="450">Score the following letter:</text>
     <text x="70" y="486">&lt;letter&gt;</text>
     <text x="70" y="522" font-weight="bold">{letter_text}</text>
     <text x="70" y="558">&lt;/letter&gt;</text>

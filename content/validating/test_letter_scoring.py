@@ -1,5 +1,5 @@
 # pip install langchain-openai deepeval pytest
-# run with: PYTHONPATH=../prompting pytest test_letter_evaluator.py   (or: deepeval test run test_letter_evaluator.py)
+# run with: PYTHONPATH=../prompting pytest test_letter_scoring.py   (or: deepeval test run test_letter_scoring.py)
 import functools
 import os
 import pytest
@@ -8,15 +8,15 @@ from deepeval.metrics import GEval
 from deepeval.models import OpenRouterModel
 from deepeval.test_case import LLMTestCase, SingleTurnParams
 from golden import GOLDEN, read_letter
-from letter_evaluator_langchain import evaluate_letter, api_key, base_url
+from letter_scoring_langchain import score_letter, api_key, base_url
 
-evaluate = functools.cache(evaluate_letter)  # one LLM call per letter, shared by all tests
+score = functools.cache(score_letter)  # one LLM call per letter, shared by all tests
 
 
 # 1. deterministic scorers: plain assertions on the fields of the structured output
 @pytest.mark.parametrize("golden", GOLDEN, ids=lambda g: g["applicant"])
 def test_extracted_fields(golden):
-    info = evaluate(read_letter(golden))
+    info = score(read_letter(golden))
     assert golden["applicant"].lower() in info.applicant.name.lower()
     assert golden["author"].lower() in info.author.name.lower()
     assert golden["programme"].lower() in info.application_for.lower()
@@ -27,7 +27,7 @@ def test_extracted_fields(golden):
 
 # 2. relational property: holds across inputs, even if single scores may vary
 def test_best_letter_is_mario_rossi():
-    scores = {g["applicant"]: evaluate(read_letter(g)).score for g in GOLDEN}
+    scores = {g["applicant"]: score(read_letter(g)).score for g in GOLDEN}
     assert scores["Mario Rossi"] == max(scores.values())
 
 
@@ -46,5 +46,5 @@ groundedness = GEval(
 @pytest.mark.parametrize("golden", GOLDEN, ids=lambda g: g["applicant"])
 def test_groundedness(golden):
     letter = read_letter(golden)
-    info = evaluate(letter)
+    info = score(letter)
     assert_test(LLMTestCase(input=letter, actual_output=info.applicant.model_dump_json()), [groundedness])

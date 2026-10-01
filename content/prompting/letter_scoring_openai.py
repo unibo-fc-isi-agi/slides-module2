@@ -58,15 +58,15 @@ class LetterInfo(BaseModel):
     applicant: ApplicantInfo = Field(description="Information about the person the letter is about, i.e., the one applying for the PhD programme.")
     author: AuthorInfo = Field(description="Information about the person who wrote the letter, i.e., the one recommending the applicant for the PhD programme.")
     application_for: str = Field(description="The PhD programme for which the applicant is applying.")
-    score: int = Field(description=f"The score assigned to the letter by the evaluator according to the following rules.{scoring_instructions}")
+    score: int = Field(description=f"The score assigned to the letter according to the following rules.{scoring_instructions}")
 
 
-def evaluate_letter(letter_text: str, client: OpenAI = client, model: str = model) -> LetterInfo:
+def score_letter(letter_text: str, client: OpenAI = client, model: str = model) -> LetterInfo:
     response = client.chat.completions.parse(
         model=model,
         messages=[
             dict(role="system", content=general_instructions),
-            dict(role="user", content=f"Evaluate the following letter:\n\n<letter>\n{letter_text}\n</letter>"),
+            dict(role="user", content=f"Score the following letter:\n\n<letter>\n{letter_text}\n</letter>"),
         ],
         response_format=LetterInfo,
     )
@@ -82,11 +82,11 @@ if __name__ == "__main__":
 
     print(f"Using model: {model}")
 
-    letter_path = sys.argv[1] if len(sys.argv) > 1 else input("Enter the path to the letter to evaluate: ")
+    letter_path = sys.argv[1] if len(sys.argv) > 1 else input("Enter the path to the letter to score: ")
     letter_path = pathlib.Path(letter_path)
     if not letter_path.is_file():
         print(f"File {letter_path} is not a file.")
         sys.exit(1)
     letter_text = letter_path.read_text()
-    letter_info = evaluate_letter(letter_text)
+    letter_info = score_letter(letter_text)
     print(letter_info.model_dump_json(indent=2))
