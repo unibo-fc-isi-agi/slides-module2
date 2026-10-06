@@ -803,45 +803,55 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
 
 > Support public officers in managing tenders through a GenAI assistant that understands and compares procurement decisions transparently.
 
-1. __Problem Framing__:
-    - _Content Generation_: draft and justify _comparisons_ among suppliers’ offers vs. technical specs
-    - _Interpretation_: understand regulatory documents and technical language
-    - _Automation_: retrieve relevant laws, norms, and prior tender examples
-    - _Interaction_: enable officers to query and validate results through natural language
+__Scope__
 
-2. __Data Collection__: past tenders' technical specifications, acts, etc; regulatory documents, etc.
+1. __Problem Framing__:
+    - _Content Generation_: draft and justify _comparisons_ among suppliers' offers vs. technical specs
+    - _Interpretation_: understand regulatory documents and technical language
+    - _Automation_: score offers against _check-lists_ derived from the technical specs
+    - _Interaction_: enable officers to query and validate results through natural language
+    - i.e. a _workflow_ (dimension 2) for scoring, plus an _agent_ (dimension 3) for the officers' questions
+
+2. __Data Collection__: past tenders' technical specifications and acts; regulatory documents; previous evaluations (with the officers' scores)
 
 3. __Data Preparation__:
     - devise useful data schema & extract relevant data from documents
-    - anonymize sensitive info (suppliers, personal data)
+    - anonymize sensitive info (personal data; supplier identities, to reduce bias)
     - segment documents and index by topic (law, SLA, price table, etc.)
+
+__Select__
+
+4. __Foundation Model Selection__: multi-lingual? specialized in legal/technical text? cost constraints? support for tools? where does it run (data protection)?
+    * try out candidate prompts on candidate models
 
 ---
 
 ## Example of GenAI workflow (pt. 2)
 
-4. __Prompt Engineering__:
-    1. design prompt templates for comparison, justification, and Q&A
-        * use role-based system prompts (`You are a procurement evaluator…`)
-    2. allocate placeholders for RAG-retrieved data chunks
-    3. iterate on template design based on manual tests
+__Adapt and align__
 
-5. __Foundation Model Selection__: multi-lingual? specialized in legal/technical text? cost constraints? support for tools?
+5. __Vector stores__: embeddings for tender documents & specs, legal texts & guidelines, previous evaluations, templates
+    * choose embedding model and chunking strategy, populate the store, engineer retrieval strategies
 
-6. __Vector stores__: storing embeddings for tender documents & specs, legal texts & guidelines, previous evaluation, templates
-    1. choose embedding model, chunking strategy, and populate vector store
-    2. engineer retrieval strategies to fetch relevant chunks
+6. __Prompt Engineering__: templates for check-list extraction, justification, and Q&A
+    * role-based system prompts (`You are a procurement evaluator…`), placeholders for retrieved chunks, iterate on manual tests
 
-7. __Tools__:
-    * regulation lookup API + tender database query API
-    * report generation out of document templates
-    * automate scoring calculations via spreadsheet or Python scripts generation
+7. __Evaluations__: past tenders (with the officers' scores) as validation set
+    * exact checks on extracted check-lists and scores; [LLM-as-a-judge](../validating/#/llm-as-a-judge) on justifications (e.g. is every claim backed by a cited document?)
+    * re-run at every change of prompts or models
 
-8. __Agents__:
-    1. exploit LLM to extract structured check-lists out of technical specs
-    2. orchestrate RAG, tool invocations, and prompt templates to score each offer
-    3. generate comparison reports
-    4. ...
+__Application integration__
+
+8. __Tools__: regulation lookup API, tender database query API, report generation out of document templates
+    * scores are computed by _deterministic_ code out of the (validated) check-lists: the LLM _proposes_, software _verifies_
+
+9. __Workflow__ + __Agent__:
+    * _workflow_: extract check-lists $\rightarrow$ validate $\rightarrow$ score $\rightarrow$ generate comparison report
+    * _agent_: answers officers' questions, orchestrating RAG and tool invocations
+
+10. __Tracking__ & __Oversight__:
+    * log prompts, retrieved chunks, tool calls, and scores, for traceability and auditing
+    * the system _proposes_, the officer _decides_ (and signs off); comply with GDPR and the AI Act (cf. [governance](../governance/#/regulation))
 
 {{% /section %}}
 
