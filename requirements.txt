@@ -1,7 +1,11 @@
 openai
 langchain-openai
 pydantic
+ddgs
 pyyaml
 pytest
 deepeval
 mlflow
+langchain
+mcp
+langchain-mcp-adapters

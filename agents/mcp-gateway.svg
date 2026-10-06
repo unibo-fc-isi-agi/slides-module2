@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<text x="390" y="40" font-size="28" font-weight="600">(a) direct connections</text>
+<text x="1200" y="40" font-size="28" font-weight="600">(b) via an MCP gateway</text>
+<line x1="800" y1="20" x2="800" y2="680" stroke="#999" stroke-width="2" stroke-dasharray="6,6"/>
+<!-- (a) host -->
+<rect x="20" y="80" width="300" height="580" rx="14" fill="#3a9a5b" fill-opacity="0.10" stroke="#3a9a5b" stroke-width="3"/>
+<text x="170" y="118" font-size="24" font-weight="600">MCP host</text>
+<text x="170" y="146" font-size="17">agent, IDE, MCP Inspector...</text>
+<g font-size="20"><rect x="60" y="190" width="220" height="70" rx="10" fill="#fff" stroke="#3a9a5b" stroke-width="2"/><text x="170" y="232">MCP client 1</text>
+<rect x="60" y="340" width="220" height="70" rx="10" fill="#fff" stroke="#3a9a5b" stroke-width="2"/><text x="170" y="382">MCP client 2</text>
+<rect x="60" y="490" width="220" height="70" rx="10" fill="#fff" stroke="#3a9a5b" stroke-width="2"/><text x="170" y="532">MCP client 3</text></g>
+<g font-size="20"><rect x="480" y="175" width="290" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="625" y="215" font-weight="600">simple-tools server</text><text x="625" y="248" font-size="17">local process (stdio)</text>
+<rect x="480" y="325" width="290" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="625" y="365" font-weight="600">fetch server</text><text x="625" y="398" font-size="17">local process (stdio)</text>
+<rect x="480" y="475" width="290" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="625" y="515" font-weight="600">remote server</text><text x="625" y="548" font-size="17">Web service (HTTP)</text></g>
+<g stroke="#555" stroke-width="3"><line x1="280" y1="225" x2="480" y2="225" marker-start="url(#a)" marker-end="url(#a)"/><line x1="280" y1="375" x2="480" y2="375" marker-start="url(#a)" marker-end="url(#a)"/><line x1="280" y1="525" x2="480" y2="525" marker-start="url(#a)" marker-end="url(#a)"/></g>
+<text x="560" y="625" font-size="18" fill="#555">1 client per server: config, auth, and</text>
+<text x="560" y="650" font-size="18" fill="#555">policies repeated in every host</text>
+<!-- (b) -->
+<rect x="830" y="270" width="210" height="160" rx="14" fill="#3a9a5b" fill-opacity="0.10" stroke="#3a9a5b" stroke-width="3"/>
+<text x="935" y="320" font-size="24" font-weight="600">MCP host</text>
+<rect x="850" y="350" width="170" height="60" rx="10" fill="#fff" stroke="#3a9a5b" stroke-width="2"/><text x="935" y="388" font-size="20">1 MCP client</text>
+<rect x="1100" y="150" width="200" height="400" rx="14" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="3"/>
+<text x="1200" y="195" font-size="24" font-weight="600">MCP gateway</text>
+<g font-size="18"><text x="1200" y="250">aggregates tools</text><text x="1200" y="290">filters / renames</text><text x="1200" y="330">authenticates</text><text x="1200" y="370">stores secrets</text><text x="1200" y="410">logs every call</text><text x="1200" y="450">rate-limits</text><text x="1200" y="490">sandboxes servers</text></g>
+<line x1="1020" y1="380" x2="1100" y2="350" stroke="#555" stroke-width="3" marker-start="url(#a)" marker-end="url(#a)"/>
+<g font-size="20"><rect x="1360" y="175" width="220" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="1470" y="232" font-weight="600">simple-tools</text>
+<rect x="1360" y="325" width="220" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="1470" y="382" font-weight="600">fetch</text>
+<rect x="1360" y="475" width="220" height="100" rx="10" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/><text x="1470" y="532" font-weight="600">remote</text></g>
+<g stroke="#555" stroke-width="3"><line x1="1300" y1="250" x2="1360" y2="225" marker-start="url(#a)" marker-end="url(#a)"/><line x1="1300" y1="375" x2="1360" y2="375" marker-start="url(#a)" marker-end="url(#a)"/><line x1="1300" y1="500" x2="1360" y2="525" marker-start="url(#a)" marker-end="url(#a)"/></g>
+<text x="1200" y="625" font-size="18" fill="#555">1 endpoint for the host: config, auth, and</text>
+<text x="1200" y="650" font-size="18" fill="#555">policies managed in one place</text>
+</svg>

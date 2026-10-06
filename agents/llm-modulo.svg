@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 720" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker><marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d64545"/></marker><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3a9a5b"/></marker></defs>
+<!-- goal -->
+<rect x="20" y="230" width="230" height="160" rx="12" fill="#555" fill-opacity="0.15" stroke="#555" stroke-width="3"/>
+<text x="135" y="275" font-size="24" font-weight="600">Goal</text>
+<text x="135" y="310" font-size="18">“shortlist the best</text>
+<text x="135" y="335" font-size="18">candidates for an</text>
+<text x="135" y="360" font-size="18">interview”</text>
+<line x1="250" y1="310" x2="324" y2="310" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+<!-- LLM -->
+<rect x="330" y="200" width="300" height="220" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+<text x="480" y="245" font-size="26" font-weight="600">LLM</text>
+<text x="480" y="280" font-size="19" font-style="italic">proposes a candidate plan</text>
+<g font-size="16" font-family="Menlo, Consolas, monospace" text-anchor="start">
+<text x="350" y="320">1. score_letter(each)</text>
+<text x="350" y="345">2. rank by score</text>
+<text x="350" y="370">3. invite top 2</text>
+<text x="350" y="395" xml:space="preserve">   (send_email)</text></g>
+<line x1="630" y1="310" x2="744" y2="310" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+<text x="687" y="295" font-size="18" fill="#555">plan</text>
+<!-- critics -->
+<rect x="750" y="40" width="460" height="540" rx="14" fill="#7e57c2" fill-opacity="0.08" stroke="#7e57c2" stroke-width="3"/>
+<text x="980" y="80" font-size="26" font-weight="600">Critics / verifiers</text>
+<text x="980" y="108" font-size="18" fill="#555">external to the LLM</text>
+<g font-size="18">
+<rect x="775" y="130" width="410" height="120" rx="10" fill="#fff" stroke="#7e57c2" stroke-width="2"/>
+<text x="980" y="162" font-weight="600">hard critics (code)</text>
+<text x="980" y="192">do these tools exist? are arguments valid?</text>
+<text x="980" y="220">are preconditions met (all letters scored)?</text>
+<rect x="775" y="270" width="410" height="120" rx="10" fill="#fff" stroke="#7e57c2" stroke-width="2"/>
+<text x="980" y="302" font-weight="600">policy critics (code / rules)</text>
+<text x="980" y="332">e-mails to candidates need human approval;</text>
+<text x="980" y="360">grades must be considered too</text>
+<rect x="775" y="410" width="410" height="150" rx="10" fill="#fff" stroke="#7e57c2" stroke-width="2"/>
+<text x="980" y="442" font-weight="600">soft critics (LLM-as-a-judge, humans)</text>
+<text x="980" y="472">is the plan reasonable? fair?</text>
+<text x="980" y="500">is anything missing?</text>
+<text x="980" y="532" fill="#555" font-size="16">(only for what code cannot check)</text>
+</g>
+<!-- feedback -->
+<path d="M980,580 L980,660 L480,660 L480,426" fill="none" stroke="#d64545" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#r)"/>
+<rect x="545" y="642" width="370" height="32" fill="#fff"/>
+<text x="730" y="666" font-size="20" font-weight="600" fill="#d64545">rejected: critique fed back to the LLM</text>
+<!-- accepted -->
+<line x1="1210" y1="310" x2="1324" y2="310" stroke="#3a9a5b" stroke-width="3" marker-end="url(#g)"/>
+<text x="1267" y="295" font-size="18" font-weight="600" fill="#3a9a5b">accepted</text>
+<rect x="1330" y="200" width="250" height="220" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+<text x="1455" y="245" font-size="24" font-weight="600">Execution</text>
+<text x="1455" y="285" font-size="18">by the agent's</text>
+<text x="1455" y="310" font-size="18">controller, with</text>
+<text x="1455" y="335" font-size="18">logging, and human</text>
+<text x="1455" y="360" font-size="18">approval where needed</text>
+</svg>
