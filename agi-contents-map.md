@@ -1,6 +1,6 @@
 Coverage legend: `[x]` covered by slides (lecture dir in backticks), `[ ]` not covered yet (notes say what partially exists).
 
-Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas` exercises on request caching and retry with exponential backoff; `llmaas` Example 1 bis (Anthropic Messages API via Ollama) + cross-provider API comparison table.
+Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. agentic interfaces, "customers buy automation", the 3 ways engineers exploit GenAI — coding assistants / hard-to-code automation / agents in products —, language vs. action); `llmaas` exercises on request caching and retry with exponential backoff; `llmaas` Example 1 bis (Anthropic Messages API via Ollama) + cross-provider API comparison table.
 
 0. Programmatic interfaces for LLMaaS
     - Topics:
@@ -41,13 +41,18 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
     - Topics:
         * [ ] Agentic metaphor: tools for perception&actuation, LLM for deliberation, agents as controllers
             + [ ] excursis classical agents vs. LLM agents: autonomy, BDI-style perceive/deliberate/act, what LLMs actually replace
+            + [ ] LLMs are not agents by themselves: agent = controller + LLM + tools + memory + policies; intelligence vs. autonomy vs. agency (Floridi 2025) _(proposed; introduced in `genai`)_
+        * [ ] Spectrum of autonomy: workflows (code controls the flow) vs. agents (LLM controls the flow); least autonomy that does the job (cf. Anthropic's "Building effective agents") _(proposed; introduced in `genai`)_
         * [ ] Functions as tools (importance of documentation) (tool-call messages and `tool_choice` only shown in `llmaas`)
         * [ ] Building an agent that calls a tool from scratch
             + [ ] the ReAct loop (reason + act)
         * [ ] MCP protocol, MCP gateway (MCP only named in `genai`)
         * [ ] Agents with tools with LangChain
         * [ ] Evaluating agents: trajectories, tool-call correctness, regression tests
+            + [ ] agentic benchmarks (GAIA, WebArena, AgentBench, SWE-bench, ARC-AGI-3): representation as the bottleneck; success without governance is not trustworthy agency _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [ ] LLMs can't plan, but can help planning (LLM-Modulo, PlanBench): plans vs. plan-shaped text; LLMs as translators, critics, heuristic sources; external validation _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
         * [ ] Security of agentic systems: prompt injection, least privilege for tools, sandboxing tool execution, secrets out of context
+            + [ ] tools change the risk profile: read-only (information), write-enabled (action), external (dependency), institutional (accountability) risks _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
     - Exercises:
         * [ ] E2.1: Building an agent that calls a tool from scratch with OpenAI client lib (code exists, not in slides: `content/llmaas/repl_chat_with_tools_openai*.py`)
         * [ ] E2.2: Building an agent that calls a tool via LangChain (precooked agentic lib) (code exists, not in slides: `content/llmaas/repl_chat_with_tools_langchain*.py`)
@@ -56,6 +61,7 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
 3. Retrieval augemented generation (RAG)
     - Topics:
         * [ ] Agentic metaphor: memory & focus
+            + [ ] memory is not "more context": working/episodic/semantic/procedural memory; memory governance (provenance, staleness, forgetting, privacy) _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
         * [ ] Semantic indexing, embeddings, embedding scores
         * [ ] Chunking, metadata, retrieval
         * [ ] LangChain API and database adapters
@@ -88,6 +94,8 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
         * [ ] State management
         * [ ] Patterns (prompt chaining, master-worker, evaluator-optimizer, routing, human-in-the-loop, etc)
             + [ ] plan-and-execute _(proposed)_
+        * [ ] Intermediate representations (checklists, plans, schemas, process models, tool contracts): intention → representation → verification → execution _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+            + [ ] plan before acting, log & trace, verify & test; ask humans for irreversible / norm-sensitive actions _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
         * [ ] Multi-agent systems: agent communication, A2A protocol (vs. MCP)
         * [ ] Streaming and observability
         * [ ] Evaluating workflows end-to-end (reusing the E1.2 infrastructure)
@@ -102,6 +110,8 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
         * [x] guidelines for technology selection upon use case patterns — `governance`
             + [x] prompting vs. RAG vs. fine-tuning — `governance`
         * [x] detail on model evaluation: model cards and model evaluation (maybe mention ARC-AGI, and other benchmarks?) — `governance`
+        * [ ] Enveloping (Floridi): the world adapting to AI; bad (silent adaptation) vs. good (explicit, contestable representations) enveloping _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [ ] Responsibility remains human: biases in LLM-agent use (over-trust, artificial salience, false certainty) and countermeasures _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
     - Exercises:
         * [x] E6.1: Comparing models on the running example (quality, consistency, latency, cost) — `governance` exercise 1
         * [x] E6.2: Governance decision record for the running example (AI Act, GDPR, deployment, model, oversight) — `governance` exercise 2

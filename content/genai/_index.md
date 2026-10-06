@@ -78,6 +78,8 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 ---
 
+{{< slide id="dual-system" >}}
+
 ## Analogy with Dual-System theory
 
 {{< image src="./dual-system.png" width="100%" max-h="90vh" alt="Dual-system theory concept">}}
@@ -471,8 +473,155 @@ These are themselves __LLM-based agentic software__: the kind of system this mod
 
 ---
 
+{{% section %}}
 
-## What do engineers do with GenAI?
+{{< slide id="genai-uses" >}}
+
+## Customers buy __automation__, not agents
+
+> Why do people care about software in the first place? (cf. [Introduction to Software Engineering](https://unibo-dtm-se.github.io/course-slides/se-intro/))
+
+- Most people do _not_ care about algorithms, software, or agents _per se_...
+- ... they care about __automating__ the _solutions_ to their _problems_
+    + algorithms, software, and now _agents_ are just __means__ to that end
+
+- _Classic_ software automates problems which are _repetitive_ and _structured_ enough to be __coded__
+- GenAI __widens__ the set of _automatable_ problems
+    + to problems which are _linguistic_, _ill-defined_, or about _unstructured_ data
+    + i.e. problems which are __hard to code__ explicitly
+
+{{% fragment %}}
+
+### Corollary
+
+- _Autonomy_ is a __cost__ (risks, testing, governance), not a goal
+- Aim for the __least autonomy__ that gets the job done (cf. [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
+
+{{% /fragment %}}
+
+---
+
+## Three ways engineers exploit GenAI
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{< image src="./genai-uses-venn.svg" width="100%" max-h="75vh" alt="Venn diagram: (1) coding assistants and co-pilots, (2) automating hard-to-code tasks, (3) agents in products; all intersections are possible" >}}
+{{% /col %}}
+{{% col %}}
+1. As __coding assistants__ and _co-pilots_
+    + GenAI helps engineers _build_ the software
+2. To __automate__ activities which would otherwise be _hard to code_
+    + GenAI is a _step_ in a flow decided by the developers
+3. To create __agents__ for software _products_
+    + GenAI _decides_ (part of) the flow, increasing the product's _autonomy_
+
+{{% fragment %}}
+
+- (1) is about the __process__ (_dev-time_): the product may contain no AI at all
+- (2) and (3) are about the __product__ (_run-time_)
+    + they are _ends_ of a __spectrum__: _who controls the flow_?
+    + the _developer's code_ (__workflow__) vs. the _LLM_ (__agent__)
+
+{{% /fragment %}}
+
+{{% fragment %}}
+
+{{% color "red" %}}Not mutually exclusive!{{% /color %}}
+
+{{% /fragment %}}
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Each dimension on its own
+
+- (1) only: __coding__ an _ordinary_ Web application (no AI inside) with the help of _Claude Code_
+    + cf. [agentic interfaces](#/interfaces)
+    + GenAI _speeds up_ development, yet the final product is _classic_ software
+
+- (2) only: a script which __extracts__ _structured_ data from _recommendation letters_
+    + the steps are _fixed_ in code (read letter $\rightarrow$ prompt LLM $\rightarrow$ validate output $\rightarrow$ store)
+    + the LLM is _one step_ among many: it does _not_ decide what to do next
+
+- (3) only: a customer-support __chatbot__ which _decides_ which tools to call (e.g. look up orders, open tickets)
+    + the LLM _chooses_ the next action, based on the conversation
+    + the product gains _autonomy_, and so does its _risk profile_
+
+---
+
+## How the dimensions __combine__
+
+| Combination | Example |
+|---|---|
+| (1) + (2) | the letter-extraction script, written with a _coding assistant_ |
+| (2) + (3) | an agent whose _tools_ are themselves LLM-based _workflows_ (e.g. the [tender example](#/genai-workflow)) |
+| (1) + (3) | an agentic _product_ built with a _coding agent_ |
+| (1) + (2) + (3) | an assistant for a PhD admission committee: _workflows_ to extract data from candidates' documents, an _agent_ to answer the committee's questions, all _coded_ with a coding agent |
+
+{{% fragment %}}
+
+### Twist
+
+- One team's (1) is another team's (3)
+    + _Claude Code_ is a __tool__ for its users (1)...
+    + ... and an agentic __product__ for Anthropic (3)
+
+{{% /fragment %}}
+
+---
+
+## From __language__ to __action__
+
+- An LLM produces __text__, not _action_
+    + action requires _software_ which _maps_ text onto _operations_
+    + e.g. `Book the train to Lisbon` is just text...
+    + ... until software maps it onto _search_, _booking_, _payment_, and _confirmation_ steps
+
+- Are LLMs _agents_? Not really, not fully, not __by themselves__
+    + they do not _perceive_ nor _act_ on environments directly
+    + they do not _persistently_ manage _goals_ and _state_
+
+- In both (2) and (3), the "agent" is mostly the __surrounding software__
+    + _agent_ $\approx$ _controller_ + _LLM_ + _tools_ + _memory_ + _policies_
+
+{{% fragment %}}
+
+### _Intelligence_ vs. _autonomy_ vs. _agency_ are __separable__ dimensions (cf. [Floridi, 2025](https://doi.org/10.1007/s13347-025-00858-9))
+
+- What can the system __do__? (_agency_)
+- Who __controls__ _when_ and _why_ it does it? (_autonomy_)
+- What __state__ does it actually _change_?
+
+{{% /fragment %}}
+
+---
+
+## Language is a __weak substrate__ for agency
+
+- Natural language is _expressive_ and _flexible_...
+    + useful for _vague_ goals, _exceptions_, _preferences_, and _explanations_
+- ... but also _ambiguous_ and _underspecified_
+    + _fluent_ text may be plausible but __false__
+    + _confident_ text may be __non-executable__
+    + e.g. `get approval, then submit` hides _who_ approves, _how_ approval is checked, and _what_ submission changes
+
+{{% fragment %}}
+
+### Hence: LLMs __propose__, software __verifies__
+
+- Treat LLM outputs as __candidate__ artefacts (plans, classifications, explanations)...
+- ... to be _checked_ by external components: _validators_, _tests_, _policy checkers_, _humans_
+    + cf. the _LLM-Modulo_ framework ([Kambhampati et al., 2024](https://proceedings.mlr.press/v235/kambhampati24a.html))
+    + recall the [dual-system](#/dual-system) analogy: fast _intuition_ + slow _checking_
+
+{{% /fragment %}}
+
+{{% /section %}}
+
+---
+
+## What can GenAI do __inside__ software? (dimensions 2–3)
 
 Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and govern the behavior of __pre-trained__ (_foundation_) models, in order to:
 - __generate__ contents (text, images, code, etc.) for a specific purpose
@@ -514,6 +663,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 {{% section %}}
 
 ## What does an AI-powered application include?
+
+(i.e. a product exploiting GenAI as per dimensions (2) and (3))
 
 0. FM are commonly <u>not</u> produced in-house, but rather _accessed_ via APIs... yet the choice of __what model(s) to use__ is crucial
     * must be available, configured, and most commonly imply _costs_ (per call, per token, etc.)
@@ -586,7 +737,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## The GenAI workflow
 
-(Similar to the ML workflow in the sense that the goal is to process data, but different in many details e.g. _no training_ is involved)
+(The workflow of engineering products as per dimensions (2) and (3).
+Similar to the ML workflow in the sense that the goal is to process data, but different in many details e.g. _no training_ is involved)
 
 ![](./genai-workflow.png)
 

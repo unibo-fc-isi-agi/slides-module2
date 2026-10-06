@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 720" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- (1) process: GenAI for building software -->
+  <circle cx="650" cy="190" r="200" fill="#2690e7" fill-opacity="0.25" stroke="#2690e7" stroke-width="4"/>
+  <!-- (2) product: workflows -->
+  <circle cx="560" cy="420" r="200" fill="#e7a626" fill-opacity="0.25" stroke="#e7a626" stroke-width="4"/>
+  <!-- (3) product: agents -->
+  <circle cx="740" cy="420" r="200" fill="#bd2b0b" fill-opacity="0.2" stroke="#bd2b0b" stroke-width="4"/>
+
+  <g font-size="26" font-weight="600" fill="#222">
+    <text x="650" y="120">(1) Coding assistants</text>
+    <text x="650" y="157">&amp; co-pilots</text>
+    <text x="450" y="430">(2)</text>
+    <text x="450" y="462">Automating</text>
+    <text x="450" y="494">hard-to-code</text>
+    <text x="450" y="526">tasks</text>
+    <text x="850" y="430">(3)</text>
+    <text x="850" y="462">Agents</text>
+    <text x="850" y="494">in products</text>
+  </g>
+  <g font-size="20" font-style="italic" fill="#444">
+    <text x="462" y="556">(workflows)</text>
+    <text x="838" y="556">(agentic)</text>
+  </g>
+
+  <!-- process vs. product labels -->
+  <g font-size="28" fill="#2690e7" text-anchor="end">
+    <text x="420" y="60">GenAI for</text>
+    <text x="420" y="95"><tspan font-weight="700">building</tspan> software</text>
+    <text x="420" y="130" font-size="22" font-style="italic">(process, dev-time)</text>
+  </g>
+  <g font-size="28" fill="#555">
+    <text x="650" y="665">GenAI <tspan font-weight="700">inside</tspan> software (product, run-time)</text>
+  </g>
+  <line x1="420" y1="690" x2="880" y2="690" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1000" y="698" font-size="22" font-style="italic" fill="#555">LLM controls the flow</text>
+</svg>
