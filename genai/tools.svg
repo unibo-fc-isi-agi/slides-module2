@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1390" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="m-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker><marker id="m-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2690e7"/></marker><marker id="m-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3a9a5b"/></marker><marker id="m-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e7a626"/></marker><marker id="m-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7e57c2"/></marker></defs>
+<line x1="100" y1="150" x2="100" y2="1225" stroke="#999" stroke-width="2" stroke-dasharray="4,6"/>
+<rect x="20.0" y="20" width="160" height="130" rx="12" fill="#555" fill-opacity="0.15" stroke="#555" stroke-width="3"/>
+<text x="100" y="92" font-size="25" font-weight="600">User</text>
+<line x1="400" y1="150" x2="400" y2="1225" stroke="#999" stroke-width="2" stroke-dasharray="4,6"/>
+<rect x="250.0" y="20" width="300" height="130" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+<text x="400" y="52" font-size="25" font-weight="600">Agent</text>
+<text x="400" y="85" font-size="18">code / orchestrator,</text>
+<text x="400" y="110" font-size="18">external to the LLM:</text>
+<text x="400" y="135" font-size="18">logic, context, memory, policies</text>
+<line x1="730" y1="150" x2="730" y2="1225" stroke="#999" stroke-width="2" stroke-dasharray="4,6"/>
+<rect x="580.0" y="20" width="300" height="130" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+<text x="730" y="52" font-size="25" font-weight="600">LLM</text>
+<text x="730" y="85" font-size="18">the &quot;mind&quot; of the agent:</text>
+<text x="730" y="110" font-size="18">reasoning, planning,</text>
+<text x="730" y="135" font-size="18">tool selection, language</text>
+<line x1="1080" y1="150" x2="1080" y2="1225" stroke="#999" stroke-width="2" stroke-dasharray="4,6"/>
+<rect x="930.0" y="20" width="300" height="130" rx="12" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/>
+<text x="1080" y="52" font-size="25" font-weight="600">MCP / Tool service</text>
+<text x="1080" y="85" font-size="18">MCP server, exposing</text>
+<text x="1080" y="110" font-size="18">tools to the agent</text>
+<line x1="1430" y1="150" x2="1430" y2="1225" stroke="#999" stroke-width="2" stroke-dasharray="4,6"/>
+<rect x="1280.0" y="20" width="300" height="130" rx="12" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="3"/>
+<text x="1430" y="52" font-size="25" font-weight="600">External tool</text>
+<text x="1430" y="85" font-size="18">actual capability, e.g.</text>
+<text x="1430" y="110" font-size="18">a Web API (time service)</text>
+<line x1="100" y1="215" x2="394" y2="215" stroke="#555" stroke-width="3" marker-end="url(#m-grey)"/>
+<rect x="28" y="181" width="443" height="29" fill="#fff"/>
+<text x="250.0" y="203" font-size="22" font-weight="600" fill="#555">1 · “What&#x27;s the current date and time?”</text>
+<line x1="400" y1="290" x2="1074" y2="290" stroke="#3a9a5b" stroke-width="3" marker-end="url(#m-green)"/>
+<rect x="480" y="256" width="520" height="29" fill="#fff"/>
+<text x="740.0" y="278" font-size="22" font-weight="600" fill="#3a9a5b">2 · MCP: tools/list (discover available tools)</text>
+<line x1="1080" y1="365" x2="406" y2="365" stroke="#3a9a5b" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-green)"/>
+<rect x="590" y="331" width="300" height="29" fill="#fff"/>
+<text x="740.0" y="353" font-size="22" font-weight="600" fill="#3a9a5b">3 · MCP: tools/list result</text>
+<rect x="488" y="376" width="504" height="25" fill="#fff"/>
+<text x="740.0" y="395" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">{&quot;tools&quot;: [{&quot;name&quot;: &quot;get_current_datetime&quot;,</text>
+<rect x="454" y="400" width="573" height="25" fill="#fff"/>
+<text x="740.0" y="419" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">  &quot;description&quot;: &quot;Get the current date and time&quot;,</text>
+<rect x="602" y="424" width="276" height="25" fill="#fff"/>
+<text x="740.0" y="443" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">  &quot;inputSchema&quot;: {…}}]}</text>
+<line x1="400" y1="490" x2="724" y2="490" stroke="#2690e7" stroke-width="3" marker-end="url(#m-blue)"/>
+<rect x="410" y="456" width="311" height="29" fill="#fff"/>
+<text x="565.0" y="478" font-size="22" font-weight="600" fill="#2690e7">4 · Chat completion request</text>
+<rect x="335" y="501" width="460" height="25" fill="#fff"/>
+<text x="565.0" y="520" font-size="19" font-style="italic" font-weight="normal" fill="#222">system prompt + history + user msg + tools list</text>
+<line x1="730" y1="580" x2="406" y2="580" stroke="#2690e7" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-blue)"/>
+<rect x="437" y="546" width="256" height="29" fill="#fff"/>
+<text x="565.0" y="568" font-size="22" font-weight="600" fill="#2690e7">5 · Invocation request</text>
+<rect x="279" y="591" width="573" height="25" fill="#fff"/>
+<text x="565.0" y="610" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">{&quot;tool&quot;: &quot;get_current_datetime&quot;, &quot;arguments&quot;: {}}</text>
+<line x1="400" y1="670" x2="1074" y2="670" stroke="#3a9a5b" stroke-width="3" marker-end="url(#m-green)"/>
+<rect x="628" y="636" width="223" height="29" fill="#fff"/>
+<text x="740.0" y="658" font-size="22" font-weight="600" fill="#3a9a5b">6 · MCP: tools/call</text>
+<rect x="454" y="681" width="573" height="25" fill="#fff"/>
+<text x="740.0" y="700" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">{&quot;name&quot;: &quot;get_current_datetime&quot;, &quot;arguments&quot;: {}}</text>
+<line x1="1080" y1="760" x2="1424" y2="760" stroke="#e7a626" stroke-width="3" marker-end="url(#m-orange)"/>
+<rect x="1078" y="726" width="355" height="29" fill="#fff"/>
+<text x="1255.0" y="748" font-size="22" font-weight="600" fill="#e7a626">7 · HTTP request: GET /datetime</text>
+<line x1="1430" y1="835" x2="1086" y2="835" stroke="#7e57c2" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-purple)"/>
+<rect x="1154" y="801" width="201" height="29" fill="#fff"/>
+<text x="1255.0" y="823" font-size="22" font-weight="600" fill="#7e57c2">8 · HTTP response</text>
+<rect x="1043" y="846" width="424" height="25" fill="#fff"/>
+<text x="1255.0" y="865" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">{&quot;datetime&quot;: &quot;2025-05-22T10:15:30Z&quot;}</text>
+<line x1="1080" y1="925" x2="406" y2="925" stroke="#3a9a5b" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-green)"/>
+<rect x="618" y="891" width="245" height="29" fill="#fff"/>
+<text x="740.0" y="913" font-size="22" font-weight="600" fill="#3a9a5b">9 · MCP: tools/result</text>
+<rect x="534" y="936" width="413" height="25" fill="#fff"/>
+<text x="740.0" y="955" font-size="19" font-family="Menlo, Consolas, monospace" font-weight="normal" fill="#222">{&quot;content&quot;: &quot;2025-05-22T10:15:30Z&quot;}</text>
+<line x1="400" y1="1015" x2="724" y2="1015" stroke="#2690e7" stroke-width="3" marker-end="url(#m-blue)"/>
+<rect x="404" y="981" width="322" height="29" fill="#fff"/>
+<text x="565.0" y="1003" font-size="22" font-weight="600" fill="#2690e7">10 · Chat completion request</text>
+<rect x="406" y="1026" width="318" height="25" fill="#fff"/>
+<text x="565.0" y="1045" font-size="19" font-style="italic" font-weight="normal" fill="#222">with the tool result in messages</text>
+<line x1="730" y1="1105" x2="406" y2="1105" stroke="#2690e7" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-blue)"/>
+<rect x="398" y="1071" width="333" height="29" fill="#fff"/>
+<text x="565.0" y="1093" font-size="22" font-weight="600" fill="#2690e7">11 · Chat completion response</text>
+<rect x="287" y="1116" width="556" height="25" fill="#fff"/>
+<text x="565.0" y="1135" font-size="19" font-style="italic" font-weight="normal" fill="#222">“The current date and time is May 22, 2025 10:15:30 UTC.”</text>
+<line x1="400" y1="1190" x2="106" y2="1190" stroke="#555" stroke-width="3" stroke-dasharray="10,7" marker-end="url(#m-grey)"/>
+<rect x="84" y="1156" width="333" height="29" fill="#fff"/>
+<text x="250.0" y="1178" font-size="22" font-weight="600" fill="#555">12 · Final answer to the user</text>
+<line x1="140" y1="1255" x2="190" y2="1255" stroke="#2690e7" stroke-width="4"/>
+<text x="202" y="1262" font-size="20" text-anchor="start">Agent ↔ LLM</text>
+<line x1="440" y1="1255" x2="490" y2="1255" stroke="#3a9a5b" stroke-width="4"/>
+<text x="502" y="1262" font-size="20" text-anchor="start">Agent ↔ MCP (tools)</text>
+<line x1="740" y1="1255" x2="790" y2="1255" stroke="#e7a626" stroke-width="4"/>
+<text x="802" y="1262" font-size="20" text-anchor="start">MCP → External tool</text>
+<line x1="1040" y1="1255" x2="1090" y2="1255" stroke="#7e57c2" stroke-width="4"/>
+<text x="1102" y="1262" font-size="20" text-anchor="start">External tool response</text>
+<text x="20" y="1262" font-size="20" font-weight="600" text-anchor="start">Legend:</text>
+<text x="1590" y="1262" font-size="18" font-style="italic" fill="#555" text-anchor="end">dashed = response</text>
+<rect x="20" y="1285" width="375" height="95" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+<text x="207" y="1314" font-size="22" font-weight="600">LLM is the mind</text>
+<text x="207" y="1341" font-size="19">reasons and decides</text>
+<text x="207" y="1365" font-size="19">which tools to use</text>
+<rect x="415" y="1285" width="375" height="95" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+<text x="602" y="1314" font-size="22" font-weight="600">Agent is the body</text>
+<text x="602" y="1341" font-size="19">orchestrates, enforces</text>
+<text x="602" y="1365" font-size="19">policies, and executes</text>
+<rect x="810" y="1285" width="375" height="95" rx="12" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="3"/>
+<text x="997" y="1314" font-size="22" font-weight="600">Tools extend capabilities</text>
+<text x="997" y="1341" font-size="19">real-world actions performed</text>
+<text x="997" y="1365" font-size="19">by external systems</text>
+<rect x="1205" y="1285" width="375" height="95" rx="12" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/>
+<text x="1392" y="1314" font-size="22" font-weight="600">MCP is the bridge</text>
+<text x="1392" y="1341" font-size="19">a standard way to</text>
+<text x="1392" y="1365" font-size="19">connect agents to tools</text>
+</svg>

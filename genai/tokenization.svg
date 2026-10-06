@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 720" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="800" y="45" font-size="24" font-style="italic" fill="#555" text-anchor="middle">text</text>
+  <g font-size="30" font-family="Menlo, Consolas, monospace">
+    <rect x="269" y="70" width="108" height="46" fill="#2690e7" fill-opacity="0.25"/>
+    <text x="269" y="103" xml:space="preserve">Albert</text>
+    <rect x="377" y="70" width="162" height="46" fill="#e7a626" fill-opacity="0.25"/>
+    <text x="377" y="103" xml:space="preserve"> Einstein</text>
+    <rect x="539" y="70" width="36" height="46" fill="#3a9a5b" fill-opacity="0.25"/>
+    <text x="539" y="103" xml:space="preserve"> (</text>
+    <rect x="575" y="70" width="36" height="46" fill="#bd2b0b" fill-opacity="0.25"/>
+    <text x="575" y="103" xml:space="preserve">14</text>
+    <rect x="611" y="70" width="108" height="46" fill="#7e57c2" fill-opacity="0.25"/>
+    <text x="611" y="103" xml:space="preserve"> March</text>
+    <rect x="719" y="70" width="18" height="46" fill="#2690e7" fill-opacity="0.25"/>
+    <text x="719" y="103" xml:space="preserve"> </text>
+    <rect x="737" y="70" width="54" height="46" fill="#e7a626" fill-opacity="0.25"/>
+    <text x="737" y="103" xml:space="preserve">187</text>
+    <rect x="791" y="70" width="18" height="46" fill="#3a9a5b" fill-opacity="0.25"/>
+    <text x="791" y="103" xml:space="preserve">9</text>
+    <rect x="809" y="70" width="54" height="46" fill="#bd2b0b" fill-opacity="0.25"/>
+    <text x="809" y="103" xml:space="preserve">...</text>
+    <rect x="863" y="70" width="72" height="46" fill="#7e57c2" fill-opacity="0.25"/>
+    <text x="863" y="103" xml:space="preserve"> the</text>
+    <rect x="935" y="70" width="126" height="46" fill="#2690e7" fill-opacity="0.25"/>
+    <text x="935" y="103" xml:space="preserve"> theory</text>
+    <rect x="1061" y="70" width="54" height="46" fill="#e7a626" fill-opacity="0.25"/>
+    <text x="1061" y="103" xml:space="preserve"> of</text>
+    <rect x="1115" y="70" width="108" height="46" fill="#3a9a5b" fill-opacity="0.25"/>
+    <text x="1115" y="103" xml:space="preserve"> relat</text>
+    <rect x="1223" y="70" width="90" height="46" fill="#bd2b0b" fill-opacity="0.25"/>
+    <text x="1223" y="103" xml:space="preserve">ivity</text>
+    <rect x="1313" y="70" width="18" height="46" fill="#7e57c2" fill-opacity="0.25"/>
+    <text x="1313" y="103" xml:space="preserve">.</text>
+  </g>
+  <text x="50" y="580" font-size="24" font-style="italic" fill="#555">tokens (with their IDs in the vocabulary)</text>
+  <g text-anchor="middle">
+    <text x="96" y="472" font-size="20" fill="#555">Albert</text>
+    <rect x="50" y="485" width="92" height="50" rx="10" fill="#2690e7" fill-opacity="0.2" stroke="#2690e7" stroke-width="3"/>
+    <text x="96" y="518" font-size="19" font-family="Menlo, Consolas, monospace">158205</text>
+    <text x="196" y="472" font-size="20" fill="#555">Einstein</text>
+    <rect x="150" y="485" width="92" height="50" rx="10" fill="#e7a626" fill-opacity="0.2" stroke="#e7a626" stroke-width="3"/>
+    <text x="196" y="518" font-size="19" font-family="Menlo, Consolas, monospace">83400</text>
+    <text x="296" y="472" font-size="20" fill="#555">(</text>
+    <rect x="250" y="485" width="92" height="50" rx="10" fill="#3a9a5b" fill-opacity="0.2" stroke="#3a9a5b" stroke-width="3"/>
+    <text x="296" y="518" font-size="19" font-family="Menlo, Consolas, monospace">350</text>
+    <text x="396" y="472" font-size="20" fill="#555">14</text>
+    <rect x="350" y="485" width="92" height="50" rx="10" fill="#bd2b0b" fill-opacity="0.2" stroke="#bd2b0b" stroke-width="3"/>
+    <text x="396" y="518" font-size="19" font-family="Menlo, Consolas, monospace">1265</text>
+    <text x="496" y="472" font-size="20" fill="#555">March</text>
+    <rect x="450" y="485" width="92" height="50" rx="10" fill="#7e57c2" fill-opacity="0.2" stroke="#7e57c2" stroke-width="3"/>
+    <text x="496" y="518" font-size="19" font-family="Menlo, Consolas, monospace">7561</text>
+    <text x="596" y="472" font-size="20" fill="#555">[space]</text>
+    <rect x="550" y="485" width="92" height="50" rx="10" fill="#2690e7" fill-opacity="0.2" stroke="#2690e7" stroke-width="3"/>
+    <text x="596" y="518" font-size="19" font-family="Menlo, Consolas, monospace">220</text>
+    <text x="696" y="472" font-size="20" fill="#555">187</text>
+    <rect x="650" y="485" width="92" height="50" rx="10" fill="#e7a626" fill-opacity="0.2" stroke="#e7a626" stroke-width="3"/>
+    <text x="696" y="518" font-size="19" font-family="Menlo, Consolas, monospace">14780</text>
+    <text x="796" y="472" font-size="20" fill="#555">9</text>
+    <rect x="750" y="485" width="92" height="50" rx="10" fill="#3a9a5b" fill-opacity="0.2" stroke="#3a9a5b" stroke-width="3"/>
+    <text x="796" y="518" font-size="19" font-family="Menlo, Consolas, monospace">24</text>
+    <text x="896" y="472" font-size="20" fill="#555">...</text>
+    <rect x="850" y="485" width="92" height="50" rx="10" fill="#bd2b0b" fill-opacity="0.2" stroke="#bd2b0b" stroke-width="3"/>
+    <text x="896" y="518" font-size="19" font-family="Menlo, Consolas, monospace">1008</text>
+    <text x="996" y="472" font-size="20" fill="#555">the</text>
+    <rect x="950" y="485" width="92" height="50" rx="10" fill="#7e57c2" fill-opacity="0.2" stroke="#7e57c2" stroke-width="3"/>
+    <text x="996" y="518" font-size="19" font-family="Menlo, Consolas, monospace">290</text>
+    <text x="1096" y="472" font-size="20" fill="#555">theory</text>
+    <rect x="1050" y="485" width="92" height="50" rx="10" fill="#2690e7" fill-opacity="0.2" stroke="#2690e7" stroke-width="3"/>
+    <text x="1096" y="518" font-size="19" font-family="Menlo, Consolas, monospace">17346</text>
+    <text x="1196" y="472" font-size="20" fill="#555">of</text>
+    <rect x="1150" y="485" width="92" height="50" rx="10" fill="#e7a626" fill-opacity="0.2" stroke="#e7a626" stroke-width="3"/>
+    <text x="1196" y="518" font-size="19" font-family="Menlo, Consolas, monospace">328</text>
+    <text x="1296" y="472" font-size="20" fill="#555">relat</text>
+    <rect x="1250" y="485" width="92" height="50" rx="10" fill="#3a9a5b" fill-opacity="0.2" stroke="#3a9a5b" stroke-width="3"/>
+    <text x="1296" y="518" font-size="19" font-family="Menlo, Consolas, monospace">37575</text>
+    <text x="1396" y="472" font-size="20" fill="#555">ivity</text>
+    <rect x="1350" y="485" width="92" height="50" rx="10" fill="#bd2b0b" fill-opacity="0.2" stroke="#bd2b0b" stroke-width="3"/>
+    <text x="1396" y="518" font-size="19" font-family="Menlo, Consolas, monospace">2409</text>
+    <text x="1496" y="472" font-size="20" fill="#555">.</text>
+    <rect x="1450" y="485" width="92" height="50" rx="10" fill="#7e57c2" fill-opacity="0.2" stroke="#7e57c2" stroke-width="3"/>
+    <text x="1496" y="518" font-size="19" font-family="Menlo, Consolas, monospace">13</text>
+  </g>
+  <!-- annotations -->
+  <g font-size="24">
+    <text x="50" y="215">spaces can be tokenised on their own</text>
+    <text x="50" y="245">(or as part of a sequence of characters)</text>
+    <text x="800" y="245" text-anchor="middle">numbers can even be split in 2 tokens</text>
+    <text x="1550" y="215" text-anchor="end">3 dots together are one token,</text>
+    <text x="1550" y="245" text-anchor="end">but 1 dot alone is 1 token</text>
+    <text x="1346" y="660" text-anchor="middle">words can be split in 2 tokens</text>
+  </g>
+  <g stroke="#555" stroke-width="3" fill="none">
+    <path d="M200,260 Q196,330 196,445" marker-end="url(#arrow)"/>
+    <path d="M330,260 Q596,300 596,445" marker-end="url(#arrow)"/>
+    <path d="M666,440 Q746,400 826,440"/>
+    <path d="M746,262 L746,410" marker-end="url(#arrow)"/>
+    <path d="M1250,260 Q896,300 896,445" marker-end="url(#arrow)"/>
+    <path d="M1450,260 Q1496,330 1496,445" marker-end="url(#arrow)"/>
+    <path d="M1256,550 Q1346,590 1436,550"/>
+    <path d="M1346,572 L1346,630" marker-end="url(#arrow)"/>
+  </g>
+</svg>

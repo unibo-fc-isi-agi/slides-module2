@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -65,7 +65,7 @@
 
 
 
-<img src="./foundation-models.png" alt="Foundation models concept" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+<img src="./foundation-models.svg" alt="Foundation models concept" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
 
 </section><section>
 <h2 id="terminology-foundation-models-vs-large-language-models"><strong>Terminology</strong>: Foundation Models vs. <em>Large Language Models</em></h2>
@@ -76,24 +76,24 @@
 
 <a href="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404">
 
-<img src="./fm-vs-llm.webp" alt="Venn diagram explaining how LLMs are a specific case of foundation models" style="width: 80%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./fm-vs-llm.svg" alt="Venn diagram explaining how LLMs are a specific case of foundation models" style="width: 80%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
 
 </a>
 
 </section><section>
 <h2 id="basic-operation-of-llms">Basic Operation of LLMs</h2>
-<!-- ![Next word prediction](./next-word-prediction.png) -->
 
 
 
 
 
-<img src="./next-word-prediction.png" alt="Next word prediction concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./next-word-prediction.svg" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
 
 <ul>
-<li>LLMs have learned to <strong>predict</strong> the <em>next word</em> in a <em>text</em> given the <em>previous context</em>
+<li>LLMs have learned to <strong>predict</strong> the <em>next word</em> (actually, <em>token</em>) in a <em>text</em> given the <em>previous context</em>
 <ul>
 <li>similar to the <em>predictive</em> keyboard on mobile phones, but much more <em>complex</em> and <em>powerful</em></li>
+<li>the next token is <strong>sampled</strong> from the predicted distribution: the <em>temperature</em> parameter controls how <em>random</em> the choice is</li>
 </ul>
 </li>
 <li>In other words, LLMs have learned how to use <strong>natural language</strong></li>
@@ -103,6 +103,33 @@
 </ul>
 </li>
 <li>This makes them very good at dealing with <strong>unstructured</strong> data, either in input or output</li>
+</ul>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="tokens">
+  
+<h2 id="about-tokens">About Tokens</h2>
+<ul>
+<li>LLMs do not process <em>characters</em> nor <em>words</em>, but <strong>tokens</strong>: chunks of text, as defined by the model’s <a href="https://huggingface.co/learn/llm-course/chapter2/4">tokenizer</a>
+<ul>
+<li>you may think that <strong>token $\approx$ word</strong>, but this actually depends on the specific tokenization algorithm</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+<img src="./tokenization.svg" alt="Example of how a sentence is split into tokens" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+
+<ul>
+<li>Tokens are the <strong>unit of measure</strong> for LLMs:
+<ul>
+<li>the <em>context window</em> is the maximum number of tokens a model can process in a single request (cf. <a href="../prompting/#/context-management">context management</a>)</li>
+<li>the <em>cost</em> of using LLMs as services is commonly <em>per token</em> (cf. <a href="../llmaas/#/open-router">Open Router</a>)</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h2 id="language-and-reasoning">Language and Reasoning</h2>
@@ -127,19 +154,25 @@
 <ul>
 <li>
 <p>$\implies$ LLMs can be very confident in themselves, while saying <em>incorrect</em>, <em>imprecise</em>, or <em>made-up</em> things</p>
+<ul>
+<li>a.k.a. <strong>hallucinations</strong></li>
+</ul>
 </li>
 <li>
 <p>better would be to combine LLMs with <strong>symbolic</strong> AI tools, to get the best of both worlds</p>
 </li>
 </ul>
-</section><section>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="dual-system">
+  
 <h2 id="analogy-with-dual-system-theory">Analogy with Dual-System theory</h2>
 
 
 
 
 
-<img src="./dual-system.png" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 90vh; object-fit: contain;">
+<img src="./dual-system.svg" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 90vh; object-fit: contain;">
 
 <p>(cf. <a href="https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow">Thinking, Fast and Slow</a>)</p>
 </section><section>
@@ -166,7 +199,7 @@
 <p><strong>Consumption</strong> is measured based on the <em>computational effort</em> required to serve the request:</p>
 <ul>
 <li>processed <em>tokens</em> (for text)</li>
-<li>number of <em>requests</em> made per unit of time (minute, hour, day, month)</li>
+<li>number of <em>requests</em> (often also subject to <strong>rate limits</strong>, e.g. max requests per minute or day)</li>
 <li><em>size</em> of the processed data (for images, audio, video)</li>
 <li><em>complexity</em> of the specific <em>model</em> used to serve the request</li>
 </ul>
@@ -238,7 +271,12 @@
 <ul>
 <li><strong>Recent</strong> information may <u>not</u> have been <em>learned</em> yet</li>
 <li>There is a risk of receiving <strong>outdated</strong> or <em>incomplete</em> answers from GenAI</li>
-<li>GenAI gives the <em>impression</em> of learning <strong>during the conversation</strong>, but it actually does so <em>offline</em></li>
+<li>GenAI gives the <em>impression</em> of learning <strong>during the conversation</strong>, but its <em>weights</em> are only updated <em>offline</em>
+<ul>
+<li>within a conversation, it just re-reads the <em>whole history</em> at each turn (cf. <a href="../llmaas/#/chat-completion-concept">stateless APIs</a>)</li>
+<li>“<em>memory</em>” features of chat apps store notes about the user, and put them back into the <em>context</em> of later conversations</li>
+</ul>
+</li>
 </ul>
 </blockquote>
 </span>
@@ -274,9 +312,14 @@
 <li><em>Conversational</em>: e.g. <a href="https://chatgpt.com/">ChatGPT</a>, <a href="https://claude.ai/login?returnTo=%2F%3F">Claude</a>, <a href="https://scite.ai">Scite</a></li>
 <li><em>Auto-completion</em>: e.g. <a href="https://github.com/features/copilot">GitHub Copilot</a></li>
 <li><em>Programmatic</em>: e.g. <a href="https://openai.com/api/">OpenAI Platform</a>, <a href="https://huggingface.co/">Hugging Face</a></li>
-<li><em>In-App</em>: e.g. <a href="https://www.microsoft.com/it-it/microsoft-365/copilot?market=it">Microsoft 365 Copilot</a></li>
+<li><em>In-App</em>: e.g. <a href="https://www.microsoft.com/en-us/microsoft-365/copilot">Microsoft 365 Copilot</a></li>
 <li><em>Audio/video editing</em>: e.g. <a href="https://suno.com/">Suno</a>, <a href="https://runwayml.com/">Runway</a></li>
-<li><em>Inspection of generated material</em>: e.g. <a href="https://gptzero.me/">GPTZero</a>, <a href="https://www.zerogpt.com/">ZeroGPT</a></li>
+<li><em>Inspection of generated material</em>: e.g. <a href="https://gptzero.me/">GPTZero</a>, <a href="https://www.zerogpt.com/">ZeroGPT</a>
+<ul>
+<li><span style="color: red;">unreliable</span>: OpenAI itself <a href="https://techcrunch.com/2023/07/25/openai-scuttles-ai-written-text-detector-over-low-rate-of-accuracy/">withdrew</a> its AI-text classifier, due to its low accuracy</li>
+</ul>
+</li>
+<li><em>Agentic</em>: e.g. <a href="https://code.claude.com/docs">Claude Code</a>, <a href="https://github.com/openai/codex">Codex</a>, <a href="https://openclaw.ai">OpenClaw</a></li>
 </ul>
 <p><span style="color: red;">Non-exhaustive list!</span></p>
 </section><section>
@@ -354,26 +397,26 @@
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div class="col col-6" style="text-align: left;"><img src="./logo-openai.svg" alt="OpenAI logo" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">asyncio</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">AsyncOpenAI</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">OpenAI</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">AsyncOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"sk-1234567890abcdef1234567890abcdef"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">()</span>  <span style="color:#8f5902;font-style:italic"># reads the API key from the OPENAI_API_KEY env variable</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">():</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">await</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"gpt-4"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>                 <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"European countries, one by line"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">],</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">chunk</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">", "</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">asyncio</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">main</span><span style="color:#000;font-weight:bold">())</span>
-</span></span></code></pre></div><p>Output:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Kosovo, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Moldova, Monaco, Montenegro, Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Russia, San Marino, Serbia, Slovakia, Slovenia, Spain, Sweden, Switzerland, Turkey, Ukraine, United Kingdom, Vatican City (Holy See),
+</span></span><span style="display:flex;"><span><span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"gpt-5-mini"</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"European countries, one by line"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># receive the response token by token</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">chunk</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>Output (excerpt, may vary):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Albania
+</span></span><span style="display:flex;"><span>Andorra
+</span></span><span style="display:flex;"><span>Austria
+</span></span><span style="display:flex;"><span>Belarus
+</span></span><span style="display:flex;"><span>Belgium
+</span></span><span style="display:flex;"><span>...
 </span></span></code></pre></div></div>
 <div class="col " style="text-align: left;"><ul>
 <li>
@@ -458,7 +501,7 @@
 <span class="fragment ">
   <h3 id="attention">Attention…</h3>
 <ul>
-<li>… <strong>subscription</strong> pricing model (see <a href="https://www.microsoft.com/it-it/microsoft-365/copilot?market=it#plans">here</a>)</li>
+<li>… <strong>subscription</strong> pricing model (see <a href="https://www.microsoft.com/en-us/microsoft-365/copilot#plans">here</a>)</li>
 <li>… potential <strong>leaks</strong> of <em>sensitive</em> information</li>
 <li>… non-negligible <strong>lock-in</strong> risk</li>
 </ul>
@@ -507,7 +550,312 @@
 </div>
 </div>
 </section><section>
-<h2 id="what-do-engineers-do-with-genai">What do engineers do with GenAI?</h2>
+<h2 id="agentic-interface"><strong>Agentic</strong> interface</h2>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./claude-code.png" alt="A Claude Code session in a terminal: the agent reads files and runs commands to answer the user's request" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+</div>
+<div class="col " style="text-align: left;"><br>
+<ul>
+<li>The user assigns a <strong>goal</strong> (a <em>task</em>), not just a question</li>
+<li>The AI works in a <strong>loop</strong>: <em>plan</em> → <em>act</em> → <em>observe</em> → repeat
+<ul>
+<li><em>reads</em> files, <em>runs</em> commands, <em>edits</em> code, <em>searches</em> the Web</li>
+</ul>
+</li>
+<li>It operates within a <strong>workspace</strong>
+<ul>
+<li>e.g. a repository, the file system, a shell (<em>locally</em> or in a <em>cloud sandbox</em>)</li>
+</ul>
+</li>
+<li>The user <strong>supervises</strong>
+<ul>
+<li><em>approves</em> actions, <em>interrupts</em>, <em>reviews</em> the changes</li>
+</ul>
+</li>
+<li>Many front-ends: <em>CLI</em>, <em>IDE</em>, <em>desktop</em>, <em>web</em>, even <em>messaging apps</em></li>
+</ul>
+<span class="fragment ">
+  <h3 id="attention">Attention…</h3>
+<ul>
+<li>… <strong>side effects</strong>: it acts on <em>your</em> machine (e.g. deleted files, leaked secrets)</li>
+<li>… <strong>prompt injection</strong> via the files and Web pages it reads</li>
+<li>… heavy <strong>token consumption</strong> (subscription or usage-based pricing)</li>
+<li>… <strong>review</strong> burden and risk of <em>over-reliance</em></li>
+<li>… non-negligible <strong>lock-in</strong> risk</li>
+</ul>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="agentic-interfaces-the-landscape"><strong>Agentic</strong> interfaces: the landscape</h2>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>Vendor</th>
+					<th>Front-ends</th>
+					<th>Models</th>
+					<th>License</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://code.claude.com/docs">Claude Code</a></td>
+					<td>Anthropic</td>
+					<td>CLI, IDE, desktop, web</td>
+					<td>Claude</td>
+					<td>proprietary</td>
+			</tr>
+			<tr>
+					<td><a href="https://github.com/openai/codex">Codex</a></td>
+					<td>OpenAI</td>
+					<td>CLI, IDE, desktop, web</td>
+					<td>GPT</td>
+					<td>Apache-2.0 (CLI)</td>
+			</tr>
+			<tr>
+					<td><a href="https://github.com/openclaw/openclaw">OpenClaw</a></td>
+					<td>OpenClaw Foundation</td>
+					<td>self-hosted, messaging apps (WhatsApp, Telegram, Slack, …)</td>
+					<td>any (hosted or local)</td>
+					<td>MIT</td>
+			</tr>
+			<tr>
+					<td><a href="https://cursor.com">Cursor</a>, <a href="https://github.com/features/copilot">Copilot</a> (agent mode)</td>
+					<td>Anysphere, GitHub</td>
+					<td>IDE</td>
+					<td>various</td>
+					<td>proprietary</td>
+			</tr>
+	</tbody>
+</table>
+
+
+<span class="fragment ">
+  <h3 id="common-anatomy">Common anatomy</h3>
+<ul>
+<li>An LLM + <strong>tools</strong> (shell, files, Web) + a <strong>loop</strong> $\Rightarrow$ an <em>agent</em></li>
+<li>Project-specific instructions in Markdown files (e.g. <code>CLAUDE.md</code>, <a href="https://agents.md"><code>AGENTS.md</code></a>)</li>
+<li>Extensible via <a href="https://modelcontextprotocol.io"><strong>MCP</strong></a> servers, <strong>skills</strong>, and <strong>hooks</strong></li>
+<li><strong>Permission</strong> modes: from “ask before every action” to “fully autonomous”</li>
+</ul>
+
+</span>
+
+
+
+<span class="fragment ">
+  <p>These are themselves <strong>LLM-based agentic software</strong>: the kind of system this module teaches you to <em>build</em></p>
+
+</span>
+
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="genai-uses">
+<h2 id="customers-buy-automation-not-agents">Customers buy <strong>automation</strong>, not agents</h2>
+<blockquote>
+<p>Why do people care about software in the first place? (cf. <a href="https://unibo-dtm-se.github.io/course-slides/se-intro/">Introduction to Software Engineering</a>)</p>
+</blockquote>
+<ul>
+<li>
+<p>Most people do <em>not</em> care about algorithms, software, or agents <em>per se</em>…</p>
+</li>
+<li>
+<p>… they care about <strong>automating</strong> the <em>solutions</em> to their <em>problems</em></p>
+<ul>
+<li>algorithms, software, and now <em>agents</em> are just <strong>means</strong> to that end</li>
+</ul>
+</li>
+<li>
+<p><em>Classic</em> software automates problems which are <em>repetitive</em> and <em>structured</em> enough to be <strong>coded</strong></p>
+</li>
+<li>
+<p>GenAI <strong>widens</strong> the set of <em>automatable</em> problems</p>
+<ul>
+<li>to problems which are <em>linguistic</em>, <em>ill-defined</em>, or about <em>unstructured</em> data</li>
+<li>i.e. problems which are <strong>hard to code</strong> explicitly</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="corollary">Corollary</h3>
+<ul>
+<li><em>Autonomy</em> is a <strong>cost</strong> (risks, testing, governance), not a goal</li>
+<li>Aim for the <strong>least autonomy</strong> that gets the job done (cf. <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a>)</li>
+</ul>
+</span>
+</section><section>
+<h2 id="three-ways-engineers-exploit-genai">Three ways engineers exploit GenAI</h2>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col col-7" style="text-align: left;"><img src="./genai-uses-venn.svg" alt="Venn diagram: (1) coding assistants and co-pilots, (2) automating hard-to-code tasks, (3) agents in products; all intersections are possible" style="width: 100%; max-width: 95vw; max-height: 75vh; object-fit: contain;">
+</div>
+<div class="col " style="text-align: left;"><ol>
+<li>As <strong>coding assistants</strong> and <em>co-pilots</em>
+<ul>
+<li>GenAI helps engineers <em>build</em> the software</li>
+</ul>
+</li>
+<li>To <strong>automate</strong> activities which would otherwise be <em>hard to code</em>
+<ul>
+<li>GenAI is a <em>step</em> in a flow decided by the developers</li>
+</ul>
+</li>
+<li>To create <strong>agents</strong> for software <em>products</em>
+<ul>
+<li>GenAI <em>decides</em> (part of) the flow, increasing the product’s <em>autonomy</em></li>
+</ul>
+</li>
+</ol>
+<span class="fragment ">
+  <ul>
+<li>(1) is about the <strong>process</strong> (<em>dev-time</em>): the product may contain no AI at all</li>
+<li>(2) and (3) are about the <strong>product</strong> (<em>run-time</em>)
+<ul>
+<li>they are <em>ends</em> of a <strong>spectrum</strong>: <em>who controls the flow</em>?</li>
+<li>the <em>developer’s code</em> (<strong>workflow</strong>) vs. the <em>LLM</em> (<strong>agent</strong>)</li>
+</ul>
+</li>
+</ul>
+</span>
+<span class="fragment ">
+  <p><span style="color: red;">Not mutually exclusive!</span></p>
+</span>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="each-dimension-on-its-own">Each dimension on its own</h2>
+<ul>
+<li>
+<p>(1) only: <strong>coding</strong> an <em>ordinary</em> Web application (no AI inside) with the help of <em>Claude Code</em></p>
+<ul>
+<li>cf. <a href="#/interfaces">agentic interfaces</a></li>
+<li>GenAI <em>speeds up</em> development, yet the final product is <em>classic</em> software</li>
+</ul>
+</li>
+<li>
+<p>(2) only: a script which <strong>extracts</strong> <em>structured</em> data from <em>recommendation letters</em></p>
+<ul>
+<li>the steps are <em>fixed</em> in code (read letter $\rightarrow$ prompt LLM $\rightarrow$ validate output $\rightarrow$ store)</li>
+<li>the LLM is <em>one step</em> among many: it does <em>not</em> decide what to do next</li>
+</ul>
+</li>
+<li>
+<p>(3) only: a customer-support <strong>chatbot</strong> which <em>decides</em> which tools to call (e.g. look up orders, open tickets)</p>
+<ul>
+<li>the LLM <em>chooses</em> the next action, based on the conversation</li>
+<li>the product gains <em>autonomy</em>, and so does its <em>risk profile</em></li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="how-the-dimensions-combine">How the dimensions <strong>combine</strong></h2>
+<table>
+	<thead>
+			<tr>
+					<th>Combination</th>
+					<th>Example</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>(1) + (2)</td>
+					<td>the letter-extraction script, written with a <em>coding assistant</em></td>
+			</tr>
+			<tr>
+					<td>(2) + (3)</td>
+					<td>an agent whose <em>tools</em> are themselves LLM-based <em>workflows</em> (e.g. the <a href="#/genai-workflow">tender example</a>)</td>
+			</tr>
+			<tr>
+					<td>(1) + (3)</td>
+					<td>an agentic <em>product</em> built with a <em>coding agent</em></td>
+			</tr>
+			<tr>
+					<td>(1) + (2) + (3)</td>
+					<td>an assistant for a PhD admission committee: <em>workflows</em> to extract data from candidates’ documents, an <em>agent</em> to answer the committee’s questions, all <em>coded</em> with a coding agent</td>
+			</tr>
+	</tbody>
+</table>
+<span class="fragment ">
+  <h3 id="twist">Twist</h3>
+<ul>
+<li>One team’s (1) is another team’s (3)
+<ul>
+<li><em>Claude Code</em> is a <strong>tool</strong> for its users (1)…</li>
+<li>… and an agentic <strong>product</strong> for Anthropic (3)</li>
+</ul>
+</li>
+</ul>
+</span>
+</section><section>
+<h2 id="from-language-to-action">From <strong>language</strong> to <strong>action</strong></h2>
+<ul>
+<li>
+<p>An LLM produces <strong>text</strong>, not <em>action</em></p>
+<ul>
+<li>action requires <em>software</em> which <em>maps</em> text onto <em>operations</em></li>
+<li>e.g. <code>Book the train to Lisbon</code> is just text…</li>
+<li>… until software maps it onto <em>search</em>, <em>booking</em>, <em>payment</em>, and <em>confirmation</em> steps</li>
+</ul>
+</li>
+<li>
+<p>Are LLMs <em>agents</em>? Not really, not fully, not <strong>by themselves</strong></p>
+<ul>
+<li>they do not <em>perceive</em> nor <em>act</em> on environments directly</li>
+<li>they do not <em>persistently</em> manage <em>goals</em> and <em>state</em></li>
+</ul>
+</li>
+<li>
+<p>In both (2) and (3), the “agent” is mostly the <strong>surrounding software</strong></p>
+<ul>
+<li><em>agent</em> $\approx$ <em>controller</em> + <em>LLM</em> + <em>tools</em> + <em>memory</em> + <em>policies</em></li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="intelligence-vs-autonomy-vs-agency-are-separable-dimensions-cf-floridi-2025"><em>Intelligence</em> vs. <em>autonomy</em> vs. <em>agency</em> are <strong>separable</strong> dimensions (cf. <a href="https://doi.org/10.1007/s13347-025-00858-9">Floridi, 2025</a>)</h3>
+<ul>
+<li>What can the system <strong>do</strong>? (<em>agency</em>)</li>
+<li>Who <strong>controls</strong> <em>when</em> and <em>why</em> it does it? (<em>autonomy</em>)</li>
+<li>What <strong>state</strong> does it actually <em>change</em>?</li>
+</ul>
+</span>
+</section><section>
+<h2 id="language-is-a-weak-substrate-for-agency">Language is a <strong>weak substrate</strong> for agency</h2>
+<ul>
+<li>Natural language is <em>expressive</em> and <em>flexible</em>…
+<ul>
+<li>useful for <em>vague</em> goals, <em>exceptions</em>, <em>preferences</em>, and <em>explanations</em></li>
+</ul>
+</li>
+<li>… but also <em>ambiguous</em> and <em>underspecified</em>
+<ul>
+<li><em>fluent</em> text may be plausible but <strong>false</strong></li>
+<li><em>confident</em> text may be <strong>non-executable</strong></li>
+<li>e.g. <code>get approval, then submit</code> hides <em>who</em> approves, <em>how</em> approval is checked, and <em>what</em> submission changes</li>
+</ul>
+</li>
+</ul>
+<span class="fragment ">
+  <h3 id="hence-llms-propose-software-verifies">Hence: LLMs <strong>propose</strong>, software <strong>verifies</strong></h3>
+<ul>
+<li>Treat LLM outputs as <strong>candidate</strong> artefacts (plans, classifications, explanations)…</li>
+<li>… to be <em>checked</em> by external components: <em>validators</em>, <em>tests</em>, <em>policy checkers</em>, <em>humans</em>
+<ul>
+<li>cf. the <em>LLM-Modulo</em> framework (<a href="https://proceedings.mlr.press/v235/kambhampati24a.html">Kambhampati et al., 2024</a>)</li>
+<li>recall the <a href="#/dual-system">dual-system</a> analogy: fast <em>intuition</em> + slow <em>checking</em></li>
+</ul>
+</li>
+</ul>
+</span>
+
+</section>
+</section><section>
+<h2 id="what-can-genai-do-inside-software-dimensions-23">What can GenAI do <strong>inside</strong> software? (dimensions 2–3)</h2>
 <p>Combine <em>prompts</em>, <em>tools</em>, <em>vector stores</em>, and <em>agents</em> to constrain and govern the behavior of <strong>pre-trained</strong> (<em>foundation</em>) models, in order to:</p>
 <ul>
 <li><strong>generate</strong> contents (text, images, code, etc.) for a specific purpose
@@ -539,9 +887,10 @@
 <h2 id="lets-explain-the-nomenclature">Let’s explain the nomenclature</h2>
 <ul>
 <li>
-<p><strong><u>Pre-trained</u> foundation models</strong> (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. ‘understanding’ and generating text, images, code), most commonly accessed -as-a-Service- via API, as provided by third-party companies</p>
+<p><strong><u>Pre-trained</u> foundation models</strong> (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. ‘understanding’ and generating text, images, code), most commonly accessed <em>as-a-Service</em> via API, as provided by third-party companies</p>
 <ul>
-<li>e.g. GPT, PaLM, LLaMA, etc.</li>
+<li>e.g. GPT (OpenAI), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, Qwen (Alibaba), etc.</li>
+<li>some are <em>proprietary</em> (usable only via the provider’s API), others are <em>open-weight</em> (downloadable and runnable locally, cf. <a href="../llmaas/#/ollama">on-premise deployment</a> and <a href="../governance/#/open-models">open models</a>)</li>
 </ul>
 </li>
 <li>
@@ -555,7 +904,7 @@
 </ul>
 </li>
 <li>
-<p><strong>Tools</strong>: external <em>software components</em> (e.g. WebAPIs, databases, search engines) that can be <em>invoked</em> by PFMs to perform specific tasks or retrieve information</p>
+<p><strong>Tools</strong>: external <em>software components</em> (e.g. WebAPIs, databases, search engines) that PFMs can <em>ask</em> to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information</p>
 <ul>
 <li>e.g. a calculator API, a weather API, a database query interface</li>
 </ul>
@@ -579,7 +928,8 @@
 
 <section data-shortcode-section="">
 <h2 id="what-does-an-ai-powered-application-include">What does an AI-powered application include?</h2>
-<ol start="0">
+<p>(i.e. a product exploiting GenAI as per dimensions (2) and (3))</p>
+<ol>
 <li>
 <p>FM are commonly <u>not</u> produced in-house, but rather <em>accessed</em> via APIs… yet the choice of <strong>what model(s) to use</strong> is crucial</p>
 <ul>
@@ -598,21 +948,22 @@
 </ul>
 </li>
 <li>
-<p>A set of <strong>tool servers</strong> implementing the <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP protocol</a> so that tools can be <em>invoked</em> by PFMs</p>
+<p>A set of <strong>tools</strong> that PFMs can <em>ask</em> the application to invoke</p>
 <ul>
-<li>these are <em>software modules</em>, somewhat similar to ordinary Web services, offering one endpoint per tool</li>
+<li>these may be plain <em>functions</em> in the application’s code…</li>
+<li>… or <em>software modules</em> exposing tools via the <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP protocol</a> (<strong>MCP servers</strong>), somewhat similar to ordinary Web services</li>
 </ul>
 </li>
 <li>
 <p>A set of <strong>agents</strong>, implementing the logic to orchestrate the interaction between PFMs and tools</p>
 <ul>
-<li>these are <em>software modules</em>, commonly implemented via libraries such as <a href="https://python.langchain.com/en/latest/index.html">LangChain</a> or <a href="https://gpt-index.readthedocs.io/en/latest/">LlamaIndex</a></li>
+<li>these are <em>software modules</em>, commonly implemented via libraries such as <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a> or <a href="https://developers.llamaindex.ai/python/framework/">LlamaIndex</a></li>
 </ul>
 </li>
 <li>
 <p>A set of <strong>vector stores</strong> (if needed), populated with relevant data, and accessible by the agents</p>
 <ul>
-<li>there are <em>software modules</em>, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks <em>indexed by</em> their <em>embeddings</em></li>
+<li>these are <em>software modules</em>, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks <em>indexed by</em> their <em>embeddings</em></li>
 </ul>
 </li>
 <li>
@@ -624,32 +975,74 @@
 </ol>
 </section><section>
 <h2 id="concept-prompt-templates">Concept: Prompt Templates</h2>
-<p><img src="./prompt-templates.jpg" alt=""></p>
+<table>
+	<thead>
+			<tr>
+					<th>Technique</th>
+					<th>Prompt template</th>
+					<th>Description</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Role playing</td>
+					<td><code>You are an expert in {field} known for {key adjective}. Help me {task}.</code></td>
+					<td>telling the AI to act as a famous expert or celebrity</td>
+			</tr>
+			<tr>
+					<td>Style unbundling</td>
+					<td><code>Describe the key elements of {expert}'s style/skill in bullet points.</code> <br> <code>Do {task} in the following style: {style}.</code></td>
+					<td>describe what you like about a style, rather than copying it directly</td>
+			</tr>
+			<tr>
+					<td>Emotion prompting</td>
+					<td><code>Help me {task}. Please make sure {attribute}. This task is very important for my career.</code></td>
+					<td>use emotional pressure and persuasion with the AI</td>
+			</tr>
+			<tr>
+					<td>Few-shot learning</td>
+					<td><code>Here are some examples of {task}. Generate a {task} for {new context}.</code></td>
+					<td>add examples of the completed task to the prompt</td>
+			</tr>
+			<tr>
+					<td>Synthetic bootstrap</td>
+					<td><code>Generate ten examples of {examples} for {context}. Here are the inputs: {inputs}.</code> <br> <code>Generate {task} using {examples}.</code></td>
+					<td>use AI to generate good examples of the completed task</td>
+			</tr>
+	</tbody>
+</table>
+<p>(source: <a href="https://www.lennysnewsletter.com/">Lenny’s Newsletter</a>)</p>
+<ul>
+<li><code>{placeholders}</code> are filled with <em>actual data</em> at runtime</li>
+</ul>
 </section><section>
 <h2 id="concept-agents-calling-external-tools">Concept: Agents Calling External Tools</h2>
-<p><img src="./tools.png" alt=""></p>
+<img src="./tools.svg" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" style="width: 100%; max-width: 95vw; max-height: 85vh; object-fit: contain;">
 </section><section>
 <h2 id="concept-model-context-protocol-mcp">Concept: Model-Context Protocol (MCP)</h2>
-<!-- ![](./mcp.png) -->
-<img src="./mcp.png" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./mcp.svg" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
 <ul>
-<li>MCP $\approx$ <em>standard</em> protocol for LLM-based agents to <em>call</em> <strong>external tools</strong></li>
-<li>Allow for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
-<li>Most commonly there is a <strong>server</strong> (a.k.a. <em>gateway</em>) where tools are registered (names, purpose, data schemas, etc.)</li>
-<li>Clients are agents willing to <em>discover</em> or <em>invoke</em> tools provided by some server</li>
+<li>MCP $\approx$ <em>standard</em> protocol for LLM-based applications to <em>discover</em> and <em>call</em> <strong>external tools</strong> (cf. <a href="https://modelcontextprotocol.io/specification">specification</a>)</li>
+<li>Allows for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
+<li>Each MCP <strong>server</strong> exposes its <em>own</em> tools (names, descriptions, input schemas), plus possibly <em>resources</em> (data) and <em>prompts</em> (templates)</li>
+<li>The <em>host</em> application (e.g. Claude Code, or your agent) runs one MCP <strong>client</strong> per server it connects to
+<ul>
+<li>optionally, a <strong>gateway</strong> may <em>aggregate</em> several servers behind a single endpoint</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h2 id="concept-retrieval-augmented-generation-rag">Concept: Retrieval-Augmented Generation (RAG)</h2>
-<p><img src="./rag.png" alt=""></p>
+<img src="./rag.svg" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </section><section>
 <h2 id="concept-llm-as-a-judge">Concept: LLM-as-a-Judge</h2>
-<!-- ![](./llm-as-a-judge.png) -->
-<img src="./llm-as-a-judge.png" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./llm-as-a-judge.svg" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
 <ul>
 <li>Exploiting an LLM to <em>evaluate</em> the quality of some other LLM’s output…</li>
 <li>… based on some <em>informal</em> <strong>criterion</strong> (e.g. <em>relevance</em>, <em>accuracy</em>, <em>completeness</em>, etc.)</li>
 <li>… by comparing the output to some <em>reference</em> (e.g. a human-written checklist)</li>
 </ul>
+<p>(more on this in the <a href="../validating/#/llm-as-a-judge">validating</a> lecture)</p>
 
 </section>
 </section>
@@ -658,8 +1051,9 @@
 <section data-shortcode-section="">
 <section data-noprocess="" data-shortcode-slide="" id="genai-workflow">
 <h2 id="the-genai-workflow">The GenAI workflow</h2>
-<p>(Similar to the ML workflow in the sense that the goal is to process data, but different in many details e.g. <em>no training</em> is involved)</p>
-<p><img src="./genai-workflow.png" alt=""></p>
+<p>(The workflow of engineering products as per dimensions (2) and (3).
+Similar to the ML workflow in the sense that the goal is to process data, but different in many details: e.g. training is <em>optional</em>, and commonly <em>not</em> performed in-house, as pre-trained models are exploited)</p>
+<img src="./genai-workflow.svg" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" style="width: 100%; max-width: 95vw; max-height: 40vh; object-fit: contain;">
 <ul>
 <li>there could be <strong>many iterations</strong> (e.g. for PFM selection, and prompt tuning)</li>
 <li>the whole workflow may be <strong>re-started</strong> upon <em>data changes</em>, or <em>task changes</em>, or new <em>PFM availability</em></li>
@@ -701,69 +1095,83 @@
 <blockquote>
 <p>Support public officers in managing tenders through a GenAI assistant that understands and compares procurement decisions transparently.</p>
 </blockquote>
+<p><strong>Scope</strong></p>
 <ol>
 <li>
 <p><strong>Problem Framing</strong>:</p>
 <ul>
 <li><em>Content Generation</em>: draft and justify <em>comparisons</em> among suppliers’ offers vs. technical specs</li>
 <li><em>Interpretation</em>: understand regulatory documents and technical language</li>
-<li><em>Automation</em>: retrieve relevant laws, norms, and prior tender examples</li>
+<li><em>Automation</em>: score offers against <em>check-lists</em> derived from the technical specs</li>
 <li><em>Interaction</em>: enable officers to query and validate results through natural language</li>
+<li>i.e. a <em>workflow</em> (dimension 2) for scoring, plus an <em>agent</em> (dimension 3) for the officers’ questions</li>
 </ul>
 </li>
 <li>
-<p><strong>Data Collection</strong>: past tenders’ technical specifications, acts, etc; regulatory documents, etc.</p>
+<p><strong>Data Collection</strong>: past tenders’ technical specifications and acts; regulatory documents; previous evaluations (with the officers’ scores)</p>
 </li>
 <li>
 <p><strong>Data Preparation</strong>:</p>
 <ul>
 <li>devise useful data schema &amp; extract relevant data from documents</li>
-<li>anonymize sensitive info (suppliers, personal data)</li>
+<li>anonymize sensitive info (personal data; supplier identities, to reduce bias)</li>
 <li>segment documents and index by topic (law, SLA, price table, etc.)</li>
+</ul>
+</li>
+</ol>
+<p><strong>Select</strong></p>
+<ol start="4">
+<li><strong>Foundation Model Selection</strong>: multi-lingual? specialized in legal/technical text? cost constraints? support for tools? where does it run (data protection)?
+<ul>
+<li>try out candidate prompts on candidate models</li>
 </ul>
 </li>
 </ol>
 </section><section>
 <h2 id="example-of-genai-workflow-pt-2">Example of GenAI workflow (pt. 2)</h2>
-<ol start="4">
+<p><strong>Adapt and align</strong></p>
+<ol start="5">
 <li>
-<p><strong>Prompt Engineering</strong>:</p>
-<ol>
-<li>design prompt templates for comparison, justification, and Q&amp;A
+<p><strong>Vector stores</strong>: embeddings for tender documents &amp; specs, legal texts &amp; guidelines, previous evaluations, templates</p>
 <ul>
-<li>use role-based system prompts (<code>You are a procurement evaluator…</code>)</li>
-</ul>
-</li>
-<li>allocate placeholders for RAG-retrieved data chunks</li>
-<li>iterate on template design based on manual tests</li>
-</ol>
-</li>
-<li>
-<p><strong>Foundation Model Selection</strong>: multi-lingual? specialized in legal/technical text? cost constraints? support for tools?</p>
-</li>
-<li>
-<p><strong>Vector stores</strong>: storing embeddings for tender documents &amp; specs, legal texts &amp; guidelines, previous evaluation, templates</p>
-<ol>
-<li>choose embedding model, chunking strategy, and populate vector store</li>
-<li>engineer retrieval strategies to fetch relevant chunks</li>
-</ol>
-</li>
-<li>
-<p><strong>Tools</strong>:</p>
-<ul>
-<li>regulation lookup API + tender database query API</li>
-<li>report generation out of document templates</li>
-<li>automate scoring calculations via spreadsheet or Python scripts generation</li>
+<li>choose embedding model and chunking strategy, populate the store, engineer retrieval strategies</li>
 </ul>
 </li>
 <li>
-<p><strong>Agents</strong>:</p>
-<ol>
-<li>exploit LLM to extract structured check-lists out of technical specs</li>
-<li>orchestrate RAG, tool invocations, and prompt templates to score each offer</li>
-<li>generate comparison reports</li>
-<li>…</li>
+<p><strong>Prompt Engineering</strong>: templates for check-list extraction, justification, and Q&amp;A</p>
+<ul>
+<li>role-based system prompts (<code>You are a procurement evaluator…</code>), placeholders for retrieved chunks, iterate on manual tests</li>
+</ul>
+</li>
+<li>
+<p><strong>Evaluations</strong>: past tenders (with the officers’ scores) as validation set</p>
+<ul>
+<li>exact checks on extracted check-lists and scores; <a href="../validating/#/llm-as-a-judge">LLM-as-a-judge</a> on justifications (e.g. is every claim backed by a cited document?)</li>
+<li>re-run at every change of prompts or models</li>
+</ul>
+</li>
 </ol>
+<p><strong>Application integration</strong></p>
+<ol start="8">
+<li>
+<p><strong>Tools</strong>: regulation lookup API, tender database query API, report generation out of document templates</p>
+<ul>
+<li>scores are computed by <em>deterministic</em> code out of the (validated) check-lists: the LLM <em>proposes</em>, software <em>verifies</em></li>
+</ul>
+</li>
+<li>
+<p><strong>Workflow</strong> + <strong>Agent</strong>:</p>
+<ul>
+<li><em>workflow</em>: extract check-lists $\rightarrow$ validate $\rightarrow$ score $\rightarrow$ generate comparison report</li>
+<li><em>agent</em>: answers officers’ questions, orchestrating RAG and tool invocations</li>
+</ul>
+</li>
+<li>
+<p><strong>Tracking</strong> &amp; <strong>Oversight</strong>:</p>
+<ul>
+<li>log prompts, retrieved chunks, tool calls, and scores, for traceability and auditing</li>
+<li>the system <em>proposes</em>, the officer <em>decides</em> (and signs off); comply with GDPR and the AI Act (cf. <a href="../governance/#/regulation">governance</a>)</li>
+</ul>
 </li>
 </ol>
 
@@ -771,7 +1179,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

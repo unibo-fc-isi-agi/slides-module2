@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <!-- outer set: foundation models -->
+  <ellipse cx="640" cy="290" rx="600" ry="260" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="4"/>
+  <text x="640" y="110" font-size="44" font-weight="600" text-anchor="middle">Foundation Models (FMs)</text>
+  <g font-size="30">
+    <text x="150" y="220">• Pretrained</text>
+    <text x="150" y="262">• Generalized</text>
+    <text x="150" y="304">• Adaptable</text>
+    <text x="150" y="346">• Large</text>
+    <text x="150" y="388">• Self-supervised</text>
+  </g>
+
+  <!-- inner set: LLMs -->
+  <ellipse cx="830" cy="320" rx="320" ry="150" fill="#bd2b0b" fill-opacity="0.12" stroke="#bd2b0b" stroke-width="4"/>
+  <text x="830" y="305" font-size="34" font-weight="600" fill="#bd2b0b" text-anchor="middle">Large Language Models (LLMs)</text>
+  <text x="830" y="352" font-size="28" fill="#bd2b0b" text-anchor="middle">e.g. GPT, Claude, Gemini, Llama</text>
+
+  <!-- caption -->
+  <text x="640" y="620" font-size="26" text-anchor="middle">FMs are models trained on broad data (using self-supervision at scale)</text>
+  <text x="640" y="656" font-size="26" text-anchor="middle">that can be adapted to a wide range of downstream tasks</text>
+  <text x="640" y="695" font-size="20" font-style="italic" fill="#555" text-anchor="middle">cf. hai.stanford.edu/news/reflections-foundation-models</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" font-size="28" fill="#222">
+  <defs>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2690e7"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e7a626"/></marker>
+  </defs>
+  <text x="170" y="60" font-size="40" font-weight="600">MCP clients</text>
+  <text x="1030" y="60" font-size="40" font-weight="600">MCP servers</text>
+  <rect x="470" y="370" width="260" height="120" rx="60" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="3"/>
+  <text x="600" y="420" font-size="36" font-weight="600" fill="#7e57c2">MCP</text>
+  <text x="600" y="462" font-size="30" fill="#7e57c2">protocol</text>
+  <line x1="470" y1="430" x2="312" y2="200" stroke="#2690e7" stroke-width="4" marker-end="url(#ab)"/>
+  <rect x="40" y="155" width="260" height="90" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+  <text x="170" y="210">Claude</text>
+  <line x1="470" y1="430" x2="312" y2="430" stroke="#2690e7" stroke-width="4" marker-end="url(#ab)"/>
+  <rect x="40" y="385" width="260" height="90" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+  <text x="170" y="440">ChatGPT</text>
+  <line x1="470" y1="430" x2="312" y2="660" stroke="#2690e7" stroke-width="4" marker-end="url(#ab)"/>
+  <rect x="40" y="615" width="260" height="90" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+  <text x="170" y="670">AI agent</text>
+  <line x1="730" y1="430" x2="888" y2="140" stroke="#e7a626" stroke-width="4" marker-end="url(#ao)"/>
+  <rect x="900" y="95" width="260" height="90" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1030" y="150">Email</text>
+  <line x1="730" y1="430" x2="888" y2="280" stroke="#e7a626" stroke-width="4" marker-end="url(#ao)"/>
+  <rect x="900" y="235" width="260" height="90" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1030" y="290">Calendar</text>
+  <line x1="730" y1="430" x2="888" y2="420" stroke="#e7a626" stroke-width="4" marker-end="url(#ao)"/>
+  <rect x="900" y="375" width="260" height="90" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1030" y="430">Files</text>
+  <line x1="730" y1="430" x2="888" y2="560" stroke="#e7a626" stroke-width="4" marker-end="url(#ao)"/>
+  <rect x="900" y="515" width="260" height="90" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1030" y="570">CRM</text>
+  <line x1="730" y1="430" x2="888" y2="700" stroke="#e7a626" stroke-width="4" marker-end="url(#ao)"/>
+  <rect x="900" y="655" width="260" height="90" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1030" y="710">Analytics</text>
+</svg>

@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -61,7 +61,7 @@
 <li>e.g. <a href="https://openai.com/">OpenAI</a>, <a href="https://www.anthropic.com/">Anthropic</a>, <a href="https://cloud.google.com/vertex-ai">Google</a>, <a href="https://azure.microsoft.com/en-us/services/cognitive-services/">Microsoft</a>, <a href="https://huggingface.co/inference-api">Hugging Face</a>, or aggregators like <a href="https://openrouter.ai/">OpenRouter</a></li>
 <li>the choice of the service provider can depend on several factors, including:
 <ul>
-<li>the availability of <em>specific models</em> (e.g. GPT-4, Claude, Gemini, etc.) in their <strong>model zoos</strong></li>
+<li>the availability of <em>specific models</em> (e.g. GPT, Claude, Gemini, etc.) in their <strong>model zoos</strong></li>
 <li>the <em>pricing model</em> and cost structure</li>
 <li>the <em>features</em> and <em>capabilities</em> offered (e.g. fine-tuning, custom models, MCP support, etc.)</li>
 </ul>
@@ -87,7 +87,7 @@
 <li>most commonly, the same provider implements the same meta-model onto different target programming languages (e.g. OpenAI’ client is available in Python, JS, Java, etc.)</li>
 </ul>
 </li>
-<li>there exist also <em>third-party</em> client libraries, which may support multiple Web APIs, and therefore multiple providers (e.g. <a href="https://python.langchain.com/en/latest/">LangChain</a>)</li>
+<li>there exist also <em>third-party</em> client libraries, which may support multiple Web APIs, and therefore multiple providers (e.g. <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a>)</li>
 </ul>
 </li>
 </ol>
@@ -628,16 +628,13 @@
 <li>notice that models come with <strong>price-per-token</strong>, commonly expressed a <code>$/1M tokens</code> (some times the prices is different for <em>input</em> or <em>output</em> tokens)
 <ul>
 <li>this is very common for on-cloud services, and it is the main reason why we need to be careful when experimenting with them, to avoid unexpected costs</li>
+<li>recall that <em>token</em> $\neq$ <em>word</em> (cf. <a href="../genai/#/tokens">tokens</a>)</li>
 </ul>
 </li>
 </ul>
   <img src="open-router-models.png" alt="Open Router's Model Zoo" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
 </li>
 </ul>
-</section><section>
-<h2 id="about-tokenization">About Tokenization</h2>
-<p>You may think that <strong>token $\approx$ word</strong>, but this actually depends on the specific <a href="https://huggingface.co/docs/course/it/chapter2/4">tokenization algorithm</a> (tokenizer) being used by a model</p>
-<p><img src="tokenization.png" alt=""></p>
 </section><section>
 <h2 id="about-open-router-cf--pt-2">About Open Router (cf. <a href="https://openrouter.ai/">https://openrouter.ai/</a>), pt. 2</h2>
 <ul>
@@ -818,7 +815,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1790870245828337553" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791293927382174078" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -840,7 +837,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1790870245828337553");
+    handlePlantumlFigureByID("plantuml-figure-1791293927382174078");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -994,12 +991,12 @@ P -&gt; U: “It’s … in Cesena”
 </section><section>
 <h2 id="about-llms-web-api-compatibility-pt-7-wrap-up">About LLMs’ Web API Compatibility (pt. 7) –&nbsp;Wrap Up</h2>
 <p><strong>OpenAI-like</strong> APIs are becoming the <em>de-facto</em> standard, yet they are currently under active <em>evolution</em></p>
-<img src="apis.png" alt="LLMs' Web API Compatibility Landscape" style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="apis.svg" alt="LLMs' Web API Compatibility Landscape" style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
 
 </section>
 </section><section>
 <h1 id="client-side-libraries-for-llms">Client-side libraries for LLMs</h1>
-<p>Reference technologies: <a href="https://developers.openai.com/api/docs/libraries">OpenAI Client Libraries</a>, <a href="https://python.langchain.com/en/latest/">LangChain</a></p>
+<p>Reference technologies: <a href="https://developers.openai.com/api/docs/libraries">OpenAI Client Libraries</a>, <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a></p>
 </section><section>
 <h2 id="about-client-libraries">About client libraries</h2>
 <ul>
@@ -1017,7 +1014,7 @@ P -&gt; U: “It’s … in Cesena”
 <li>it is the “reference” client, since OpenAI invented the first Web API for LLMs, and many other providers mimicked it</li>
 </ul>
 </li>
-<li><a href="https://python.langchain.com/en/latest/">LangChain</a> flavoured for Python and JavaScript
+<li><a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a> flavoured for Python and JavaScript
 <ul>
 <li>it is a <em>third-party</em> client library, which supports <a href="https://docs.langchain.com/oss/python/integrations/providers/overview">multiple providers</a> and APIs (e.g. OpenAI, Anthropic, Google, Azure, etc.)</li>
 <li>it is more focused on <em>orchestrating</em> interactions with LLMs and tools, rather than just wrapping Web APIs</li>
@@ -1777,7 +1774,7 @@ P -&gt; U: “It’s … in Cesena”
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

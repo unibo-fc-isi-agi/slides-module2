@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="960" y="48" font-size="32" text-anchor="middle" font-weight="700" xml:space="preserve">Our thinking operates in two systems</text>
+  <rect x="40" y="75" width="740" height="680" rx="12" fill="#e7a626" fill-opacity="0.1" stroke="#e7a626" stroke-width="3"/>
+  <text x="410.0" y="122" font-size="30" text-anchor="middle" font-weight="700" fill="#e7a626" xml:space="preserve">SYSTEM 1 — “FAST THINKING”</text>
+  <text x="410.0" y="160" font-size="22" text-anchor="middle" font-style="italic" xml:space="preserve">Automatic, effortless, and intuitive</text>
+  <text x="65" y="230" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">FAST</text>
+  <text x="345" y="230" font-size="21" text-anchor="start" xml:space="preserve">Very quick, happens in a split second</text>
+  <line x1="60" y1="284" x2="760" y2="284" stroke="#e7a626" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="65" y="322" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">AUTOMATIC</text>
+  <text x="345" y="322" font-size="21" text-anchor="start" xml:space="preserve">Works without conscious control</text>
+  <line x1="60" y1="376" x2="760" y2="376" stroke="#e7a626" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="65" y="414" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">EFFORTLESS</text>
+  <text x="345" y="414" font-size="21" text-anchor="start" xml:space="preserve">Requires little to no mental effort</text>
+  <line x1="60" y1="468" x2="760" y2="468" stroke="#e7a626" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="65" y="506" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">HEURISTIC-BASED</text>
+  <text x="345" y="506" font-size="21" text-anchor="start" xml:space="preserve">Relies on mental shortcuts, rules of</text>
+  <text x="345" y="533" font-size="21" text-anchor="start" xml:space="preserve">thumb, and pattern recognition</text>
+  <line x1="60" y1="560" x2="760" y2="560" stroke="#e7a626" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="65" y="598" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">PRONE TO BIASES</text>
+  <text x="345" y="598" font-size="21" text-anchor="start" xml:space="preserve">Can be systematic and lead to</text>
+  <text x="345" y="625" font-size="21" text-anchor="start" xml:space="preserve">predictable errors</text>
+  <line x1="60" y1="652" x2="760" y2="652" stroke="#e7a626" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="65" y="690" font-size="21" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">EVER-PRESENT</text>
+  <text x="345" y="690" font-size="21" text-anchor="start" xml:space="preserve">Always on, monitors the environment</text>
+  <rect x="1140" y="75" width="740" height="680" rx="12" fill="#2690e7" fill-opacity="0.1" stroke="#2690e7" stroke-width="3"/>
+  <text x="1510.0" y="122" font-size="30" text-anchor="middle" font-weight="700" fill="#2690e7" xml:space="preserve">SYSTEM 2 — “SLOW THINKING”</text>
+  <text x="1510.0" y="160" font-size="22" text-anchor="middle" font-style="italic" xml:space="preserve">Effortful, deliberate, and logical</text>
+  <text x="1165" y="230" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">SLOW</text>
+  <text x="1445" y="230" font-size="21" text-anchor="start" xml:space="preserve">Takes time, step-by-step processing</text>
+  <line x1="1160" y1="284" x2="1860" y2="284" stroke="#2690e7" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="1165" y="322" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">CONTROLLED</text>
+  <text x="1445" y="322" font-size="21" text-anchor="start" xml:space="preserve">Requires conscious attention and focus</text>
+  <line x1="1160" y1="376" x2="1860" y2="376" stroke="#2690e7" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="1165" y="414" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">EFFORTFUL</text>
+  <text x="1445" y="414" font-size="21" text-anchor="start" xml:space="preserve">Uses mental resources; can be tiring</text>
+  <line x1="1160" y1="468" x2="1860" y2="468" stroke="#2690e7" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="1165" y="506" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">RULE-BASED</text>
+  <text x="1445" y="506" font-size="21" text-anchor="start" xml:space="preserve">Relies on logic, analysis, and complex</text>
+  <text x="1445" y="533" font-size="21" text-anchor="start" xml:space="preserve">computation</text>
+  <line x1="1160" y1="560" x2="1860" y2="560" stroke="#2690e7" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="1165" y="598" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">LESS PRONE TO BIASES</text>
+  <text x="1445" y="598" font-size="21" text-anchor="start" xml:space="preserve">More reliable, but not foolproof</text>
+  <line x1="1160" y1="652" x2="1860" y2="652" stroke="#2690e7" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="1165" y="690" font-size="21" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">LIMITED CAPACITY</text>
+  <text x="1445" y="690" font-size="21" text-anchor="start" xml:space="preserve">Easily depleted; can handle one thing</text>
+  <text x="1445" y="717" font-size="21" text-anchor="start" xml:space="preserve">at a time</text>
+  <rect x="800" y="75" width="320" height="680" rx="12" fill="#3a9a5b" fill-opacity="0.1" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="960.0" y="120" font-size="24" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">HOW THEY WORK</text>
+  <text x="960.0" y="150" font-size="24" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">TOGETHER</text>
+  <rect x="820" y="185" width="280" height="150" rx="12" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="3"/>
+  <text x="960.0" y="235" font-size="21" text-anchor="middle" xml:space="preserve">System 1 generates</text>
+  <text x="960.0" y="263" font-size="21" text-anchor="middle" xml:space="preserve">quick impressions and</text>
+  <text x="960.0" y="291" font-size="21" text-anchor="middle" xml:space="preserve">suggestions</text>
+  <line x1="960.0" y1="343" x2="960.0" y2="385" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="820" y="393" width="280" height="150" rx="12" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+  <text x="960.0" y="443" font-size="21" text-anchor="middle" xml:space="preserve">System 2 evaluates,</text>
+  <text x="960.0" y="471" font-size="21" text-anchor="middle" xml:space="preserve">overrides, or</text>
+  <text x="960.0" y="499" font-size="21" text-anchor="middle" xml:space="preserve">confirms</text>
+  <line x1="960.0" y1="551" x2="960.0" y2="593" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="960.0" y="630" font-size="22" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">Better decisions happen</text>
+  <text x="960.0" y="659" font-size="22" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">when both work in</text>
+  <text x="960.0" y="688" font-size="22" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">balance</text>
+  <line x1="782" y1="415" x2="796" y2="415" stroke="#e7a626" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="1138" y1="415" x2="1124" y2="415" stroke="#2690e7" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="40" y="780" width="1840" height="215" rx="12" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="3"/>
+  <text x="960" y="812" font-size="22" text-anchor="middle" font-weight="700" fill="#555" xml:space="preserve">EXAMPLES</text>
+  <text x="65.0" y="860" font-size="21" text-anchor="start" font-weight="700" xml:space="preserve">You see a “SALE” sign</text>
+  <text x="65.0" y="900" font-size="20" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">System 1:</text>
+  <text x="165.0" y="900" font-size="20" text-anchor="start" xml:space="preserve">feels excited and wants to buy</text>
+  <text x="65.0" y="938" font-size="20" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">System 2:</text>
+  <text x="165.0" y="938" font-size="20" text-anchor="start" xml:space="preserve">checks if you really need it</text>
+  <line x1="500.0" y1="835" x2="500.0" y2="980" stroke="#555" stroke-opacity="0.4" stroke-width="2"/>
+  <text x="525.0" y="860" font-size="21" text-anchor="start" font-weight="700" xml:space="preserve">You are driving on an empty road</text>
+  <text x="525.0" y="900" font-size="20" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">System 1:</text>
+  <text x="625.0" y="900" font-size="20" text-anchor="start" xml:space="preserve">keeps you on autopilot</text>
+  <text x="525.0" y="938" font-size="20" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">System 2:</text>
+  <text x="625.0" y="938" font-size="20" text-anchor="start" xml:space="preserve">takes over in heavy traffic</text>
+  <line x1="960.0" y1="835" x2="960.0" y2="980" stroke="#555" stroke-opacity="0.4" stroke-width="2"/>
+  <text x="985.0" y="860" font-size="21" text-anchor="start" font-weight="700" xml:space="preserve">You meet someone new</text>
+  <text x="985.0" y="900" font-size="20" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">System 1:</text>
+  <text x="1085.0" y="900" font-size="20" text-anchor="start" xml:space="preserve">forms an instant impression</text>
+  <text x="985.0" y="938" font-size="20" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">System 2:</text>
+  <text x="1085.0" y="938" font-size="20" text-anchor="start" xml:space="preserve">considers more information</text>
+  <text x="1085.0" y="964" font-size="20" text-anchor="start" xml:space="preserve">before judging</text>
+  <line x1="1420.0" y1="835" x2="1420.0" y2="980" stroke="#555" stroke-opacity="0.4" stroke-width="2"/>
+  <text x="1445.0" y="860" font-size="21" text-anchor="start" font-weight="700" xml:space="preserve">You solve 23 × 17</text>
+  <text x="1445.0" y="900" font-size="20" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">System 1:</text>
+  <text x="1545.0" y="900" font-size="20" text-anchor="start" xml:space="preserve">guesses quickly (e.g. 400)</text>
+  <text x="1445.0" y="938" font-size="20" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">System 2:</text>
+  <text x="1545.0" y="938" font-size="20" text-anchor="start" xml:space="preserve">calculates the exact answer</text>
+  <text x="1545.0" y="964" font-size="20" text-anchor="start" xml:space="preserve">(391)</text>
+  <text x="960" y="1045" font-size="21" text-anchor="middle" font-style="italic" xml:space="preserve">System 1 is fast and automatic; System 2 is slow and deliberate: knowing when to rely on each is key to better decisions.</text>
+
+</svg>

@@ -564,7 +564,7 @@
        y="346.48969"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text2">Fornitore del servizio</text>
+       id="text2">Service provider</text>
     <rect
        x="761.49597"
        y="328.45459"
@@ -1243,14 +1243,14 @@
        y="345.48401"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text46">Interfaccia </text>
+       id="text46">User </text>
     <text
        x="399.30591"
        xml:space="preserve"
        y="361.82809"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text47">Utente</text>
+       id="text47">interface</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -1878,7 +1878,7 @@
        y="604.01099"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text487">Costi di utilizzo</text>
+       id="text487">Usage costs</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -2138,28 +2138,28 @@
        y="603.25098"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text528">Controllo </text>
+       id="text528">Control of </text>
     <text
        x="823.10303"
        xml:space="preserve"
        y="619.59521"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text529">accessi,</text>
+       id="text529">access,</text>
     <text
        x="823.12097"
        xml:space="preserve"
        y="635.93927"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text530">utilizzo,</text>
+       id="text530">usage,</text>
     <text
        x="824.32098"
        xml:space="preserve"
        y="652.28339"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text531">traffico</text>
+       id="text531">traffic</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -2313,7 +2313,7 @@
        y="603.25098"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text547">Casualità</text>
+       id="text547">Chance</text>
     <path
        fill="none"
        d="m 198.5946,401.8851 6.5005,-5.7059 12.8594,-9.3858 13.0638,-7.6633 13.2681,-5.941 13.4725,-4.2185 13.6769,-2.4963 13.8813,-0.7738 14.0856,0.9486 14.29,2.671 14.4944,4.3933 14.6988,6.1157 14.9031,7.8381 15.1075,9.5606 8.8416,6.5151"
@@ -2330,28 +2330,28 @@
        y="307.76401"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text548">Prompt (testo)</text>
+       id="text548">Prompt (text)</text>
     <text
        x="238.2261"
        xml:space="preserve"
        y="324.10818"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text549">(+ documento?)</text>
+       id="text549">(+ document?)</text>
     <text
        x="242.1682"
        xml:space="preserve"
        y="340.4523"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text550">(+ immagine?)</text>
+       id="text550">(+ image?)</text>
     <text
        x="238.99409"
        xml:space="preserve"
        y="356.79639"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text551">(+ audiovisivo?)</text>
+       id="text551">(+ audio/video?)</text>
     <path
        fill="none"
        stroke-dasharray="6, 2"
@@ -2386,7 +2386,7 @@
        y="540.9715"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text555">Testo, immagine, audio, o video</text>
+       id="text555">Text, image, audio, or video</text>
   </g>
   <g
      text-rendering="geometricPrecision"

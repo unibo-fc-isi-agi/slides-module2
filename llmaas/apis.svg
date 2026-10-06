@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <text x="960" y="52" font-size="40" text-anchor="middle" font-weight="700" xml:space="preserve">The Landscape of OpenAI APIs</text>
+  <text x="960" y="92" font-size="24" text-anchor="middle" fill="#555" xml:space="preserve">Different APIs for different needs</text>
+  <rect x="40" y="120" width="905" height="410" rx="12" fill="#2690e7" fill-opacity="0.07" stroke="#2690e7" stroke-width="3"/>
+  <circle cx="85" cy="168" r="24" fill="#2690e7"/>
+  <text x="85" y="176.4" font-size="24" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">1</text>
+  <text x="125" y="178" font-size="32" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">Chat Completions API</text>
+  <text x="125" y="210" font-size="22" text-anchor="start" xml:space="preserve">The simple messaging API</text>
+  <rect x="70" y="230" width="290" height="44" rx="10" fill="#2690e7" fill-opacity="0.12" stroke="#2690e7" stroke-width="2"/>
+  <text x="215.0" y="258.3" font-size="18" text-anchor="middle" xml:space="preserve">User: “How do I fix a flat tire?”</text>
+  <line x1="368" y1="252" x2="404" y2="252" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="412" y="230" width="310" height="44" rx="10" fill="#2690e7" fill-opacity="0.12" stroke="#2690e7" stroke-width="2"/>
+  <text x="567.0" y="258.3" font-size="18" text-anchor="middle" xml:space="preserve">Assistant: “Here’s how you can…”</text>
+  <text x="740" y="259" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">simple request</text>
+  <text x="740" y="282" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">→ text response</text>
+  <text x="70" y="325" font-size="22" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">Best for</text>
+  <text x="510" y="325" font-size="22" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">Key features</text>
+  <text x="70" y="357" font-size="20" text-anchor="start" xml:space="preserve">• Simple text generation</text>
+  <text x="70" y="385" font-size="20" text-anchor="start" xml:space="preserve">• Q&amp;A</text>
+  <text x="70" y="413" font-size="20" text-anchor="start" xml:space="preserve">• Chatbots</text>
+  <text x="70" y="441" font-size="20" text-anchor="start" xml:space="preserve">• Industry standard</text>
+  <text x="510" y="357" font-size="20" text-anchor="start" xml:space="preserve">• Messages in, text out</text>
+  <text x="510" y="385" font-size="20" text-anchor="start" xml:space="preserve">• Function calling</text>
+  <text x="510" y="413" font-size="20" text-anchor="start" xml:space="preserve">• Streaming</text>
+  <rect x="60" y="468" width="865" height="44" rx="22" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="0"/>
+  <rect x="60" y="468" width="150" height="44" rx="22" fill="#2690e7" fill-opacity="1" stroke="#2690e7" stroke-width="0"/>
+  <text x="135" y="497" font-size="20" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">When to use</text>
+  <text x="230" y="497" font-size="20" text-anchor="start" font-weight="600" xml:space="preserve">Most common use case: simple, fast, reliable.</text>
+  <rect x="975" y="120" width="905" height="410" rx="12" fill="#3a9a5b" fill-opacity="0.07" stroke="#3a9a5b" stroke-width="3"/>
+  <circle cx="1020" cy="168" r="24" fill="#3a9a5b"/>
+  <text x="1020" y="176.4" font-size="24" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">2</text>
+  <text x="1060" y="178" font-size="32" text-anchor="start" font-weight="700" fill="#3a9a5b" xml:space="preserve">Responses API</text>
+  <text x="1060" y="210" font-size="22" text-anchor="start" xml:space="preserve">The newer API, with memory &amp; tools</text>
+  <rect x="1770" y="142" width="85" height="36" rx="18" fill="#3a9a5b" fill-opacity="1" stroke="#3a9a5b" stroke-width="0"/>
+  <text x="1813" y="167" font-size="20" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">NEW</text>
+  <rect x="1005" y="230" width="95" height="44" rx="10" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="2"/>
+  <text x="1052.5" y="258.65" font-size="19" text-anchor="middle" xml:space="preserve">Search</text>
+  <rect x="1115" y="230" width="95" height="44" rx="10" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="2"/>
+  <text x="1162.5" y="258.65" font-size="19" text-anchor="middle" xml:space="preserve">Files</text>
+  <rect x="1225" y="230" width="95" height="44" rx="10" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="2"/>
+  <text x="1272.5" y="258.65" font-size="19" text-anchor="middle" xml:space="preserve">Tools</text>
+  <rect x="1335" y="230" width="95" height="44" rx="10" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="2"/>
+  <text x="1382.5" y="258.65" font-size="19" text-anchor="middle" xml:space="preserve">…</text>
+  <rect x="1455" y="230" width="395" height="44" rx="10" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="2"/>
+  <text x="1652.5" y="258.3" font-size="18" text-anchor="middle" xml:space="preserve">conversation memory managed by the API</text>
+  <text x="1005" y="325" font-size="22" text-anchor="start" font-weight="700" fill="#3a9a5b" xml:space="preserve">Best for</text>
+  <text x="1445" y="325" font-size="22" text-anchor="start" font-weight="700" fill="#3a9a5b" xml:space="preserve">Key features</text>
+  <text x="1005" y="357" font-size="20" text-anchor="start" xml:space="preserve">• New projects</text>
+  <text x="1005" y="385" font-size="20" text-anchor="start" xml:space="preserve">• Complex workflows</text>
+  <text x="1005" y="413" font-size="20" text-anchor="start" xml:space="preserve">• Built-in tools</text>
+  <text x="1005" y="441" font-size="20" text-anchor="start" xml:space="preserve">• Context understanding</text>
+  <text x="1445" y="357" font-size="20" text-anchor="start" xml:space="preserve">• Conversation state (API-side)</text>
+  <text x="1445" y="385" font-size="20" text-anchor="start" xml:space="preserve">• Built-in tools</text>
+  <text x="1445" y="413" font-size="20" text-anchor="start" xml:space="preserve">• Rich multimodal I/O</text>
+  <rect x="995" y="468" width="865" height="44" rx="22" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="0"/>
+  <rect x="995" y="468" width="150" height="44" rx="22" fill="#3a9a5b" fill-opacity="1" stroke="#3a9a5b" stroke-width="0"/>
+  <text x="1070" y="497" font-size="20" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">When to use</text>
+  <text x="1165" y="497" font-size="20" text-anchor="start" font-weight="600" xml:space="preserve">When you need memory, tools, complex workflows.</text>
+  <rect x="40" y="548" width="905" height="410" rx="12" fill="#e7a626" fill-opacity="0.07" stroke="#e7a626" stroke-width="3"/>
+  <circle cx="85" cy="596" r="24" fill="#e7a626"/>
+  <text x="85" y="604.4" font-size="24" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">3</text>
+  <text x="125" y="606" font-size="32" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">Assistants API</text>
+  <text x="125" y="638" font-size="22" text-anchor="start" fill="#bd2b0b" xml:space="preserve">Component system — deprecated, sunsetting in 2026</text>
+  <rect x="70" y="658" width="115" height="44" rx="10" fill="#e7a626" fill-opacity="0.12" stroke="#e7a626" stroke-width="2"/>
+  <text x="127.5" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Assistant</text>
+  <line x1="189" y1="680" x2="216" y2="680" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="220" y="658" width="115" height="44" rx="10" fill="#e7a626" fill-opacity="0.12" stroke="#e7a626" stroke-width="2"/>
+  <text x="277.5" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Thread</text>
+  <line x1="339" y1="680" x2="366" y2="680" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="370" y="658" width="115" height="44" rx="10" fill="#e7a626" fill-opacity="0.12" stroke="#e7a626" stroke-width="2"/>
+  <text x="427.5" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Run</text>
+  <line x1="489" y1="680" x2="516" y2="680" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="520" y="658" width="115" height="44" rx="10" fill="#e7a626" fill-opacity="0.12" stroke="#e7a626" stroke-width="2"/>
+  <text x="577.5" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Message</text>
+  <text x="680" y="687" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">asynchronous processing</text>
+  <text x="680" y="710" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">with polling</text>
+  <text x="70" y="753" font-size="22" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">Best for</text>
+  <text x="510" y="753" font-size="22" text-anchor="start" font-weight="700" fill="#e7a626" xml:space="preserve">Key features</text>
+  <text x="70" y="785" font-size="20" text-anchor="start" xml:space="preserve">• Existing Assistants setups</text>
+  <text x="70" y="813" font-size="20" text-anchor="start" xml:space="preserve">• Complex tool interaction</text>
+  <text x="70" y="841" font-size="20" text-anchor="start" xml:space="preserve">• Thread-based context</text>
+  <text x="510" y="785" font-size="20" text-anchor="start" xml:space="preserve">• Component system</text>
+  <text x="510" y="813" font-size="20" text-anchor="start" xml:space="preserve">• Asynchronous runs</text>
+  <text x="510" y="841" font-size="20" text-anchor="start" xml:space="preserve">• Threads &amp; messages</text>
+  <rect x="60" y="896" width="865" height="44" rx="22" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="0"/>
+  <rect x="60" y="896" width="150" height="44" rx="22" fill="#e7a626" fill-opacity="1" stroke="#e7a626" stroke-width="0"/>
+  <text x="135" y="925" font-size="20" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">When to use</text>
+  <text x="230" y="925" font-size="20" text-anchor="start" font-weight="600" fill="#bd2b0b" xml:space="preserve">Only for existing projects (sunsetting in 2026).</text>
+  <rect x="975" y="548" width="905" height="410" rx="12" fill="#7e57c2" fill-opacity="0.07" stroke="#7e57c2" stroke-width="3"/>
+  <circle cx="1020" cy="596" r="24" fill="#7e57c2"/>
+  <text x="1020" y="604.4" font-size="24" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">4</text>
+  <text x="1060" y="606" font-size="32" text-anchor="start" font-weight="700" fill="#7e57c2" xml:space="preserve">Realtime API</text>
+  <text x="1060" y="638" font-size="22" text-anchor="start" xml:space="preserve">The voice &amp; speed API</text>
+  <rect x="1005" y="658" width="120" height="44" rx="10" fill="#7e57c2" fill-opacity="0.12" stroke="#7e57c2" stroke-width="2"/>
+  <text x="1065.0" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Client</text>
+  <line x1="1135" y1="672" x2="1395" y2="672" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="1395" y1="690" x2="1135" y2="690" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="1405" y="658" width="120" height="44" rx="10" fill="#7e57c2" fill-opacity="0.12" stroke="#7e57c2" stroke-width="2"/>
+  <text x="1465.0" y="686.65" font-size="19" text-anchor="middle" xml:space="preserve">Model</text>
+  <text x="1265" y="724" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">audio, text, events</text>
+  <text x="1550" y="687" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">continuous, bidirectional,</text>
+  <text x="1550" y="710" font-size="18" text-anchor="start" font-style="italic" xml:space="preserve">real-time communication</text>
+  <text x="1005" y="753" font-size="22" text-anchor="start" font-weight="700" fill="#7e57c2" xml:space="preserve">Best for</text>
+  <text x="1445" y="753" font-size="22" text-anchor="start" font-weight="700" fill="#7e57c2" xml:space="preserve">Key features</text>
+  <text x="1005" y="785" font-size="20" text-anchor="start" xml:space="preserve">• Voice applications</text>
+  <text x="1005" y="813" font-size="20" text-anchor="start" xml:space="preserve">• Telephony integration</text>
+  <text x="1005" y="841" font-size="20" text-anchor="start" xml:space="preserve">• Real-time experiences</text>
+  <text x="1005" y="869" font-size="20" text-anchor="start" xml:space="preserve">• Interactive systems</text>
+  <text x="1445" y="785" font-size="20" text-anchor="start" xml:space="preserve">• Low latency</text>
+  <text x="1445" y="813" font-size="20" text-anchor="start" xml:space="preserve">• Bidirectional streaming</text>
+  <text x="1445" y="841" font-size="20" text-anchor="start" xml:space="preserve">• Audio &amp; events</text>
+  <rect x="995" y="896" width="865" height="44" rx="22" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="0"/>
+  <rect x="995" y="896" width="150" height="44" rx="22" fill="#7e57c2" fill-opacity="1" stroke="#7e57c2" stroke-width="0"/>
+  <text x="1070" y="925" font-size="20" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">When to use</text>
+  <text x="1165" y="925" font-size="20" text-anchor="start" font-weight="600" xml:space="preserve">When you need real-time, low-latency interaction.</text>
+  <rect x="40" y="970" width="1840" height="74" rx="12" fill="#555" fill-opacity="0.06" stroke="#555" stroke-width="3"/>
+  <text x="65" y="1000" font-size="21" text-anchor="start" font-weight="700" xml:space="preserve">Quick guide:</text>
+  <text x="200" y="1000" font-size="20" text-anchor="start" xml:space="preserve">start with Chat Completions for simple use cases; choose Responses for new projects needing tools and memory;</text>
+  <text x="200" y="1030" font-size="20" text-anchor="start" xml:space="preserve">use Realtime for voice and real-time interaction; avoid Assistants (sunsetting in 2026).</text>
+  <text x="960" y="1070" font-size="20" text-anchor="middle" fill="#555" font-style="italic" xml:space="preserve">All APIs share the same models, safety, and billing: choose the right tool for your use case.</text>
+
+</svg>

@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -221,7 +221,13 @@
   
 <h2 id="about-structured-output">About Structured Output</h2>
 <p><strong>TL;DR</strong>: forcing the model to <em>produce output</em> in a specific format (e.g. JSON matching a given schema) so that to bring unstructured input data (e.g. natural language) into structured form that can be easily processed by downstream applications (e.g. databases, APIs, etc.)</p>
-<p><img src="./structured-output.png" alt=""></p>
+
+
+
+
+
+<img src="./structured-output.svg" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+
 </section><section>
 <h2 id="how-to-represent-target-structured-format-to-the-model">How to represent target structured format to the model?</h2>
 <ol>
@@ -1533,11 +1539,30 @@
 </section><section>
 <h2 id="exercise-2-extract-structured-information-from-pictures-pt-4">Exercise 2: Extract Structured Information from Pictures (pt. 4)</h2>
 <ul>
-<li>
-<p>[BEWARE] There are limitations w.r.t. input data <a href="https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements">on OpenAI</a> (and what about <a href="https://openrouter.ai/docs/guides/overview/multimodal/image-understanding">OR</a>?)</p>
-  <img src="./openai-image-input-limits.png" alt="OpenAI image input limits" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
-</li>
+<li>[BEWARE] There are limitations w.r.t. input data <a href="https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements">on OpenAI</a> (and what about <a href="https://openrouter.ai/docs/guides/overview/multimodal/image-understanding">OR</a>?)</li>
 </ul>
+<table>
+	<thead>
+			<tr>
+					<th>Image input requirements (OpenAI, at the time of writing)</th>
+					<th></th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Supported file types</td>
+					<td>PNG (<code>.png</code>), JPEG (<code>.jpeg</code>, <code>.jpg</code>), WEBP (<code>.webp</code>), non-animated GIF (<code>.gif</code>)</td>
+			</tr>
+			<tr>
+					<td>Size limits</td>
+					<td>up to 512 MB total payload per request; up to 1500 image inputs per request</td>
+			</tr>
+			<tr>
+					<td>Other requirements</td>
+					<td>no watermarks or logos; no NSFW content; clear enough for a human to understand</td>
+			</tr>
+	</tbody>
+</table>
 
 </section>
 </section>
@@ -1814,7 +1839,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-01
+<p>Compiled on: 2026-10-06
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
