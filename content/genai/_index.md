@@ -35,27 +35,23 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
     - with the idea that they can later be __specialized__ for _specific tasks_
 
 <br>
-{{< image src="./foundation-models.png" max-h="60vh" alt="Foundation models concept">}}
+{{< image src="./foundation-models.svg" max-h="60vh" alt="Foundation models concept">}}
 
 ---
 
 ## __Terminology__: Foundation Models vs. _Large Language Models_
 
-{{< image src="./fm-vs-llm.webp" width="80%" max-h="70vh" alt="Venn diagram explaining how LLMs are a specific case of foundation models" link="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404" >}}
-
-(NB: _ChatGPT_ is a __product__ built on top of _GPT_ models, not a model itself)
+{{< image src="./fm-vs-llm.svg" width="80%" max-h="70vh" alt="Venn diagram explaining how LLMs are a specific case of foundation models" link="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404" >}}
 
 ---
 
 ## Basic Operation of LLMs
 
-<!-- ![Next word prediction](./next-word-prediction.png) -->
-{{< image src="./next-word-prediction.png" width="100%" max-h="70vh" alt="Next word prediction concept">}}
+{{< image src="./next-word-prediction.svg" width="100%" max-h="60vh" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled">}}
 
 - LLMs have learned to __predict__ the _next word_ (actually, _token_) in a _text_ given the _previous context_
     * similar to the _predictive_ keyboard on mobile phones, but much more _complex_ and _powerful_
     * the next token is __sampled__ from the predicted distribution: the _temperature_ parameter controls how _random_ the choice is
-        + the figure shows the _greedy_ case (always the most likely token), i.e. temperature $\approx 0$
 - In other words, LLMs have learned how to use __natural language__
 - Foundation models can combine input/output text with other modalities (e.g. images, audio, video)
     * e.g. accepting text + image as input, and producing text + image as output, or any combination of these modalities
@@ -70,7 +66,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 - LLMs do not process _characters_ nor _words_, but __tokens__: chunks of text, as defined by the model's [tokenizer](https://huggingface.co/learn/llm-course/chapter2/4)
     + you may think that __token $\approx$ word__, but this actually depends on the specific tokenization algorithm
 
-{{< image src="./tokenization.png" max-h="45vh" alt="Example of how a sentence is split into tokens" >}}
+{{< image src="./tokenization.svg" max-h="45vh" alt="Example of how a sentence is split into tokens" >}}
 
 - Tokens are the __unit of measure__ for LLMs:
     + the _context window_ is the maximum number of tokens a model can process in a single request (cf. [context management](../prompting/#/context-management))
@@ -102,7 +98,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 ## Analogy with Dual-System theory
 
-{{< image src="./dual-system.png" width="100%" max-h="90vh" alt="Dual-system theory concept">}}
+{{< image src="./dual-system.svg" width="100%" max-h="90vh" alt="Dual-system theory concept">}}
 
 (cf. [Thinking, Fast and Slow](https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow))
 
@@ -715,20 +711,29 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Concept: Prompt Templates
 
-![](./prompt-templates.jpg)
+| Technique | Prompt template | Description |
+|---|---|---|
+| Role playing | `You are an expert in {field} known for {key adjective}. Help me {task}.` | telling the AI to act as a famous expert or celebrity |
+| Style unbundling | `Describe the key elements of {expert}'s style/skill in bullet points.` <br> `Do {task} in the following style: {style}.` | describe what you like about a style, rather than copying it directly |
+| Emotion prompting | `Help me {task}. Please make sure {attribute}. This task is very important for my career.` | use emotional pressure and persuasion with the AI |
+| Few-shot learning | `Here are some examples of {task}. Generate a {task} for {new context}.` | add examples of the completed task to the prompt |
+| Synthetic bootstrap | `Generate ten examples of {examples} for {context}. Here are the inputs: {inputs}.` <br> `Generate {task} using {examples}.` | use AI to generate good examples of the completed task |
+
+(source: [Lenny's Newsletter](https://www.lennysnewsletter.com/))
+
+- `{placeholders}` are filled with _actual data_ at runtime
 
 ---
 
 ## Concept: Agents Calling External Tools
 
-![](./tools.png)
+{{< image src="./tools.svg" width="100%" max-h="85vh" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" >}}
 
 ---
 
 ## Concept: Model-Context Protocol (MCP)
 
-<!-- ![](./mcp.png) -->
-{{< image src="./mcp.png" width="100%" max-h="70vh" alt="Model-Context Protocol (MCP) concept">}}
+{{< image src="./mcp.svg" width="100%" max-h="70vh" alt="Model-Context Protocol (MCP) concept">}}
 
 - MCP $\approx$ _standard_ protocol for LLM-based applications to _discover_ and _call_ __external tools__ (cf. [specification](https://modelcontextprotocol.io/specification))
 - Allows for _decoupling_ between the agent's logic and the implementation of the tools, thus enabling modularity and interoperability
@@ -740,14 +745,13 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Concept: Retrieval-Augmented Generation (RAG)
 
-![](./rag.png)
+{{< image src="./rag.svg" width="100%" max-h="80vh" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" >}}
 
 ---
 
 ## Concept: LLM-as-a-Judge
 
-<!-- ![](./llm-as-a-judge.png) -->
-{{< image src="./llm-as-a-judge.png" width="100%" max-h="70vh" alt="LLM-as-a-Judge concept">}}
+{{< image src="./llm-as-a-judge.svg" width="100%" max-h="70vh" alt="LLM-as-a-Judge concept">}}
 
 - Exploiting an LLM to _evaluate_ the quality of some other LLM's output...
 - ... based on some _informal_ __criterion__ (e.g. _relevance_, _accuracy_, _completeness_, etc.)
@@ -768,7 +772,7 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 (The workflow of engineering products as per dimensions (2) and (3).
 Similar to the ML workflow in the sense that the goal is to process data, but different in many details: e.g. training is _optional_, and commonly _not_ performed in-house, as pre-trained models are exploited)
 
-![](./genai-workflow.png)
+{{< image src="./genai-workflow.svg" width="100%" max-h="40vh" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" >}}
 
 * there could be __many iterations__ (e.g. for PFM selection, and prompt tuning)
 * the whole workflow may be __re-started__ upon _data changes_, or _task changes_, or new _PFM availability_

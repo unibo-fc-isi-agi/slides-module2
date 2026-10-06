@@ -96,7 +96,7 @@ outputs = ["Reveal"]
 
 __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON matching a given schema) so that to bring unstructured input data (e.g. natural language) into structured form that can be easily processed by downstream applications (e.g. databases, APIs, etc.)
 
-![](./structured-output.png)
+{{< image src="./structured-output.svg" width="100%" max-h="80vh" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" >}}
 
 ---
 
@@ -881,7 +881,11 @@ pip install -r requirements.txt
 
 - [BEWARE] There are limitations w.r.t. input data [on OpenAI](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements) (and what about [OR](https://openrouter.ai/docs/guides/overview/multimodal/image-understanding)?)
 
-    {{< image src="./openai-image-input-limits.png" alt="OpenAI image input limits" class="img-fluid" >}}
+| Image input requirements (OpenAI, at the time of writing) | |
+|---|---|
+| Supported file types | PNG (`.png`), JPEG (`.jpeg`, `.jpg`), WEBP (`.webp`), non-animated GIF (`.gif`) |
+| Size limits | up to 512 MB total payload per request; up to 1500 image inputs per request |
+| Other requirements | no watermarks or logos; no NSFW content; clear enough for a human to understand |
 
 {{% /section %}}
 

@@ -714,7 +714,7 @@ when this is the case, the client will fail at run-time, complaining about unsup
 
 __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currently under active _evolution_
 
-{{<image src="apis.png" alt="LLMs' Web API Compatibility Landscape" max-h="70vh" >}}
+{{<image src="apis.svg" alt="LLMs' Web API Compatibility Landscape" max-h="70vh" >}}
 
 {{% /section %}}
 

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222" text-anchor="middle">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- Data -->
+  <rect x="40" y="170" width="300" height="550" rx="16" fill="#2690e7" fill-opacity="0.08" stroke="#2690e7" stroke-width="3"/>
+  <text x="190" y="225" font-size="38" font-weight="600" fill="#2690e7">Data</text>
+  <g font-size="28">
+    <rect x="70" y="260" width="240" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="190" y="305">Text</text>
+    <rect x="70" y="350" width="240" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="190" y="395">Images</text>
+    <rect x="70" y="440" width="240" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="190" y="485">Speech</text>
+    <rect x="70" y="530" width="240" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="190" y="575">Structured Data</text>
+    <rect x="70" y="620" width="240" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="190" y="665">3D Signals</text>
+  </g>
+
+  <!-- Training -->
+  <line x1="350" y1="470" x2="580" y2="470" stroke="#555" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="380" y="495" width="170" height="54" rx="12" fill="#555" fill-opacity="0.1" stroke="#555" stroke-width="2"/>
+  <text x="465" y="531" font-size="28">Training</text>
+
+  <!-- Foundation model -->
+  <circle cx="720" cy="470" r="130" fill="#7e57c2" fill-opacity="0.18" stroke="#7e57c2" stroke-width="4"/>
+  <text x="720" y="460" font-size="36" font-weight="600" fill="#7e57c2">Foundation</text>
+  <text x="720" y="502" font-size="36" font-weight="600" fill="#7e57c2">Model</text>
+
+  <!-- Adaptation -->
+  <g stroke="#555" stroke-width="3" fill="none">
+    <path d="M855,470 C960,470 990,140 1150,140" marker-end="url(#arrow)"/>
+    <path d="M855,470 C970,470 1000,265 1150,265" marker-end="url(#arrow)"/>
+    <path d="M855,470 C980,470 1010,390 1150,390" marker-end="url(#arrow)"/>
+    <path d="M855,470 C980,470 1010,515 1150,515" marker-end="url(#arrow)"/>
+    <path d="M855,470 C970,470 1000,640 1150,640" marker-end="url(#arrow)"/>
+    <path d="M855,470 C960,470 990,765 1150,765" marker-end="url(#arrow)"/>
+  </g>
+  <rect x="890" y="560" width="190" height="54" rx="12" fill="#fff" stroke="#555" stroke-width="2"/>
+  <text x="985" y="596" font-size="28">Adaptation</text>
+
+  <!-- Tasks -->
+  <text x="1355" y="75" font-size="38" font-weight="600" fill="#bd2b0b">Tasks</text>
+  <g font-size="28">
+    <rect x="1160" y="105" width="400" height="70" rx="12" fill="#e7a626" fill-opacity="0.2" stroke="#e7a626" stroke-width="2"/>
+    <text x="1360" y="150">Question Answering</text>
+    <rect x="1160" y="230" width="400" height="70" rx="12" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2"/>
+    <text x="1360" y="275">Sentiment Analysis</text>
+    <rect x="1160" y="355" width="400" height="70" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2"/>
+    <text x="1360" y="400">Information Extraction</text>
+    <rect x="1160" y="480" width="400" height="70" rx="12" fill="#7e57c2" fill-opacity="0.18" stroke="#7e57c2" stroke-width="2"/>
+    <text x="1360" y="525">Image Captioning</text>
+    <rect x="1160" y="605" width="400" height="70" rx="12" fill="#bd2b0b" fill-opacity="0.15" stroke="#bd2b0b" stroke-width="2"/>
+    <text x="1360" y="650">Object Recognition</text>
+    <rect x="1160" y="730" width="400" height="70" rx="12" fill="#e7a626" fill-opacity="0.2" stroke="#e7a626" stroke-width="2"/>
+    <text x="1360" y="775">Instruction Following</text>
+  </g>
+</svg>

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect x="30" y="20" width="915" height="300" rx="12" fill="#2690e7" fill-opacity="0.08" stroke="#2690e7" stroke-width="3"/>
+  <text x="55" y="62" font-size="26" text-anchor="start" font-weight="700" fill="#2690e7" xml:space="preserve">WHAT IS STRUCTURED OUTPUT?</text>
+  <text x="55" y="105" font-size="21" text-anchor="start" xml:space="preserve">An AI response that follows a predefined</text>
+  <text x="55" y="134" font-size="21" text-anchor="start" xml:space="preserve">structure or schema: instead of free-</text>
+  <text x="55" y="163" font-size="21" text-anchor="start" xml:space="preserve">form text, the model returns data</text>
+  <text x="55" y="192" font-size="21" text-anchor="start" xml:space="preserve">organized in a predictable format (e.g.</text>
+  <text x="55" y="221" font-size="21" text-anchor="start" xml:space="preserve">JSON, XML, or a table).</text>
+  <rect x="520" y="80" width="400" height="220" rx="12" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="540" y="108" font-size="19" text-anchor="start" font-weight="700" xml:space="preserve">Example (JSON)</text>
+  <text x="540" y="140" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">{</text>
+  <text x="540" y="163" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;name&quot;: &quot;Acme Corp&quot;,</text>
+  <text x="540" y="186" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;type&quot;: &quot;Company&quot;,</text>
+  <text x="540" y="209" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;employees&quot;: 120,</text>
+  <text x="540" y="232" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;founded&quot;: 2018,</text>
+  <text x="540" y="255" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;website&quot;: &quot;acme.com&quot;</text>
+  <text x="540" y="278" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">}</text>
+  <rect x="975" y="20" width="915" height="300" rx="12" fill="#7e57c2" fill-opacity="0.08" stroke="#7e57c2" stroke-width="3"/>
+  <text x="1000" y="62" font-size="26" text-anchor="start" font-weight="700" fill="#7e57c2" xml:space="preserve">WHY DOES IT MATTER?</text>
+  <circle cx="1011" cy="105" r="11" fill="#7e57c2"/>
+  <path d="M1005,105 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1032" y="112" font-size="21" text-anchor="start" xml:space="preserve">Reliable &amp; predictable</text>
+  <circle cx="1011" cy="147" r="11" fill="#7e57c2"/>
+  <path d="M1005,147 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1032" y="154" font-size="21" text-anchor="start" xml:space="preserve">Easy to validate</text>
+  <circle cx="1011" cy="189" r="11" fill="#7e57c2"/>
+  <path d="M1005,189 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1032" y="196" font-size="21" text-anchor="start" xml:space="preserve">Simple to parse and use</text>
+  <circle cx="1011" cy="231" r="11" fill="#7e57c2"/>
+  <path d="M1005,231 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1032" y="238" font-size="21" text-anchor="start" xml:space="preserve">Safer to automate</text>
+  <circle cx="1011" cy="273" r="11" fill="#7e57c2"/>
+  <path d="M1005,273 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1032" y="280" font-size="21" text-anchor="start" xml:space="preserve">Scales in production</text>
+  <text x="1650" y="80" font-size="19" text-anchor="middle" font-weight="700" xml:space="preserve">free-form text</text>
+  <rect x="1430" y="92" width="440" height="100" rx="12" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="2"/>
+  <text x="1650" y="120" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">“Acme Corp is a company that was founded in</text>
+  <text x="1650" y="143" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">2018. They have about 120 employees and</text>
+  <text x="1650" y="166" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">their website is acme.com.”</text>
+  <line x1="1650" y1="197" x2="1650" y2="231" stroke="#555" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="1650" y="252" font-size="19" text-anchor="middle" font-weight="700" xml:space="preserve">structured output</text>
+  <rect x="1430" y="264" width="440" height="40" rx="12" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="2"/>
+  <text x="1650" y="291" font-size="18" text-anchor="middle" font-family="Menlo, Consolas, monospace" xml:space="preserve">{&quot;name&quot;: &quot;Acme Corp&quot;, &quot;..&quot;: &quot;..&quot;}</text>
+  <rect x="30" y="335" width="1860" height="365" rx="12" fill="#555" fill-opacity="0.04" stroke="#555" stroke-width="3"/>
+  <text x="960" y="372" font-size="26" text-anchor="middle" font-weight="700" xml:space="preserve">THE WORKFLOW: HOW IT WORKS</text>
+  <rect x="50.0" y="422" width="282" height="262" rx="12" fill="#2690e7" fill-opacity="0.1" stroke="#2690e7" stroke-width="3"/>
+  <circle cx="191.0" cy="422" r="20" fill="#2690e7"/>
+  <text x="191.0" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">1</text>
+  <text x="191.0" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#2690e7" xml:space="preserve">DEFINE THE SCHEMA</text>
+  <text x="191.0" y="510" font-size="19" text-anchor="middle" xml:space="preserve">Define the desired</text>
+  <text x="191.0" y="535" font-size="19" text-anchor="middle" xml:space="preserve">structure: fields, types,</text>
+  <text x="191.0" y="560" font-size="19" text-anchor="middle" xml:space="preserve">constraints, required</text>
+  <text x="191.0" y="585" font-size="19" text-anchor="middle" xml:space="preserve">rules.</text>
+  <rect x="60.0" y="616" width="262" height="56" rx="8" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="0"/>
+  <text x="191.0" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">e.g. JSON Schema or</text>
+  <text x="191.0" y="660" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">Pydantic model</text>
+  <line x1="335.0" y1="556" x2="354.6" y2="556" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="357.6" y="422" width="282" height="262" rx="12" fill="#3a9a5b" fill-opacity="0.1" stroke="#3a9a5b" stroke-width="3"/>
+  <circle cx="498.6" cy="422" r="20" fill="#3a9a5b"/>
+  <text x="498.6" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">2</text>
+  <text x="498.6" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">SEND INPUT + SCHEMA</text>
+  <text x="498.6" y="510" font-size="19" text-anchor="middle" xml:space="preserve">Your prompt (input) and</text>
+  <text x="498.6" y="535" font-size="19" text-anchor="middle" xml:space="preserve">the schema are sent to</text>
+  <text x="498.6" y="560" font-size="19" text-anchor="middle" xml:space="preserve">the model.</text>
+  <rect x="367.6" y="616" width="262" height="56" rx="8" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="0"/>
+  <text x="498.6" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">the schema acts as</text>
+  <text x="498.6" y="660" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">instructions</text>
+  <line x1="642.6" y1="556" x2="662.2" y2="556" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="665.2" y="422" width="282" height="262" rx="12" fill="#e7a626" fill-opacity="0.1" stroke="#e7a626" stroke-width="3"/>
+  <circle cx="806.2" cy="422" r="20" fill="#e7a626"/>
+  <text x="806.2" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">3</text>
+  <text x="806.2" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#e7a626" xml:space="preserve">MODEL GENERATES OUTPUT</text>
+  <text x="806.2" y="510" font-size="19" text-anchor="middle" xml:space="preserve">The model fills the</text>
+  <text x="806.2" y="535" font-size="19" text-anchor="middle" xml:space="preserve">schema with the</text>
+  <text x="806.2" y="560" font-size="19" text-anchor="middle" xml:space="preserve">appropriate data.</text>
+  <rect x="675.2" y="616" width="262" height="56" rx="8" fill="#e7a626" fill-opacity="0.15" stroke="#e7a626" stroke-width="0"/>
+  <text x="806.2" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">output follows the schema</text>
+  <line x1="950.2" y1="556" x2="969.8000000000001" y2="556" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="972.8000000000001" y="422" width="282" height="262" rx="12" fill="#2690e7" fill-opacity="0.1" stroke="#2690e7" stroke-width="3"/>
+  <circle cx="1113.8000000000002" cy="422" r="20" fill="#2690e7"/>
+  <text x="1113.8000000000002" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">4</text>
+  <text x="1113.8000000000002" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#2690e7" xml:space="preserve">OUTPUT IS VALIDATED</text>
+  <text x="1113.8000000000002" y="510" font-size="19" text-anchor="middle" xml:space="preserve">The output is checked</text>
+  <text x="1113.8000000000002" y="535" font-size="19" text-anchor="middle" xml:space="preserve">against the schema: is it</text>
+  <text x="1113.8000000000002" y="560" font-size="19" text-anchor="middle" xml:space="preserve">valid and complete?</text>
+  <rect x="982.8000000000001" y="616" width="262" height="56" rx="8" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="0"/>
+  <text x="1113.8000000000002" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">if invalid: retry, or</text>
+  <text x="1113.8000000000002" y="660" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">handle the error</text>
+  <line x1="1257.8000000000002" y1="556" x2="1277.4" y2="556" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="1280.4" y="422" width="282" height="262" rx="12" fill="#3a9a5b" fill-opacity="0.1" stroke="#3a9a5b" stroke-width="3"/>
+  <circle cx="1421.4" cy="422" r="20" fill="#3a9a5b"/>
+  <text x="1421.4" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">5</text>
+  <text x="1421.4" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">PARSE &amp; USE</text>
+  <text x="1421.4" y="510" font-size="19" text-anchor="middle" xml:space="preserve">Valid output is parsed</text>
+  <text x="1421.4" y="535" font-size="19" text-anchor="middle" xml:space="preserve">into native data types</text>
+  <text x="1421.4" y="560" font-size="19" text-anchor="middle" xml:space="preserve">(objects, arrays, tables,</text>
+  <text x="1421.4" y="585" font-size="19" text-anchor="middle" xml:space="preserve">…).</text>
+  <rect x="1290.4" y="616" width="262" height="56" rx="8" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="0"/>
+  <text x="1421.4" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">ready for your</text>
+  <text x="1421.4" y="660" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">application</text>
+  <line x1="1565.4" y1="556" x2="1585.0" y2="556" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="1588.0" y="422" width="282" height="262" rx="12" fill="#7e57c2" fill-opacity="0.1" stroke="#7e57c2" stroke-width="3"/>
+  <circle cx="1729.0" cy="422" r="20" fill="#7e57c2"/>
+  <text x="1729.0" y="429.7" font-size="22" text-anchor="middle" font-weight="700" fill="#fff" xml:space="preserve">6</text>
+  <text x="1729.0" y="472" font-size="18" text-anchor="middle" font-weight="700" fill="#7e57c2" xml:space="preserve">AUTOMATE &amp; INTEGRATE</text>
+  <text x="1729.0" y="510" font-size="19" text-anchor="middle" xml:space="preserve">Use the data in</text>
+  <text x="1729.0" y="535" font-size="19" text-anchor="middle" xml:space="preserve">downstream workflows,</text>
+  <text x="1729.0" y="560" font-size="19" text-anchor="middle" xml:space="preserve">databases, APIs,</text>
+  <text x="1729.0" y="585" font-size="19" text-anchor="middle" xml:space="preserve">dashboards, …</text>
+  <rect x="1598.0" y="616" width="262" height="56" rx="8" fill="#7e57c2" fill-opacity="0.15" stroke="#7e57c2" stroke-width="0"/>
+  <text x="1729.0" y="638" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">reliable building block</text>
+  <text x="1729.0" y="660" font-size="18" text-anchor="middle" font-style="italic" xml:space="preserve">for automation</text>
+  <rect x="30" y="715" width="1125" height="355" rx="12" fill="#e7a626" fill-opacity="0.07" stroke="#e7a626" stroke-width="3"/>
+  <text x="592" y="757" font-size="24" text-anchor="middle" font-weight="700" fill="#e7a626" xml:space="preserve">HOW YOU DEFINE THE SCHEMA (EXAMPLES)</text>
+  <text x="55" y="795" font-size="20" text-anchor="start" font-weight="700" xml:space="preserve">JSON Schema</text>
+  <text x="55" y="826" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">{</text>
+  <text x="55" y="850" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;type&quot;: &quot;object&quot;,</text>
+  <text x="55" y="874" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;properties&quot;: {</text>
+  <text x="55" y="898" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    &quot;name&quot;: {&quot;type&quot;: &quot;string&quot;},</text>
+  <text x="55" y="922" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    &quot;employees&quot;: {&quot;type&quot;: &quot;integer&quot;}</text>
+  <text x="55" y="946" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  },</text>
+  <text x="55" y="970" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">  &quot;required&quot;: [&quot;name&quot;, &quot;employees&quot;]</text>
+  <text x="55" y="994" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">}</text>
+  <text x="625" y="795" font-size="20" text-anchor="start" font-weight="700" xml:space="preserve">Pydantic model</text>
+  <text x="625" y="826" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">class Company(BaseModel):</text>
+  <text x="625" y="850" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    name: str</text>
+  <text x="625" y="874" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    employees: int</text>
+  <text x="625" y="898" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    founded: int | None = None</text>
+  <text x="625" y="922" font-size="18" text-anchor="start" font-family="Menlo, Consolas, monospace" xml:space="preserve">    website: HttpUrl | None = None</text>
+  <text x="55" y="1045" font-size="20" text-anchor="start" font-style="italic" xml:space="preserve">Common formats: JSON · XML · tables / CSV · custom objects (Pydantic, …)</text>
+  <rect x="1185" y="715" width="705" height="355" rx="12" fill="#3a9a5b" fill-opacity="0.07" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="1537" y="757" font-size="24" text-anchor="middle" font-weight="700" fill="#3a9a5b" xml:space="preserve">BEST PRACTICES</text>
+  <circle cx="1221" cy="795" r="11" fill="#3a9a5b"/>
+  <path d="M1215,795 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1242" y="802" font-size="21" text-anchor="start" xml:space="preserve">Be explicit: clear field descriptions and rules</text>
+  <circle cx="1221" cy="835" r="11" fill="#3a9a5b"/>
+  <path d="M1215,835 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1242" y="842" font-size="21" text-anchor="start" xml:space="preserve">Keep schemas as simple as possible</text>
+  <circle cx="1221" cy="875" r="11" fill="#3a9a5b"/>
+  <path d="M1215,875 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1242" y="882" font-size="21" text-anchor="start" xml:space="preserve">Use examples in your prompt when helpful</text>
+  <circle cx="1221" cy="915" r="11" fill="#3a9a5b"/>
+  <path d="M1215,915 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1242" y="922" font-size="21" text-anchor="start" xml:space="preserve">Validate, and handle errors gracefully</text>
+  <circle cx="1221" cy="955" r="11" fill="#3a9a5b"/>
+  <path d="M1215,955 l4,5 l8,-9" stroke="#fff" stroke-width="3" fill="none"/>
+  <text x="1242" y="962" font-size="21" text-anchor="start" xml:space="preserve">Version your schema as it evolves</text>
+  <text x="1210" y="1010" font-size="20" text-anchor="start" font-style="italic" xml:space="preserve">Typical use cases: information extraction, e-commerce, CRM,</text>
+  <text x="1210" y="1036" font-size="20" text-anchor="start" font-style="italic" xml:space="preserve">analytics, automation</text>
+
+</svg>

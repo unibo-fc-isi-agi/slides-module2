@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="640" y="60" font-size="40" font-weight="600" text-anchor="middle">Next token prediction</text>
+
+  <!-- context -->
+  <text x="200" y="150" font-size="24" font-style="italic" fill="#3a9a5b" text-anchor="middle">previous tokens (context)</text>
+  <rect x="40" y="170" width="320" height="64" rx="12" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="3"/>
+  <text x="200" y="212" font-size="26" font-family="Menlo, Consolas, monospace" text-anchor="middle">The boy went to the</text>
+
+  <!-- LLM -->
+  <line x1="200" y1="236" x2="200" y2="330" stroke="#555" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="120" y="335" width="160" height="90" rx="12" fill="#2690e7" fill-opacity="0.2" stroke="#2690e7" stroke-width="3"/>
+  <text x="200" y="391" font-size="32" font-weight="600" text-anchor="middle">LLM</text>
+
+  <!-- distribution -->
+  <text x="830" y="150" font-size="24" text-anchor="middle">probability distribution over the next token</text>
+  <rect x="470" y="170" width="760" height="400" rx="12" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="2"/>
+  <!-- fan of arrows from LLM -->
+  <g stroke="#555" stroke-width="3" fill="none">
+    <path d="M280,380 H400 V220 H495" marker-end="url(#arrow)"/>
+    <path d="M400,290 H495" marker-end="url(#arrow)"/>
+    <path d="M400,380 H495" marker-end="url(#arrow)"/>
+    <path d="M400,380 V470 H495" marker-end="url(#arrow)"/>
+    <path d="M400,470 V540 H495" marker-end="url(#arrow)"/>
+  </g>
+  <!-- bars: width = p * 1300 -->
+  <g font-size="22" font-family="Menlo, Consolas, monospace">
+    <rect x="500" y="200" width="130" height="40" rx="6" fill="#3a9a5b" fill-opacity="0.35" stroke="#3a9a5b" stroke-width="2"/>
+    <text x="565" y="228" text-anchor="middle">0.10</text>
+    <rect x="500" y="270" width="65" height="40" rx="6" fill="#2690e7" fill-opacity="0.35" stroke="#2690e7" stroke-width="2"/>
+    <text x="532" y="296" font-size="17" text-anchor="middle">0.05</text>
+    <rect x="500" y="360" width="520" height="40" rx="6" fill="#7e57c2" fill-opacity="0.35" stroke="#7e57c2" stroke-width="2"/>
+    <text x="760" y="388" text-anchor="middle">0.40</text>
+    <rect x="500" y="450" width="195" height="40" rx="6" fill="#e7a626" fill-opacity="0.35" stroke="#e7a626" stroke-width="2"/>
+    <text x="597" y="478" text-anchor="middle">0.15</text>
+    <rect x="500" y="520" width="390" height="40" rx="6" fill="#bd2b0b" fill-opacity="0.25" stroke="#bd2b0b" stroke-width="2"/>
+    <text x="695" y="548" text-anchor="middle">0.30</text>
+  </g>
+  <g font-size="28" font-weight="600">
+    <text x="645" y="230" fill="#3a9a5b">Cafe</text>
+    <text x="580" y="300" fill="#2690e7">Hospital</text>
+    <text x="1035" y="390" fill="#7e57c2">Playground</text>
+    <text x="710" y="480" fill="#b07a10">Park</text>
+    <text x="905" y="550" fill="#bd2b0b">School</text>
+  </g>
+
+  <!-- caption -->
+  <text x="640" y="625" font-size="26" text-anchor="middle">the next token is <tspan font-weight="700">sampled</tspan> from this distribution</text>
+  <text x="640" y="662" font-size="22" font-style="italic" fill="#555" text-anchor="middle">greedy decoding (temperature ≈ 0) always picks the most likely one, i.e. "Playground"</text>
+  <text x="1260" y="708" font-size="16" fill="#888" text-anchor="end">adapted from @akshay_pachaar</text>
+</svg>

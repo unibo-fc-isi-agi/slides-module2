@@ -1668,7 +1668,7 @@
        y="407.35941"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text361">Web</text>
+       id="text361">Public</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -1684,7 +1684,7 @@
        y="423.70361"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text362">Pubblico</text>
+       id="text362">Web</text>
   </g>
   <g
      fill="#f5f5f5"
@@ -1728,7 +1728,7 @@
        y="189.79849"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text364">Fornitore del servizio</text>
+       id="text364">Service provider</text>
     <rect
        x="207.53371"
        y="171.7634"
@@ -2266,7 +2266,7 @@
        y="277.63461"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text437">Dati Aziendali</text>
+       id="text437">Company data</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -2752,7 +2752,7 @@
        y="401.27209"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text506">Dati Pubblici</text>
+       id="text506">Public data</text>
   </g>
   <g
      fill="#ffcc00"
@@ -2796,7 +2796,7 @@
        clip-path="url(#clipPath2)"
        font-family="sans-serif"
        stroke="none"
-       id="text508">allenamento</text>
+       id="text508">training</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3257,7 +3257,7 @@
        y="354.66959"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text535">Utilizzatore</text>
+       id="text535">User</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3314,7 +3314,7 @@
        clip-path="url(#clipPath2)"
        font-family="sans-serif"
        stroke="none"
-       id="text539">Documenti</text>
+       id="text539">Documents</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3390,14 +3390,14 @@
        y="275.56909"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text543">Contenuti</text>
+       id="text543">Multimedia</text>
     <text
        x="909.45459"
        xml:space="preserve"
        y="291.91321"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text544">multimediali</text>
+       id="text544">content</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3452,7 +3452,7 @@
        clip-path="url(#clipPath2)"
        font-family="sans-serif"
        stroke="none"
-       id="text546">Messaggi</text>
+       id="text546">Messages</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3511,7 +3511,7 @@
        font-family="sans-serif"
        stroke="none"
        xml:space="preserve"
-       id="text548">Immagini</text>
+       id="text548">Images</text>
   </g>
   <g
      text-rendering="geometricPrecision"
@@ -3636,7 +3636,7 @@
        y="323.5184"
        clip-path="url(#clipPath2)"
        stroke="none"
-       id="text904">interazione as-a-Service</text>
+       id="text904">as-a-Service interaction</text>
   </g>
   <g
      text-rendering="geometricPrecision"
