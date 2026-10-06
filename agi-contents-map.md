@@ -56,7 +56,7 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
     - Exercises:
         * [x] E2.1: Building an agent that calls a tool from scratch with OpenAI client lib — `agents` example 1
         * [x] E2.2: Building an agent that calls a tool via LangChain (precooked agentic lib) — `agents` example 1 bis
-        * [x] E2.3: Setup MCP gateway with 2+ tool servers, attaching LLM to it — `agents` exercise 2 (exercise 1: human-in-the-loop write tool + prompt injection test)
+        * [x] E2.3: Setup MCP gateway with 2+ tool servers, attaching LLM to it — `agents` exercise 3 (exercise 1: read-only tools to inspect applications; exercise 2: write tools with human-in-the-loop + prompt injection test)
 
 3. Retrieval augemented generation (RAG)
     - Topics:

@@ -1,8 +1,8 @@
 # pip install mcp
 from mcp.server.fastmcp import FastMCP
-from committee import tools
+from simple_tools import tools
 
-server = FastMCP("committee", instructions="Tools to inspect the applications to a PhD programme")
+server = FastMCP("simple-tools", instructions="Tools to get the current time, the weather, and Web search results")
 for function in tools:
     server.tool()(function)  # name, description, and input schema are derived from the function
 

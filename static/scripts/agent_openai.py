@@ -3,7 +3,7 @@ import json
 import os
 from openai import OpenAI
 from pydantic import TypeAdapter
-from committee import instructions, tools
+from simple_tools import instructions, tools
 
 base_url = os.environ.get("OPENAI_BASE_URL", "https://openrouter.ai/api/v1/")
 api_key = os.environ.get("OPENAI_API_KEY") or input(f"Enter your API key for {base_url}: ")

@@ -1,21 +1,17 @@
 # pip install langchain langchain-openai langchain-mcp-adapters
 import asyncio
-import os
 import pathlib
 import sys
 from langchain.agents import create_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from committee import instructions
+from simple_tools import instructions
 from agent_langchain import llm, print_tool_calls
 
-secrets = {k: v for k, v in os.environ.items() if k.startswith("OPENAI_")}  # needed by score_letter
-
 mcp_client = MultiServerMCPClient({
-    "committee": dict(
+    "simple-tools": dict(
         transport="stdio",  # the server is a sub-process, talking via stdin/stdout
         command=sys.executable,
-        args=[str(pathlib.Path(__file__).parent / "committee_mcp_server.py")],
-        env=secrets,
+        args=[str(pathlib.Path(__file__).parent / "simple_tools_mcp_server.py")],
     ),
     # more servers here, e.g. "fetch": dict(transport="stdio", command="uvx", args=["mcp-server-fetch"]),
 })

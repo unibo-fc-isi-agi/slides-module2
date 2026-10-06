@@ -1,6 +1,7 @@
 openai
 langchain-openai
 pydantic
+ddgs
 pyyaml
 pytest
 deepeval

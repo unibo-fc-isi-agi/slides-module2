@@ -6,9 +6,6 @@ import sys
 sys.path.append(str(pathlib.Path(__file__).parent.parent / "scripts"))  # i.e. <root dir>/scripts/
 
 from agent_langchain import agent
-from committee import list_candidates
-
-CANDIDATES = list_candidates()
 
 
 @functools.cache
@@ -19,25 +16,22 @@ def trajectory(question: str) -> tuple[list[dict], str]:
     return tool_calls, messages[-1].content
 
 
-def test_lists_candidates():
-    tool_calls, answer = trajectory("Who applied to the PhD programme?")
-    assert [call["name"] for call in tool_calls] == ["list_candidates"]  # exactly one call, no wasted steps
-    assert all(name in answer for name in CANDIDATES)
+def test_time_in_tokyo():
+    tool_calls, _ = trajectory("What time is it in Tokyo?")
+    assert [(call["name"], call["args"]) for call in tool_calls] == [("get_current_time", {"timezone": "Asia/Tokyo"})]
 
 
-def test_valid_arguments():
-    tool_calls, _ = trajectory("Which candidate has the best recommendation letter?")
-    assert all(call["args"]["candidate"] in CANDIDATES for call in tool_calls if call["name"] != "list_candidates")
+def test_weather_in_bologna():
+    tool_calls, _ = trajectory("Is it raining in Bologna right now?")
+    assert [call["name"] for call in tool_calls] == ["get_weather"]  # exactly one call, no wasted steps
+    assert "bologna" in tool_calls[0]["args"]["location"].lower()
 
 
-def test_scores_each_candidate_once():
-    tool_calls, answer = trajectory("Which candidate has the best recommendation letter?")
-    scored = [call["args"]["candidate"] for call in tool_calls if call["name"] == "score_letter"]
-    assert sorted(scored) == sorted(CANDIDATES)  # all of them, once each
-    assert "Mario Rossi" in answer
+def test_no_tools_when_not_needed():
+    tool_calls, _ = trajectory("What is the capital of France?")
+    assert tool_calls == []  # well-known facts need no tools
 
 
-def test_focuses_on_one_candidate():
-    tool_calls, answer = trajectory("Does the letter of Jean Dupont mention any weakness?")
-    assert {call["args"].get("candidate") for call in tool_calls} <= {"Jean Dupont", None}
-    assert tool_calls, "the answer must be grounded on some tool call"
+def test_unknown_location():
+    _, answer = trajectory("What's the weather like in Xyzzyville?")
+    assert not any(char.isdigit() for char in answer), "the agent must not invent temperatures"
