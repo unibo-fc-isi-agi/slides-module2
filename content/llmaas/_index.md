@@ -27,7 +27,7 @@ outputs = ["Reveal"]
 1. **Service Provider**: several exist, with different offerings in terms of models, pricing, and features
     - e.g. [OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google](https://cloud.google.com/vertex-ai), [Microsoft](https://azure.microsoft.com/en-us/services/cognitive-services/), [Hugging Face](https://huggingface.co/inference-api), or aggregators like [OpenRouter](https://openrouter.ai/)
     - the choice of the service provider can depend on several factors, including:
-        + the availability of _specific models_ (e.g. GPT-4, Claude, Gemini, etc.) in their __model zoos__
+        + the availability of _specific models_ (e.g. GPT, Claude, Gemini, etc.) in their __model zoos__
         + the _pricing model_ and cost structure
         + the _features_ and _capabilities_ offered (e.g. fine-tuning, custom models, MCP support, etc.)
 
@@ -39,7 +39,7 @@ outputs = ["Reveal"]
 1. **Client Libraries**, in target _programming languages_ wrap Web API clients and make it easier to use _LLMs programmaticatically_
     - here you may care about which programming languages (e.g. Python, JS, Java, etc.) are supported by some given client library...
         * most commonly, the same provider implements the same meta-model onto different target programming languages (e.g. OpenAI' client is available in Python, JS, Java, etc.)
-    - there exist also _third-party_ client libraries, which may support multiple Web APIs, and therefore multiple providers (e.g. [LangChain](https://python.langchain.com/en/latest/))
+    - there exist also _third-party_ client libraries, which may support multiple Web APIs, and therefore multiple providers (e.g. [LangChain](https://docs.langchain.com/oss/python/langchain/overview))
 
 ---
 
@@ -416,16 +416,9 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 - Pretty rich [model zoo](https://openrouter.ai/models), exposing models from <u>many</u> different providers, most notably: OpenAI, Anthropic, Google, xAI, Mistral, etc.
     + notice that models come with __price-per-token__, commonly expressed a `$/1M tokens` (some times the prices is different for _input_ or _output_ tokens)
         * this is very common for on-cloud services, and it is the main reason why we need to be careful when experimenting with them, to avoid unexpected costs
+        * recall that _token_ $\neq$ _word_ (cf. [tokens](../genai/#/tokens))
 
     {{< image src="open-router-models.png" alt="Open Router's Model Zoo" max-h="40vh" >}}
-
----
-
-## About Tokenization
-
-You may think that __token $\approx$ word__, but this actually depends on the specific [tokenization algorithm](https://huggingface.co/docs/course/it/chapter2/4) (tokenizer) being used by a model
-
-![](tokenization.png)
 
 ---
 
@@ -729,7 +722,7 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
 
 # Client-side libraries for LLMs
 
-Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/api/docs/libraries), [LangChain](https://python.langchain.com/en/latest/)
+Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/api/docs/libraries), [LangChain](https://docs.langchain.com/oss/python/langchain/overview)
 
 ---
 
@@ -741,7 +734,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 - Two major didactical choices here (among the _many_ possible ones):
     1. [OpenAI Client lib](https://developers.openai.com/api/docs/libraries) flavoured for JavaScript, Python, .Net, Java, Go, Ruby, CLI
         + it is the "reference" client, since OpenAI invented the first Web API for LLMs, and many other providers mimicked it
-    2. [LangChain](https://python.langchain.com/en/latest/) flavoured for Python and JavaScript
+    2. [LangChain](https://docs.langchain.com/oss/python/langchain/overview) flavoured for Python and JavaScript
         + it is a _third-party_ client library, which supports [multiple providers](https://docs.langchain.com/oss/python/integrations/providers/overview) and APIs (e.g. OpenAI, Anthropic, Google, Azure, etc.)
         + it is more focused on _orchestrating_ interactions with LLMs and tools, rather than just wrapping Web APIs
 

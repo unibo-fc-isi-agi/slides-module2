@@ -603,7 +603,7 @@ Given a model, there are several ways to make it _behave_ as your task requires,
 3. __Retrieval-Augmented Generation__ (RAG): retrieve relevant documents and put them in the prompt ([Lewis et al., 2020](https://arxiv.org/abs/2005.11401); cf. _RAG_ lecture)
     + gives access to _private_ or _up-to-date_ knowledge; adds an indexing pipeline to maintain
 4. __Skills__ and __workflows__: package instructions, tools, and steps into reusable procedures (cf. _skills_ and _workflows_ lectures)
-    + trade _flexibility_ (skills: the agent decides) for _predictability_ (workflows: the engineer decides)
+    + trade _flexibility_ (skills: the agent decides) for _predictability_ (workflows: the engineer decides), cf. the [autonomy spectrum](../genai/#/genai-uses)
 5. __Fine-tuning__: further _train_ the model on task-specific examples
     + changes _style_, _format_, and _narrow skills_ reliably; costly, needs data, and ties you to a model (and a license allowing it!)
 

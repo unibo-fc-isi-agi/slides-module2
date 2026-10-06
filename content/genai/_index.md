@@ -43,6 +43,8 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 {{< image src="./fm-vs-llm.webp" width="80%" max-h="70vh" alt="Venn diagram explaining how LLMs are a specific case of foundation models" link="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404" >}}
 
+(NB: _ChatGPT_ is a __product__ built on top of _GPT_ models, not a model itself)
+
 ---
 
 ## Basic Operation of LLMs
@@ -50,12 +52,29 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 <!-- ![Next word prediction](./next-word-prediction.png) -->
 {{< image src="./next-word-prediction.png" width="100%" max-h="70vh" alt="Next word prediction concept">}}
 
-- LLMs have learned to __predict__ the _next word_ in a _text_ given the _previous context_
+- LLMs have learned to __predict__ the _next word_ (actually, _token_) in a _text_ given the _previous context_
     * similar to the _predictive_ keyboard on mobile phones, but much more _complex_ and _powerful_
+    * the next token is __sampled__ from the predicted distribution: the _temperature_ parameter controls how _random_ the choice is
+        + the figure shows the _greedy_ case (always the most likely token), i.e. temperature $\approx 0$
 - In other words, LLMs have learned how to use __natural language__
 - Foundation models can combine input/output text with other modalities (e.g. images, audio, video)
     * e.g. accepting text + image as input, and producing text + image as output, or any combination of these modalities
 - This makes them very good at dealing with __unstructured__ data, either in input or output
+
+---
+
+{{< slide id="tokens" >}}
+
+## About Tokens
+
+- LLMs do not process _characters_ nor _words_, but __tokens__: chunks of text, as defined by the model's [tokenizer](https://huggingface.co/learn/llm-course/chapter2/4)
+    + you may think that __token $\approx$ word__, but this actually depends on the specific tokenization algorithm
+
+{{< image src="./tokenization.png" max-h="45vh" alt="Example of how a sentence is split into tokens" >}}
+
+- Tokens are the __unit of measure__ for LLMs:
+    + the _context window_ is the maximum number of tokens a model can process in a single request (cf. [context management](../prompting/#/context-management))
+    + the _cost_ of using LLMs as services is commonly _per token_ (cf. [Open Router](../llmaas/#/open-router))
 
 ---
 
@@ -73,6 +92,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 > Natural language allows LLMs to use __intuition__ in _reasoning_, like humans do
 > <br> (thus __making mistakes__ like humans do)
 - $\implies$ LLMs can be very confident in themselves, while saying _incorrect_, _imprecise_, or _made-up_ things
+    + a.k.a. __hallucinations__
 
 - better would be to combine LLMs with __symbolic__ AI tools, to get the best of both worlds
 
@@ -105,7 +125,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 - __Consumption__ is measured based on the _computational effort_ required to serve the request:
     + processed _tokens_ (for text)
-    + number of _requests_ made per unit of time (minute, hour, day, month)
+    + number of _requests_ (often also subject to __rate limits__, e.g. max requests per minute or day)
     + _size_ of the processed data (for images, audio, video)
     + _complexity_ of the specific _model_ used to serve the request
 
@@ -160,7 +180,9 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 > - __Recent__ information may <u>not</u> have been _learned_ yet
 > - There is a risk of receiving __outdated__ or _incomplete_ answers from GenAI
-> - GenAI gives the _impression_ of learning __during the conversation__, but it actually does so _offline_
+> - GenAI gives the _impression_ of learning __during the conversation__, but its _weights_ are only updated _offline_
+>    + within a conversation, it just re-reads the _whole history_ at each turn (cf. [stateless APIs](../llmaas/#/chat-completion-concept))
+>    + "_memory_" features of chat apps store notes about the user, and put them back into the _context_ of later conversations
 {{% /fragment %}}
 
 ---
@@ -208,9 +230,10 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 - _Conversational_: e.g. [ChatGPT](https://chatgpt.com/), [Claude](https://claude.ai/login?returnTo=%2F%3F), [Scite](https://scite.ai)
 - _Auto-completion_: e.g. [GitHub Copilot](https://github.com/features/copilot)
 - _Programmatic_: e.g. [OpenAI Platform](https://openai.com/api/), [Hugging Face](https://huggingface.co/)
-- _In-App_: e.g. [Microsoft 365 Copilot](https://www.microsoft.com/it-it/microsoft-365/copilot?market=it)
+- _In-App_: e.g. [Microsoft 365 Copilot](https://www.microsoft.com/en-us/microsoft-365/copilot)
 - _Audio/video editing_: e.g. [Suno](https://suno.com/), [Runway](https://runwayml.com/)
 - _Inspection of generated material_: e.g. [GPTZero](https://gptzero.me/), [ZeroGPT](https://www.zerogpt.com/)
+    + {{% color "red" %}}unreliable{{% /color %}}: OpenAI itself [withdrew](https://techcrunch.com/2023/07/25/openai-scuttles-ai-written-text-detector-over-low-rate-of-accuracy/) its AI-text classifier, due to its low accuracy
 - _Agentic_: e.g. [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [OpenClaw](https://openclaw.ai)
 
 {{% color "red" %}}Non-exhaustive list!{{% /color %}}
@@ -285,29 +308,29 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 {{% col class="col-6" %}}
 {{< image src="./logo-openai.svg" height="2em" alt="OpenAI logo" >}}
 ```python
-import asyncio
-from openai import AsyncOpenAI
+from openai import OpenAI
 
-client = AsyncOpenAI(api_key="sk-1234567890abcdef1234567890abcdef")
+client = OpenAI()  # reads the API key from the OPENAI_API_KEY env variable
 
-async def main():
-    stream = await client.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            dict(role="user",
-                 content="European countries, one by line")
-        ],
-        stream=True,
-    )
-    async for chunk in stream:
-        print(chunk.choices[0].delta.content or "", end=", ")
-
-asyncio.run(main())
+stream = client.chat.completions.create(
+    model="gpt-5-mini",
+    messages=[
+        dict(role="user", content="European countries, one by line")
+    ],
+    stream=True,  # receive the response token by token
+)
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="")
 ```
 
-Output:
+Output (excerpt, may vary):
 ```plaintext
-Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Kosovo, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Moldova, Monaco, Montenegro, Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Russia, San Marino, Serbia, Slovakia, Slovenia, Spain, Sweden, Switzerland, Turkey, Ukraine, United Kingdom, Vatican City (Holy See),
+Albania
+Andorra
+Austria
+Belarus
+Belgium
+...
 ```
 {{% /col %}}
 {{% col %}}
@@ -370,7 +393,7 @@ Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, C
 {{% fragment %}}
 
 ### Attention...
-- ... __subscription__ pricing model (see [here](https://www.microsoft.com/it-it/microsoft-365/copilot?market=it#plans))
+- ... __subscription__ pricing model (see [here](https://www.microsoft.com/en-us/microsoft-365/copilot#plans))
 - ... potential __leaks__ of _sensitive_ information
 - ... non-negligible __lock-in__ risk
 
@@ -641,14 +664,15 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Let's explain the nomenclature
 
-- __<u>Pre-trained</u> foundation models__ (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. 'understanding' and generating text, images, code), most commonly accessed -as-a-Service- via API, as provided by third-party companies
-    * e.g. GPT, PaLM, LLaMA, etc.
+- __<u>Pre-trained</u> foundation models__ (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. 'understanding' and generating text, images, code), most commonly accessed _as-a-Service_ via API, as provided by third-party companies
+    * e.g. GPT (OpenAI), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, Qwen (Alibaba), etc.
+    * some are _proprietary_ (usable only via the provider's API), others are _open-weight_ (downloadable and runnable locally, cf. [on-premise deployment](../llmaas/#/ollama) and [open models](../governance/#/open-models))
 
 - __Prompts__: carefully _crafted textual inputs_ that guide some PFM to produce _desired outputs_
     * prompt __templates__ are prompts with _named placeholders_ to be filled with specific data at runtime
         + e.g. `Write a summary of the following article: {article_text}`
 
-- __Tools__: external _software components_ (e.g. WebAPIs, databases, search engines) that can be _invoked_ by PFMs to perform specific tasks or retrieve information
+- __Tools__: external _software components_ (e.g. WebAPIs, databases, search engines) that PFMs can _ask_ to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information
     * e.g. a calculator API, a weather API, a database query interface
 
 - __Vector stores__: specialized databases that store and retrieve _high-dimensional vectors_ (embeddings) for the sake of _information retrieval_ via _similarity search_
@@ -666,24 +690,25 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 (i.e. a product exploiting GenAI as per dimensions (2) and (3))
 
-0. FM are commonly <u>not</u> produced in-house, but rather _accessed_ via APIs... yet the choice of __what model(s) to use__ is crucial
+1. FM are commonly <u>not</u> produced in-house, but rather _accessed_ via APIs... yet the choice of __what model(s) to use__ is crucial
     * must be available, configured, and most commonly imply _costs_ (per call, per token, etc.)
     * imply the choice of some __client library__, and the related _programmatic interface_
         + e.g. [OpenAI Python SDK](https://github.com/openai/openai-python), [Hugging Face Transformers](https://huggingface.co/docs/transformers/index), etc.
 
-1. A set of __prompt templates__ (text files, or code snippets) that are known to work well for the tasks at hand
+2. A set of __prompt templates__ (text files, or code snippets) that are known to work well for the tasks at hand
     * commonly assessed via semi-automatic _evaluations_ on a _validation set_ of inputs
 
-2. A set of __tool servers__ implementing the [MCP protocol](https://modelcontextprotocol.io/docs/getting-started/intro) so that tools can be _invoked_ by PFMs
-    * these are _software modules_, somewhat similar to ordinary Web services, offering one endpoint per tool
+3. A set of __tools__ that PFMs can _ask_ the application to invoke
+    * these may be plain _functions_ in the application's code...
+    * ... or _software modules_ exposing tools via the [MCP protocol](https://modelcontextprotocol.io/docs/getting-started/intro) (__MCP servers__), somewhat similar to ordinary Web services
 
-3. A set of __agents__, implementing the logic to orchestrate the interaction between PFMs and tools
-    * these are _software modules_, commonly implemented via libraries such as [LangChain](https://python.langchain.com/en/latest/index.html) or [LlamaIndex](https://gpt-index.readthedocs.io/en/latest/)
+4. A set of __agents__, implementing the logic to orchestrate the interaction between PFMs and tools
+    * these are _software modules_, commonly implemented via libraries such as [LangChain](https://docs.langchain.com/oss/python/langchain/overview) or [LlamaIndex](https://developers.llamaindex.ai/python/framework/)
 
-4. A set of __vector stores__ (if needed), populated with relevant data, and accessible by the agents
-    * there are _software modules_, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks _indexed by_ their _embeddings_
+5. A set of __vector stores__ (if needed), populated with relevant data, and accessible by the agents
+    * these are _software modules_, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks _indexed by_ their _embeddings_
 
-5. LLM-as-a-Judge __evaluations__ to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents
+6. LLM-as-a-Judge __evaluations__ to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents
     * e.g. by comparing the output to a _reference_ answer, and by assigning a score based on some _criterion_
 
 ---
@@ -705,10 +730,11 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 <!-- ![](./mcp.png) -->
 {{< image src="./mcp.png" width="100%" max-h="70vh" alt="Model-Context Protocol (MCP) concept">}}
 
-- MCP $\approx$ _standard_ protocol for LLM-based agents to _call_ __external tools__
-- Allow for _decoupling_ between the agent's logic and the implementation of the tools, thus enabling modularity and interoperability
-- Most commonly there is a __server__ (a.k.a. _gateway_) where tools are registered (names, purpose, data schemas, etc.)
-- Clients are agents willing to _discover_ or _invoke_ tools provided by some server
+- MCP $\approx$ _standard_ protocol for LLM-based applications to _discover_ and _call_ __external tools__ (cf. [specification](https://modelcontextprotocol.io/specification))
+- Allows for _decoupling_ between the agent's logic and the implementation of the tools, thus enabling modularity and interoperability
+- Each MCP __server__ exposes its _own_ tools (names, descriptions, input schemas), plus possibly _resources_ (data) and _prompts_ (templates)
+- The _host_ application (e.g. Claude Code, or your agent) runs one MCP __client__ per server it connects to
+    + optionally, a __gateway__ may _aggregate_ several servers behind a single endpoint
 
 ---
 
@@ -727,6 +753,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 - ... based on some _informal_ __criterion__ (e.g. _relevance_, _accuracy_, _completeness_, etc.)
 - ... by comparing the output to some _reference_ (e.g. a human-written checklist)
 
+(more on this in the [validating](../validating/#/llm-as-a-judge) lecture)
+
 {{% /section %}}
 
 ---
@@ -738,7 +766,7 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 ## The GenAI workflow
 
 (The workflow of engineering products as per dimensions (2) and (3).
-Similar to the ML workflow in the sense that the goal is to process data, but different in many details e.g. _no training_ is involved)
+Similar to the ML workflow in the sense that the goal is to process data, but different in many details: e.g. training is _optional_, and commonly _not_ performed in-house, as pre-trained models are exploited)
 
 ![](./genai-workflow.png)
 
@@ -800,12 +828,12 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
     1. choose embedding model, chunking strategy, and populate vector store
     2. engineer retrieval strategies to fetch relevant chunks
 
-8. __Tools__:
+7. __Tools__:
     * regulation lookup API + tender database query API
     * report generation out of document templates
     * automate scoring calculations via spreadsheet or Python scripts generation
 
-9. __Agents__:
+8. __Agents__:
     1. exploit LLM to extract structured check-lists out of technical specs
     2. orchestrate RAG, tool invocations, and prompt templates to score each offer
     3. generate comparison reports
