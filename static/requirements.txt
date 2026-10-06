@@ -5,3 +5,6 @@ pyyaml
 pytest
 deepeval
 mlflow
+langchain
+mcp
+langchain-mcp-adapters

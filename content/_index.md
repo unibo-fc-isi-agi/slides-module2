@@ -22,7 +22,7 @@ aliases = [
 2. [LLM-as-a-Service](llmaas)
 3. [Prompt Engineering & Structured Outputs](prompting)
 4. [Validating Generative Software](validating)
-5. _Tools and Agents_ (coming soon)
+5. [Tools and Agents](agents)
 6. _Retrieval-Augmented Generation (RAG)_ (coming soon)
 7. _Agentic Skills_ (coming soon)
 8. _Workflows and Agent Orchestration_ (coming soon)

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+<linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#3a9a5b"/><stop offset="1" stop-color="#2690e7"/></linearGradient></defs>
+<rect x="40" y="40" width="1500" height="22" rx="11" fill="url(#g)"/>
+<path d="M1540,30 L1580,51 L1540,72 z" fill="#2690e7"/>
+<text x="60" y="105" font-size="24" font-weight="600" fill="#3a9a5b" text-anchor="start">the code controls the flow</text>
+<text x="1560" y="105" font-size="24" font-weight="600" fill="#2690e7" text-anchor="end">the LLM controls the flow</text>
+<!-- 4 stations -->
+<g font-size="20">
+<rect x="40" y="140" width="350" height="260" rx="12" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="3"/>
+<text x="215" y="180" font-size="26" font-weight="600">Single LLM call</text>
+<text x="215" y="220">input → LLM → output</text>
+<text x="215" y="290" font-style="italic" fill="#555">e.g. score one letter</text>
+<text x="215" y="318" font-style="italic" fill="#555">(the prompting lecture)</text>
+
+<rect x="425" y="140" width="350" height="260" rx="12" fill="#3a9a5b" fill-opacity="0.12" stroke="#3a9a5b" stroke-width="3"/>
+<text x="600" y="180" font-size="26" font-weight="600">Workflow</text>
+<text x="600" y="220">fixed sequence of steps,</text>
+<text x="600" y="246">some of which are LLM calls</text>
+<text x="600" y="290" font-style="italic" fill="#555">e.g. score all letters,</text>
+<text x="600" y="318" font-style="italic" fill="#555">then rank them by score</text>
+
+<rect x="810" y="140" width="350" height="260" rx="12" fill="#2690e7" fill-opacity="0.10" stroke="#2690e7" stroke-width="3"/>
+<text x="985" y="180" font-size="26" font-weight="600">Router</text>
+<text x="985" y="220">the LLM picks one branch</text>
+<text x="985" y="246">among predefined ones</text>
+<text x="985" y="290" font-style="italic" fill="#555">e.g. is the question about</text>
+<text x="985" y="318" font-style="italic" fill="#555">letters, grades, or IDs?</text>
+
+<rect x="1195" y="140" width="365" height="260" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/>
+<text x="1377" y="180" font-size="26" font-weight="600">Agent</text>
+<text x="1377" y="220">the LLM picks the next tool,</text>
+<text x="1377" y="246">in a loop, until done</text>
+<text x="1377" y="290" font-style="italic" fill="#555">e.g. answer any question</text>
+<text x="1377" y="318" font-style="italic" fill="#555">of the committee</text>
+</g>
+<!-- trade-offs -->
+<line x1="60" y1="470" x2="1540" y2="470" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+<text x="800" y="455" font-size="24" font-weight="600">more autonomy: more flexibility, for open-ended tasks...</text>
+<line x1="60" y1="530" x2="1540" y2="530" stroke="#d64545" stroke-width="3" marker-end="url(#a)"/>
+<text x="800" y="580" font-size="24" font-weight="600" fill="#d64545">... but also more cost, latency, unpredictability, risk, and testing effort</text>
+</svg>

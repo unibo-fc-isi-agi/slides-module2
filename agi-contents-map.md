@@ -39,24 +39,24 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
 
 2. Tools and agents
     - Topics:
-        * [ ] Agentic metaphor: tools for perception&actuation, LLM for deliberation, agents as controllers
-            + [ ] excursis classical agents vs. LLM agents: autonomy, BDI-style perceive/deliberate/act, what LLMs actually replace
-            + [ ] LLMs are not agents by themselves: agent = controller + LLM + tools + memory + policies; intelligence vs. autonomy vs. agency (Floridi 2025) _(proposed; introduced in `genai`)_
-        * [ ] Spectrum of autonomy: workflows (code controls the flow) vs. agents (LLM controls the flow); least autonomy that does the job (cf. Anthropic's "Building effective agents") _(proposed; introduced in `genai`)_
-        * [ ] Functions as tools (importance of documentation) (tool-call messages and `tool_choice` only shown in `llmaas`)
-        * [ ] Building an agent that calls a tool from scratch
-            + [ ] the ReAct loop (reason + act)
-        * [ ] MCP protocol, MCP gateway (MCP only named in `genai`)
-        * [ ] Agents with tools with LangChain
-        * [ ] Evaluating agents: trajectories, tool-call correctness, regression tests
-            + [ ] agentic benchmarks (GAIA, WebArena, AgentBench, SWE-bench, ARC-AGI-3): representation as the bottleneck; success without governance is not trustworthy agency _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-        * [ ] LLMs can't plan, but can help planning (LLM-Modulo, PlanBench): plans vs. plan-shaped text; LLMs as translators, critics, heuristic sources; external validation _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-        * [ ] Security of agentic systems: prompt injection, least privilege for tools, sandboxing tool execution, secrets out of context
-            + [ ] tools change the risk profile: read-only (information), write-enabled (action), external (dependency), institutional (accountability) risks _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [x] Agentic metaphor: tools for perception&actuation, LLM for deliberation, agents as controllers — `agents`
+            + [x] excursis classical agents vs. LLM agents: autonomy, BDI-style perceive/deliberate/act, what LLMs actually replace — `agents`
+            + [x] LLMs are not agents by themselves: agent = controller + LLM + tools + memory + policies; intelligence vs. autonomy vs. agency (Floridi 2025) — `agents` (recalled from `genai`)
+        * [x] Spectrum of autonomy: workflows (code controls the flow) vs. agents (LLM controls the flow); least autonomy that does the job (cf. Anthropic's "Building effective agents") — `agents`
+        * [x] Functions as tools (importance of documentation) — `agents` (good-tools table, cross-provider landscape)
+        * [x] Building an agent that calls a tool from scratch — `agents` (example 1)
+            + [x] the ReAct loop (reason + act) — `agents`
+        * [x] MCP protocol, MCP gateway — `agents` (example 2: FastMCP server, MCP Inspector, langchain-mcp-adapters)
+        * [x] Agents with tools with LangChain — `agents` (example 1 bis, `create_agent`)
+        * [x] Evaluating agents: trajectories, tool-call correctness, regression tests — `agents` (example 3, pytest)
+            + [x] agentic benchmarks (GAIA, WebArena, AgentBench, SWE-bench, ARC-AGI-3): representation as the bottleneck; success without governance is not trustworthy agency — `agents` (+ τ-bench, harness effect on ARC-AGI-3) (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [x] LLMs can't plan, but can help planning (LLM-Modulo, PlanBench): plans vs. plan-shaped text; LLMs as translators, critics, heuristic sources; external validation — `agents` (+ plan before acting) (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [x] Security of agentic systems: prompt injection, least privilege for tools, sandboxing tool execution, secrets out of context — `agents` (+ lethal trifecta)
+            + [x] tools change the risk profile: read-only (information), write-enabled (action), external (dependency), institutional (accountability) risks — `agents` (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
     - Exercises:
-        * [ ] E2.1: Building an agent that calls a tool from scratch with OpenAI client lib (code exists, not in slides: `content/llmaas/repl_chat_with_tools_openai*.py`)
-        * [ ] E2.2: Building an agent that calls a tool via LangChain (precooked agentic lib) (code exists, not in slides: `content/llmaas/repl_chat_with_tools_langchain*.py`)
-        * [ ] E2.3: Setup MCP gateway with 2+ tool servers, attaching LLM to it
+        * [x] E2.1: Building an agent that calls a tool from scratch with OpenAI client lib — `agents` example 1
+        * [x] E2.2: Building an agent that calls a tool via LangChain (precooked agentic lib) — `agents` example 1 bis
+        * [x] E2.3: Setup MCP gateway with 2+ tool servers, attaching LLM to it — `agents` exercise 2 (exercise 1: human-in-the-loop write tool + prompt injection test)
 
 3. Retrieval augemented generation (RAG)
     - Topics:
