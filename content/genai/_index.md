@@ -209,6 +209,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 - _In-App_: e.g. [Microsoft 365 Copilot](https://www.microsoft.com/it-it/microsoft-365/copilot?market=it)
 - _Audio/video editing_: e.g. [Suno](https://suno.com/), [Runway](https://runwayml.com/)
 - _Inspection of generated material_: e.g. [GPTZero](https://gptzero.me/), [ZeroGPT](https://www.zerogpt.com/)
+- _Agentic_: e.g. [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [OpenClaw](https://openclaw.ai)
 
 {{% color "red" %}}Non-exhaustive list!{{% /color %}}
 
@@ -405,6 +406,68 @@ Albania, Andorra, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, C
 {{% /fragment %}}
 {{% /col %}}
 {{% /multicol %}}
+
+---
+
+## __Agentic__ interface
+
+{{% multicol %}}
+{{% col %}}
+{{< image src="./claude-code.png" width="100%" alt="A Claude Code session in a terminal: the agent reads files and runs commands to answer the user's request" >}}
+{{% /col %}}
+{{% col %}}
+<br>
+
+- The user assigns a __goal__ (a _task_), not just a question
+- The AI works in a __loop__: _plan_ → _act_ → _observe_ → repeat
+    + _reads_ files, _runs_ commands, _edits_ code, _searches_ the Web
+- It operates within a __workspace__
+    + e.g. a repository, the file system, a shell (_locally_ or in a _cloud sandbox_)
+- The user __supervises__
+    + _approves_ actions, _interrupts_, _reviews_ the changes
+- Many front-ends: _CLI_, _IDE_, _desktop_, _web_, even _messaging apps_
+
+{{% fragment %}}
+
+### Attention...
+- ... __side effects__: it acts on _your_ machine (e.g. deleted files, leaked secrets)
+- ... __prompt injection__ via the files and Web pages it reads
+- ... heavy __token consumption__ (subscription or usage-based pricing)
+- ... __review__ burden and risk of _over-reliance_
+- ... non-negligible __lock-in__ risk
+
+{{% /fragment %}}
+
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## __Agentic__ interfaces: the landscape
+
+| | Vendor | Front-ends | Models | License |
+|---|---|---|---|---|
+| [Claude Code](https://code.claude.com/docs) | Anthropic | CLI, IDE, desktop, web | Claude | proprietary |
+| [Codex](https://github.com/openai/codex) | OpenAI | CLI, IDE, desktop, web | GPT | Apache-2.0 (CLI) |
+| [OpenClaw](https://github.com/openclaw/openclaw) | OpenClaw Foundation | self-hosted, messaging apps (WhatsApp, Telegram, Slack, ...) | any (hosted or local) | MIT |
+| [Cursor](https://cursor.com), [Copilot](https://github.com/features/copilot) (agent mode) | Anysphere, GitHub | IDE | various | proprietary |
+
+{{% fragment %}}
+
+### Common anatomy
+
+- An LLM + __tools__ (shell, files, Web) + a __loop__ $\Rightarrow$ an _agent_
+- Project-specific instructions in Markdown files (e.g. `CLAUDE.md`, [`AGENTS.md`](https://agents.md))
+- Extensible via [__MCP__](https://modelcontextprotocol.io) servers, __skills__, and __hooks__
+- __Permission__ modes: from "ask before every action" to "fully autonomous"
+
+{{% /fragment %}}
+
+{{% fragment %}}
+
+These are themselves __LLM-based agentic software__: the kind of system this module teaches you to _build_
+
+{{% /fragment %}}
 
 ---
 

@@ -67,7 +67,7 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture); `llmaas
 4. Agentic skills
     - Topics:
         * [ ] Platform-agnostic definition of skill (textally-described reusable functionality)
-        * [ ] Context: copilots frameworks (Claude Code, Codex, Cursor, OpenClaw)
+        * [ ] Context: copilots frameworks (Claude Code, Codex, Cursor, OpenClaw) (introduced in `genai`)
         * [ ] Convention for writing skills (SKILL.md, json files, Python scripts, etc.)
             + [ ] allowing tools in skills
             + [ ] skills as a context-loading mechanism (progressive disclosure)
