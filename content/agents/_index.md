@@ -125,6 +125,8 @@ outputs = ["Reveal"]
 
 ---
 
+{{< slide id="tools-examples" >}}
+
 ## Tools: an intuitive example
 
 > __Goal__: an assistant answering questions about the _present_, which no LLM can know from its training data (e.g. "_where was Alan Turing born? What time is it there, and what's the weather like?_")
@@ -245,7 +247,7 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 ## Example 1: an Agent from Scratch, with OpenAI's Client (pt. 1)
 
-> __Goal__: a CLI chat with an assistant, i.e. an _agent_ using the [three tools above](#/tools-concept), _without_ any agentic framework
+> __Goal__: a CLI chat with an assistant, i.e. an _agent_ using the [three tools above](#/tools-examples), _without_ any agentic framework
 
 1. Tools and system prompt live in a _module_ ([`simple_tools.py`](../scripts/simple_tools.py)), shared by all the examples of this lecture:
 
