@@ -106,11 +106,11 @@ outputs = ["Reveal"]
 > __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture, checking _some_ fields of the `LetterInfo` objects it produces
 
 1. __First__, design the __test dataset__: _known_ inputs (the letters), each with the results _expected_ from a correct scoring
-    + written by _humans_ (the committee), as a _data file_ ([`test_data.yml`](../test/test_data.yml)) shared among test suites
+    + written by _humans_ (the committee), as a _data file_ ([`test_data.yml`](../lab-snippets/snippets/lecture_validating/test_data.yml)) shared among test suites
 
 {{% multicol %}}
 {{% col class="col-6"%}}
-{{% code path="static/test/test_data.yml" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/test_data.yml" %}}
 - _adding_ a test case = adding an entry to the file, no code changes
 {{% /col %}}
 {{% col class="col-6" %}}
@@ -119,9 +119,9 @@ outputs = ["Reveal"]
     * __tolerant__ match: _ranges_ for scores
     * __LLM-as-a-Judge__: _descriptions_ in natural language (e.g. the author's relationship with the applicant), as there are many correct ways to phrase them
 - the file is loaded in Python as a list of `dict`s
-    * full code [here](../test/dataset.py):
+    * full code [here](../lab-snippets/snippets/lecture_validating/dataset.py):
 
-{{% code path="static/test/dataset.py" from="1" to="9" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/dataset.py" from="6" to="13" %}}
 {{% /col %}}
 {{% /multicol %}}
 
@@ -131,9 +131,9 @@ outputs = ["Reveal"]
 
 2. Imports: DeepEval runs on top of `pytest`, and the system under test is imported _as is_:
 
-    {{% code path="static/test/test_letter_scoring.py" from="1" to="17" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="8" to="20" %}}
 
-    - `sys.path.append(...)` makes the modules in `scripts/` importable from `test/`, so that everything runs from the project's root, with no further configuration
+    - snippets are regular Python _packages_: the system under test is imported from the [prompting lecture's package](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py), with no further configuration
     - `functools.cache` accepts a Python function (`score_letter`) and returns a _cached_ version of it (`score`):
         1. each time `score(l)` is called, the cache checks if the same letter `l` has already been scored
         2. if yes, the cached output is returned; if not, the function `score_letter` is called and the output is cached
@@ -146,13 +146,13 @@ outputs = ["Reveal"]
 
 3. __Deterministic__ scorers are just `pytest` assertions on _some_ fields of the structured output:
 
-    {{% code path="static/test/test_letter_scoring.py" from="20" to="31" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="23" to="34" %}}
 
     - names and emails must match _exactly_; scores may vary within a _range_
 
 4. __Relational__ properties hold _across_ inputs (a.k.a. _metamorphic_ testing): they are robust to the variability of single scores
 
-    {{% code path="static/test/test_letter_scoring.py" from="34" to="37" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="37" to="40" %}}
 
 ---
 
@@ -160,7 +160,7 @@ outputs = ["Reveal"]
 
 5. __LLM-as-a-Judge__, via DeepEval's _G-Eval_ metric: the judge scores (in $[0, 1]$) how much the output satisfies the _criteria_, and the test passes if the score is above the _threshold_
 
-    {{% code path="static/test/test_letter_scoring.py" from="40" to="59" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="43" to="62" %}}
 
     - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
     - `evaluation_params` selects which parts of the test case the judge can _see_:
@@ -173,7 +173,7 @@ outputs = ["Reveal"]
 
 6. Judges are used within tests, via `assert_test`, on _test cases_ (`LLMTestCase`) built from _some_ fields of the structured output:
 
-    {{% code path="static/test/test_letter_scoring.py" from="61" to="71" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="64" to="74" %}}
 
     - `relationship_with_applicant` is compared with the _expected_ description
     - `skills`, `strengths`, and `weaknesses` are checked against the _letter_ (are they _grounded_ in it?)
@@ -182,33 +182,31 @@ outputs = ["Reveal"]
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 6)
 
-7. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+7. Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
     ├── data/
-    │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-    │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-    │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-    ├── scripts/
-    │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
-    ├── test/
-    │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
-    │   ├── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
-    │   └── <a href="../test/test_letter_scoring.py">test_letter_scoring.py</a>      # the test suite
-    ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-    └── .venv/                          # virtual environment (created below)</code></pre></div>
-
-    ```bash
-    python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
+    │   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+    │   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+    │   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+    │   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+    ├── snippets/
+    │   ├── lecture_prompting/
+    │   │   └── example1bis/
+    │   │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # system under test
+    │   └── lecture_validating/
+    │       ├── example1/
+    │       │   └── <a href="../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py">test_letter_scoring.py</a>       # the test suite
+    │       ├── <a href="../lab-snippets/snippets/lecture_validating/dataset.py">dataset.py</a>                       # loads the test dataset
+    │       └── <a href="../lab-snippets/snippets/lecture_validating/test_data.yml">test_data.yml</a>                    # test dataset
+    └── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
 
     - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
-8. Let's run it (full code [here](../test/test_letter_scoring.py)), from the project's root directory:
+8. Let's run it (full code [here](../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py)), from the project's root directory:
 
     ```bash
-    pytest test/test_letter_scoring.py -v
+    poetry run python -m snippets -l validating -e 1 -v   # runs pytest on the test suite, with any option given
     ```
 
     - would the outputs of [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) pass? __No__: Mohammed Ali's shallow letter got score 4, whereas the committee expects at most 3
@@ -227,13 +225,13 @@ outputs = ["Reveal"]
 
 1. Same test dataset, rearranged as MLflow wants it: `inputs` (for the system) + `expectations` (for the scorers)
 
-    {{% code path="static/test/evaluate_mlflow.py" from="1" to="20" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="9" to="24" %}}
 
     - the system under test is a _function_ (`predict_fn`), called with the `inputs` as keyword arguments
 
 2. Deterministic scorers are _functions_ decorated with `@scorer`, whose parameters are _named_ after what they need (`inputs`, `outputs`, `expectations`, `trace`):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="22" to="31" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="26" to="35" %}}
 
 ---
 
@@ -241,7 +239,7 @@ outputs = ["Reveal"]
 
 3. Judges are created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
-    {{% code path="static/test/evaluate_mlflow.py" from="33" to="50" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="37" to="54" %}}
 
     - `{{ expectations }}` makes the judge _reference-based_ (`relationship`), `{{ inputs }}` makes it _reference-free_ (`groundedness`)
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
@@ -253,7 +251,7 @@ outputs = ["Reveal"]
 
 4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (named after the current date and time, in ISO format):
 
-    {{% code path="static/test/evaluate_mlflow.py" from="53" to="60" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="57" to="64" %}}
 
     - `results.metrics` reports, for each scorer, the _fraction_ of test cases passing it (judges' `"yes"` count as 1)
     - if some scorer does not pass on _every_ test case, the script fails (non-zero exit code), just like a failing test suite
@@ -262,34 +260,32 @@ outputs = ["Reveal"]
 
 ## Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 4)
 
-5. Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+5. Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+    <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
     ├── data/
-    │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-    │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-    │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-    ├── scripts/
-    │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
-    ├── test/
-    │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
-    │   ├── <a href="../test/evaluate_mlflow.py">evaluate_mlflow.py</a>          # the evaluation
-    │   └── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
-    ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-    └── .venv/                          # virtual environment (created below)</code></pre></div>
-
-    ```bash
-    python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
+    │   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+    │   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+    │   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+    │   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+    ├── snippets/
+    │   ├── lecture_prompting/
+    │   │   └── example1bis/
+    │   │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # system under test
+    │   └── lecture_validating/
+    │       ├── example1bis/
+    │       │   └── <a href="../lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py">evaluate_mlflow.py</a>           # the evaluation
+    │       ├── <a href="../lab-snippets/snippets/lecture_validating/dataset.py">dataset.py</a>                       # loads the test dataset
+    │       └── <a href="../lab-snippets/snippets/lecture_validating/test_data.yml">test_data.yml</a>                    # test dataset
+    └── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
 
     - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `JUDGE_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
-6. Let's run it (full code [here](../test/evaluate_mlflow.py)), from the project's root directory:
+6. Let's run it (full code [here](../lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py)), from the project's root directory:
 
     ```bash
-    python test/evaluate_mlflow.py   # prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]
-    mlflow ui                        # then open http://localhost:5000, to browse runs, traces, and judges' rationales
+    poetry run python -m snippets -l validating -e 1bis   # prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]
+    poetry run mlflow ui                                  # then open http://localhost:5000, to browse runs, traces, and judges' rationales
     ```
 
     {{< image src="./todo-mlflow-ui.png" max-h="25vh" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (names_and_email, score_in_range, relationship, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." >}}
@@ -323,14 +319,16 @@ outputs = ["Reveal"]
 
 > __Goal__: the examples above only check _some_ fields of `LetterInfo`; extend _one_ of the two test suites (DeepEval _or_ MLflow, your choice) so that _every_ field is checked
 
+> __Code__: put your solution in [`snippets/lecture_validating/exercise1/`](../lab-snippets/snippets/lecture_validating/exercise1/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l validating -x 1`
+
 {{% fragment %}}
 ### TO-DO List
-1. start from the [project](#/test-deepeval) of Example 1 (or 1 bis), and list the fields which are _not_ checked yet (cf. the `pydantic` classes in [`letter_scoring_langchain.py`](../scripts/letter_scoring_langchain.py)):
+1. start from the [project](#/test-deepeval) of Example 1 (or 1 bis), and list the fields which are _not_ checked yet (cf. the `pydantic` classes in [`letter_scoring_langchain.py`](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py)):
     + `ApplicantInfo`: `degree`, `alma_mater`, `attended`
     + `AuthorInfo`: `affiliation`, `position`, `seniority`, `nationality`
     + `LetterInfo`: `application_for`
 2. for each field, decide _how_ to check it, and _why_: __exact__ match, __tolerant__ match (normalisation, "contains", ranges, set inclusion, ...), or __LLM-as-a-Judge__ (reference-based or reference-free)
-3. read the [letters](../prompting/#/running-example) _yourself_, and extend [`test_data.yml`](../test/test_data.yml) with the expectations for each field of each letter
+3. read the [letters](../prompting/#/running-example) _yourself_, and extend [`test_data.yml`](../lab-snippets/snippets/lecture_validating/test_data.yml) with the expectations for each field of each letter
 4. write the corresponding scorers (tests, or `@scorer` functions, or judges), and run the suite
 5. for each failure, decide whether the _system_ or the _expectation_ is wrong, and fix the right one
 {{% /fragment %}}
@@ -362,6 +360,8 @@ outputs = ["Reveal"]
 ## Exercise 2: Testing Infrastructure for ID Document Extraction (pt. 1)
 
 > __Goal__: the committee wants _evidence_ that the extractor of [Exercise 2 of the Prompt Engineering lecture](../prompting/#/exercise-id-documents) is reliable, and wants to be _warned_ whenever a change in prompt or model makes it worse
+
+> __Code__: put your solution in [`snippets/lecture_validating/exercise2/`](../lab-snippets/snippets/lecture_validating/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l validating -x 2`
 
 {{% fragment %}}
 ### TO-DO List

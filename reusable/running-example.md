@@ -8,24 +8,24 @@
 
 {{% multicol %}}
 {{% col %}}
-![](../data/passport-mario-rossi.png)
+![](../lab-snippets/data/passport-mario-rossi.png)
 
-- [Transcript of records](../data/transcript-mario-rossi.png)
-- [Presentation letter](../data/letter-mario-rossi.txt)
+- [Transcript of records](../lab-snippets/data/transcript-mario-rossi.png)
+- [Presentation letter](../lab-snippets/data/letter-mario-rossi.txt)
     + letter is very positive
 {{% /col %}}
 {{% col %}}
-![](../data/passport-jean-dupont.png)
+![](../lab-snippets/data/passport-jean-dupont.png)
 
-- [Transcript of records](../data/transcript-jean-dupont.png)
-- [Presentation letter](../data/letter-jean-dupont.txt)
+- [Transcript of records](../lab-snippets/data/transcript-jean-dupont.png)
+- [Presentation letter](../lab-snippets/data/letter-jean-dupont.txt)
     - letter contains some criticisms
 {{% /col %}}
 {{% col %}}
-![](../data/passport-mohammed-ali.png)
+![](../lab-snippets/data/passport-mohammed-ali.png)
 
-- [Transcript of records](../data/transcript-mohammed-ali.png)
-- [Presentation letter](../data/letter-mohammed-ali.txt)
+- [Transcript of records](../lab-snippets/data/transcript-mohammed-ali.png)
+- [Presentation letter](../lab-snippets/data/letter-mohammed-ali.txt)
     - letter is positive but shallow
 {{% /col %}}
 {{% /multicol %}}

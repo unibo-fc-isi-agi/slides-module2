@@ -133,14 +133,14 @@ outputs = ["Reveal"]
 
 {{% multicol %}}
 {{% col class="col-6" %}}
-- Three __tools__, as Python functions (full code [here](../scripts/simple_tools.py)):
+- Three __tools__, as Python functions (full code [here](../lab-snippets/snippets/lecture_agents/simple_tools.py)):
     + `get_current_time(timezone)`: _reasoning_ (local computation, via the standard library)
     + `get_weather(location)`: _perception_ (via the free [Open-Meteo](https://open-meteo.com/) Web API)
     + `web_search(query)`: _perception_ (via DuckDuckGo, thanks to the [`ddgs`](https://pypi.org/project/ddgs/) library)
 
-{{% code path="static/scripts/simple_tools.py" from="19" to="27" %}}
+{{% code path="static/lab-snippets/snippets/lecture_agents/simple_tools.py" from="21" to="29" %}}
 
-{{% code path="static/scripts/simple_tools.py" from="49" to="54" %}}
+{{% code path="static/lab-snippets/snippets/lecture_agents/simple_tools.py" from="53" to="58" %}}
 {{% /col %}}
 {{% col class="col-6" %}}
 - What the LLM actually _sees_ of `get_weather` (as YAML, for readability):
@@ -249,13 +249,13 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 > __Goal__: a CLI chat with an assistant, i.e. an _agent_ using the [three tools above](#/tools-examples), _without_ any agentic framework
 
-1. Tools and system prompt live in a _module_ ([`simple_tools.py`](../scripts/simple_tools.py)), shared by all the examples of this lecture:
+1. Tools and system prompt live in a _module_ ([`simple_tools.py`](../lab-snippets/snippets/lecture_agents/simple_tools.py)), shared by all the examples of this lecture:
 
-    {{% code path="static/scripts/simple_tools.py" from="12" to="16" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/simple_tools.py" from="14" to="18" %}}
 
 2. Tool __definitions__ are generated from the functions: `pydantic`'s `TypeAdapter` builds the JSON Schema of a function's _parameters_ from its type hints
 
-    {{% code path="static/scripts/agent_openai.py" from="15" to="24" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1/agent_openai.py" from="20" to="29" %}}
 
     - this is what agentic frameworks do for you, behind the scenes
     - `tools_by_name` maps the names chosen by the LLM onto the _actual_ functions
@@ -266,13 +266,13 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 3. __Executing__ a tool call: look the function up, _parse_ the arguments (a JSON string), call it, and _serialise_ the result:
 
-    {{% code path="static/scripts/agent_openai.py" from="27" to="33" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1/agent_openai.py" from="32" to="38" %}}
 
     - errors (unknown tool, invalid arguments, exceptions in the tool) are __not__ raised: they are returned to the LLM as _results_, so that it can _recover_ (e.g. by retrying `get_current_time` with `'Asia/Tokyo'` instead of `'Tokyo'`)
 
 4. The __ReAct loop__ itself:
 
-    {{% code path="static/scripts/agent_openai.py" from="36" to="46" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1/agent_openai.py" from="41" to="51" %}}
 
     - the assistant's message (with its `tool_calls`) _must_ be appended to the history, before the tool results referring to it
     - each tool result refers to its call via `tool_call_id`: the LLM may request _several_ calls at once
@@ -282,14 +282,14 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 ## Example 1: an Agent from Scratch, with OpenAI's Client (pt. 3)
 
-5. The main program is a CLI chat (cf. [the LLM-as-a-Service lecture](../llmaas/)), where each user message triggers a ReAct loop (full code [here](../scripts/agent_openai.py)):
+5. The main program is a CLI chat (cf. [the LLM-as-a-Service lecture](../llmaas/)), where each user message triggers a ReAct loop (full code [here](../lab-snippets/snippets/lecture_agents/example1/agent_openai.py)):
 
-    {{% code path="static/scripts/agent_openai.py" from="49" to="56" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1/agent_openai.py" from="54" to="61" %}}
 
 6. Let's try it:
 
     ```bash
-    python scripts/agent_openai.py
+    poetry run python -m snippets -l agents -e 1
     ```
 
     ```text
@@ -318,19 +318,15 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 ## Example 1: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
-├── scripts/
-│   ├── <a href="../scripts/agent_openai.py">agent_openai.py</a>     # the agent
-│   └── <a href="../scripts/simple_tools.py">simple_tools.py</a>     # tools + system prompt
-├── <a href="../requirements.txt">requirements.txt</a>        # dependencies of all examples
-└── .venv/                  # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_agents/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example1/agent_openai.py">agent_openai.py</a>  # the agent
+│       └── <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">simple_tools.py</a>      # tools + system prompt
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
     + pick a model which supports _tools_ (e.g. on [OpenRouter](https://openrouter.ai/models?supported_parameters=tools))
@@ -343,7 +339,7 @@ pip install -r requirements.txt
 
 1. LangChain's [`create_agent`](https://docs.langchain.com/oss/python/langchain/agents) implements the ReAct loop for you: just give it a chat model, the tools, and the system prompt
 
-    {{% code path="static/scripts/agent_langchain.py" from="11" to="13" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="16" to="18" %}}
 
     - plain Python functions are _converted_ into tools (docstrings + type hints $\rightarrow$ definitions), or use the [`@tool`](https://docs.langchain.com/oss/python/langchain/tools) decorator for more control
     - the result is a _runnable_ (actually, a [LangGraph](https://www.langchain.com/langgraph) _graph_): `.invoke(...)`, `.stream(...)`, `.batch(...)` work as usual
@@ -351,7 +347,7 @@ pip install -r requirements.txt
 
 2. The main program _invokes_ the agent with the whole conversation, and prints the tool calls it made:
 
-    {{% code path="static/scripts/agent_langchain.py" from="16" to="32" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="21" to="37" %}}
 
     - `recursion_limit` plays the role of `max_steps`
     - tool _errors_ are fed back to the LLM, as in our implementation
@@ -360,10 +356,10 @@ pip install -r requirements.txt
 
 ## Example 1 (bis): the same Agent with LangChain (pt. 2)
 
-3. Let's try it (full code [here](../scripts/agent_langchain.py)):
+3. Let's try it (full code [here](../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py)):
 
     ```bash
-    python scripts/agent_langchain.py
+    poetry run python -m snippets -l agents -e 1bis
     ```
 
 4. Beyond the basic loop, `create_agent` supports [__middleware__](https://docs.langchain.com/oss/python/langchain/middleware): hooks _before_ / _after_ each model call or tool call, e.g.
@@ -371,7 +367,7 @@ pip install -r requirements.txt
     + _summarisation_ of long histories (cf. [context management](../prompting/#/context-management))
     + _limits_ on model calls or tool calls, _retries_, _PII redaction_, ...
 
-5. Project structure: as in [Example 1](#/agent-openai), replacing `agent_openai.py` with [`agent_langchain.py`](../scripts/agent_langchain.py)
+5. Project structure: as in [Example 1](#/agent-openai), with [`example1bis/agent_langchain.py`](../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py) in place of `example1/agent_openai.py`
 
 ---
 
@@ -448,19 +444,19 @@ pip install -r requirements.txt
 
 ## Example 2: Simple Tools as an MCP Server (pt. 1)
 
-1. The __server__: the _same_ functions of [`simple_tools.py`](../scripts/simple_tools.py), registered as MCP tools (full code [here](../scripts/simple_tools_mcp_server.py)):
+1. The __server__: the _same_ functions of [`simple_tools.py`](../lab-snippets/snippets/lecture_agents/simple_tools.py), registered as MCP tools (full code [here](../lab-snippets/snippets/lecture_agents/example2/simple_tools_mcp_server.py)):
 
-    {{% code path="static/scripts/simple_tools_mcp_server.py" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example2/simple_tools_mcp_server.py" from="7" to="15" %}}
 
 2. Let's inspect it by hand, with the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) (requires [Node.js](https://nodejs.org)), _listing_ and _calling_ its tools:
 
     ```bash
-    npx @modelcontextprotocol/inspector python scripts/simple_tools_mcp_server.py
+    npx @modelcontextprotocol/inspector poetry run python -m snippets.lecture_agents.example2.simple_tools_mcp_server
     ```
 
     - the server's _stdout_ is the protocol channel: tools must __not__ `print` (nor `input`!)
     - the server does _not_ inherit the host's environment: secrets (if any) must be passed _explicitly_ (e.g. `-e API_KEY=...`)
-    - any other host works the same way, e.g. for Claude Code: `claude mcp add simple-tools -- python scripts/simple_tools_mcp_server.py`
+    - any other host works the same way, e.g. for Claude Code: `claude mcp add simple-tools -- poetry run python -m snippets.lecture_agents.example2.simple_tools_mcp_server` (from the repository's root)
 
 ---
 
@@ -468,17 +464,17 @@ pip install -r requirements.txt
 
 3. The __agent__: a LangChain agent whose tools come from the MCP server, via [`langchain-mcp-adapters`](https://docs.langchain.com/oss/python/langchain/mcp):
 
-    {{% code path="static/scripts/agent_mcp.py" from="10" to="23" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example2/agent_mcp.py" from="14" to="27" %}}
 
     - `MultiServerMCPClient` runs one MCP client per server; with _stdio_, it also _launches_ the server as a sub-process
     - `get_tools()` sends `tools/list` to each server, and wraps each MCP tool as a LangChain tool, sending `tools/call` when invoked
     - an `env=...` entry would pass the server _only_ the variables it needs (least privilege)
-    - MCP clients are _asynchronous_: the agent is invoked via `await agent.ainvoke(...)` (full code [here](../scripts/agent_mcp.py))
+    - MCP clients are _asynchronous_: the agent is invoked via `await agent.ainvoke(...)` (full code [here](../lab-snippets/snippets/lecture_agents/example2/agent_mcp.py))
 
 4. Let's try it:
 
     ```bash
-    python scripts/agent_mcp.py
+    poetry run python -m snippets -l agents -e 2   # then pick agent_mcp.py
     ```
 
     - the agent behaves as before: the LLM can't tell local tools from MCP ones
@@ -487,22 +483,18 @@ pip install -r requirements.txt
 
 ## Example 2: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
-├── data/
-├── scripts/
-│   ├── <a href="../scripts/agent_langchain.py">agent_langchain.py</a>          # the chat model (reused)
-│   ├── <a href="../scripts/agent_mcp.py">agent_mcp.py</a>                # the agent (MCP host)
-│   ├── <a href="../scripts/simple_tools.py">simple_tools.py</a>             # tools + system prompt
-│   └── <a href="../scripts/simple_tools_mcp_server.py">simple_tools_mcp_server.py</a>  # the MCP server
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_agents/
+│       ├── example1bis/
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py">agent_langchain.py</a>          # the chat model (reused)
+│       ├── example2/
+│       │   ├── <a href="../lab-snippets/snippets/lecture_agents/example2/agent_mcp.py">agent_mcp.py</a>                # the agent (MCP host)
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example2/simple_tools_mcp_server.py">simple_tools_mcp_server.py</a>  # the MCP server
+│       └── <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">simple_tools.py</a>                 # tools + system prompt
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                          # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
@@ -552,23 +544,23 @@ pip install -r requirements.txt
 
 1. The system under test is the [LangChain agent](#/agent-langchain); a _cached_ helper extracts the _trajectory_ (tool calls) and the final answer of each question:
 
-    {{% code path="static/test/test_agent.py" from="1" to="16" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example3/test_agent.py" from="7" to="18" %}}
 
 2. Tests are plain `pytest` assertions on the _trajectory_ (tool selection, arguments, efficiency) and on the _answer_:
 
-    {{% code path="static/test/test_agent.py" from="19" to="37" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example3/test_agent.py" from="21" to="39" %}}
 
 ---
 
 ## Example 3: Testing the Agent's Trajectories (pt. 2)
 
-3. Let's run it (full code [here](../test/test_agent.py)), from the project's root directory:
+3. Let's run it (full code [here](../lab-snippets/snippets/lecture_agents/example3/test_agent.py)), from the project's root directory:
 
     ```bash
-    pytest test/test_agent.py -v
+    poetry run python -m snippets -l agents -e 3 -v   # runs pytest on the test suite, with any option given
     ```
 
-    - project structure: as in [Example 1 (bis)](#/agent-langchain), plus [`test/test_agent.py`](../test/test_agent.py)
+    - project structure: as in [Example 1 (bis)](#/agent-langchain), plus [`example3/test_agent.py`](../lab-snippets/snippets/lecture_agents/example3/test_agent.py)
     - run it several times, and with several models: which tests are _flaky_? Which ones fail _systematically_?
 
 4. Things to notice:
@@ -729,10 +721,12 @@ There is no complete defence against prompt injection: design agents _assuming_ 
 
 > __Goal__: an assistant answering _any_ question of the [committee](#/running-example) about the candidates (e.g. "_who has the highest GPA?_", "_how old is Mohammed Ali?_", "_does Jean Dupont's letter mention weaknesses?_"), by _inspecting_ their applications via __read-only__ tools
 
+> __Code__: put your solution in [`snippets/lecture_agents/exercise1/`](../lab-snippets/snippets/lecture_agents/exercise1/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l agents -x 1`
+
 {{% fragment %}}
 ### TO-DO List
 1. write the tools, as documented Python functions (e.g. in a `committee.py` module):
-    + `list_candidates()`: the names of the candidates, derived from the files in `data/`
+    + `list_candidates()`: the names of the candidates, derived from the files in `data/` (cf. the helpers in [`data/__init__.py`](../lab-snippets/data/__init__.py))
     + `read_letter(candidate)`: the text of a candidate's letter
     + `read_passport(candidate)`, `read_transcript(candidate)`: _structured_ information extracted from the _pictures_ (e.g. name, birth date, nationality, expiry date; courses, grades, GPA), cf. the [prompting exercise on pictures](../prompting/#/exercise-id-documents)
     + _optionally_, `score_letter(candidate)`, wrapping the [letter-scoring system](../prompting/#/letter-scoring)
@@ -770,6 +764,8 @@ There is no complete defence against prompt injection: design agents _assuming_ 
 ## Exercise 2: Tools to Take Decisions (pt. 1)
 
 > __Goal__: let the assistant _act_ on behalf of the committee (recording decisions, scheduling interviews, notifying candidates) via tools with __side effects__, but only with the explicit __approval__ of a committee member, and make sure it cannot be _tricked_ into acting
+
+> __Code__: put your solution in [`snippets/lecture_agents/exercise2/`](../lab-snippets/snippets/lecture_agents/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l agents -x 2`
 
 {{% fragment %}}
 ### TO-DO List
@@ -815,6 +811,8 @@ There is no complete defence against prompt injection: design agents _assuming_ 
 ## Exercise 3: an MCP Gateway for the Committee (pt. 1)
 
 > __Goal__: the committee wants its tools to be usable by _several_ hosts (its own agent, an IDE, a chat app), along with third-party tools, all managed in _one_ place, with _logging_ of every call
+
+> __Code__: put your solution in [`snippets/lecture_agents/exercise3/`](../lab-snippets/snippets/lecture_agents/exercise3/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l agents -x 3`
 
 {{% fragment %}}
 ### TO-DO List

@@ -4,3 +4,6 @@
 [submodule "themes/reveal-hugo"]
 	path = themes/reveal-hugo
 	url = https://github.com/cric96/reveal-hugo.git
+[submodule "static/lab-snippets"]
+	path = static/lab-snippets
+	url = https://github.com/unibo-fc-isi-agi/lab-snippets.git

@@ -801,6 +801,8 @@ flowchart LR
 
 > __Goal__: the admission committee wants to pick the model to be used for letter scoring (cf. [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring)), based on _evidence_ rather than on hype
 
+> __Code__: put your solution in [`snippets/lecture_governance/exercise1/`](../lab-snippets/snippets/lecture_governance/exercise1/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l governance -x 1`
+
 ### TO-DO List
 
 1. __Shortlist__ 3 models, e.g.:
@@ -847,6 +849,8 @@ flowchart LR
 ## Exercise 2: A Governance Decision Record for the Running Example (pt. 1)
 
 > __Goal__: the University asks the committee to _justify_ the adoption of the admission assistant, before using it on real applications
+
+> __Deliverable__: a document (e.g. `decision-record.md`), in [`snippets/lecture_governance/exercise2/`](../lab-snippets/snippets/lecture_governance/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises)
 
 ### TO-DO List
 

@@ -300,11 +300,11 @@ From _weakest_ to _strongest_ guarantees:
 
 1. Let's import `openai` and initialize the client as usual:
 
-    {{% code path="static/scripts/letter_scoring_openai.py" from="1" to="8" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="9" to="16" %}}
 
 2. Let's design a system prompt to contain general instructions for the model
 
-    {{% code path="static/scripts/letter_scoring_openai.py" from="11" to="16" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="20" to="25" %}}
 
 {{% /fragment %}}
 
@@ -316,19 +316,19 @@ From _weakest_ to _strongest_ guarantees:
 
     - Imports:
 
-        {{% code path="static/scripts/letter_scoring_openai.py" from="31" to="32" %}}
+        {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="42" to="43" %}}
 
     - A class for the _applicant_'s information:
 
-        {{% code path="static/scripts/letter_scoring_openai.py" from="34" to="43" %}}
+        {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="45" to="54" %}}
 
     - A class for the _author_'s information:
 
-        {{% code path="static/scripts/letter_scoring_openai.py" from="45" to="55" %}}
+        {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="56" to="66" %}}
 
     - A class for the overall _scoring_ of the letter, including the extracted information and the final score:
 
-        {{% code path="static/scripts/letter_scoring_openai.py" from="57" to="61" %}}
+        {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="68" to="72" %}}
 
         * notice that instructions for scoring are contained in another string
 
@@ -338,11 +338,11 @@ From _weakest_ to _strongest_ guarantees:
 
 4. _Instructions_ for _scoring_ can be provided as well in _natural language_, yet better to be precise and give the LLM a _"recipe"_ for scoring
 
-    {{% code path="static/scripts/letter_scoring_openai.py" from="18" to="28" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="28" to="38" %}}
 
 5. With these ingredients in mind, the automatic scoring logic is as simple as a _single request–response interaction_ with the LLM:
 
-    {{% code path="static/scripts/letter_scoring_openai.py" from="64" to="76" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="75" to="88" %}}
 
     notice that:
 
@@ -355,11 +355,11 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 1: Structured Output with Pydantic Classes (pt. 4)
 
-6. Full code [here](../scripts/letter_scoring_openai.py)
+6. Full code [here](../lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py)
 
 7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `score_letter(...)` $\rightarrow$ print the result):
 
-    {{% code path="static/scripts/letter_scoring_openai.py" from="79" to="92" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="91" to="104" %}}
 
 8. Possible results below:
 
@@ -379,21 +379,22 @@ From _weakest_ to _strongest_ guarantees:
 
 ## Example 1: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_openai.py">letter_scoring_openai.py</a>    # the letter-scoring system
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>            # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                       # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example1/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py">letter_scoring_openai.py</a>  # the letter-scoring system
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                        # dependencies of all snippets</code></pre></div>
 
 ```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+poetry run python -m snippets -l prompting -e 1 data/letter-mario-rossi.txt   # or just: mario-rossi
 ```
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
@@ -432,16 +433,16 @@ pip install -r requirements.txt
 
 1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
 
-    {{% code path="static/scripts/letter_scoring_langchain.py" from="1" to="10" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="8" to="16" %}}
 
 2. Let's define the prompt as a __template__, with a _named placeholder_ (`{letter_text}`) for the input data:
 
-    {{% code path="static/scripts/letter_scoring_langchain.py" from="13" to="21" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="20" to="28" %}}
 
     - `ChatPromptTemplate.from_messages` accepts a list of `(role, template)` pairs
     - `prompt.invoke({"letter_text": "..."})` would produce the _list of messages_ to be sent to the model
 
-3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](../scripts/letter_scoring_langchain.py))
+3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py))
 
 ---
 
@@ -449,7 +450,7 @@ pip install -r requirements.txt
 
 4. The scoring logic is a __chain__: _prompt template_ $\rightarrow$ _chat model_ constrained to produce `LetterInfo` instances:
 
-    {{% code path="static/scripts/letter_scoring_langchain.py" from="69" to="72" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="78" to="81" %}}
 
     notice that:
 
@@ -462,29 +463,26 @@ pip install -r requirements.txt
 5. The `main` part of the program is unchanged:
 
     ```bash
-    python scripts/letter_scoring_langchain.py data/letter-mario-rossi.txt
+    poetry run python -m snippets -l prompting -e 1bis data/letter-mario-rossi.txt
     ```
 
 ---
 
 ## Example 1 (bis): Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # the letter-scoring system
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example1bis/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # the letter-scoring system
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
@@ -516,9 +514,11 @@ pip install -r requirements.txt
 
 > __Problem__: the scoring recipe provided to the model is still quite vague and unstructured, which may lead to _inconsistent_ and _non-reproducible_ scores. Even when good, scores are not _explainable_, as the reasoning behind them is not made explicit.
 
+> __Code__: put your solution in [`snippets/lecture_prompting/exercise1/`](../lab-snippets/snippets/lecture_prompting/exercise1/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l prompting -x 1`
+
 {{% fragment %}}
 ### TO-DO List
-1. start from the [LangChain version](../scripts/letter_scoring_langchain.py) of the letter-scoring system
+1. start from the [LangChain version](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py) of the letter-scoring system
 2. let's turn the scoring recipe into a _checklist_ of criteria
 3. let's have a Pydantic class with as many __boolean fields__ as the criteria in the checklist
 4. let's ask the _LLM_ to set the boolean fields by analysing the _input letter_
@@ -586,11 +586,11 @@ pip install -r requirements.txt
 
 1. Let's initialize the chat model (notice `temperature=1.0`: we want _variability_, for self-consistency):
 
-    {{% code path="static/scripts/letter_tone.py" from="9" to="13" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="16" to="20" %}}
 
 2. The system prompt defines the _labels_; the output is constrained to them via a `Literal` type:
 
-    {{% code path="static/scripts/letter_tone.py" from="15" to="25" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="22" to="32" %}}
 
     - the __zero-shot__ prompt is just _system instructions_ + _user input_
 
@@ -600,7 +600,7 @@ pip install -r requirements.txt
 
 3. The __few-shot__ prompt adds _solved examples_, rendered as _past turns_ of the conversation (user asks, assistant answers):
 
-    {{% code path="static/scripts/letter_tone.py" from="27" to="43" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="34" to="50" %}}
 
     - examples should be _diverse_ (one per label, at least), _short_, and _representative_ of real inputs
     - the _format_ and the _label distribution_ of examples matter at least as much as their correctness (cf. [Min et al. (2022)](https://arxiv.org/abs/2202.12837))
@@ -611,7 +611,7 @@ pip install -r requirements.txt
 
 4. __Chain-of-thought__ via structured output: a `reasoning` field is placed _before_ the `label` field:
 
-    {{% code path="static/scripts/letter_tone.py" from="45" to="57" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="52" to="65" %}}
 
     - models generate JSON fields __in order__: the label is produced _after_ (and _conditioned on_) the reasoning
         + putting `reasoning` _after_ `label` would make it a mere _post-hoc justification_
@@ -623,14 +623,14 @@ pip install -r requirements.txt
 
 5. __Self-consistency__: run _the same_ chain $N$ times, in parallel, and take the _majority_ vote:
 
-    {{% code path="static/scripts/letter_tone.py" from="59" to="63" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="67" to="71" %}}
 
-6. Let's try it (full code [here](../scripts/letter_tone.py)):
+6. Let's try it (full code [here](../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py)):
 
     ```bash
-    python scripts/letter_tone.py zero-shot data/letter-jean-dupont.txt
-    python scripts/letter_tone.py few-shot data/letter-jean-dupont.txt
-    python scripts/letter_tone.py cot data/letter-jean-dupont.txt 5     # CoT + self-consistency, 5 samples
+    poetry run python -m snippets -l prompting -e 2 zero-shot data/letter-jean-dupont.txt
+    poetry run python -m snippets -l prompting -e 2 few-shot data/letter-jean-dupont.txt
+    poetry run python -m snippets -l prompting -e 2 cot data/letter-jean-dupont.txt 5     # CoT + self-consistency, 5 samples
     ```
 
     - the script also _prints_ the prompt template, so you can see what each technique actually sends
@@ -640,22 +640,19 @@ pip install -r requirements.txt
 
 ## Example 2: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_tone.py">letter_tone.py</a>              # tone classification
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>   # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>              # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example2/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py">letter_tone.py</a>   # tone classification
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
@@ -725,11 +722,11 @@ pip install -r requirements.txt
 
 1. Let's pick a _reasoning_ model by default (e.g. [`openai/gpt-oss-20b`](https://openrouter.ai/openai/gpt-oss-20b)), and write the question as a template:
 
-    {{% code path="static/scripts/reasoning_effort.py" from="6" to="13" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="12" to="19" %}}
 
 2. For each effort level, let's create a chat model passing OpenRouter's `reasoning` parameter via `extra_body`, then measure _time_ and _tokens_:
 
-    {{% code path="static/scripts/reasoning_effort.py" from="16" to="25" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="22" to="31" %}}
 
     - `extra_body` is LangChain's _escape hatch_ to send provider-specific parameters, not (yet) modelled by `ChatOpenAI`
     - `usage_metadata` is LangChain's _provider-agnostic_ view of token usage
@@ -738,12 +735,12 @@ pip install -r requirements.txt
 
 ## Example 3: Reasoning Effort vs. Latency and Cost (pt. 2)
 
-3. Let's run it on all letters (full code [here](../scripts/reasoning_effort.py)):
+3. Let's run it on all letters (full code [here](../lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py)):
 
-    {{% code path="static/scripts/reasoning_effort.py" from="28" to="37" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="34" to="42" %}}
 
     ```bash
-    python scripts/reasoning_effort.py data/letter-*.txt
+    poetry run python -m snippets -l prompting -e 3 data/letter-*.txt
     ```
 
 4. Things to observe:
@@ -755,22 +752,19 @@ pip install -r requirements.txt
 
 ## Example 3: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/reasoning_effort.py">reasoning_effort.py</a>         # ranking at several efforts
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>       # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                  # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example3/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py">reasoning_effort.py</a>  # ranking at several efforts
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                   # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
 
@@ -801,6 +795,8 @@ pip install -r requirements.txt
 ## Exercise 2: Extract Structured Information from Pictures (pt. 1)
 
 > __Goal__: let's say the committee wants to extract structured information from the ID documents of the candidates, which are provided as pictures in the application form, and wants to be _confident_ about the extracted values
+
+> __Code__: put your solution in [`snippets/lecture_prompting/exercise2/`](../lab-snippets/snippets/lecture_prompting/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l prompting -x 2`
 
 {{% fragment %}}
 ### TO-DO List
@@ -978,13 +974,13 @@ pip install -r requirements.txt
 
 1. Let's configure the chat model, the _budget_, and how many recent messages to keep _verbatim_:
 
-    {{% code path="static/scripts/chat_with_compaction.py" from="7" to="17" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="12" to="22" %}}
 
     - the _state_ of the conversation is a (running) `summary`, plus the recent `history`
 
 2. The _context_ sent at each request is: system instructions + summary (if any) + recent history:
 
-    {{% code path="static/scripts/chat_with_compaction.py" from="20" to="22" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="25" to="28" %}}
 
 ---
 
@@ -992,11 +988,11 @@ pip install -r requirements.txt
 
 3. __Compaction__ is itself an LLM call, asking to summarise the _older_ messages (and the previous summary):
 
-    {{% code path="static/scripts/chat_with_compaction.py" from="25" to="30" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="31" to="37" %}}
 
 4. The main loop compacts the context whenever its (approximate) size exceeds the budget, and prints _token usage_ at each turn:
 
-    {{% code path="static/scripts/chat_with_compaction.py" from="33" to="46" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="40" to="53" %}}
 
     - `count_tokens_approximately` is _provider-agnostic_ (it assumes $\approx$ 4 characters per token): good enough for _budgeting_, not for _billing_
     - `usage_metadata` reports the _actual_ counts, including _cached_ input tokens (if the provider supports caching)
@@ -1005,10 +1001,10 @@ pip install -r requirements.txt
 
 ## Example 4: CLI Chat with Context Compaction (pt. 3)
 
-5. Let's try it (full code [here](../scripts/chat_with_compaction.py)):
+5. Let's try it (full code [here](../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py)):
 
     ```bash
-    CONTEXT_BUDGET=300 python scripts/chat_with_compaction.py
+    CONTEXT_BUDGET=300 poetry run python -m snippets -l prompting -e 4
     ```
 
 6. Things to observe:
@@ -1024,18 +1020,14 @@ pip install -r requirements.txt
 
 ## Example 4: Project Structure
 
-Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its _root_ directory:
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
 
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>&lt;root dir&gt;/
-├── scripts/
-│   └── <a href="../scripts/chat_with_compaction.py">chat_with_compaction.py</a>     # the CLI chat
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_prompting/
+│       └── example4/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py">chat_with_compaction.py</a>  # the CLI chat
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                       # dependencies of all snippets</code></pre></div>
 
 - set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `CONTEXT_BUDGET`), cf. [Free Access to LLMs](../free-access/)
 

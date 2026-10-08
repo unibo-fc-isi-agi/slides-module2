@@ -772,7 +772,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 1. Let's first create the client out of OR's base URL, API key, and target model:
 
-    {{% code path="content/llmaas/repl_chat_openai_chatcompletions.py" from="1" to="9" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py" from="7" to="15" %}}
 
     notice that:
     - class `OpenAI(...)` initializes the client in a very customizable way
@@ -782,7 +782,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 2. Let's then _initialize_ the _conversation_ history with a __system prompt__, containing _general instructions_ for the LLM, which make sense w.r.t. the task at hand
 
-    {{% code path="content/llmaas/repl_chat_openai_chatcompletions.py" from="10" to="11" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py" from="16" to="17" %}}
 
     here one may give additional instructions to be followed in the rest of the conversation
 
@@ -794,7 +794,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 3. Finally, we can enter a loop in which we read the user's input from the command line, send it to the model as a new message in the conversation, and print the model's response back to the command line
 
-    {{% code path="content/llmaas/repl_chat_openai_chatcompletions.py" from="15" to="35" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py" from="21" to="40" %}}
 
     notice that:
 
@@ -808,9 +808,9 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 ## Example 1: Sync CLI Chat (pt. 3)
 
-4. Full code [here](./repl_chat_openai_chatcompletions.py)
+4. Full code [here](../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py)
 
-5. Example of interaction with the model (start with `python path/to/script.py` in the terminal):
+5. Example of interaction with the model (start with `poetry run python -m snippets -l llmaas -e 1`, cf. [how to run snippets](../#/lab-snippets-run)):
 
 ```text
 Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
@@ -996,7 +996,7 @@ response_format:
 
 1. Client setup is very similar to the sync version, but we use `AsyncOpenAI(...)` and keep the same env-driven configuration style:
 
-  {{% code path="content/llmaas/repl_chat_openai_chatcompletions_async.py" from="1" to="10" %}}
+  {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="7" to="15" %}}
 
   notice that:
   - `AsyncOpenAI(...)` is the async counterpart of `OpenAI(...)`
@@ -1004,7 +1004,7 @@ response_format:
 
 2. As the program is asynchronous, we need to define an `async def main():` function, which will contain the main logic of our program, and then run it with `asyncio.run(main())` at the end of the script
 
-    {{% code path="content/llmaas/repl_chat_openai_chatcompletions_async.py" from="56" to="57" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="61" to="62" %}}
 
 ---
 
@@ -1012,7 +1012,7 @@ response_format:
 
 3. The main function is structure more or less like the sync version...
 
-    {{% code path="content/llmaas/repl_chat_openai_chatcompletions_async.py" from="16" to="53" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="21" to="58" %}}
 
     with some differences in the way we i. create the completion request, by setting `stream=True` to receive a stream of response parts, and by awaiting the response with `async for` instead of just `for`; and ii. consume the stream of response parts
 
@@ -1032,9 +1032,9 @@ response_format:
 
 ## Example 2: Async CLI Chat with Streaming (pt. 3)
 
-4. Full code [here](./repl_chat_openai_chatcompletions_async.py)
+4. Full code [here](../lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py)
 
-5. Example of interaction (start with `python path/to/script_async.py`):
+5. Example of interaction (start with `poetry run python -m snippets -l llmaas -e 2`):
 
 ```text
 Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
@@ -1096,7 +1096,7 @@ you> Goodbye!
 
 ## Example 1 (bis): the same CLI Chat with Anthropic's Messages API (pt. 1)
 
-> __Goal__: re-implement [Example 1](./repl_chat_openai_chatcompletions.py) with a _different_ API and client library, to appreciate _analogies_ and _differences_
+> __Goal__: re-implement [Example 1](../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py) with a _different_ API and client library, to appreciate _analogies_ and _differences_
 
 - We use the official [`anthropic` Python SDK](https://github.com/anthropics/anthropic-sdk-python) (`pip install anthropic`), which speaks Anthropic's [Messages API](https://docs.anthropic.com/en/api/messages) (`POST /v1/messages`)
 - No need for an Anthropic account: [Ollama exposes an Anthropic-compatible API](https://docs.ollama.com/api/anthropic-compatibility) too, so we can run everything __locally__ (and for free)
@@ -1104,14 +1104,14 @@ you> Goodbye!
 
 1. Client creation is _analogous_ to the OpenAI one (base URL, API key, model name):
 
-    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="1" to="9" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1bis/repl_chat_anthropic.py" from="8" to="16" %}}
 
     - the API key is _mandatory_ for the SDK, but _ignored_ by Ollama (any string works)
     - the SDK appends `/v1/messages` to the base URL by itself
 
 2. __Difference__: the _system prompt_ is __not__ a message, but a separate parameter, hence the history starts _empty_:
 
-    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="10" to="11" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1bis/repl_chat_anthropic.py" from="17" to="18" %}}
 
 ---
 
@@ -1119,7 +1119,7 @@ you> Goodbye!
 
 3. The REPL loop is _identical_ to Example 1, except for the request–response step:
 
-    {{% code path="content/llmaas/repl_chat_anthropic_messages.py" from="25" to="32" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example1bis/repl_chat_anthropic.py" from="32" to="40" %}}
 
     notice that:
     - `client.messages.create(...)` replaces `client.chat.completions.create(...)`
@@ -1128,7 +1128,7 @@ you> Goodbye!
     - the response has no `choices`: `response.content` is directly a __list of typed content blocks__ (`text`, `thinking`, `tool_use`, ...), so we concatenate the `text` ones
     - messages in the history still have `role` (`user` or `assistant`) and `content` (a string, or a list of blocks)
 
-4. Full code [here](./repl_chat_anthropic_messages.py): run it with `ollama serve` active and `gemma4:e2b` pulled
+4. Full code [here](../lab-snippets/snippets/lecture_llmaas/example1bis/repl_chat_anthropic.py): run it with `poetry run python -m snippets -l llmaas -e 1bis`, with `ollama serve` active and `gemma4:e2b` pulled
 
 ```text
 Using model: gemma4:e2b
@@ -1178,6 +1178,8 @@ you> Goodbye!
 
 > __Idea__: implement a simple _caching_ mechanism for your program, so that you can store the responses of the model for given inputs, and reuse them when the same inputs are encountered again (also good for _reproducibility_ and _debugging_ purposes)
 
+> __Code__: put your solution in [`snippets/lecture_llmaas/exercise1/`](../lab-snippets/snippets/lecture_llmaas/exercise1/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l llmaas -x 1`
+
 ### TO-DO List
 
 1. Implement some caching mechanism for the Sync CLI Chat program, so that Chat Completion requests are cached on the file system before being issued
@@ -1214,6 +1216,8 @@ you> Goodbye!
 > __Problem__: when interacting with LLMs via Web APIs, it may happen that some requests _fail_ due to _transient issues_ (e.g. network errors, <u>rate limits</u>, etc.)
 
 > __Solution__: it is good practice to implement some (configurable) _retry mechanism_ with (configurable) [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) to handle such cases gracefully
+
+> __Code__: put your solution in [`snippets/lecture_llmaas/exercise2/`](../lab-snippets/snippets/lecture_llmaas/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l llmaas -x 2`
 
 ### TO-DO List
 

@@ -73,14 +73,14 @@ No application: just sign up, get a key, and stay within the quota
 
 - All the providers above expose an __OpenAI-compatible__ API: only `base_url`, key, and model name change
 
-{{% code path="content/free-access/free_providers.py" from="5" to="14" %}}
+{{% code path="static/lab-snippets/snippets/lecture_free_access/example1/free_providers.py" from="12" to="21" %}}
 
 ```bash
-python free_providers.py groq                               # list the models available now
-python free_providers.py groq openai/gpt-oss-20b "Hello!"   # one chat request
+poetry run python -m snippets -l free-access -e 1 groq                               # list the models available now
+poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello!"   # one chat request
 ```
 
-- Full script [here](./free_providers.py); model IDs are _listed live_, not hard-coded, since they __go stale quickly__
+- Full script [here](../lab-snippets/snippets/lecture_free_access/example1/free_providers.py) (cf. [how to run snippets](../#/lab-snippets-run)); model IDs are _listed live_, not hard-coded, since they __go stale quickly__
 - The same trick works with the [LLM-as-a-Service](../llmaas) scripts: just set `OPENAI_BASE_URL` and `OPENAI_API_KEY`
 
 ---
@@ -150,7 +150,7 @@ python free_providers.py groq openai/gpt-oss-20b "Hello!"   # one chat request
     + `gpt-oss-120b`: about __80 GB__, one large GPU
     + others: [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Mistral Small 4](https://mistral.ai/news/mistral-small-4/), [DeepSeek-R1 distills](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B) (check each license!)
 - Serve them via [Ollama](https://ollama.com) (easy) or [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html) (fast, multi-user): both expose an _OpenAI-compatible_ API
-    + i.e. `python free_providers.py ollama` works out of the box
+    + i.e. `poetry run python -m snippets -l free-access -e 1 ollama` works out of the box
 - __Quantization__ (4-bit) cuts memory by ~4×, usually with small quality loss, but __re-evaluate on your task__
     + see the [LLM-as-a-Service](../llmaas) lecture for requirements, quantization, and model zoos
 - Pinned weights (exact revision + quantization + engine version) are also the best option for __reproducibility__
