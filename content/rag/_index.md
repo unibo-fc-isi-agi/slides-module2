@@ -545,7 +545,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 1. __Indexing__ (once): chunks become `Document`s (text + metadata), embedded and stored by LangChain's [`SQLiteVec`](https://docs.langchain.com/oss/python/integrations/vectorstores/sqlitevec) (i.e. `sqlite-vec`, under the hood):
 
-    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="28" to="38" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="30" to="40" %}}
 
 ---
 
@@ -553,7 +553,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 2. The __prompt__: retrieved chunks are _data_, delimited and labelled with their IDs, so that the LLM can _cite_ them
 
-    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="41" to="50" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="43" to="52" %}}
 
 ---
 
@@ -561,11 +561,11 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 3. __Structured output__ (recall the [prompting lecture](../prompting/#/structured-output)):
 
-    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="53" to="59" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="55" to="61" %}}
 
 4. The three steps: R, A, G (full code [here](../lab-snippets/snippets/lecture_rag/example4/rag_langchain.py)):
 
-    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="62" to="72" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_rag/example4/rag_langchain.py" from="64" to="74" %}}
 
 ---
 
