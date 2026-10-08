@@ -114,6 +114,13 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
       `#/lab-snippets-run`, `#/lab-snippets-exercises`), which lectures link to as `../#/lab-snippets-run` etc.
     + each example ends with a "Project Structure" slide (a `tree`-like `<pre>` block linking each involved file of `lab-snippets`);
       each exercise has a `> __Code__:` line naming its `exercise<ID>/` package and run command
+    + __exercises and their solutions__ (two branches of `lab-snippets`):
+        * `master` (tracked by the submodule) holds the __solutions__, commented so that they can be walked through,
+          plus their offline tests (`tests/`, run by CI): write and fix solutions there
+        * `exercises` is `master` with exercise packages reduced to __TODOs/placeholders__ (no solutions, no `tests/` for them):
+          students clone __this__ branch; after changing `master`, merge it into `exercises`, keeping the placeholders
+        * in the slides, each exercise is followed by a __walkthrough__ of its solution, as a _skippable_ vertical deck
+          (`{{% section %}}`), excerpting the solution files with `code` shortcodes (like examples)
     + never mention the site's own layout (`content/`, `static/`) in slides; don't run snippets inside `static/lab-snippets/`
       (it would create `__pycache__`/`.venv` there, which get published): use a separate clone
 - Resources in `static/` are referenced from lectures with `../<file>` (lectures live one level down).

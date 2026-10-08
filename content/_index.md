@@ -138,13 +138,15 @@ lab-snippets/
 2. Clone the repository, and install its dependencies _once_, via [Poetry](https://python-poetry.org) (a dependency manager for Python):
 
     ```bash
-    git clone https://github.com/unibo-fc-isi-agi/lab-snippets.git
+    git clone -b exercises https://github.com/unibo-fc-isi-agi/lab-snippets.git   # the `exercises` branch!
     cd lab-snippets
     pip install -r requirements.txt  # installs Poetry, if missing
     poetry install                   # creates a virtual environment in .venv/, with all dependencies
     ```
 
     - _optionally_, [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) the repository first, and clone your fork: you will be able to _commit_ (and push) your solutions to the exercises, and still `git pull` updates from the original repository
+
+    - the `exercises` branch has _placeholders_ for exercises; the `master` branch has their _solutions_ (look at them only _after_ trying!)
 
 3. Configure the LLM provider via __environment variables__ (cf. [Free Access to LLMs](./free-access/)):
     + `OPENAI_API_KEY`: your API key (if missing, snippets ask for it interactively)
@@ -206,6 +208,7 @@ lab-snippets/
 - Each exercise has its own _placeholder_ package, e.g. [`snippets/lecture_llmaas/exercise1/`](./lab-snippets/snippets/lecture_llmaas/exercise1/__init__.py)
     + its `__init__.py` recalls the exercise's goal: put your solution in the _same_ directory (as one or more `.py` files)
     + each exercise's slides recall _where_ its solution goes, and _how_ to run it
+    + each exercise's slides are followed by a (skippable) _walkthrough_ of its solution, available on the `master` branch
 
 - Run your solution like an example, but with `--exercise` (or `-x`) instead of `--example`:
 
