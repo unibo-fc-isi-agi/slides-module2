@@ -30,7 +30,7 @@
 <br>
 <h3 id="prof-hahahugoshortcode1s2hbhb">Prof. <a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <!-- [<i class="fa fa-undo" aria-hidden="true"></i> back](..) -->
 </section>
@@ -52,6 +52,7 @@
 <p><strong>Appendices</strong></p>
 <ul>
 <li><a href="free-access">Free Access to LLMs</a></li>
+<li><a href="#/lab-snippets">Code of examples and exercises</a>: why, where, and how to run them</li>
 </ul>
 </section><section>
 <h2 id="teachers">Teachers</h2>
@@ -86,12 +87,187 @@
 </ul>
 </li>
 <li><a href="https://apice.unibo.it/xwiki/bin/view/Course/Iag2627/">APICe Page of the Course</a></li>
+<li><a href="https://github.com/unibo-fc-isi-agi/lab-snippets">Code of examples and exercises</a></li>
 <li><a href="./">These slides</a></li>
 </ul>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="lab-snippets">
+<h2 id="the-code-of-examples-and-exercises-why-a-repository">The code of examples and exercises: why a repository?</h2>
+<ul>
+<li>
+<p>All examples (and exercises) of the course live in a single repository: <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>unibo-fc-isi-agi/lab-snippets</code></a></p>
+<ul>
+<li>slides only show <em>excerpts</em>: the repository contains the <em>full</em>, <em>commented</em>, <em>runnable</em> code</li>
+</ul>
+</li>
+<li>
+<p>Why <em>one</em> repository, rather than copy-pasting code from the slides?</p>
+<ul>
+<li>examples <strong>build upon each other</strong>: the <a href="./prompting/#/running-example">running example</a> grows across lectures
+<ul>
+<li>e.g. the letter-scoring system of the <a href="./prompting/">prompting</a> lecture is the system under test of the <a href="./validating/">validating</a> lecture</li>
+<li>e.g. the tools of the <a href="./agents/">agents</a> lecture are shared by several agents, local or via MCP</li>
+</ul>
+</li>
+<li><strong>one environment</strong> for all lectures: dependencies are declared once (<code>pyproject.toml</code>), and <em>locked</em> (<code>poetry.lock</code>), so that everybody runs the <em>same</em> versions of the <em>same</em> libraries</li>
+<li><strong>no copy-paste errors</strong>: code on the slides <em>is</em> the code in the repository (excerpts are taken from it)</li>
+<li><strong>versioned</strong>: fixes and updates (e.g. for libraries’ breaking changes, or deprecated models) reach you via <code>git pull</code></li>
+<li><strong>checked</strong>: a CI pipeline verifies that all snippets compile, and can be found by the runner</li>
+<li><strong>exercises in place</strong>: each exercise has its own (empty) package, where your solution can <em>import</em> the examples’ code</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="the-code-of-examples-and-exercises-directory-structure">The code of examples and exercises: directory structure</h2>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col col-7" style="text-align: left;"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>lab-snippets/
+</span></span><span style="display:flex;"><span>├── data/                         # the running example's data
+</span></span><span style="display:flex;"><span>│   ├── __init__.py               # helpers to locate data files
+</span></span><span style="display:flex;"><span>│   ├── letter-&lt;CANDIDATE&gt;.txt
+</span></span><span style="display:flex;"><span>│   ├── passport-&lt;CANDIDATE&gt;.png
+</span></span><span style="display:flex;"><span>│   └── transcript-&lt;CANDIDATE&gt;.png
+</span></span><span style="display:flex;"><span>├── snippets/
+</span></span><span style="display:flex;"><span>│   ├── __init__.py               # utilities shared across lectures
+</span></span><span style="display:flex;"><span>│   ├── __main__.py               # the runner (python -m snippets)
+</span></span><span style="display:flex;"><span>│   └── lecture_&lt;NAME&gt;/           # one package per lecture
+</span></span><span style="display:flex;"><span>│       ├── &lt;UTILITY&gt;.py          # utilities shared within the lecture
+</span></span><span style="display:flex;"><span>│       ├── example&lt;ID&gt;/          # one package per example...
+</span></span><span style="display:flex;"><span>│       │   └── &lt;DESCRIPTION&gt;.py
+</span></span><span style="display:flex;"><span>│       └── exercise&lt;ID&gt;/         # ...and per exercise (placeholder)
+</span></span><span style="display:flex;"><span>├── pyproject.toml                # dependencies (Poetry)
+</span></span><span style="display:flex;"><span>├── poetry.lock                   # exact versions of dependencies
+</span></span><span style="display:flex;"><span>└── README.md                     # suggested order of lectures and exercises
+</span></span></code></pre></div></div>
+<div class="col col-5" style="text-align: left;"><ul>
+<li><code>NAME</code>: the lecture’s name, as in the URL of its slides
+<ul>
+<li>e.g. <code>llmaas</code>, <code>prompting</code>, <code>agents</code> (<code>free-access</code> becomes <code>free_access</code>)</li>
+</ul>
+</li>
+<li><code>ID</code>: the example’s (or exercise’s) number, as in the slides
+<ul>
+<li>e.g. <code>1</code>, <code>2</code>, …, or <code>1bis</code> for “Example 1 (bis)”</li>
+</ul>
+</li>
+<li><code>CANDIDATE</code>: a candidate of the running example
+<ul>
+<li>e.g. <code>mario-rossi</code>, <code>jean-dupont</code>, <code>mohammed-ali</code></li>
+</ul>
+</li>
+<li>e.g. “Example 1 (bis)” of the <a href="./prompting/">prompting</a> lecture lives in <a href="./lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py"><code>snippets/lecture_prompting/example1bis/</code></a></li>
+<li>the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets/blob/master/README.md">README</a> lists the <em>suggested order</em> of lectures, examples, and exercises (which is <em>not</em> always the order of IDs)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="lab-snippets-setup">
+<h2 id="the-code-of-examples-and-exercises-setup">The code of examples and exercises: setup</h2>
+<ol>
+<li>
+<p>Requirements: <a href="https://www.python.org/downloads/">Python</a> 3.10+, and <a href="https://git-scm.com/downloads">Git</a></p>
+</li>
+<li>
+<p>Clone the repository, and install its dependencies <em>once</em>, via <a href="https://python-poetry.org">Poetry</a> (a dependency manager for Python):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>git clone https://github.com/unibo-fc-isi-agi/lab-snippets.git
+</span></span><span style="display:flex;"><span><span style="color:#204a87">cd</span> lab-snippets
+</span></span><span style="display:flex;"><span>pip install -r requirements.txt  <span style="color:#8f5902;font-style:italic"># installs Poetry, if missing</span>
+</span></span><span style="display:flex;"><span>poetry install                   <span style="color:#8f5902;font-style:italic"># creates a virtual environment in .venv/, with all dependencies</span>
+</span></span></code></pre></div><ul>
+<li><em>optionally</em>, <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">fork</a> the repository first, and clone your fork: you will be able to <em>commit</em> (and push) your solutions to the exercises, and still <code>git pull</code> updates from the original repository</li>
+</ul>
+</li>
+<li>
+<p>Configure the LLM provider via <strong>environment variables</strong> (cf. <a href="./free-access/">Free Access to LLMs</a>):</p>
+<ul>
+<li><code>OPENAI_API_KEY</code>: your API key (if missing, snippets ask for it interactively)</li>
+<li><code>OPENAI_BASE_URL</code> (default: <code>https://openrouter.ai/api/v1/</code>), <code>OPENAI_MODEL</code> (default: <code>openrouter/auto</code>)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87">export</span> <span style="color:#000">OPENAI_API_KEY</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"sk-or-v1-..."</span>     <span style="color:#8f5902;font-style:italic"># on Windows (PowerShell): $env:OPENAI_API_KEY="sk-or-v1-..."</span>
+</span></span></code></pre></div></li>
+<li>
+<p>Open the repository’s directory in your IDE (e.g. VS Code), and select the interpreter in <code>.venv/</code></p>
+</li>
+</ol>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="lab-snippets-run">
+<h2 id="the-code-of-examples-and-exercises-running-examples">The code of examples and exercises: running examples</h2>
+<ul>
+<li>
+<p>Always run snippets <em>from the root directory</em> of the repository, via the <strong>runner</strong>, by lecture <code>NAME</code> and example <code>ID</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets --lecture &lt;NAME&gt; --example &lt;ID&gt; <span style="color:#ce5c00;font-weight:bold">[</span>ARGS<span style="color:#ce5c00;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>poetry run python -m snippets -l &lt;NAME&gt; -e &lt;ID&gt; <span style="color:#ce5c00;font-weight:bold">[</span>ARGS<span style="color:#ce5c00;font-weight:bold">]</span>               <span style="color:#8f5902;font-style:italic"># same, but shorter</span>
+</span></span><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e 1bis data/letter-mario-rossi.txt   <span style="color:#8f5902;font-style:italic"># e.g.</span>
+</span></span></code></pre></div><ul>
+<li><code>ARGS</code> are passed to the snippet (each example’s slides show which ones it accepts)</li>
+<li>prefer the runner to <code>python path/to/snippet.py</code>: same command for every snippet, no paths to remember</li>
+</ul>
+</li>
+<li>
+<p>Don’t remember the <code>ID</code>? List the snippets of a lecture (or all of them, omitting <code>-l</code>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>$ poetry run python -m snippets -l llmaas --list
+</span></span><span style="display:flex;"><span>llmaas/example1: Example 1: Sync CLI Chat, with OpenAI's Chat Completions API.
+</span></span><span style="display:flex;"><span>     snippets/lecture_llmaas/example1/repl_chat_openai.py
+</span></span><span style="display:flex;"><span>llmaas/example1bis: Example 1 (bis): the same CLI Chat, with Anthropic's Messages API (served by a local Ollama).
+</span></span><span style="display:flex;"><span>     snippets/lecture_llmaas/example1bis/repl_chat_anthropic.py
+</span></span><span style="display:flex;"><span>llmaas/example2: Example 2: Async CLI Chat with Streaming, with OpenAI's Chat Completions API.
+</span></span><span style="display:flex;"><span>     snippets/lecture_llmaas/example2/repl_chat_openai_async.py
+</span></span><span style="display:flex;"><span>llmaas/exercise1: Exercise 1: Caching Sync Requests.
+</span></span><span style="display:flex;"><span>llmaas/exercise2: Exercise 2: Retry and Exponential Backoff.
+</span></span></code></pre></div></li>
+<li>
+<p>If more files match (e.g. an example made of several runnable files), the runner asks which one to run:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>$ poetry run python -m snippets -l agents -e 2
+</span></span><span style="display:flex;"><span># Multiple snippets found, pick one:
+</span></span><span style="display:flex;"><span>#    1) agents/example2/agent_mcp.py: Example 2: Simple Tools as an MCP Server (and an agent using it).
+</span></span><span style="display:flex;"><span>#    2) agents/example2/simple_tools_mcp_server.py: Example 2: Simple Tools as an MCP Server (and an agent using it).
+</span></span><span style="display:flex;"><span># &gt;
+</span></span></code></pre></div></li>
+</ul>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="lab-snippets-exercises">
+<h2 id="the-code-of-examples-and-exercises-working-on-exercises">The code of examples and exercises: working on exercises</h2>
+<ul>
+<li>
+<p>Each exercise has its own <em>placeholder</em> package, e.g. <a href="./lab-snippets/snippets/lecture_llmaas/exercise1/__init__.py"><code>snippets/lecture_llmaas/exercise1/</code></a></p>
+<ul>
+<li>its <code>__init__.py</code> recalls the exercise’s goal: put your solution in the <em>same</em> directory (as one or more <code>.py</code> files)</li>
+<li>each exercise’s slides recall <em>where</em> its solution goes, and <em>how</em> to run it</li>
+</ul>
+</li>
+<li>
+<p>Run your solution like an example, but with <code>--exercise</code> (or <code>-x</code>) instead of <code>--example</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l llmaas -x <span style="color:#0000cf;font-weight:bold">1</span>        <span style="color:#8f5902;font-style:italic"># until you write some code: "Nothing to run in ..."</span>
+</span></span></code></pre></div><ul>
+<li>every <code>.py</code> file in the exercise’s directory is runnable, except those starting with <code>_</code> (e.g. <code>_helpers.py</code>): use them for <em>private</em> helpers</li>
+</ul>
+</li>
+<li>
+<p>Starting from an example? <em>Copy</em> its file into the exercise’s directory, then change the copy</p>
+<ul>
+<li>the original remains available, for comparison (and for the others’ exercises, which may build upon it)</li>
+</ul>
+</li>
+<li>
+<p><em>Reuse</em> the code of other snippets via <strong>absolute imports</strong> (as snippets are regular Python packages):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_agents.simple_tools</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">tools</span>                                    <span style="color:#8f5902;font-style:italic"># a lecture-wide utility</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_prompting.example1bis.letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span>  <span style="color:#8f5902;font-style:italic"># an example</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">data</span>                                                                               <span style="color:#8f5902;font-style:italic"># the running example's data</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">letter</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"mario-rossi"</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
+</span></span></code></pre></div><ul>
+<li>only import <em>modules</em> whose main code is under <code>if __name__ == "__main__":</code> (others run as soon as they are imported!)</li>
+</ul>
+</li>
+</ul>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="./#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -171,11 +347,7 @@
   
 
   
-  
-
-  
-  
-
+    
   
   
 
@@ -197,7 +369,37 @@
   
   
 
+  
+  
 
+  
+  
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({});
+
+    let render = (event) => {
+      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
+      if (!mermaidElems.length){
+          return
+      }
+      mermaidElems.forEach(mermaidElem => {
+          let processed = mermaidElem.getAttribute('data-processed');
+          if (!processed){
+              
+              mermaid.init(undefined, mermaidElem);
+          }
+      });
+    };
+    
+    render({currentSlide: Reveal.getCurrentSlide()});
+
+    Reveal.on('slidechanged', render);
+    Reveal.on('ready', render);
+  </script>
 
 
 

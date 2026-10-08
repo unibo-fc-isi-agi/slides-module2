@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -198,7 +198,7 @@
 <ol>
 <li><strong>First</strong>, design the <strong>test dataset</strong>: <em>known</em> inputs (the letters), each with the results <em>expected</em> from a correct scoring
 <ul>
-<li>written by <em>humans</em> (the committee), as a <em>data file</em> (<a href="../test/test_data.yml"><code>test_data.yml</code></a>) shared among test suites</li>
+<li>written by <em>humans</em> (the committee), as a <em>data file</em> (<a href="../lab-snippets/snippets/lecture_validating/test_data.yml"><code>test_data.yml</code></a>) shared among test suites</li>
 </ul>
 </li>
 </ol>
@@ -243,18 +243,17 @@
 </li>
 <li>the file is loaded in Python as a list of <code>dict</code>s
 <ul>
-<li>full code <a href="../test/dataset.py">here</a>:</li>
+<li>full code <a href="../lab-snippets/snippets/lecture_validating/dataset.py">here</a>:</li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install pyyaml</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">pathlib</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Path</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">data</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">LETTERS_DIR</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"data"</span>  <span style="color:#8f5902;font-style:italic"># i.e. &lt;root dir&gt;/data/</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">TEST_DATA_FILE</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"test_data.yml"</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">TEST_DATA_FILE</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"test_data.yml"</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># list of test cases, each one with an "input" (letter file name) and its "expectations"</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># list of test cases, e.g. [{"input": "letter-mario-rossi.txt", "expectations": {"applicant_name": "Mario Rossi", ...}}, ...]</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">TEST_CASES</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">yaml</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">safe_load</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">TEST_DATA_FILE</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">())</span>
 </span></span></code></pre></div></div>
 </div>
@@ -264,25 +263,21 @@
 <ol start="2">
 <li>
 <p>Imports: DeepEval runs on top of <code>pytest</code>, and the system under test is imported <em>as is</em>:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai deepeval pytest pyyaml</span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: pytest test/test_letter_scoring.py   (from the project root)</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pytest</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">assert_test</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.metrics</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">GEval</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.models</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">OpenRouterModel</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">deepeval.test_case</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">dataset</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"scripts"</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># makes &lt;root dir&gt;/scripts/ importable</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_validating.dataset</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_prompting.example1bis.letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">score</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">functools</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">cache</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># this is the scoring function under test!</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">score</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">functools</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">cache</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># this is the scoring function under test! (cached: one LLM call per letter)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">for_each_case</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pytest</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">mark</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parametrize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"case"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ids</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"expectations"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">"applicant_name"</span><span style="color:#000;font-weight:bold">])</span>
 </span></span></code></pre></div><ul>
-<li><code>sys.path.append(...)</code> makes the modules in <code>scripts/</code> importable from <code>test/</code>, so that everything runs from the project’s root, with no further configuration</li>
+<li>snippets are regular Python <em>packages</em>: the system under test is imported from the <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">prompting lecture’s package</a>, with no further configuration</li>
 <li><code>functools.cache</code> accepts a Python function (<code>score_letter</code>) and returns a <em>cached</em> version of it (<code>score</code>):
 <ol>
 <li>each time <code>score(l)</code> is called, the cache checks if the same letter <code>l</code> has already been scored</li>
@@ -337,7 +332,7 @@
 </span></span><span style="display:flex;"><span>             <span style="color:#4e9a06">"It must be consistent with the expected output: penalise contradictions, omitted key facts, and invented facts."</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">evaluation_params</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ACTUAL_OUTPUT</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">SingleTurnParams</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">EXPECTED_OUTPUT</span><span style="color:#000;font-weight:bold">],</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">judge</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># GEval scores are in [0, 1]: below the threshold, the test fails</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">groundedness</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">GEval</span><span style="color:#000;font-weight:bold">(</span>  <span style="color:#8f5902;font-style:italic"># reference-free: the judge compares the actual output with the input letter</span>
@@ -385,29 +380,30 @@
 <h2 id="example-1-testing-the-letter-scoring-system-with-deepeval-pt-6">Example 1: Testing the Letter Scoring System with DeepEval (pt. 6)</h2>
 <ol start="7">
 <li>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
- <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+ <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
  ├── data/
- │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
- │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
- │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
- ├── scripts/
- │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
- ├── test/
- │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
- │   ├── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
- │   └── <a href="../test/test_letter_scoring.py">test_letter_scoring.py</a>      # the test suite
- ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
- └── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+ │   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+ │   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+ │   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+ │   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+ ├── snippets/
+ │   ├── lecture_prompting/
+ │   │   └── example1bis/
+ │   │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # system under test
+ │   └── lecture_validating/
+ │       ├── example1/
+ │       │   └── <a href="../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py">test_letter_scoring.py</a>       # the test suite
+ │       ├── <a href="../lab-snippets/snippets/lecture_validating/dataset.py">dataset.py</a>                       # loads the test dataset
+ │       └── <a href="../lab-snippets/snippets/lecture_validating/test_data.yml">test_data.yml</a>                    # test dataset
+ └── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>, <code>JUDGE_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </li>
 <li>
-<p>Let’s run it (full code <a href="../test/test_letter_scoring.py">here</a>), from the project’s root directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>pytest test/test_letter_scoring.py -v
+<p>Let’s run it (full code <a href="../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py">here</a>), from the project’s root directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l validating -e <span style="color:#0000cf;font-weight:bold">1</span> -v   <span style="color:#8f5902;font-style:italic"># runs pytest on the test suite, with any option given</span>
 </span></span></code></pre></div><ul>
 <li>would the outputs of <a href="../prompting/#/letter-scoring">Example 1 of the Prompt Engineering lecture</a> pass? <strong>No</strong>: Mohammed Ali’s shallow letter got score 4, whereas the committee expects at most 3
 <ul>
@@ -429,19 +425,15 @@
 <ol>
 <li>
 <p>Same test dataset, rearranged as MLflow wants it: <code>inputs</code> (for the system) + <code>expectations</code> (for the scorers)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai mlflow pyyaml</span>
-</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># run with: python test/evaluate_mlflow.py   (from the project root), then browse results with: mlflow ui</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">datetime</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">datetime</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">typing</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Literal</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">mlflow</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">scorer</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai.judges</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">make_judge</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">dataset</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"scripts"</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># makes &lt;root dir&gt;/scripts/ importable</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_validating.dataset</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_prompting.example1bis.letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">inputs</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"expectations"</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">c</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">]</span>
@@ -503,7 +495,7 @@
 <li>
 <p>Evaluation is a <em>single call</em>, whose results are logged as an MLflow <em>run</em> (named after the current date and time, in ISO format):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_experiment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"letter-scoring"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_experiment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"letter-scoring"</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># runs are grouped into experiments</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">start_run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">run_name</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">now</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">isoformat</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">timespec</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"seconds"</span><span style="color:#000;font-weight:bold">)):</span>  <span style="color:#8f5902;font-style:italic"># e.g. "2026-10-01T17:36:26"</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">mlflow</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">genai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">evaluate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">predict_fn</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">scorers</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">names_and_email</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">score_in_range</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">relationship</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">results</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">metrics</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># fraction of test cases passing each scorer, e.g. {'score_in_range/mean': 0.67, ...}</span>
@@ -520,30 +512,31 @@
 <h2 id="example-1-bis-evaluating-the-letter-scoring-system-with-mlflow-pt-4">Example 1 (bis): Evaluating the Letter Scoring System with MLflow (pt. 4)</h2>
 <ol start="5">
 <li>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
- <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+ <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
  ├── data/
- │   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
- │   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
- │   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
- ├── scripts/
- │   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # system under test
- ├── test/
- │   ├── <a href="../test/dataset.py">dataset.py</a>                  # loads the test dataset
- │   ├── <a href="../test/evaluate_mlflow.py">evaluate_mlflow.py</a>          # the evaluation
- │   └── <a href="../test/test_data.yml">test_data.yml</a>               # test dataset
- ├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
- └── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+ │   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+ │   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+ │   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+ │   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+ ├── snippets/
+ │   ├── lecture_prompting/
+ │   │   └── example1bis/
+ │   │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # system under test
+ │   └── lecture_validating/
+ │       ├── example1bis/
+ │       │   └── <a href="../lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py">evaluate_mlflow.py</a>           # the evaluation
+ │       ├── <a href="../lab-snippets/snippets/lecture_validating/dataset.py">dataset.py</a>                       # loads the test dataset
+ │       └── <a href="../lab-snippets/snippets/lecture_validating/test_data.yml">test_data.yml</a>                    # test dataset
+ └── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>, <code>JUDGE_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </li>
 <li>
-<p>Let’s run it (full code <a href="../test/evaluate_mlflow.py">here</a>), from the project’s root directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python test/evaluate_mlflow.py   <span style="color:#8f5902;font-style:italic"># prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]</span>
-</span></span><span style="display:flex;"><span>mlflow ui                        <span style="color:#8f5902;font-style:italic"># then open http://localhost:5000, to browse runs, traces, and judges' rationales</span>
+<p>Let’s run it (full code <a href="../lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py">here</a>), from the project’s root directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l validating -e 1bis   <span style="color:#8f5902;font-style:italic"># prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]</span>
+</span></span><span style="display:flex;"><span>poetry run mlflow ui                                  <span style="color:#8f5902;font-style:italic"># then open http://localhost:5000, to browse runs, traces, and judges' rationales</span>
 </span></span></code></pre></div> <img src="./todo-mlflow-ui.png" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (names_and_email, score_in_range, relationship, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." style="max-width: 95vw; max-height: 25vh; object-fit: contain;">
 </li>
 </ol>
@@ -614,10 +607,13 @@
 <blockquote>
 <p><strong>Goal</strong>: the examples above only check <em>some</em> fields of <code>LetterInfo</code>; extend <em>one</em> of the two test suites (DeepEval <em>or</em> MLflow, your choice) so that <em>every</em> field is checked</p>
 </blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_validating/exercise1/__init__.py"><code>snippets/lecture_validating/exercise1/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l validating -x 1</code></p>
+</blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
-<li>start from the <a href="#/test-deepeval">project</a> of Example 1 (or 1 bis), and list the fields which are <em>not</em> checked yet (cf. the <code>pydantic</code> classes in <a href="../scripts/letter_scoring_langchain.py"><code>letter_scoring_langchain.py</code></a>):
+<li>start from the <a href="#/test-deepeval">project</a> of Example 1 (or 1 bis), and list the fields which are <em>not</em> checked yet (cf. the <code>pydantic</code> classes in <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py"><code>letter_scoring_langchain.py</code></a>):
 <ul>
 <li><code>ApplicantInfo</code>: <code>degree</code>, <code>alma_mater</code>, <code>attended</code></li>
 <li><code>AuthorInfo</code>: <code>affiliation</code>, <code>position</code>, <code>seniority</code>, <code>nationality</code></li>
@@ -625,7 +621,7 @@
 </ul>
 </li>
 <li>for each field, decide <em>how</em> to check it, and <em>why</em>: <strong>exact</strong> match, <strong>tolerant</strong> match (normalisation, “contains”, ranges, set inclusion, …), or <strong>LLM-as-a-Judge</strong> (reference-based or reference-free)</li>
-<li>read the <a href="../prompting/#/running-example">letters</a> <em>yourself</em>, and extend <a href="../test/test_data.yml"><code>test_data.yml</code></a> with the expectations for each field of each letter</li>
+<li>read the <a href="../prompting/#/running-example">letters</a> <em>yourself</em>, and extend <a href="../lab-snippets/snippets/lecture_validating/test_data.yml"><code>test_data.yml</code></a> with the expectations for each field of each letter</li>
 <li>write the corresponding scorers (tests, or <code>@scorer</code> functions, or judges), and run the suite</li>
 <li>for each failure, decide whether the <em>system</em> or the <em>expectation</em> is wrong, and fix the right one</li>
 </ol>
@@ -654,6 +650,9 @@
 <h2 id="exercise-2-testing-infrastructure-for-id-document-extraction-pt-1">Exercise 2: Testing Infrastructure for ID Document Extraction (pt. 1)</h2>
 <blockquote>
 <p><strong>Goal</strong>: the committee wants <em>evidence</em> that the extractor of <a href="../prompting/#/exercise-id-documents">Exercise 2 of the Prompt Engineering lecture</a> is reliable, and wants to be <em>warned</em> whenever a change in prompt or model makes it worse</p>
+</blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_validating/exercise2/__init__.py"><code>snippets/lecture_validating/exercise2/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l validating -x 2</code></p>
 </blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
@@ -704,7 +703,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

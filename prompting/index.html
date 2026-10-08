@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -182,30 +182,30 @@
 </ul>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><p><img src="../data/passport-mario-rossi.png" alt=""></p>
+    <div class="row "><div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mario-rossi.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-mario-rossi.png">Transcript of records</a></li>
-<li><a href="../data/letter-mario-rossi.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-mario-rossi.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mario-rossi.txt">Presentation letter</a>
 <ul>
 <li>letter is very positive</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../data/passport-jean-dupont.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-jean-dupont.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-jean-dupont.png">Transcript of records</a></li>
-<li><a href="../data/letter-jean-dupont.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-jean-dupont.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-jean-dupont.txt">Presentation letter</a>
 <ul>
 <li>letter contains some criticisms</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../data/passport-mohammed-ali.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mohammed-ali.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-mohammed-ali.png">Transcript of records</a></li>
-<li><a href="../data/letter-mohammed-ali.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-mohammed-ali.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mohammed-ali.txt">Presentation letter</a>
 <ul>
 <li>letter is positive but shallow</li>
 </ul>
@@ -500,7 +500,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">general_instructions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"""
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You are assisting the admission commettee of University of Bologna PhD programmes.
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">Your goal is to help assess recommendation letters for PhD applications.
-</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You'll be provided with the text of each letter, 
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You'll be provided with the text of each letter,
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">and you'll have to analyse it to extract structured information in JSON.
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">"""</span>
 </span></span></code></pre></div></li>
@@ -578,6 +578,7 @@
 <li>
 <p>With these ingredients in mind, the automatic scoring logic is as simple as a <em>single request–response interaction</em> with the LLM:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">OpenAI</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># .parse(...) passes the JSON Schema of LetterInfo to the model, and parses the answer back into a LetterInfo</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parse</span><span style="color:#000;font-weight:bold">(</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
@@ -587,7 +588,7 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#000">response_format</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">message</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">refusal</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">refusal</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># the model may refuse to answer, e.g. for safety reasons</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">raise</span> <span style="color:#c00;font-weight:bold">RuntimeError</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Model refused: </span><span style="color:#4e9a06">{</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">refusal</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parsed</span>
 </span></span></code></pre></div><p>notice that:</p>
@@ -609,24 +610,24 @@
 <h2 id="example-1-structured-output-with-pydantic-classes-pt-4">Example 1: Structured Output with Pydantic Classes (pt. 4)</h2>
 <ol start="6">
 <li>
-<p>Full code <a href="../scripts/letter_scoring_openai.py">here</a></p>
+<p>Full code <a href="../lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py">here</a></p>
 </li>
 <li>
 <p>At this point, the logic of the program is trivial (load letter file $\rightarrow$ call <code>score_letter(...)</code> $\rightarrow$ print the result):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">data</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Using model: </span><span style="color:#4e9a06">{</span><span style="color:#000">model</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Enter the path to the letter to score: "</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_path</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Enter the letter to score (candidate's ID or path): "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letter_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">find_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_path</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">letter_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">is_file</span><span style="color:#000;font-weight:bold">():</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"File </span><span style="color:#4e9a06">{</span><span style="color:#000">letter_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> is not a file."</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_text</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># a LetterInfo object, printed as JSON</span>
 </span></span></code></pre></div></li>
 <li>
 <p>Possible results below:</p>
@@ -749,18 +750,19 @@
 </div>
 </section><section>
 <h2 id="example-1-project-structure">Example 1: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_openai.py">letter_scoring_openai.py</a>    # the letter-scoring system
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>            # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                       # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example1/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py">letter_scoring_openai.py</a>  # the letter-scoring system
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                        # dependencies of all snippets</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">1</span> data/letter-mario-rossi.txt   <span style="color:#8f5902;font-style:italic"># or just: mario-rossi</span>
 </span></span></code></pre></div><ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
@@ -812,8 +814,7 @@
 <ol>
 <li>
 <p>Let’s import LangChain’s chat model for OpenAI-compatible APIs, and initialize it (notice that the <em>same</em> environment variables are used):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install langchain-openai</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">langchain_openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">ChatOpenAI</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">langchain_core.prompts</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">ChatPromptTemplate</span>
 </span></span><span style="display:flex;"><span>
@@ -840,7 +841,7 @@
 </ul>
 </li>
 <li>
-<p><code>pydantic</code> classes and scoring instructions are <em>exactly the same</em> as in the OpenAI version (full code <a href="../scripts/letter_scoring_langchain.py">here</a>)</p>
+<p><code>pydantic</code> classes and scoring instructions are <em>exactly the same</em> as in the OpenAI version (full code <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">here</a>)</p>
 </li>
 </ol>
 </section><section>
@@ -851,7 +852,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">scoring_chain</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">prompt</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">scoring_chain</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"letter_text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">})</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">scoring_chain</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"letter_text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">})</span>  <span style="color:#8f5902;font-style:italic"># fills the {letter_text} placeholder</span>
 </span></span></code></pre></div><p>notice that:</p>
 <ul>
 <li><code>llm.with_structured_output(LetterInfo)</code> returns a <em>new runnable</em>, whose output is an instance of <code>LetterInfo</code>
@@ -866,24 +867,24 @@
 </li>
 <li>
 <p>The <code>main</code> part of the program is unchanged:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/letter_scoring_langchain.py data/letter-mario-rossi.txt
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e 1bis data/letter-mario-rossi.txt
 </span></span></code></pre></div></li>
 </ol>
 </section><section>
 <h2 id="example-1-bis-project-structure">Example 1 (bis): Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_scoring_langchain.py">letter_scoring_langchain.py</a> # the letter-scoring system
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example1bis/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # the letter-scoring system
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </section><section>
@@ -953,12 +954,15 @@
 <blockquote>
 <p><strong>Problem</strong>: the scoring recipe provided to the model is still quite vague and unstructured, which may lead to <em>inconsistent</em> and <em>non-reproducible</em> scores. Even when good, scores are not <em>explainable</em>, as the reasoning behind them is not made explicit.</p>
 </blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_prompting/exercise1/__init__.py"><code>snippets/lecture_prompting/exercise1/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l prompting -x 1</code></p>
+</blockquote>
 
 
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
-<li>start from the <a href="../scripts/letter_scoring_langchain.py">LangChain version</a> of the letter-scoring system</li>
+<li>start from the <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">LangChain version</a> of the letter-scoring system</li>
 <li>let’s turn the scoring recipe into a <em>checklist</em> of criteria</li>
 <li>let’s have a Pydantic class with as many <strong>boolean fields</strong> as the criteria in the checklist</li>
 <li>let’s ask the <em>LLM</em> to set the boolean fields by analysing the <em>input letter</em></li>
@@ -1094,11 +1098,11 @@
 </span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openrouter/auto"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">temperature</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1.0</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">temperature</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1.0</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># some randomness, for self-consistency</span>
 </span></span></code></pre></div></li>
 <li>
 <p>The system prompt defines the <em>labels</em>; the output is constrained to them via a <code>Literal</code> type:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">Tone</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Literal</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"enthusiastic"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"lukewarm"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"critical"</span><span style="color:#000;font-weight:bold">]</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">Tone</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Literal</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"enthusiastic"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"lukewarm"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"critical"</span><span style="color:#000;font-weight:bold">]</span>  <span style="color:#8f5902;font-style:italic"># the only admissible labels</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">system</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"system"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"""You classify the tone of recommendation letters for PhD applications.
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">Use exactly one label among: enthusiastic, lukewarm, critical.
@@ -1155,6 +1159,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">reasoning</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Step by step: quote the key sentences of the letter, and discuss what they reveal about the author's opinion of the applicant"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">label</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Tone</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The tone of the letter, decided according to the reasoning above"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># one chain per technique: prompt template | LLM with structured output</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">chains</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"zero-shot"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">zero_shot</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ToneOnly</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"few-shot"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">few_shot</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ToneOnly</span><span style="color:#000;font-weight:bold">),</span>
@@ -1182,10 +1187,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">votes</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">most_common</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">][</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">votes</span>
 </span></span></code></pre></div></li>
 <li>
-<p>Let’s try it (full code <a href="../scripts/letter_tone.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/letter_tone.py zero-shot data/letter-jean-dupont.txt
-</span></span><span style="display:flex;"><span>python scripts/letter_tone.py few-shot data/letter-jean-dupont.txt
-</span></span><span style="display:flex;"><span>python scripts/letter_tone.py cot data/letter-jean-dupont.txt <span style="color:#0000cf;font-weight:bold">5</span>     <span style="color:#8f5902;font-style:italic"># CoT + self-consistency, 5 samples</span>
+<p>Let’s try it (full code <a href="../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">2</span> zero-shot data/letter-jean-dupont.txt
+</span></span><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">2</span> few-shot data/letter-jean-dupont.txt
+</span></span><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">2</span> cot data/letter-jean-dupont.txt <span style="color:#0000cf;font-weight:bold">5</span>     <span style="color:#8f5902;font-style:italic"># CoT + self-consistency, 5 samples</span>
 </span></span></code></pre></div><ul>
 <li>the script also <em>prints</em> the prompt template, so you can see what each technique actually sends</li>
 <li>try with the other letters, and with <em>different models</em>: which technique makes the answers most <em>stable</em>?</li>
@@ -1194,19 +1199,19 @@
 </ol>
 </section><section>
 <h2 id="example-2-project-structure">Example 2: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/letter_tone.py">letter_tone.py</a>              # tone classification
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>   # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>              # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example2/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py">letter_tone.py</a>   # tone classification
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </section><section>
@@ -1373,8 +1378,8 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">start</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">perf_counter</span><span style="color:#000;font-weight:bold">()</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">prompt</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">elapsed</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">perf_counter</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">start</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">usage</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">usage_metadata</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">reasoning_tokens</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">usage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"output_token_details"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">{})</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"reasoning"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">usage</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">usage_metadata</span>  <span style="color:#8f5902;font-style:italic"># token counts, as reported by the provider</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">reasoning_tokens</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">usage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"output_token_details"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">{})</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"reasoning"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># hidden "thinking" tokens: paid, not shown</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"## effort=</span><span style="color:#4e9a06">{</span><span style="color:#000">effort</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: </span><span style="color:#4e9a06">{</span><span style="color:#000">elapsed</span><span style="color:#4e9a06">:</span><span style="color:#4e9a06">.1f</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">s, </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'output_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> output tokens, of which </span><span style="color:#4e9a06">{</span><span style="color:#000">reasoning_tokens</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> for reasoning"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
@@ -1387,18 +1392,17 @@
 <h2 id="example-3-reasoning-effort-vs-latency-and-cost-pt-2">Example 3: Reasoning Effort vs. Latency and Cost (pt. 2)</h2>
 <ol start="3">
 <li>
-<p>Let’s run it on all letters (full code <a href="../scripts/reasoning_effort.py">here</a>):</p>
+<p>Let’s run it on all letters (full code <a href="../lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py">here</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">data</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"usage: </span><span style="color:#4e9a06">{</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> LETTER_FILE [LETTER_FILE ...]"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">letters</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">"</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">f</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:])</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">paths</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">find_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arg</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">arg</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">argv</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:]]</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">letters</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">letters</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">"</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"&lt;letter&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/letter&gt;"</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">path</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">paths</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Using model: </span><span style="color:#4e9a06">{</span><span style="color:#000">model</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">effort</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"low"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"medium"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"high"</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">effort</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"low"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"medium"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"high"</span><span style="color:#000;font-weight:bold">]:</span>  <span style="color:#8f5902;font-style:italic"># same question, increasing effort</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">ask</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">question</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letters</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letters</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">effort</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/reasoning_effort.py data/letter-*.txt
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">3</span> data/letter-*.txt
 </span></span></code></pre></div></li>
 <li>
 <p>Things to observe:</p>
@@ -1411,19 +1415,19 @@
 </ol>
 </section><section>
 <h2 id="example-3-project-structure">Example 3: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── data/
-│   ├── <a href="../data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>      # inputs (running example)
-│   ├── <a href="../data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
-│   └── <a href="../data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
-├── scripts/
-│   └── <a href="../scripts/reasoning_effort.py">reasoning_effort.py</a>         # ranking at several efforts
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>       # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                  # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── example3/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py">reasoning_effort.py</a>  # ranking at several efforts
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                   # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </section><section>
@@ -1461,6 +1465,9 @@
 <h2 id="exercise-2-extract-structured-information-from-pictures-pt-1">Exercise 2: Extract Structured Information from Pictures (pt. 1)</h2>
 <blockquote>
 <p><strong>Goal</strong>: let’s say the committee wants to extract structured information from the ID documents of the candidates, which are provided as pictures in the application form, and wants to be <em>confident</em> about the extracted values</p>
+</blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_prompting/exercise2/__init__.py"><code>snippets/lecture_prompting/exercise2/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l prompting -x 2</code></p>
 </blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
@@ -1749,6 +1756,7 @@
 <li>
 <p>The <em>context</em> sent at each request is: system instructions + summary (if any) + recent history:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">BaseMessage</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># what is actually sent to the LLM: instructions (+ summary, if any), then the recent history</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">system</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">instructions</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">Summary of the earlier conversation:</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">summary</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">summary</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">SystemMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">system</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">]</span>
 </span></span></code></pre></div></li>
@@ -1761,6 +1769,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">compact</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">global</span> <span style="color:#000">summary</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">history</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">older</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">history</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">history</span><span style="color:#000;font-weight:bold">[:</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">history</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">:]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># the LLM itself summarises the older messages (and the previous summary, which is in the system message)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">()[:</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">older</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HumanMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Summarise the conversation so far in a few sentences. "</span>
 </span></span><span style="display:flex;"><span>                                                    <span style="color:#4e9a06">"Keep all facts, names, numbers, and decisions."</span><span style="color:#000;font-weight:bold">)]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">summary</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span>
@@ -1776,9 +1785,9 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">history</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">response</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"AI: </span><span style="color:#4e9a06">{</span><span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">usage</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">usage_metadata</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">cached</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">usage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"input_token_details"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">{})</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"cache_read"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">cached</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">usage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"input_token_details"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">{})</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"cache_read"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># prompt caching: a stable prefix is cheaper</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [input: </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'input_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens, of which </span><span style="color:#4e9a06">{</span><span style="color:#000">cached</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> cached | output: </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'output_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens]"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">count_tokens_approximately</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">budget</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">count_tokens_approximately</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">budget</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">keep_last</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># over budget: compact</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">compact</span><span style="color:#000;font-weight:bold">()</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [context compacted: now ~</span><span style="color:#4e9a06">{</span><span style="color:#000">count_tokens_approximately</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">context</span><span style="color:#000;font-weight:bold">())</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> tokens]"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
@@ -1791,8 +1800,8 @@
 <h2 id="example-4-cli-chat-with-context-compaction-pt-3">Example 4: CLI Chat with Context Compaction (pt. 3)</h2>
 <ol start="5">
 <li>
-<p>Let’s try it (full code <a href="../scripts/chat_with_compaction.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">CONTEXT_BUDGET</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">300</span> python scripts/chat_with_compaction.py
+<p>Let’s try it (full code <a href="../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">CONTEXT_BUDGET</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">300</span> poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">4</span>
 </span></span></code></pre></div></li>
 <li>
 <p>Things to observe:</p>
@@ -1812,15 +1821,14 @@
 </ol>
 </section><section>
 <h2 id="example-4-project-structure">Example 4: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
-├── scripts/
-│   └── <a href="../scripts/chat_with_compaction.py">chat_with_compaction.py</a>     # the CLI chat
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── snippets/
+│   └── lecture_prompting/
+│       └── example4/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py">chat_with_compaction.py</a>  # the CLI chat
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                       # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>, <code>CONTEXT_BUDGET</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 
@@ -1839,7 +1847,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

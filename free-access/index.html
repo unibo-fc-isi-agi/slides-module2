@@ -32,7 +32,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -167,10 +167,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"ollama"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"http://localhost:11434/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">),</span>  <span style="color:#8f5902;font-style:italic"># local, no key needed</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"vllm"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"http://localhost:8000/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">),</span>  <span style="color:#8f5902;font-style:italic"># local, no key needed</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">}</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python free_providers.py groq                               <span style="color:#8f5902;font-style:italic"># list the models available now</span>
-</span></span><span style="display:flex;"><span>python free_providers.py groq openai/gpt-oss-20b <span style="color:#4e9a06">"Hello!"</span>   <span style="color:#8f5902;font-style:italic"># one chat request</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l free-access -e <span style="color:#0000cf;font-weight:bold">1</span> groq                               <span style="color:#8f5902;font-style:italic"># list the models available now</span>
+</span></span><span style="display:flex;"><span>poetry run python -m snippets -l free-access -e <span style="color:#0000cf;font-weight:bold">1</span> groq openai/gpt-oss-20b <span style="color:#4e9a06">"Hello!"</span>   <span style="color:#8f5902;font-style:italic"># one chat request</span>
 </span></span></code></pre></div><ul>
-<li>Full script <a href="./free_providers.py">here</a>; model IDs are <em>listed live</em>, not hard-coded, since they <strong>go stale quickly</strong></li>
+<li>Full script <a href="../lab-snippets/snippets/lecture_free_access/example1/free_providers.py">here</a> (cf. <a href="../#/lab-snippets-run">how to run snippets</a>); model IDs are <em>listed live</em>, not hard-coded, since they <strong>go stale quickly</strong></li>
 <li>The same trick works with the <a href="../llmaas">LLM-as-a-Service</a> scripts: just set <code>OPENAI_BASE_URL</code> and <code>OPENAI_API_KEY</code></li>
 </ul>
 </section><section>
@@ -337,7 +337,7 @@
 </li>
 <li>Serve them via <a href="https://ollama.com">Ollama</a> (easy) or <a href="https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html">vLLM</a> (fast, multi-user): both expose an <em>OpenAI-compatible</em> API
 <ul>
-<li>i.e. <code>python free_providers.py ollama</code> works out of the box</li>
+<li>i.e. <code>poetry run python -m snippets -l free-access -e 1 ollama</code> works out of the box</li>
 </ul>
 </li>
 <li><strong>Quantization</strong> (4-bit) cuts memory by ~4×, usually with small quality loss, but <strong>re-evaluate on your task</strong>
@@ -515,7 +515,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

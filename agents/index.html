@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -184,14 +184,15 @@
 </ul>
 </li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="tools-examples">
 <h2 id="tools-an-intuitive-example">Tools: an intuitive example</h2>
 <blockquote>
 <p><strong>Goal</strong>: an assistant answering questions about the <em>present</em>, which no LLM can know from its training data (e.g. “<em>where was Alan Turing born? What time is it there, and what’s the weather like?</em>”)</p>
 </blockquote>
 <div class="container w-100 m-0 p-0">
     <div class="row "><div class="col col-6" style="text-align: left;"><ul>
-<li>Three <strong>tools</strong>, as Python functions (full code <a href="../scripts/simple_tools.py">here</a>):
+<li>Three <strong>tools</strong>, as Python functions (full code <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">here</a>):
 <ul>
 <li><code>get_current_time(timezone)</code>: <em>reasoning</em> (local computation, via the standard library)</li>
 <li><code>get_weather(location)</code>: <em>perception</em> (via the free <a href="https://open-meteo.com/">Open-Meteo</a> Web API)</li>
@@ -407,11 +408,11 @@
 <section data-noprocess="" data-shortcode-slide="" id="agent-openai">
 <h2 id="example-1-an-agent-from-scratch-with-openais-client-pt-1">Example 1: an Agent from Scratch, with OpenAI’s Client (pt. 1)</h2>
 <blockquote>
-<p><strong>Goal</strong>: a CLI chat with an assistant, i.e. an <em>agent</em> using the <a href="#/tools-concept">three tools above</a>, <em>without</em> any agentic framework</p>
+<p><strong>Goal</strong>: a CLI chat with an assistant, i.e. an <em>agent</em> using the <a href="#/tools-examples">three tools above</a>, <em>without</em> any agentic framework</p>
 </blockquote>
 <ol>
 <li>
-<p>Tools and system prompt live in a <em>module</em> (<a href="../scripts/simple_tools.py"><code>simple_tools.py</code></a>), shared by all the examples of this lecture:</p>
+<p>Tools and system prompt live in a <em>module</em> (<a href="../lab-snippets/snippets/lecture_agents/simple_tools.py"><code>simple_tools.py</code></a>), shared by all the examples of this lecture:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">instructions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"""
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You are a helpful assistant. Use the available tools to answer questions about the present,
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">e.g. the current time, the weather, or recent facts. Ground your answers on the tools' results.
@@ -428,8 +429,8 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">))</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">tool_definitions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">tool_definition</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">f</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">]</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">tools_by_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#000">f</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__name__</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">tool_definitions</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">tool_definition</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">f</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">]</span>  <span style="color:#8f5902;font-style:italic"># sent to the LLM at each request</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">tools_by_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#000">f</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__name__</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">f</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">}</span>  <span style="color:#8f5902;font-style:italic"># used to execute the calls requested by the LLM</span>
 </span></span></code></pre></div><ul>
 <li>this is what agentic frameworks do for you, behind the scenes</li>
 <li><code>tools_by_name</code> maps the names chosen by the LLM onto the <em>actual</em> functions</li>
@@ -444,7 +445,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">call_tool</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tool_call</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">function</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">tools_by_name</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">arguments</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">arguments</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">{}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">arguments</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">arguments</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">{}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># arguments come as a JSON string</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dumps</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">function</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">arguments</span><span style="color:#000;font-weight:bold">))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">e</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># errors are fed back to the LLM, which may recover</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Error: </span><span style="color:#4e9a06">{</span><span style="color:#000">e</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span>
@@ -455,13 +456,13 @@
 <li>
 <p>The <strong>ReAct loop</strong> itself:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">react</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_steps</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">10</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">max_steps</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">max_steps</span><span style="color:#000;font-weight:bold">):</span>  <span style="color:#8f5902;font-style:italic"># bounded: the LLM may loop forever</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tool_definitions</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">message</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">exclude_none</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">exclude_none</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># the tool calls are part of the history too</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tool_calls</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># no more actions: this is the final answer</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">tool_call</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tool_calls</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">tool_call</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tool_calls</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># act, then observe: results go back to the LLM as "tool" messages</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [tool] </span><span style="color:#4e9a06">{</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">(</span><span style="color:#4e9a06">{</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">arguments</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">)"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"tool"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tool_call_id</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tool_call</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">id</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">call_tool</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tool_call</span><span style="color:#000;font-weight:bold">)))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Sorry, I could not answer in </span><span style="color:#4e9a06">{</span><span style="color:#000">max_steps</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> steps."</span>
@@ -476,7 +477,7 @@
 <h2 id="example-1-an-agent-from-scratch-with-openais-client-pt-3">Example 1: an Agent from Scratch, with OpenAI’s Client (pt. 3)</h2>
 <ol start="5">
 <li>
-<p>The main program is a CLI chat (cf. <a href="../llmaas/">the LLM-as-a-Service lecture</a>), where each user message triggers a ReAct loop (full code <a href="../scripts/agent_openai.py">here</a>):</p>
+<p>The main program is a CLI chat (cf. <a href="../llmaas/">the LLM-as-a-Service lecture</a>), where each user message triggers a ReAct loop (full code <a href="../lab-snippets/snippets/lecture_agents/example1/agent_openai.py">here</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"system"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">while</span> <span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">:</span>
@@ -488,7 +489,7 @@
 </span></span></code></pre></div></li>
 <li>
 <p>Let’s try it:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/agent_openai.py
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l agents -e <span style="color:#0000cf;font-weight:bold">1</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>You: Where was Alan Turing born? What time is it there now, and what is the weather like?
 </span></span><span style="display:flex;"><span>    [tool] web_search({"query":"Alan Turing birthplace"})
 </span></span><span style="display:flex;"><span>    [tool] get_current_time({"timezone":"Europe/London"})
@@ -514,16 +515,15 @@
 </ol>
 </section><section>
 <h2 id="example-1-project-structure">Example 1: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
-├── scripts/
-│   ├── <a href="../scripts/agent_openai.py">agent_openai.py</a>     # the agent
-│   └── <a href="../scripts/simple_tools.py">simple_tools.py</a>     # tools + system prompt
-├── <a href="../requirements.txt">requirements.txt</a>        # dependencies of all examples
-└── .venv/                  # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── snippets/
+│   └── lecture_agents/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example1/agent_openai.py">agent_openai.py</a>  # the agent
+│       └── <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">simple_tools.py</a>      # tools + system prompt
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a>
 <ul>
 <li>pick a model which supports <em>tools</em> (e.g. on <a href="https://openrouter.ai/models?supported_parameters=tools">OpenRouter</a>)</li>
@@ -538,7 +538,7 @@
 <p>LangChain’s <a href="https://docs.langchain.com/oss/python/langchain/agents"><code>create_agent</code></a> implements the ReAct loop for you: just give it a chat model, the tools, and the system prompt</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># tool definitions are derived from the functions</span>
 </span></span></code></pre></div><ul>
 <li>plain Python functions are <em>converted</em> into tools (docstrings + type hints $\rightarrow$ definitions), or use the <a href="https://docs.langchain.com/oss/python/langchain/tools"><code>@tool</code></a> decorator for more control</li>
 <li>the result is a <em>runnable</em> (actually, a <a href="https://www.langchain.com/langgraph">LangGraph</a> <em>graph</em>): <code>.invoke(...)</code>, <code>.stream(...)</code>, <code>.batch(...)</code> work as usual</li>
@@ -547,7 +547,7 @@
 </li>
 <li>
 <p>The main program <em>invokes</em> the agent with the whole conversation, and prints the tool calls it made:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># shows which tools the agent called, and how</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">message</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">tool_call</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">getattr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"tool_calls"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">[]):</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"    [tool] </span><span style="color:#4e9a06">{</span><span style="color:#000">tool_call</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'name'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">(</span><span style="color:#4e9a06">{</span><span style="color:#000">tool_call</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'args'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">)"</span><span style="color:#000;font-weight:bold">)</span>
@@ -560,9 +560,9 @@
 </span></span><span style="display:flex;"><span>            <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">((</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"You: "</span><span style="color:#000;font-weight:bold">)))</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#c00;font-weight:bold">EOFError</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#c00;font-weight:bold">KeyboardInterrupt</span><span style="color:#000;font-weight:bold">):</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">break</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">agent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"recursion_limit"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">})</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">):])</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">agent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"recursion_limit"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">})</span>  <span style="color:#8f5902;font-style:italic"># runs the loop, up to 20 steps</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">):])</span>  <span style="color:#8f5902;font-style:italic"># only the new messages</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">]</span>  <span style="color:#8f5902;font-style:italic"># the whole history, including tool calls and results</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"AI: </span><span style="color:#4e9a06">{</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
 <li><code>recursion_limit</code> plays the role of <code>max_steps</code></li>
@@ -574,8 +574,8 @@
 <h2 id="example-1-bis-the-same-agent-with-langchain-pt-2">Example 1 (bis): the same Agent with LangChain (pt. 2)</h2>
 <ol start="3">
 <li>
-<p>Let’s try it (full code <a href="../scripts/agent_langchain.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/agent_langchain.py
+<p>Let’s try it (full code <a href="../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l agents -e 1bis
 </span></span></code></pre></div></li>
 <li>
 <p>Beyond the basic loop, <code>create_agent</code> supports <a href="https://docs.langchain.com/oss/python/langchain/middleware"><strong>middleware</strong></a>: hooks <em>before</em> / <em>after</em> each model call or tool call, e.g.</p>
@@ -586,7 +586,7 @@
 </ul>
 </li>
 <li>
-<p>Project structure: as in <a href="#/agent-openai">Example 1</a>, replacing <code>agent_openai.py</code> with <a href="../scripts/agent_langchain.py"><code>agent_langchain.py</code></a></p>
+<p>Project structure: as in <a href="#/agent-openai">Example 1</a>, with <a href="../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py"><code>example1bis/agent_langchain.py</code></a> in place of <code>example1/agent_openai.py</code></p>
 </li>
 </ol>
 </section><section>
@@ -735,10 +735,9 @@
 <h2 id="example-2-simple-tools-as-an-mcp-server-pt-1">Example 2: Simple Tools as an MCP Server (pt. 1)</h2>
 <ol>
 <li>
-<p>The <strong>server</strong>: the <em>same</em> functions of <a href="../scripts/simple_tools.py"><code>simple_tools.py</code></a>, registered as MCP tools (full code <a href="../scripts/simple_tools_mcp_server.py">here</a>):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install mcp</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mcp.server.fastmcp</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">FastMCP</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">simple_tools</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">tools</span>
+<p>The <strong>server</strong>: the <em>same</em> functions of <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py"><code>simple_tools.py</code></a>, registered as MCP tools (full code <a href="../lab-snippets/snippets/lecture_agents/example2/simple_tools_mcp_server.py">here</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mcp.server.fastmcp</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">FastMCP</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_agents.simple_tools</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">tools</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">server</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">FastMCP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"simple-tools"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">instructions</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Tools to get the current time, the weather, and Web search results"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">function</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">:</span>
@@ -749,11 +748,11 @@
 </span></span></code></pre></div></li>
 <li>
 <p>Let’s inspect it by hand, with the <a href="https://modelcontextprotocol.io/docs/tools/inspector">MCP Inspector</a> (requires <a href="https://nodejs.org">Node.js</a>), <em>listing</em> and <em>calling</em> its tools:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>npx @modelcontextprotocol/inspector python scripts/simple_tools_mcp_server.py
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>npx @modelcontextprotocol/inspector poetry run python -m snippets.lecture_agents.example2.simple_tools_mcp_server
 </span></span></code></pre></div><ul>
 <li>the server’s <em>stdout</em> is the protocol channel: tools must <strong>not</strong> <code>print</code> (nor <code>input</code>!)</li>
 <li>the server does <em>not</em> inherit the host’s environment: secrets (if any) must be passed <em>explicitly</em> (e.g. <code>-e API_KEY=...</code>)</li>
-<li>any other host works the same way, e.g. for Claude Code: <code>claude mcp add simple-tools -- python scripts/simple_tools_mcp_server.py</code></li>
+<li>any other host works the same way, e.g. for Claude Code: <code>claude mcp add simple-tools -- poetry run python -m snippets.lecture_agents.example2.simple_tools_mcp_server</code> (from the repository’s root)</li>
 </ul>
 </li>
 </ol>
@@ -765,8 +764,8 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">mcp_client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">MultiServerMCPClient</span><span style="color:#000;font-weight:bold">({</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"simple-tools"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">transport</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"stdio"</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># the server is a sub-process, talking via stdin/stdout</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">command</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">executable</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">args</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"simple_tools_mcp_server.py"</span><span style="color:#000;font-weight:bold">)],</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">command</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">executable</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># i.e. the same Python interpreter running this script</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">args</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"-m"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"snippets.lecture_agents.example2.simple_tools_mcp_server"</span><span style="color:#000;font-weight:bold">],</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># more servers here, e.g. "fetch": dict(transport="stdio", command="uvx", args=["mcp-server-fetch"]),</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">})</span>
@@ -775,17 +774,17 @@
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">():</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">tools</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">await</span> <span style="color:#000">mcp_client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_tools</span><span style="color:#000;font-weight:bold">()</span>  <span style="color:#8f5902;font-style:italic"># MCP: tools/list</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Tools: </span><span style="color:#4e9a06">{</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">t</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">t</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">tools</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># tool calls become MCP tools/call requests</span>
 </span></span></code></pre></div><ul>
 <li><code>MultiServerMCPClient</code> runs one MCP client per server; with <em>stdio</em>, it also <em>launches</em> the server as a sub-process</li>
 <li><code>get_tools()</code> sends <code>tools/list</code> to each server, and wraps each MCP tool as a LangChain tool, sending <code>tools/call</code> when invoked</li>
 <li>an <code>env=...</code> entry would pass the server <em>only</em> the variables it needs (least privilege)</li>
-<li>MCP clients are <em>asynchronous</em>: the agent is invoked via <code>await agent.ainvoke(...)</code> (full code <a href="../scripts/agent_mcp.py">here</a>)</li>
+<li>MCP clients are <em>asynchronous</em>: the agent is invoked via <code>await agent.ainvoke(...)</code> (full code <a href="../lab-snippets/snippets/lecture_agents/example2/agent_mcp.py">here</a>)</li>
 </ul>
 </li>
 <li>
 <p>Let’s try it:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python scripts/agent_mcp.py
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l agents -e <span style="color:#0000cf;font-weight:bold">2</span>   <span style="color:#8f5902;font-style:italic"># then pick agent_mcp.py</span>
 </span></span></code></pre></div><ul>
 <li>the agent behaves as before: the LLM can’t tell local tools from MCP ones</li>
 </ul>
@@ -793,19 +792,18 @@
 </ol>
 </section><section>
 <h2 id="example-2-project-structure">Example 2: Project Structure</h2>
-<p>Re-create the following project, by downloading (or copy-pasting) the files below, then run the commands from its <em>root</em> directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">&lt;root dir&gt;/
-├── data/
-├── scripts/
-│   ├── <a href="../scripts/agent_langchain.py">agent_langchain.py</a>          # the chat model (reused)
-│   ├── <a href="../scripts/agent_mcp.py">agent_mcp.py</a>                # the agent (MCP host)
-│   ├── <a href="../scripts/simple_tools.py">simple_tools.py</a>             # tools + system prompt
-│   └── <a href="../scripts/simple_tools_mcp_server.py">simple_tools_mcp_server.py</a>  # the MCP server
-├── <a href="../requirements.txt">requirements.txt</a>                # dependencies of all examples
-└── .venv/                          # virtual environment (created below)</code></pre></div>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>python -m venv .venv <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">source</span> .venv/bin/activate   <span style="color:#8f5902;font-style:italic"># on Windows: .venv\Scripts\activate</span>
-</span></span><span style="display:flex;"><span>pip install -r requirements.txt
-</span></span></code></pre></div><ul>
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── snippets/
+│   └── lecture_agents/
+│       ├── example1bis/
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py">agent_langchain.py</a>          # the chat model (reused)
+│       ├── example2/
+│       │   ├── <a href="../lab-snippets/snippets/lecture_agents/example2/agent_mcp.py">agent_mcp.py</a>                # the agent (MCP host)
+│       │   └── <a href="../lab-snippets/snippets/lecture_agents/example2/simple_tools_mcp_server.py">simple_tools_mcp_server.py</a>  # the MCP server
+│       └── <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">simple_tools.py</a>                 # tools + system prompt
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                          # dependencies of all snippets</code></pre></div>
+<ul>
 <li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
 </ul>
 </section><section>
@@ -895,17 +893,13 @@
 <ol>
 <li>
 <p>The system under test is the <a href="#/agent-langchain">LangChain agent</a>; a <em>cached</em> helper extracts the <em>trajectory</em> (tool calls) and the final answer of each question:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install pytest langchain langchain-openai</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pathlib</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">functools</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">sys</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pathlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">__file__</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parent</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">"scripts"</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># i.e. &lt;root dir&gt;/scripts/</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">agent_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">agent</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pytest</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_agents.example1bis.agent_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">agent</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@functools.cache</span>
+</span></span><span style="display:flex;"><span><span style="color:#5c35cc;font-weight:bold">@functools.cache</span>  <span style="color:#8f5902;font-style:italic"># one agent run per question, shared by the tests</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">trajectory</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">question</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">tuple</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Runs the agent on a question, returning the tool calls it made (in order) and its final answer."""</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">agent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[(</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">question</span><span style="color:#000;font-weight:bold">)]},</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"recursion_limit"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">})[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">]</span>
@@ -939,10 +933,10 @@
 <h2 id="example-3-testing-the-agents-trajectories-pt-2">Example 3: Testing the Agent’s Trajectories (pt. 2)</h2>
 <ol start="3">
 <li>
-<p>Let’s run it (full code <a href="../test/test_agent.py">here</a>), from the project’s root directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>pytest test/test_agent.py -v
+<p>Let’s run it (full code <a href="../lab-snippets/snippets/lecture_agents/example3/test_agent.py">here</a>), from the project’s root directory:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l agents -e <span style="color:#0000cf;font-weight:bold">3</span> -v   <span style="color:#8f5902;font-style:italic"># runs pytest on the test suite, with any option given</span>
 </span></span></code></pre></div><ul>
-<li>project structure: as in <a href="#/agent-langchain">Example 1 (bis)</a>, plus <a href="../test/test_agent.py"><code>test/test_agent.py</code></a></li>
+<li>project structure: as in <a href="#/agent-langchain">Example 1 (bis)</a>, plus <a href="../lab-snippets/snippets/lecture_agents/example3/test_agent.py"><code>example3/test_agent.py</code></a></li>
 <li>run it several times, and with several models: which tests are <em>flaky</em>? Which ones fail <em>systematically</em>?</li>
 </ul>
 </li>
@@ -1035,30 +1029,30 @@
 </ul>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><p><img src="../data/passport-mario-rossi.png" alt=""></p>
+    <div class="row "><div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mario-rossi.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-mario-rossi.png">Transcript of records</a></li>
-<li><a href="../data/letter-mario-rossi.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-mario-rossi.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mario-rossi.txt">Presentation letter</a>
 <ul>
 <li>letter is very positive</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../data/passport-jean-dupont.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-jean-dupont.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-jean-dupont.png">Transcript of records</a></li>
-<li><a href="../data/letter-jean-dupont.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-jean-dupont.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-jean-dupont.txt">Presentation letter</a>
 <ul>
 <li>letter contains some criticisms</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="col " style="text-align: left;"><p><img src="../data/passport-mohammed-ali.png" alt=""></p>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mohammed-ali.png" alt=""></p>
 <ul>
-<li><a href="../data/transcript-mohammed-ali.png">Transcript of records</a></li>
-<li><a href="../data/letter-mohammed-ali.txt">Presentation letter</a>
+<li><a href="../lab-snippets/data/transcript-mohammed-ali.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mohammed-ali.txt">Presentation letter</a>
 <ul>
 <li>letter is positive but shallow</li>
 </ul>
@@ -1225,12 +1219,15 @@
 <blockquote>
 <p><strong>Goal</strong>: an assistant answering <em>any</em> question of the <a href="#/running-example">committee</a> about the candidates (e.g. “<em>who has the highest GPA?</em>”, “<em>how old is Mohammed Ali?</em>”, “<em>does Jean Dupont’s letter mention weaknesses?</em>”), by <em>inspecting</em> their applications via <strong>read-only</strong> tools</p>
 </blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_agents/exercise1/__init__.py"><code>snippets/lecture_agents/exercise1/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l agents -x 1</code></p>
+</blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
 <li>write the tools, as documented Python functions (e.g. in a <code>committee.py</code> module):
 <ul>
-<li><code>list_candidates()</code>: the names of the candidates, derived from the files in <code>data/</code></li>
+<li><code>list_candidates()</code>: the names of the candidates, derived from the files in <code>data/</code> (cf. the helpers in <a href="../lab-snippets/data/__init__.py"><code>data/__init__.py</code></a>)</li>
 <li><code>read_letter(candidate)</code>: the text of a candidate’s letter</li>
 <li><code>read_passport(candidate)</code>, <code>read_transcript(candidate)</code>: <em>structured</em> information extracted from the <em>pictures</em> (e.g. name, birth date, nationality, expiry date; courses, grades, GPA), cf. the <a href="../prompting/#/exercise-id-documents">prompting exercise on pictures</a></li>
 <li><em>optionally</em>, <code>score_letter(candidate)</code>, wrapping the <a href="../prompting/#/letter-scoring">letter-scoring system</a></li>
@@ -1267,6 +1264,9 @@
 <h2 id="exercise-2-tools-to-take-decisions-pt-1">Exercise 2: Tools to Take Decisions (pt. 1)</h2>
 <blockquote>
 <p><strong>Goal</strong>: let the assistant <em>act</em> on behalf of the committee (recording decisions, scheduling interviews, notifying candidates) via tools with <strong>side effects</strong>, but only with the explicit <strong>approval</strong> of a committee member, and make sure it cannot be <em>tricked</em> into acting</p>
+</blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_agents/exercise2/__init__.py"><code>snippets/lecture_agents/exercise2/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l agents -x 2</code></p>
 </blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
@@ -1320,6 +1320,9 @@
 <blockquote>
 <p><strong>Goal</strong>: the committee wants its tools to be usable by <em>several</em> hosts (its own agent, an IDE, a chat app), along with third-party tools, all managed in <em>one</em> place, with <em>logging</em> of every call</p>
 </blockquote>
+<blockquote>
+<p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_agents/exercise3/__init__.py"><code>snippets/lecture_agents/exercise3/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l agents -x 3</code></p>
+</blockquote>
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
@@ -1363,7 +1366,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-06
+<p>Compiled on: 2026-10-08
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
