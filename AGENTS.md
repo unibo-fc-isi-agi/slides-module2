@@ -120,7 +120,9 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
         * `exercises` is `master` with exercise packages reduced to __TODOs/placeholders__ (no solutions, no `tests/` for them):
           students clone __this__ branch; after changing `master`, merge it into `exercises`, keeping the placeholders
         * in the slides, each exercise is followed by a __walkthrough__ of its solution, as a _skippable_ vertical deck
-          (`{{% section %}}`), excerpting the solution files with `code` shortcodes (like examples)
+          (`{{% section %}}`, a separate column right after the exercise's one), excerpting the solution files with `code` shortcodes
+          (like examples); its first slide (anchor `<exercise-anchor>-solution`) warns that the solution is about to start,
+          and not to proceed before having attempted the exercise
     + never mention the site's own layout (`content/`, `static/`) in slides; don't run snippets inside `static/lab-snippets/`
       (it would create `__pycache__`/`.venv` there, which get published): use a separate clone
 - Resources in `static/` are referenced from lectures with `../<file>` (lectures live one level down).
