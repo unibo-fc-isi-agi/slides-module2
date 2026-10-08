@@ -842,7 +842,147 @@ flowchart LR
 - the table should contain 3 models × 3 letters × 5 runs = 45 rows (minus failures, which should be _counted_, not hidden)
 - re-running the script with a _different temperature_ (e.g. `0` vs. `1`) should visibly affect the variance
 
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
+{{% /section %}}
+
 ---
+
+{{% section %}}
+
+{{< slide id="compare-models-solution" >}}
+
+## Exercise 1: Comparing Models on the Running Example — Solution
+
+> ⚠️ The __walkthrough of a possible solution__ is about to start
+
+- do __not__ proceed until you have _attempted_ [the exercise](#/compare-models) on your own
+- press → to _skip_ it, ↓ to _see_ it
+- the code is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises) (while you cloned the `exercises` branch)
+
+---
+
+## Exercise 1 — Solution: Shortlist, Reference, and Clients
+
+> _Step 1_: __shortlist__ 3 models (and fix a _reference_ to compare them against)
+
+{{% multicol %}}
+{{% col class="col-8" %}}
+{{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="22" to="34" %}}
+{{% /col %}}
+{{% col %}}
+- models are passed on the command line as `MODEL` (Open Router) or `MODEL@BASE_URL` (e.g. Ollama): _one_ script, many providers, thanks to OpenAI-compatible APIs
+- `REFERENCE` = the committee's __own__ scores: without it, one can tell whether models _agree_, not who is _right_
+- `max_retries=0`: retries are handled explicitly (next slide)
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: Scoring a Letter, Keeping the Usage
+
+> _Step 2_: adapt `score_letter(...)` to return the __whole response__, not just the parsed `LetterInfo`
+
+{{% multicol %}}
+{{% col class="col-8" %}}
+{{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="37" to="48" %}}
+{{% /col %}}
+{{% col %}}
+- same prompt and schema as [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) (imported, not copied): we compare _models_, not prompts
+- the response carries `usage`, hence _tokens_ and _cost_
+- `with_retries` (from [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/)) copes with _rate limits_ of free models
+- __no caching__: it would hide the _variance_
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: One Run = One Row
+
+> _Steps 2–3_: run once, and __collect__ score, _failures_, _latency_, _tokens_, and _cost_
+
+{{% multicol %}}
+{{% col class="col-8" %}}
+{{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="51" to="64" %}}
+{{% /col %}}
+{{% col %}}
+- _failures_ (refusals, invalid JSON, validation errors) are __rows too__: counted, not hidden
+- latency via `time.perf_counter()`: wall-clock, _retries included_ (what users would actually wait)
+- `usage.cost` is an Open Router _extension_: elsewhere, multiply tokens by the prices in the zoo
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: Summarising per Model
+
+> _Step 4_: one line per model, comparing __mean ± sd__ against the _reference_
+
+{{% multicol %}}
+{{% col class="col-8" %}}
+{{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="67" to="84" %}}
+{{% /col %}}
+{{% col %}}
+- _standard deviation_ per letter → __consistency__ of each model
+- mean absolute _error_ w.r.t. the reference → who is __right__
+- _ranking_ of candidates → __agreement__ among models (compare the rankings across lines)
+- failures, latency, tokens, cost → the _other_ dimensions of the choice
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: The Main Loop
+
+> _Automate_ the runs: models × letters × repetitions, raw data to CSV, summary as a __table__
+
+{{% multicol %}}
+{{% col class="col-8" %}}
+{{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="92" to="108" %}}
+{{% /col %}}
+{{% col %}}
+- 3 models × 3 letters × 5 runs = __45 rows__, saved in `output/model-comparison.csv` for further analysis
+- the summary is printed as a _Markdown table_: ready to be pasted into the [decision record](#/decision-record) of Exercise 2
+- try `TEMPERATURE=0` vs. `TEMPERATURE=1`: the _variance_ should change visibly
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (`master` branch):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>                # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                           # helpers to locate data files
+├── snippets/
+│   ├── lecture_llmaas/
+│   │   └── exercise2/
+│   │       └── <a href="../lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py">repl_chat_retry.py</a>            # with_retries (reused)
+│   ├── lecture_prompting/
+│   │   └── example1/
+│   │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py">letter_scoring_openai.py</a>      # prompt and schema (reused)
+│   └── lecture_governance/
+│       └── exercise1/
+│           └── <a href="../lab-snippets/snippets/lecture_governance/exercise1/compare_models.py">compare_models.py</a>             # the solution
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                            # dependencies of all snippets</code></pre></div>
+
+```bash
+poetry run python -m snippets -l governance -x 1                       # default shortlist
+poetry run python -m snippets -l governance -x 1 MODEL1 MODEL2@URL ...  # custom shortlist
+```
+
+- env vars: `OPENAI_API_KEY` (and `OPENAI_BASE_URL`), `REPETITIONS` (default `5`), `TEMPERATURE`, `COMMITTEE_OUTPUT` (default `output/`)
+
+{{% /section %}}
+
+---
+
+{{% section %}}
 
 {{< slide id="decision-record" >}}
 
@@ -881,6 +1021,111 @@ Write a short (2–4 pages) __decision record__, answering:
 - Could a colleague _reproduce_ your choice from the record alone?
 - Would the record survive a question from the University's _Data Protection Officer_?
 - Does the record say _when_ it should be revised?
+
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="decision-record-solution" >}}
+
+## Exercise 2: A Governance Decision Record for the Running Example — Solution
+
+> ⚠️ The __walkthrough of a possible solution__ is about to start
+
+- do __not__ proceed until you have _attempted_ [the exercise](#/decision-record) on your own
+- press → to _skip_ it, ↓ to _see_ it
+- the sample record is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises) (while you cloned the `exercises` branch):
+  [`decision-record.md`](../lab-snippets/snippets/lecture_governance/exercise2/decision-record.md), an _ADR_-like document (status, context, sections 1–6, consequences)
+- below, a __summary__ of its key sections: read the full record for the details (and the article of the law behind each claim)
+
+---
+
+## Exercise 2 — Solution: Regulatory Classification
+
+> _Decision 1_: the system is __high-risk__, and the University is both its _provider_ and its _deployer_
+
+{{% multicol %}}
+{{% col %}}
+#### EU AI Act
+
+- _high-risk_: "access or admission" to education (Art. 6(2), Annex III 3(a)); the "preparatory task" derogation (Art. 6(3)) is __not__ claimed: scoring _materially influences_ the outcome
+- University = __provider__ (it builds the system on a general-purpose model): risk management, logging, oversight by design, conformity assessment, registration (Art. 9–17, 43, 49)
+- University = __deployer__ (and public body): trained oversight, logs ≥ 6 months, FRIA (Art. 26–27); candidates' right to explanation (Art. 86)
+- applies from 2 Dec 2027, but we comply __from the first use__
+{{% /col %}}
+{{% col %}}
+#### GDPR, Italian law, UniBo policy
+
+- lawful basis: _public interest_ task (Art. 6(1)(e))
+- _special categories_ may appear __incidentally__ (e.g. courses revealing religion): never used for scoring (Art. 9)
+- __no solely automated decisions__ (Art. 22): scores are _suggestions_
+- _DPIA_ required (Art. 35), mergeable with the FRIA; external providers are _processors_ under a DPA (Art. 28)
+- L. 132/2025 (Art. 14): in the public administration AI is only _instrumental_, the official stays responsible
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: Deployment Options and Decision
+
+> _Decision 2_: the __five dimensions__ as criteria; 500 applications/year ≈ 17.5M input + 2.5M output tokens/year
+
+| Option | Quality | Cost per year | Control | Compliance | Time-to-market |
+|---|---|---|---|---|---|
+| A. proprietary API (e.g. Claude Haiku 4.5) | high | ≈ $30 | low: model may change or be deprecated | DPA + transfer safeguards; data leaves the University | days |
+| B. open-weights model, hosted by an EU provider | medium-high | ≈ $1–10 | medium: pinned checkpoint | DPA; data stays in the EU | days |
+| C. open-weights model, on-premise (24 GB GPU) | medium | ≈ €2.5k upfront + energy + maintenance | full | data never leaves the University | weeks |
+
+- _break-even_ of C vs. B: __centuries__ (even vs. A: ≈ 80 years) → at this scale, __cost is not the deciding factor__: compliance and control are
+- __Decision__: __B__ for the pilot, with _the same model_ runnable on-premise (C) should the DPO object; A discarded, as uncontrolled model changes would invalidate our tests
+- _Decision 3_ (model): a __decision rule__ applied to Exercise 1's table (no failures, lowest error, sd ≤ 0.5, then latency and cost), whose cells are left as _[Ex. 1]_ __placeholders__, to be filled from __your__ run
+
+---
+
+## Exercise 2 — Solution: Human Oversight and Monitoring
+
+> _Decisions 5–6_: what is __reviewed__ by whom, what is _logged_, and when the decision is _re-assessed_
+
+{{% multicol %}}
+{{% col %}}
+#### Human oversight
+
+- every _extracted field_ is shown next to the source picture; flagged fields are confirmed by the secretary
+- every _letter score_ is shown with its checklist; overrides are logged with a reason
+- committee members __decide__, under their name; the chair is __accountable__ for the final ranking, and answers requests for explanation
+- members are _trained_ on the assistant's limitations (e.g. prompt injection in documents; scores are not grades)
+{{% /col %}}
+{{% col %}}
+#### Monitoring
+
+- _logged_: model and checkpoint, prompts' version, tool calls, extractions, scores, human overrides
+- test suites __re-run__ before each admission round, and at every change of prompt, model, or provider
+- __re-assess__ when: the model is deprecated or changed, tests fail, overrides exceed 20% in a round, regulations or guidelines change, the DPO asks, or by the _revise-by_ date
+{{% /col %}}
+{{% /multicol %}}
+
+> _Consequence_: the committee's workload moves from _reading_ to __reviewing__, and reviews must be real, not rubber stamps
+
+---
+
+## Exercise 2 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (`master` branch):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+└── snippets/
+    └── lecture_governance/
+        ├── exercise1/
+        │   └── <a href="../lab-snippets/snippets/lecture_governance/exercise1/compare_models.py">compare_models.py</a>   # produces the results table (Exercise 1)
+        └── exercise2/
+            └── <a href="../lab-snippets/snippets/lecture_governance/exercise2/decision-record.md">decision-record.md</a>  # the decision record (this solution)</code></pre></div>
+
+- nothing to run: the deliverable is a _document_
+- to fill in its _[Ex. 1]_ placeholders, run `poetry run python -m snippets -l governance -x 1`, and paste the printed table
 
 {{% /section %}}
 
