@@ -20,13 +20,18 @@ aliases = [
 
 1. [Generative AI 101](genai)
 2. [LLM-as-a-Service](llmaas)
+    + <small>_exercises_: [1. caching](llmaas/#/exercise-caching) ([solution](llmaas/#/exercise-caching-solution)) · [2. retry & backoff](llmaas/#/exercise-retry) ([solution](llmaas/#/exercise-retry-solution))</small>
 3. [Prompt Engineering & Structured Outputs](prompting)
+    + <small>_exercises_: [1. checklist scoring](prompting/#/exercise-checklist) ([solution](prompting/#/exercise-checklist-solution)) · [2. ID documents](prompting/#/exercise-id-documents) ([solution](prompting/#/exercise-id-documents-solution))</small>
 4. [Validating Generative Software](validating)
+    + <small>_exercises_: [1. all fields](validating/#/exercise-all-fields) ([solution](validating/#/exercise-all-fields-solution)) · [2. ID extraction tests](validating/#/exercise-id-tests) ([solution](validating/#/exercise-id-tests-solution))</small>
 5. [Tools and Agents](agents)
+    + <small>_exercises_: [1. inspection tools](agents/#/exercise-inspect) ([solution](agents/#/exercise-inspect-solution)) · [2. decision tools](agents/#/exercise-decide) ([solution](agents/#/exercise-decide-solution)) · [3. MCP gateway](agents/#/exercise-gateway) ([solution](agents/#/exercise-gateway-solution))</small>
 6. _Retrieval-Augmented Generation (RAG)_ (coming soon)
 7. _Agentic Skills_ (coming soon)
 8. _Workflows and Agent Orchestration_ (coming soon)
 9. [AI Governance 101](governance)
+    + <small>_exercises_: [1. comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution)) · [2. decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))</small>
 
 __Appendices__
 
