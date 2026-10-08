@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.6a2da703beb4c248b55ece2fb94d21e40b889aee2721699edf1b09a61d0a42f7.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -386,7 +386,7 @@
 </li>
 <li>the <em>overhead</em> covers runtime buffers, activations, and driver context: usually an extra ~10–20%</li>
 </ul>
-<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 24vh; object-fit: contain;">
 </section><section>
 <h2 id="running-models-locally-what-does-it-take-pt-2">Running models locally: what does it take? (pt. 2)</h2>
 <h3 id="rule-of-thumb-for-the-weights-alone">Rule of thumb for the weights alone</h3>
@@ -726,8 +726,12 @@
 </span></span></span><span style="display:flex;"><span>    -H <span style="color:#4e9a06">"Content-Type: application/json"</span> <span style="color:#4e9a06">\
 </span></span></span><span style="display:flex;"><span>    -H <span style="color:#4e9a06">"Authorization: Bearer YOUR_API_KEY"</span> <span style="color:#4e9a06">\
 </span></span></span><span style="display:flex;"><span>    -d <span style="color:#4e9a06">'{"model": "openrouter/auto", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'</span>
-</span></span></code></pre></div><p>answer (converted in YAML for the sake of readability):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">gen-1779447979-077vepCYJjlgJfXKnK2q</span><span style="color:#f8f8f8">
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="on-cloud-example-with-open-router-pt-4-cont">On-cloud Example with Open Router (pt. 4, cont.)</h2>
+<p>answer (converted in YAML for the sake of readability):</p>
+<div class="highlight print-2cols"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">gen-1779447979-077vepCYJjlgJfXKnK2q</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">object</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">chat.completion</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">created</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">1779447979</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">model</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">openai/gpt-5-nano-2025-08-07</span><span style="color:#f8f8f8">
@@ -779,9 +783,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">reasoning_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">192</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">image_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">audio_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8">
-</span></span></span></code></pre></div></li>
-</ol>
-
+</span></span></span></code></pre></div>
 </section>
 </section><section>
 <h1 id="apis-for-llms">APIs for LLMs</h1>
@@ -815,7 +817,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791482008529355687" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791492284934262825" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -837,7 +839,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791482008529355687");
+    handlePlantumlFigureByID("plantuml-figure-1791492284934262825");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1248,8 +1250,7 @@ P -&gt; U: “It’s … in Cesena”
 <h2 id="about-chat-completion-api-pt-3">About Chat Completion API (pt. 3)</h2>
 <h3 id="request-parameters-which-can-be-passed-to-clientchatcompletionscreate-cont-1">Request parameters which can be passed to <code>client.chat.completions.create(...)</code> (cont.)</h3>
 <ul>
-<li>
-<p><code>tool_choice</code> controls which tools the model can use to solve the task at hand, and how to use them</p>
+<li><code>tool_choice</code> controls which tools the model can use to solve the task at hand, and how to use them
 <ul>
 <li>value <code>none</code> means that the model cannot use any tool, and should rely on its own knowledge and capabilities to answer the user’s question</li>
 <li>value <code>auto</code> (default) means that the model can decide autonomously which tools to use, if any, based on the conversation history and the task at hand</li>
@@ -1257,6 +1258,10 @@ P -&gt; U: “It’s … in Cesena”
 <li>further variants are available to finely control which tools the model can use</li>
 </ul>
 </li>
+</ul>
+</section><section>
+<h2 id="about-chat-completion-api-pt-3-cont">About Chat Completion API (pt. 3, cont.)</h2>
+<ul>
 <li>
 <p><code>tools</code> (list of dicts): the list of tools that the model can use, each one described by a dictionary containing at least a <code>name</code> and a <code>description</code>, and optionally some additional fields (e.g. <code>parameters_schema</code> to describe the expected input for the tool, etc.)</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>
@@ -1294,7 +1299,8 @@ P -&gt; U: “It’s … in Cesena”
 </ul>
 </li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" class="print-compact">
 <h2 id="about-chat-completion-api-pt-4">About Chat Completion API (pt. 4)</h2>
 <h3 id="what-can-you-expect-in-the-response-of-a-chat-completion-request">What can you expect in the response of a chat completion request?</h3>
 <p>Reponses are JSON objects containing many relevant metadata, explanation below in YAML syntax for better readability:</p>
@@ -1405,7 +1411,11 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">pass</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Goodbye!"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#0000cf;font-weight:bold">0</span>
-</span></span></code></pre></div><p>with some differences in the way we i. create the completion request, by setting <code>stream=True</code> to receive a stream of response parts, and by awaiting the response with <code>async for</code> instead of just <code>for</code>; and ii. consume the stream of response parts</p>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-2-async-cli-chat-with-streaming-pt-2-cont">Example 2: Async CLI Chat with Streaming (pt. 2, cont.)</h2>
+<p>Differences w.r.t. the sync version are in the way we i. create the completion request, by setting <code>stream=True</code> to receive a stream of response parts, and by awaiting the response with <code>async for</code> instead of just <code>for</code>; and ii. consume the stream of response parts</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">await</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># create the request + open response stream</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">answer_parts</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span> <span style="color:#8f5902;font-style:italic"># buffer to store the parts of the answer as they arrive</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">item</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>
@@ -1416,9 +1426,8 @@ P -&gt; U: “It’s … in Cesena”
 <li>notice the <code>.delta</code> field in the response parts</li>
 <li>notice that partial responses should be printed with <code>print(..., end="", flush=True)</code> to avoid buffering issues in the terminal</li>
 </ul>
-</li>
-</ol>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" class="print-compact">
 <h2 id="example-2-async-cli-chat-with-streaming-pt-3">Example 2: Async CLI Chat with Streaming (pt. 3)</h2>
 <ol start="4">
 <li>

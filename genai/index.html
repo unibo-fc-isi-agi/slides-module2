@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.6a2da703beb4c248b55ece2fb94d21e40b889aee2721699edf1b09a61d0a42f7.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -172,7 +172,7 @@
 
 
 
-<img src="./dual-system.svg" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 90vh; object-fit: contain;">
+<img src="./dual-system.svg" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 75vh; object-fit: contain;">
 
 <p>(cf. <a href="https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow">Thinking, Fast and Slow</a>)</p>
 </section><section>
@@ -1020,7 +1020,7 @@
 <img src="./tools.svg" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" style="width: 100%; max-width: 95vw; max-height: 85vh; object-fit: contain;">
 </section><section>
 <h2 id="concept-model-context-protocol-mcp">Concept: Model-Context Protocol (MCP)</h2>
-<img src="./mcp.svg" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./mcp.svg" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
 <ul>
 <li>MCP $\approx$ <em>standard</em> protocol for LLM-based applications to <em>discover</em> and <em>call</em> <strong>external tools</strong> (cf. <a href="https://modelcontextprotocol.io/specification">specification</a>)</li>
 <li>Allows for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
@@ -1036,7 +1036,7 @@
 <img src="./rag.svg" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </section><section>
 <h2 id="concept-llm-as-a-judge">Concept: LLM-as-a-Judge</h2>
-<img src="./llm-as-a-judge.svg" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./llm-as-a-judge.svg" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
 <ul>
 <li>Exploiting an LLM to <em>evaluate</em> the quality of some other LLM’s output…</li>
 <li>… based on some <em>informal</em> <strong>criterion</strong> (e.g. <em>relevance</em>, <em>accuracy</em>, <em>completeness</em>, etc.)</li>
@@ -1259,8 +1259,6 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
   
 
   
-    
-  
   
 
   
@@ -1291,30 +1289,6 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
   
 
 
-
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
-  <script>
-    mermaid.initialize({});
-
-    let render = (event) => {
-      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
-      if (!mermaidElems.length){
-          return
-      }
-      mermaidElems.forEach(mermaidElem => {
-          let processed = mermaidElem.getAttribute('data-processed');
-          if (!processed){
-              
-              mermaid.init(undefined, mermaidElem);
-          }
-      });
-    };
-    
-    render({currentSlide: Reveal.getCurrentSlide()});
-
-    Reveal.on('slidechanged', render);
-    Reveal.on('ready', render);
-  </script>
 
 
 
