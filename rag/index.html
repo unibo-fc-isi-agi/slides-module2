@@ -180,13 +180,13 @@
 </div>
 </section><section>
 <h2 id="rag-an-intuitive-example">RAG: an intuitive example</h2>
-<img src="./rag-example.svg" alt="Sequence diagram of RAG on the running example: offline, the regulations of the PhD programme and the candidates' letters are split into chunks, embedded, and stored; online, the committee asks which language certificate is required, the question is embedded, the three most similar chunks are retrieved (the article on language requirements first), and the LLM answers B2 level citing that article" style="max-width: 95vw; max-height: 50vh; object-fit: contain;">
+<img src="./rag-example.svg" alt="RAG on the running example, in two lanes. Indexing, offline: the 3 recommendation letters and the regulations of the PhD programme are split into 44 chunks (paragraphs and articles), embedded one vector each, and stored in a SQLite vector store. Retrieval and generation, online: the committee asks which English certificate a candidate needs; the question is embedded with the same model; KNN search returns the top-3 chunks (Article 5 on language requirements first, then Articles 3 and 4); an augmented prompt with instructions, the chunks as data, and the question goes to the LLM, which answers IELTS Academic at least 6.0, TOEFL iBT at least 80, or Cambridge B2 First, citing regulations-phd#art5" style="max-width: 95vw; max-height: 50vh; object-fit: contain;">
 <ul>
 <li><em>Corpus</em>: the 3 candidates’ <a href="#/running-example">letters</a>, plus the (fictional) <strong>regulations</strong> of the PhD programme</li>
 <li><em>Question</em>: “<em>Which English certificate does a candidate need?</em>”
 <ul>
-<li>the answer is in <em>one</em> article of the regulations, which <em>never</em> uses the words “English certificate”</li>
-<li>semantic search finds it anyway; then the LLM answers, citing the article</li>
+<li>the answer is in <em>one</em> chunk out of 44: Article 5, “<em>Language requirements</em>”</li>
+<li>semantic search ranks it first (cosine 0.78, vs. 0.66 for the runner-up, with <code>nomic-embed-text</code>); then the LLM answers, <em>citing</em> it</li>
 </ul>
 </li>
 </ul>
@@ -253,7 +253,7 @@
 </ul>
 </section><section>
 <h2 id="embeddings-an-intuitive-example">Embeddings: an intuitive example</h2>
-<img src="./embedding-space.svg" alt="Sentences as points of a 2D projection of the embedding space: 'Which English certificate is required?' lies close to 'Candidates must prove a B2 level of English', farther from 'The scholarship amounts to 1200 euros per month', and far away from 'I love cooking pasta'; cosine similarity is the angle between vectors from the origin" style="max-width: 95vw; max-height: 55vh; object-fit: contain;">
+<img src="./embedding-space.svg" alt="Sentences as vectors from the origin of a 2D sketch of the embedding space: the query 'Which English certificate is required?' forms a small angle with 'Candidates must prove a B2 level of English.' (cosine 0.71), a wider one with 'Scholarships amount to EUR 19,200 per year.' (0.46), and the widest one with 'I love cooking pasta.' (0.27); cosines computed with nomic-embed-text; a smaller angle means a higher cosine" style="max-width: 95vw; max-height: 55vh; object-fit: contain;">
 <ul>
 <li>Actual embeddings have <em>hundreds</em> of dimensions: pictures like this one are <em>projections</em> (e.g. via PCA or t-SNE), and distort distances</li>
 </ul>

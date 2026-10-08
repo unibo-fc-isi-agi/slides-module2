@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<!-- working memory -->
+<rect x="330" y="20" width="940" height="200" rx="14" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+<text x="800" y="62" font-size="30" font-weight="600">Working memory</text>
+<text x="800" y="96" font-size="22" font-style="italic">the context window of the current step</text>
+<text x="800" y="140" font-size="21">current goal · conversation · tool results · retrieved pieces</text>
+<text x="800" y="180" font-size="20" fill="#555">small, costly, used unevenly: what the LLM actually sees</text>
+<!-- long-term label -->
+<text x="800" y="625" font-size="22" font-weight="600" fill="#555">Long-term memories (outside the LLM)</text>
+<!-- arrows -->
+<line x1="260" y1="360" x2="420" y2="226" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+<line x1="800" y1="360" x2="800" y2="226" stroke="#3a9a5b" stroke-width="5" marker-end="url(#a)"/>
+<line x1="1340" y1="360" x2="1180" y2="226" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+<text x="815" y="290" font-size="22" font-style="italic" fill="#3a9a5b" text-anchor="start">retrieval</text>
+<text x="815" y="314" font-size="18" fill="#3a9a5b" text-anchor="start">(on demand)</text>
+<!-- episodic -->
+<rect x="20" y="360" width="480" height="220" rx="14" fill="#555" fill-opacity="0.10" stroke="#555" stroke-width="3"/>
+<text x="260" y="404" font-size="28" font-weight="600">Episodic</text>
+<text x="260" y="440" font-size="21" font-style="italic">what happened</text>
+<text x="260" y="482" font-size="20">past interactions and trajectories</text>
+<text x="260" y="512" font-size="20">e.g. previous sessions with a user</text>
+<!-- semantic -->
+<rect x="560" y="360" width="480" height="220" rx="14" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="4"/>
+<text x="800" y="404" font-size="28" font-weight="600">Semantic</text>
+<text x="800" y="440" font-size="21" font-style="italic">what is known</text>
+<text x="800" y="482" font-size="20">facts and documents about the world</text>
+<text x="800" y="512" font-size="20">e.g. the regulations of the PhD programme</text>
+<text x="800" y="558" font-size="21" font-weight="600" fill="#3a9a5b">RAG: this lecture</text>
+<!-- procedural -->
+<rect x="1100" y="360" width="480" height="220" rx="14" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="3"/>
+<text x="1340" y="404" font-size="28" font-weight="600">Procedural</text>
+<text x="1340" y="440" font-size="21" font-style="italic">how to do things</text>
+<text x="1340" y="482" font-size="20">prompts, code, skills</text>
+<text x="1340" y="512" font-size="20">e.g. how to pre-check a thesis</text>
+<text x="1340" y="558" font-size="21" font-weight="600" fill="#d64545">skills: next lecture</text>
+</svg>
