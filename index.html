@@ -40,14 +40,38 @@
 <h2 id="table-of-contents">Table of Contents</h2>
 <ol>
 <li><a href="genai">Generative AI 101</a></li>
-<li><a href="llmaas">LLM-as-a-Service</a></li>
-<li><a href="prompting">Prompt Engineering &amp; Structured Outputs</a></li>
-<li><a href="validating">Validating Generative Software</a></li>
-<li><a href="agents">Tools and Agents</a></li>
-<li><em>Retrieval-Augmented Generation (RAG)</em> (coming soon)</li>
+<li><a href="llmaas">LLM-as-a-Service</a>
+<ul>
+<li><em>exercises</em>: 1. <a href="llmaas/#/exercise-caching">caching</a> (<a href="llmaas/#/exercise-caching-solution">solution</a>) · 2. <a href="llmaas/#/exercise-retry">retry &amp; backoff</a> (<a href="llmaas/#/exercise-retry-solution">solution</a>)</li>
+</ul>
+</li>
+<li><a href="prompting">Prompt Engineering &amp; Structured Outputs</a>
+<ul>
+<li><em>exercises</em>: 1. <a href="prompting/#/exercise-checklist">checklist scoring</a> (<a href="prompting/#/exercise-checklist-solution">solution</a>) · 2. <a href="prompting/#/exercise-id-documents">ID documents</a> (<a href="prompting/#/exercise-id-documents-solution">solution</a>)</li>
+</ul>
+</li>
+<li><a href="validating">Validating Generative Software</a>
+<ul>
+<li><em>exercises</em>: 1. <a href="validating/#/exercise-all-fields">all fields</a> (<a href="validating/#/exercise-all-fields-solution">solution</a>) · 2. <a href="validating/#/exercise-id-tests">ID extraction tests</a> (<a href="validating/#/exercise-id-tests-solution">solution</a>)</li>
+</ul>
+</li>
+<li><a href="agents">Tools and Agents</a>
+<ul>
+<li><em>exercises</em>: 1. <a href="agents/#/exercise-inspect">inspection tools</a> (<a href="agents/#/exercise-inspect-solution">solution</a>) · 2. <a href="agents/#/exercise-decide">decision tools</a> (<a href="agents/#/exercise-decide-solution">solution</a>) · 3. <a href="agents/#/exercise-gateway">MCP gateway</a> (<a href="agents/#/exercise-gateway-solution">solution</a>)</li>
+</ul>
+</li>
+<li><a href="rag">Retrieval-Augmented Generation (RAG)</a>
+<ul>
+<li><small><em>exercises</em>: <a href="rag/#/exercise-slides-qa">1. Q/A about the slides</a> (<a href="rag/#/exercise-slides-qa-solution">solution</a>)</small></li>
+</ul>
+</li>
 <li><em>Agentic Skills</em> (coming soon)</li>
 <li><em>Workflows and Agent Orchestration</em> (coming soon)</li>
-<li><a href="governance">AI Governance 101</a></li>
+<li><a href="governance">AI Governance 101</a>
+<ul>
+<li><em>exercises</em>: 1. <a href="governance/#/compare-models">comparing models</a> (<a href="governance/#/compare-models-solution">solution</a>) · 2. <a href="governance/#/decision-record">decision record</a> (<a href="governance/#/decision-record-solution">solution</a>)</li>
+</ul>
+</li>
 </ol>
 <p><strong>Appendices</strong></p>
 <ul>
@@ -172,12 +196,17 @@
 </li>
 <li>
 <p>Clone the repository, and install its dependencies <em>once</em>, via <a href="https://python-poetry.org">Poetry</a> (a dependency manager for Python):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>git clone https://github.com/unibo-fc-isi-agi/lab-snippets.git
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>git clone -b exercises https://github.com/unibo-fc-isi-agi/lab-snippets.git   <span style="color:#8f5902;font-style:italic"># the `exercises` branch!</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87">cd</span> lab-snippets
 </span></span><span style="display:flex;"><span>pip install -r requirements.txt  <span style="color:#8f5902;font-style:italic"># installs Poetry, if missing</span>
 </span></span><span style="display:flex;"><span>poetry install                   <span style="color:#8f5902;font-style:italic"># creates a virtual environment in .venv/, with all dependencies</span>
 </span></span></code></pre></div><ul>
-<li><em>optionally</em>, <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">fork</a> the repository first, and clone your fork: you will be able to <em>commit</em> (and push) your solutions to the exercises, and still <code>git pull</code> updates from the original repository</li>
+<li>
+<p><em>optionally</em>, <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">fork</a> the repository first, and clone your fork: you will be able to <em>commit</em> (and push) your solutions to the exercises, and still <code>git pull</code> updates from the original repository</p>
+</li>
+<li>
+<p>the <code>exercises</code> branch has <em>placeholders</em> for exercises; the <code>master</code> branch has their <em>solutions</em> (look at them only <em>after</em> trying!)</p>
+</li>
 </ul>
 </li>
 <li>
@@ -236,6 +265,7 @@
 <ul>
 <li>its <code>__init__.py</code> recalls the exercise’s goal: put your solution in the <em>same</em> directory (as one or more <code>.py</code> files)</li>
 <li>each exercise’s slides recall <em>where</em> its solution goes, and <em>how</em> to run it</li>
+<li>each exercise’s slides are followed by a (skippable) <em>walkthrough</em> of its solution, available on the <code>master</code> branch</li>
 </ul>
 </li>
 <li>
@@ -347,8 +377,6 @@
   
 
   
-    
-  
   
 
   
@@ -375,31 +403,10 @@
   
   
 
+  
+  
 
 
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
-  <script>
-    mermaid.initialize({});
-
-    let render = (event) => {
-      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
-      if (!mermaidElems.length){
-          return
-      }
-      mermaidElems.forEach(mermaidElem => {
-          let processed = mermaidElem.getAttribute('data-processed');
-          if (!processed){
-              
-              mermaid.init(undefined, mermaidElem);
-          }
-      });
-    };
-    
-    render({currentSlide: Reveal.getCurrentSlide()});
-
-    Reveal.on('slidechanged', render);
-    Reveal.on('ready', render);
-  </script>
 
 
 

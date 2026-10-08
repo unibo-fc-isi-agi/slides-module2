@@ -24,6 +24,9 @@ pyyaml = "^6.0.3"
 pytest = "^9.1.1"
 deepeval = "^4.2.8"
 mlflow = "^3.17.0"
+sqlite-vec = "^0.1.9"
+langchain-community = "^0.4.2"
+pypdf = "^6.19.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "*"
@@ -32,6 +35,7 @@ poethepoet = "*"
 compile = "python -m compileall -q snippets data"
 list = "python -m snippets --list"
 collect = "pytest --collect-only -q snippets"  # imports the test snippets, without running them
+test = "pytest -q tests"  # offline tests of the exercises' solutions (no LLM calls)
 
 [build-system]
 requires = ["poetry-core"]

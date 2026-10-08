@@ -976,6 +976,138 @@
 
 </span>
 
+<blockquote>
+<p><strong>Solution</strong>: a walkthrough follows in the next (vertical) column (<a href="#/exercise-checklist-solution">here</a>) — try on your own first!</p>
+</blockquote>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-checklist-solution">
+<h2 id="exercise-1-improving-letter-scoring-with-even-more-structured-output--solution">Exercise 1: Improving Letter Scoring with (even more) Structured Output — Solution</h2>
+<blockquote>
+<p><strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution is about to start!</p>
+</blockquote>
+<ul>
+<li>Do <strong>not</strong> proceed until you have <em>attempted</em> <a href="#/exercise-checklist">the exercise</a> on your own
+<ul>
+<li>press → to <em>skip</em> the walkthrough, ↓ to <em>see</em> it</li>
+</ul>
+</li>
+<li>The solution’s code is on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a>
+<ul>
+<li>you are supposed to work on the <code>exercises</code> branch, which only contains <em>placeholders</em></li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-the-checklist">Exercise 1 — Solution: the checklist</h2>
+<blockquote>
+<p>Steps 2–3: the scoring recipe becomes a <em>checklist</em>, i.e. a Pydantic class with one <strong>boolean field per criterion</strong></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 2-3: the scoring recipe of Example 1 bis, turned into a checklist, i.e. one boolean field per criterion</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># (phrased so that True is always GOOD, and descriptions tell the LLM exactly what to check)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">Checklist</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">BaseModel</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Criteria for assessing a recommendation letter: set each one to true only if the letter clearly satisfies it."""</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">clear_acquaintance</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The letter clearly states how, where, and for how long the author knows the applicant."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">storytelling</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The letter tells concrete stories or episodes about the applicant, rather than just listing adjectives."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">concrete_skills</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The skills attributed to the applicant are specific and supported by concrete examples."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">concrete_strengths</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The letter mentions strengths of the applicant (other than skills), supported by concrete examples."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">no_weaknesses</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The author does NOT mention weaknesses of the applicant, neither explicitly nor implicitly (e.g. 'needs supervision')."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">tailored</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">bool</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The letter is tailored for the specific PhD programme the applicant is applying for."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li>Criteria are phrased so that <code>True</code> is <em>always good</em>: the score is then just a <em>count</em> of failures
+<ul>
+<li>mixing polarities (e.g. a <code>has_weaknesses</code> field) is an easy source of <em>bugs</em> in the scoring code</li>
+</ul>
+</li>
+<li>Each <code>description</code> tells the LLM <em>exactly what to check</em>: it ends up in the JSON Schema, hence in the prompt</li>
+<li>Booleans are an <em>easier</em> task than “give a score from 0 to 5”: less room for <em>arbitrariness</em></li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-the-output-schema-and-the-chain">Exercise 1 — Solution: the output schema, and the chain</h2>
+<blockquote>
+<p>Step 4: the LLM fills in the <em>checklist</em>, but <strong>no longer outputs the score</strong></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">BaseModel</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">applicant</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ApplicantInfo</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Information about the person the letter is about, i.e., the one applying for the PhD programme."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">author</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">AuthorInfo</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Information about the person who wrote the letter, i.e., the one recommending the applicant for the PhD programme."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">application_for</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The PhD programme for which the applicant is applying."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">checklist</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Checklist</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Assessment of the letter, criterion by criterion."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># no `score` field here: the LLM does not compute it anymore!</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">scoring_chain</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">prompt</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># step 4: the LLM fills in the checklist</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">LetterInfo</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">scoring_chain</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"letter_text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">})</span>
+</span></span></code></pre></div><ul>
+<li>LLM, prompt, <code>ApplicantInfo</code>, and <code>AuthorInfo</code> are <em>imported</em> from Example 1 (bis): only the <em>scoring</em> changes</li>
+<li>The checklist is a <em>nested</em> model: structured output handles nested schemas out of the box</li>
+<li>The chain is the <em>same</em> <code>prompt | llm.with_structured_output(...)</code> as before: only the target class differs</li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-the-scoring-algorithm">Exercise 1 — Solution: the scoring algorithm</h2>
+<blockquote>
+<p>Step 5: the score is computed <strong>by code</strong>, from the checklist, as <code>@property</code>s of the Pydantic class</p>
+</blockquote>
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col col-7" style="text-align: left;"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># step 5: the scoring algorithm, as code (a property: computed from the other fields, never generated by the LLM)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@property</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">missing_fields</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">"""The non-optional fields which the letter does not provide (e.g. empty strings or lists)."""</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">required</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#4e9a06">"applicant.name"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"applicant.skills"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">skills</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"applicant.strengths"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strengths</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#4e9a06">"author.name"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"author.affiliation"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">affiliation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"author.email"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">author</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">email</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#4e9a06">"application_for"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">application_for</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">value</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">required</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">value</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@property</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">penalties</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">"""Why points were lost: the explanation of the score."""</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">failed</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">satisfied</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">checklist</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">satisfied</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">failed</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"missing </span><span style="color:#4e9a06">{</span><span style="color:#000">name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">missing_fields</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@property</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">score</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">int</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">"""Starts from the maximum (5), and decreases by 1 per penalty, down to the minimum (0)."""</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87">max</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">penalties</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div></div>
+<div class="col " style="text-align: left;"><ul>
+<li><em>Properties</em> are <strong>not</strong> part of the JSON Schema: the LLM never sees (nor generates) them</li>
+<li><code>penalties</code> is the <em>explanation</em> of the score: which criteria failed, which fields are missing</li>
+<li>Same input checklist $\Rightarrow$ same score: <strong>reproducible</strong>
+<ul>
+<li>the remaining variability is in the <em>checklist</em>, which can be inspected (and corrected) by a human</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section><section>
+<h2 id="exercise-1--solution-project-structure">Exercise 1 — Solution: Project Structure</h2>
+<p>Files of this solution, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (branch <code>master</code>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       ├── example1bis/
+│       │   └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # LLM, prompt, info classes (reused)
+│       └── exercise1/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py">letter_scoring_checklist.py</a>  # the checklist-based scoring
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -x <span style="color:#0000cf;font-weight:bold">1</span> mario-rossi    <span style="color:#8f5902;font-style:italic"># or a path, e.g. data/letter-mario-rossi.txt</span>
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+<li>try all three letters: are the <em>penalties</em> consistent with your own reading of them?</li>
+</ul>
+
+</section>
 </section>
 
 
@@ -1570,6 +1702,167 @@
 			</tr>
 	</tbody>
 </table>
+<blockquote>
+<p><strong>Solution</strong>: a walkthrough follows in the next (vertical) column (<a href="#/exercise-id-documents-solution">here</a>) — try on your own first!</p>
+</blockquote>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-id-documents-solution">
+<h2 id="exercise-2-extract-structured-information-from-pictures--solution">Exercise 2: Extract Structured Information from Pictures — Solution</h2>
+<blockquote>
+<p><strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution is about to start!</p>
+</blockquote>
+<ul>
+<li>Do <strong>not</strong> proceed until you have <em>attempted</em> <a href="#/exercise-id-documents">the exercise</a> on your own
+<ul>
+<li>press → to <em>skip</em> the walkthrough, ↓ to <em>see</em> it</li>
+</ul>
+</li>
+<li>The solution’s code is on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a>
+<ul>
+<li>you are supposed to work on the <code>exercises</code> branch, which only contains <em>placeholders</em></li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-the-vision-model">Exercise 2 — Solution: the vision model</h2>
+<blockquote>
+<p>Step 1: a model with <strong>vision capabilities</strong>, configured <em>separately</em> from the default one</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"https://openrouter.ai/api/v1/"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 1: a model with vision capabilities (a separate env var, as other snippets may need a model with other capabilities)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">vision_model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"VISION_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"google/gemma-4-26b-a4b-it:free"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">vision_llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">vision_model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">temperature</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1.0</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># some randomness, for voting</span>
+</span></span></code></pre></div><ul>
+<li>A <em>dedicated</em> environment variable (<code>VISION_MODEL</code>): <code>OPENAI_MODEL</code> may point to a <em>text-only</em> model, used by other snippets
+<ul>
+<li>text-only models either <em>reject</em> image inputs, or (worse) silently <em>ignore</em> them and hallucinate</li>
+</ul>
+</li>
+<li><code>temperature=1.0</code>: samples must <em>differ</em> a bit, otherwise voting is pointless (cf. <a href="#/letter-tone">self-consistency</a>)</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-output-schema-and-system-prompt">Exercise 2 — Solution: output schema and system prompt</h2>
+<blockquote>
+<p>Steps 2–3: a Pydantic class with <em>documented</em> fields, and a system prompt giving the <strong>context</strong></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 3: the output schema (dates as `date`, so that pydantic validates them, and code can compare them)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">BaseModel</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Structured information extracted from an ID document."""</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The full name of the holder, as written in the document: given names first, surname last."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">nationality</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The nationality of the holder, as written in the document."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">date_of_birth</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">date</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The date of birth of the holder."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">id_number</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The number of the document, as written in its visual zone (not in the machine-readable zone)."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">expiration_date</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">date</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The date of expiry of the document."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 2: system prompt (context, general instructions) + user prompt (specific instructions + the picture)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">SYSTEM_PROMPT</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"""You are an assistant of the admission committee of a PhD programme.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">You extract structured information from the pictures of the candidates' ID documents.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">Report values exactly as written in the document; documents may be multilingual: prefer the Latin-alphabet version of each value."""</span>
+</span></span></code></pre></div><ul>
+<li>Dates are typed as <code>date</code>: Pydantic <em>validates</em> them, and code can <em>compare</em> them (e.g. is the passport expired?)</li>
+<li>Descriptions remove <em>ambiguities</em> which would split votes: name order, <em>visual</em> zone vs. machine-readable zone, multilingual values</li>
+<li><code>nationality</code> added w.r.t. the hint: the schema is <em>yours</em> to design</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-passing-the-picture">Exercise 2 — Solution: passing the picture</h2>
+<blockquote>
+<p>Step 2 (cont.): the <em>user</em> message is a <strong>list of typed pieces</strong>: the instruction (text) + the picture (base64)</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">message_with_image</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">HumanMessage</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""A user message made of a text and a picture (base64-encoded), cf. the slides."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">mime_type</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">mimetypes</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">guess_type</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">"image/png"</span>  <span style="color:#8f5902;font-style:italic"># e.g. "image/png" for .png files</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">base64</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">b64encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_bytes</span><span style="color:#000;font-weight:bold">())</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"utf-8"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">HumanMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"type"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"text"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"text"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">text</span><span style="color:#000;font-weight:bold">},</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"type"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"image"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"base64"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"mime_type"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">mime_type</span><span style="color:#000;font-weight:bold">},</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">extractor</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">vision_llm</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">with_structured_output</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li><code>mimetypes.guess_type</code> infers the MIME type from the file extension, so that <code>.jpg</code> pictures work too</li>
+<li>LangChain translates the <code>image</code> piece into the provider’s format (e.g. OpenAI’s <code>image_url</code> with a <code>data:</code> URL)</li>
+<li><code>with_structured_output</code> works with <em>multimodal</em> inputs exactly as with textual ones</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-sampling">Exercise 2 — Solution: sampling</h2>
+<blockquote>
+<p>Step 4: query the model <strong>several times</strong>, in parallel, on the <em>same</em> picture</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">sample</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Step 4: queries the model `samples` times (in parallel) about the same picture."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">SystemMessage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">SYSTEM_PROMPT</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">message_with_image</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"Please extract the information from this ID document."</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">extractor</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">batch</span><span style="color:#000;font-weight:bold">([</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">return_exceptions</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># a failed sample (e.g. invalid JSON) is not fatal...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">valid</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">r</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">r</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">results</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">isinstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">valid</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># ... unless all of them fail</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">raise</span> <span style="color:#c00;font-weight:bold">RuntimeError</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"All </span><span style="color:#4e9a06">{</span><span style="color:#000">samples</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> samples failed, e.g.: </span><span style="color:#4e9a06">{</span><span style="color:#000">results</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">valid</span>
+</span></span></code></pre></div><ul>
+<li><code>.batch(...)</code> sends the requests <em>concurrently</em>: $N$ samples cost $N\times$ tokens, but (roughly) <em>not</em> $N\times$ time</li>
+<li><code>return_exceptions=True</code>: one <em>invalid</em> sample (e.g. malformed JSON, a date that is not a date) should not kill the whole run
+<ul>
+<li>small, free models fail <em>often</em>: failing only when <strong>all</strong> samples fail is a pragmatic trade-off</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-voting-and-flagging">Exercise 2 — Solution: voting, and flagging</h2>
+<blockquote>
+<p>Step 5: <em>field by field</em>, keep the <strong>most voted</strong> value, and flag fields with no clear majority for <em>human review</em></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">vote</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">results</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">tuple</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">]]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Step 5: for each field, the most voted value, and its agreement rate (fraction of results with that value)."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">voted</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">agreement</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{},</span> <span style="color:#000;font-weight:bold">{}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">field</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">IDDocumentInfo</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_fields</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">value</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Counter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">getattr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">field</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">r</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">results</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">most_common</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">voted</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">agreement</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">value</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">count</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">results</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">voted</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">agreement</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">flagged</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">agreement</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Fields with no clear (i.e. absolute) majority: a human should check them."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">field</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rate</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">agreement</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">rate</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#0000cf;font-weight:bold">0.5</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">extract</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">tuple</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]]:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""The whole pipeline: sample, vote, flag. Returns the voted information, and the fields to be reviewed by a human."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">agreement</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">vote</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sample</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flagged</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">agreement</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li>Voting <em>per field</em> (rather than on whole objects) tolerates samples which are wrong on <em>one</em> field only</li>
+<li>The <em>agreement rate</em> is a cheap <strong>confidence</strong> measure: at most 50% means <em>no absolute majority</em> $\Rightarrow$ ask a human
+<ul>
+<li>the threshold is a <em>policy</em> decision: stricter for fields that matter more (e.g. <code>id_number</code>)</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-project-structure">Exercise 2 — Solution: Project Structure</h2>
+<p>Files of this solution, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (branch <code>master</code>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/passport-jean-dupont.png">passport-jean-dupont.png</a>   # inputs (running example)
+│   ├── <a href="../lab-snippets/data/passport-mario-rossi.png">passport-mario-rossi.png</a>
+│   ├── <a href="../lab-snippets/data/passport-mohammed-ali.png">passport-mohammed-ali.png</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── exercise2/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py">id_extraction.py</a>   # sample, vote, flag
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                 # dependencies of all snippets</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -x <span style="color:#0000cf;font-weight:bold">2</span> mario-rossi <span style="color:#0000cf;font-weight:bold">5</span>    <span style="color:#8f5902;font-style:italic"># candidate's ID (or picture path), number of samples</span>
+</span></span></code></pre></div><ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>VISION_MODEL</code>), cf. <a href="../free-access/">Free Access to LLMs</a></li>
+<li>Step 6: try all three passports (e.g. Mohammed Ali’s is <em>multilingual</em>): which fields get flagged? Does it change with more samples?</li>
+</ul>
 
 </section>
 </section>
@@ -1930,6 +2223,9 @@
 
   
     
+  
+  
+
   
   
 

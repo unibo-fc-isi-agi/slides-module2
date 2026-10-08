@@ -815,7 +815,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791468597594508121" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791481732828447150" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -837,7 +837,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791468597594508121");
+    handlePlantumlFigureByID("plantuml-figure-1791481732828447150");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1655,10 +1655,11 @@ P -&gt; U: “It’s … in Cesena”
 </span>
 
 </section>
-</section><section>
+</section>
 
 
 <section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-caching">
 <h2 id="exercise-1-caching-sync-requests">Exercise 1: Caching Sync Requests</h2>
 <blockquote>
 <p><strong>Problem</strong>: when experimenting with <em>programmatic</em> LLM interfaces, one does a lot of trial and erros, possibly consuming credits, or wasting attempts w.r.t. rate limits, etc.</p>
@@ -1701,12 +1702,133 @@ P -&gt; U: “It’s … in Cesena”
 <li>run the program, and try to send the same message twice, to see if the second time the response is returned from the cache (e.g. by printing a message like “Cache hit! Returning cached response.”), and check that the response is indeed the same as the first time</li>
 <li>try to change the message slightly (e.g. by adding a punctuation mark), and see that the cache is not hit, and a new request is sent to the model, and check that the response is different from the first time</li>
 </ul>
+<blockquote>
+<p><strong>Solution</strong>: a walkthrough follows in the next (vertical) column — try on your own first!</p>
+</blockquote>
 
 </section>
-</section><section>
+</section>
 
 
 <section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-caching-solution">
+<h2 id="exercise-1-caching-sync-requests--solution">Exercise 1: Caching Sync Requests — Solution</h2>
+<blockquote>
+<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution of <a href="#/exercise-caching">Exercise 1</a> is about to start</p>
+</blockquote>
+<ul>
+<li>do <strong>not</strong> proceed until you have <em>attempted</em> the exercise on your own!
+<ul>
+<li>press → to <em>skip</em> the solution, ↓ to <em>see</em> it</li>
+</ul>
+</li>
+<li>the solution’s code is on the <code>master</code> branch of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>
+<ul>
+<li>while students are expected to clone the <code>exercises</code> branch, where it is just a placeholder</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-where-to-store-and-when-is-it-a-hit">Exercise 1 — Solution: <em>where</em> to store, and <em>when</em> is it a hit?</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 1 (where?): a local, untracked folder (cf. .gitignore), configurable via env var</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">CACHE_DIR</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"LLM_CACHE_DIR"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">".llm-cache"</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 2 (when is it a hit?): same request = same provider, model, and messages (i.e. the whole history, not just the last message),</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># plus any other parameter (e.g. temperature): all of them affect the answer, so all of them are part of the key</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">cache_key</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">canonical</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dumps</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">sort_keys</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ensure_ascii</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># same request =&gt; same string (keys are sorted)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">hashlib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sha256</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">canonical</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">())</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">hexdigest</span><span style="color:#000;font-weight:bold">()</span>  <span style="color:#8f5902;font-style:italic"># a fixed-length, file-name-friendly digest of that string</span>
+</span></span></code></pre></div><ul>
+<li><em>where</em>: a local, <em>untracked</em> folder (<code>.llm-cache/</code>, git-ignored), overridable via the <code>LLM_CACHE_DIR</code> env var
+<ul>
+<li>alternatives: the temp folder (lost on reboot), or <code>~/.cache/...</code> (shared among projects)</li>
+</ul>
+</li>
+<li><em>when</em>: the <strong>cache key</strong> covers the <em>whole request</em>: provider, model, <strong>whole history</strong>, and any other parameter (e.g. <code>temperature</code>)
+<ul>
+<li>keying on the <em>last message</em> only is a <strong>pitfall</strong>: “and now in italian” means different things in different conversations</li>
+</ul>
+</li>
+<li><em>how</em>: the request is serialised as <em>canonical</em> JSON (<code>sort_keys=True</code>), then hashed (SHA-256) into a fixed-length, file-name-friendly key</li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-how-to-store-and-lookup">Exercise 1 — Solution: <em>how</em> to store, and <em>lookup</em></h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 3 (how to store?): one JSON file per request, named after its key, so that lookup is just a file-existence check</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">cached_completion</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Like client.chat.completions.create(**request), but returns just the answer's text, from the cache if possible."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">file</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">CACHE_DIR</span> <span style="color:#ce5c00;font-weight:bold">/</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">{</span><span style="color:#000">cache_key</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.json"</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">exists</span><span style="color:#000;font-weight:bold">():</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"# Cache hit! Returning cached response."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">())[</span><span style="color:#4e9a06">"answer"</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># cache miss: actually call the model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">CACHE_DIR</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">mkdir</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">parents</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">exist_ok</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># the request is stored too, for debugging (and reproducibility): one can see what produced the answer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">write_text</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dumps</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">answer</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">answer</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ensure_ascii</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">answer</span>
+</span></span></code></pre></div><ul>
+<li><strong>one JSON file per request</strong>, named after its key $\Rightarrow$ <em>lookup</em> is just a <em>file-existence check</em> (no index to maintain)</li>
+<li>the <em>request</em> is stored next to the <em>answer</em>: human-readable, useful for <em>debugging</em> and <em>reproducibility</em></li>
+<li><code>cached_completion</code> has the <em>same parameters</em> as <code>client.chat.completions.create</code>, so it is a <strong>drop-in replacement</strong>
+<ul>
+<li>only the answer’s <em>text</em> is cached (not the whole response object), which is all the REPL needs</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-restructuring-the-code">Exercise 1 — Solution: <em>restructuring</em> the code</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">while</span> <span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">user_text</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"you&gt; "</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">user_text</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">cmd</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">user_text</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"/exit"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"/quit"</span><span style="color:#000;font-weight:bold">}:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">cmd</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"/retry"</span><span style="color:#000;font-weight:bold">}:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">user_text</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">cached_completion</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># was: client.chat.completions.create(...)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">exc</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"error&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">exc</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"assistant&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">answer</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">answer</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div><ul>
+<li>the REPL of Example 1 is <em>unchanged</em>, except for the <strong>one line</strong> calling the model</li>
+<li>since the key covers the whole history, <em>replaying</em> the same conversation hits the cache at <em>every</em> turn
+<ul>
+<li>try: send the same messages twice (restarting the program), and watch for <code># Cache hit!</code></li>
+</ul>
+</li>
+<li><strong>beware</strong>: with a cache, <code>/retry</code> returns the <em>same</em> answer (the request is identical!): caching trades <em>variety</em> for <em>cost</em> and <em>reproducibility</em></li>
+</ul>
+</section><section>
+<h2 id="exercise-1--solution-project-structure">Exercise 1 — Solution: Project Structure</h2>
+<p>Files of this solution, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (<code>master</code> branch):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── snippets/
+│   └── lecture_llmaas/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py">repl_chat_openai.py</a>  # the starting point
+│       └── exercise1/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/exercise1/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/exercise1/repl_chat_cached.py">repl_chat_cached.py</a>  # the solution
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+<ul>
+<li>run it with <code>poetry run python -m snippets -l llmaas -x 1</code> (cf. <a href="../#/lab-snippets-run">how to run snippets</a>)
+<ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), as for Example 1, plus <code>LLM_CACHE_DIR</code></li>
+</ul>
+</li>
+</ul>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-retry">
 <h2 id="exercise-2-retry-and-exponential-backoff">Exercise 2: Retry and Exponential Backoff</h2>
 <blockquote>
 <p><strong>Problem</strong>: when interacting with LLMs via Web APIs, it may happen that some requests <em>fail</em> due to <em>transient issues</em> (e.g. network errors, <u>rate limits</u>, etc.)</p>
@@ -1761,6 +1883,141 @@ P -&gt; U: “It’s … in Cesena”
 <ul>
 <li>run the program, and simulate a transient failure (e.g. by disconnecting the network, or by sending too many requests to trigger rate limits), and see that the program retries the request with increasing delays, and eventually succeeds or gives up after the maximum number of retries</li>
 <li>try to configure the parameters (e.g. number of retries, initial delay, backoff factor) and see that the retry behavior changes accordingly (e.g. more retries, longer delays, etc.)</li>
+</ul>
+<blockquote>
+<p><strong>Solution</strong>: a walkthrough follows in the next (vertical) column — try on your own first!</p>
+</blockquote>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="exercise-retry-solution">
+<h2 id="exercise-2-retry-and-exponential-backoff--solution">Exercise 2: Retry and Exponential Backoff — Solution</h2>
+<blockquote>
+<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution of <a href="#/exercise-retry">Exercise 2</a> is about to start</p>
+</blockquote>
+<ul>
+<li>do <strong>not</strong> proceed until you have <em>attempted</em> the exercise on your own!
+<ul>
+<li>press → to <em>skip</em> the solution, ↓ to <em>see</em> it</li>
+</ul>
+</li>
+<li>the solution’s code is on the <code>master</code> branch of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>
+<ul>
+<li>while students are expected to clone the <code>exercises</code> branch, where it is just a placeholder</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-how-to-detect-a-failure">Exercise 2 — Solution: how to <em>detect</em> a failure?</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 1 (how to detect a failure?): the client raises exceptions; only some of them are TRANSIENT, i.e. worth a retry</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">TRANSIENT_ERRORS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">openai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">APIConnectionError</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># network errors (including timeouts)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">openai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">RateLimitError</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># HTTP 429: too many requests</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">openai</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">InternalServerError</span><span style="color:#000;font-weight:bold">,</span>  <span style="color:#8f5902;font-style:italic"># HTTP 5xx: the provider is in trouble</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># others (e.g. openai.AuthenticationError, openai.BadRequestError) would fail again: retrying them only wastes time</span>
+</span></span></code></pre></div><ul>
+<li>the client library signals failures by raising <strong>exceptions</strong>, one class per kind of error (no need to inspect HTTP status codes)</li>
+<li>only <em>transient</em> errors are worth a retry: <em>network</em> issues, <em>rate limits</em> (HTTP 429), <em>server</em> errors (HTTP 5xx)</li>
+<li><strong>pitfall</strong>: retrying <em>every</em> exception (e.g. a wrong API key, or a malformed request) only wastes time, as it would fail again</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-retry-loop-and-exponential-backoff">Exercise 2 — Solution: <em>retry</em> loop and <em>exponential backoff</em></h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 2 (how to retry?): a plain loop + try/except, in a helper function wrapping ANY call (no extra library needed)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">with_retries</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">call</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">retries</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">int</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">initial_delay</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">float</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1.0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">backoff</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">float</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">2.0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">sleep</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sleep</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Calls call(), retrying it up to `retries` times upon transient errors, waiting
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    initial_delay, initial_delay * backoff, initial_delay * backoff^2, ... seconds between attempts."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">attempt</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">retries</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">):</span>  <span style="color:#8f5902;font-style:italic"># 1 attempt + `retries` retries</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">call</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#000">TRANSIENT_ERRORS</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">error</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">attempt</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">retries</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># no more retries: give up, letting the caller handle the error</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">raise</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">delay</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">initial_delay</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">backoff</span> <span style="color:#ce5c00;font-weight:bold">**</span> <span style="color:#000">attempt</span>  <span style="color:#8f5902;font-style:italic"># decision 3: exponential backoff, e.g. 1s, 2s, 4s, 8s, ...</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"# Attempt </span><span style="color:#4e9a06">{</span><span style="color:#000">attempt</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> failed (</span><span style="color:#4e9a06">{</span><span style="color:#204a87">type</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">error</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__name__</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">), retrying in </span><span style="color:#4e9a06">{</span><span style="color:#000">delay</span><span style="color:#4e9a06">:</span><span style="color:#4e9a06">g</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">s..."</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">sleep</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">delay</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># `sleep` is a parameter, so that tests can replace it, and not actually wait</span>
+</span></span></code></pre></div><ul>
+<li>a plain <code>for</code> loop + <code>try</code>/<code>except</code>, in a <em>helper function</em> wrapping <strong>any</strong> call (passed as a function)
+<ul>
+<li>alternatively: the <a href="https://tenacity.readthedocs.io/"><code>tenacity</code></a> library, providing retry <em>decorators</em> with built-in backoff</li>
+</ul>
+</li>
+<li>delays grow as $d_0 \cdot b^{k}$ (e.g. 1s, 2s, 4s, 8s): after the last retry, the error is <em>re-raised</em> to the caller</li>
+<li><code>sleep</code> is a <em>parameter</em>, so that <em>tests</em> can replace it, and not actually wait
+<ul>
+<li>refinement: add random <em>jitter</em> to the delays, so that many clients do not retry all at once</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-making-parameters-configurable">Exercise 2 — Solution: making parameters <em>configurable</em></h2>
+<div style="font-size: 80%;">
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># decision 4 (how to configure?): argparse for command-line arguments, whose defaults come from env vars, whose defaults are hard-coded</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">parse_args</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">argparse</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Namespace</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">parser</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">argparse</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ArgumentParser</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"Sync CLI Chat with retries and exponential backoff"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">add_argument</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"--retries"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">default</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">int</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"LLM_RETRIES"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">help</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"max number of retries (default: 3)"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">add_argument</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"--initial-delay"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">default</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"LLM_INITIAL_DELAY"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1.0</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">help</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"delay before the 1st retry, in seconds (default: 1)"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">add_argument</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"--backoff"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">default</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">float</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"LLM_BACKOFF"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">2.0</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">help</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"multiplier of the delay, at each retry (default: 2)"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parse_args</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div>
+</div>
+<ul>
+<li><code>argparse</code> for command-line arguments, whose <em>defaults</em> come from <em>env vars</em>, whose defaults are <em>hard-coded</em>
+<ul>
+<li>precedence: <strong>CLI arguments &gt; env vars &gt; defaults</strong>, e.g. <code>poetry run python -m snippets -l llmaas -x 2 --retries 5 --backoff 3</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># beware: the OpenAI client ALREADY retries twice, by default (with backoff), so we disable that, to be in control</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_retries</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><ul>
+<li><strong>pitfall</strong>: the <code>OpenAI</code> client <em>already</em> retries twice by default (with backoff): it is disabled here, to be in control (and to avoid <em>multiplying</em> retries)</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-restructuring-the-code">Exercise 2 — Solution: <em>restructuring</em> the code</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">while</span> <span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">user_text</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"you&gt; "</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">user_text</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">cmd</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">user_text</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"/exit"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"/quit"</span><span style="color:#000;font-weight:bold">}:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">cmd</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"/retry"</span><span style="color:#000;font-weight:bold">}:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">user_text</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># decision 5 (how to restructure?): the call is wrapped in a lambda, the rest of the REPL is unchanged</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">response</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">with_retries</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>                                        <span style="color:#000">config</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">retries</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">initial_delay</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">backoff</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">exc</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># non-transient errors, or transient ones persisting after all retries</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"error&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">exc</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"assistant&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">answer</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">answer</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div><ul>
+<li>the call to the model is wrapped in a <code>lambda</code>, and passed to <code>with_retries</code>: the rest of the REPL is <em>unchanged</em></li>
+<li>the <em>outer</em> <code>except</code> catches <em>non-transient</em> errors, and transient ones <em>persisting</em> after all retries</li>
+<li>to test it: disconnect the network (or point <code>OPENAI_BASE_URL</code> to an unreachable host) and watch the delays grow</li>
+</ul>
+</section><section>
+<h2 id="exercise-2--solution-project-structure">Exercise 2 — Solution: Project Structure</h2>
+<p>Files of this solution, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (<code>master</code> branch):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── snippets/
+│   └── lecture_llmaas/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py">repl_chat_openai.py</a>  # the starting point
+│       └── exercise2/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/exercise2/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py">repl_chat_retry.py</a>  # the solution
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+<ul>
+<li>run it with <code>poetry run python -m snippets -l llmaas -x 2 [--retries N] [--initial-delay SECONDS] [--backoff FACTOR]</code> (cf. <a href="../#/lab-snippets-run">how to run snippets</a>)
+<ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), as for Example 1, plus (optionally) <code>LLM_RETRIES</code>, <code>LLM_INITIAL_DELAY</code>, <code>LLM_BACKOFF</code></li>
+</ul>
+</li>
 </ul>
 
 </section>
@@ -1862,6 +2119,9 @@ P -&gt; U: “It’s … in Cesena”
 
   
     
+  
+  
+
   
   
 
