@@ -349,6 +349,119 @@ outputs = ["Reveal"]
 
 - deliberately _break_ an expectation in `test_data.yml` (e.g. a wrong affiliation), and check that the suite _catches_ it
 
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-all-fields-solution" >}}
+
+## Exercise 1: Complete the Test Suite of the Letter Scoring System — Solution
+
+> ⚠️ __Spoiler alert__: the _walkthrough_ of a possible solution starts below
+
+- do __not__ proceed until you have _attempted_ [the exercise](#/exercise-all-fields) on your own
+- press → to _skip_ the walkthrough, ↓ to _see_ it
+- the solution is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises) (whereas you cloned the `exercises` branch)
+- here the __tests are the solution__: the interesting part is the _decisions_ behind each expectation and each check
+
+---
+
+## Exercise 1 — Solution: matching conventions (steps 2–3)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise1/test_data.yml" from="1" to="16" %}}
+{{% /col %}}
+{{% col %}}
+- _conventions_ decided __once__, for _all_ fields, and written _in the dataset_, where the committee edits it
+- a __list__ means "_any of_ these is fine": translations, synonyms, or several admissible values of an _ambiguous_ scale
+- `null` means "_not stated_ in the letter": the model must __not__ guess
+    + e.g. Mario's `alma_mater`: Bologna is the _author's_ affiliation, not the applicant's university
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: the ambiguous cases
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise1/test_data.yml" from="17" to="36" %}}
+{{% /col %}}
+{{% col %}}
+- reading the letters _yourself_ reveals __ambiguity__ the prompt never resolved:
+    + "maîtresse de conférences" → `seniority` 1, 2, _or_ 3?
+    + Mohammed's `alma_mater` is _implied_, not stated: both `null` and Amman are fine
+    + "Amman, Jordan" is the _author's address_, not their _nationality_
+- each ambiguity is _either_ accepted in the expectations (lists) _or_ fixed in the _field description_ of the prompt
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: re-use and tolerant matching (steps 2–3)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise1/test_all_fields.py" from="14" to="38" %}}
+{{% /col %}}
+{{% col %}}
+- Example 1's tests are _imported_, hence _collected_ and run here too, and share the same _cached_ `score`: one LLM call per letter, for __all__ tests
+- `normalise` handles _case_, _accents_, _punctuation_; `matches` adds _containment_ ("University of Bologna" ⊇ "bologna") and the list / `null` conventions
+- some models write `"unknown"` instead of `None`: accepted as _empty_ (a choice: you may want to forbid it)
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: one test per group of fields (step 4)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise1/test_all_fields.py" from="41" to="68" %}}
+{{% /col %}}
+{{% col %}}
+- __tolerant__ match for free-text fields; __set inclusion__ for `attended` (order and extra courses don't matter); __exact__ match among admissible values for `seniority`
+- _parametrised_ over fields too: a failure names the _letter_ __and__ the _field_
+- __no LLM-as-a-Judge__ needed: all these fields are _short facts_, which code checks cheaply and _deterministically_
+    + judges stay where they were (relationship, groundedness), cf. the _cost_ hint
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (branch `master`):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   └── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+└── snippets/
+    ├── lecture_prompting/
+    │   └── example1bis/
+    │       └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # system under test
+    └── lecture_validating/
+        ├── example1/
+        │   └── <a href="../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py">test_letter_scoring.py</a>       # Example 1's tests (re-used)
+        ├── exercise1/
+        │   ├── <a href="../lab-snippets/snippets/lecture_validating/exercise1/test_all_fields.py">test_all_fields.py</a>           # the complete test suite
+        │   └── <a href="../lab-snippets/snippets/lecture_validating/exercise1/test_data.yml">test_data.yml</a>                # expectations for the other fields
+        ├── <a href="../lab-snippets/snippets/lecture_validating/dataset.py">dataset.py</a>                       # loads Example 1's test dataset
+        └── <a href="../lab-snippets/snippets/lecture_validating/test_data.yml">test_data.yml</a>                    # Example 1's test dataset</code></pre></div>
+
+```bash
+poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the complete suite, with any option given
+```
+
+- then _break_ an expectation (e.g. a wrong `affiliation`) and check that the suite _catches_ it
+
 {{% /section %}}
 
 ---
@@ -391,6 +504,116 @@ outputs = ["Reveal"]
 
 - deliberately _break_ the system (e.g. remove the field descriptions from the Pydantic class, or use a tiny model) and check that the suite _catches_ it
 - run it in CI (e.g. GitHub Actions), with the API key stored as a _secret_
+
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-id-tests-solution" >}}
+
+## Exercise 2: Testing Infrastructure for ID Document Extraction — Solution
+
+> ⚠️ __Spoiler alert__: the _walkthrough_ of a possible solution starts below
+
+- do __not__ proceed until you have _attempted_ [the exercise](#/exercise-id-tests) on your own
+- press → to _skip_ the walkthrough, ↓ to _see_ it
+- the solution is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises) (whereas you cloned the `exercises` branch)
+- here the __tests are the solution__: the extractor under test is the one of [Exercise 2 of the Prompt Engineering lecture](../prompting/#/exercise-id-documents), unchanged
+
+---
+
+## Exercise 2 — Solution: the test dataset (step 1)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise2/passports.yml" from="1" to="11" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise2/test_id_extraction.py" from="25" to="34" %}}
+{{% /col %}}
+{{% col %}}
+- a __YAML file__, written by _looking_ at the pictures, _before_ testing: the committee reviews it without touching code
+- _which_ zone is the truth? The _visual_ one: the machine-readable zone of Mario's passport _disagrees_ on the expiry date
+- `legible`: _human_ judgement, used later to _validate_ the judge
+- `samples_of` caches samples __within__ a run only: caching _across_ runs would _hide_ the variance we want to measure
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: deterministic scorers (step 2)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise2/test_id_extraction.py" from="37" to="59" %}}
+{{% /col %}}
+{{% col %}}
+- __exact__ match for ID numbers (up to blanks and case) and dates (`date` objects on both sides: the _format_ is irrelevant)
+- _normalised_ match for names: a __set__ of words, so "DUPONT Jean" = "Jean Dupont"
+- the test checks the _voted_ result, i.e. the system __as the committee uses it__; `agreement` in the message tells _how sure_ it was
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: invariants, consistency, voting (steps 2–3)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise2/test_id_extraction.py" from="62" to="85" %}}
+{{% /col %}}
+{{% col %}}
+- _invariants_ hold whatever the expected values: checked on __every__ sample
+- consistency is asserted on __rates__ (≥ 2/3 agreement), not on single runs: fewer _flaky_ failures
+- voting vs. single queries is a _measure_ more than a requirement: it fails only if voting makes things __worse__
+    + read the printed accuracies with `-s`
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: a validated LLM-as-a-Judge (step 4)
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_validating/exercise2/test_id_extraction.py" from="88" to="103" %}}
+{{% /col %}}
+{{% col %}}
+- _legibility_ is the only property __code can't check__: hence the only judge
+- `reasoning` comes _before_ `legible`: the judge explains, then decides (and the explanation is the failure message)
+- the test does __not__ trust the judge: it checks the judge _agrees_ with __human__ judgement (`legible` in the dataset)
+- ideally a _different_ model than the system under test, but few free models accept images
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (branch `master`):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/passport-jean-dupont.png">passport-jean-dupont.png</a>             # inputs (running example)
+│   ├── <a href="../lab-snippets/data/passport-mario-rossi.png">passport-mario-rossi.png</a>
+│   └── <a href="../lab-snippets/data/passport-mohammed-ali.png">passport-mohammed-ali.png</a>
+└── snippets/
+    ├── lecture_prompting/
+    │   └── exercise2/
+    │       └── <a href="../lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py">id_extraction.py</a>             # system under test (sample, vote)
+    └── lecture_validating/
+        └── exercise2/
+            ├── <a href="../lab-snippets/snippets/lecture_validating/exercise2/passports.yml">passports.yml</a>                # test dataset
+            └── <a href="../lab-snippets/snippets/lecture_validating/exercise2/test_id_extraction.py">test_id_extraction.py</a>        # the test suite</code></pre></div>
+
+```bash
+VISION_MODEL=<model 1> poetry run python -m snippets -l validating -x 2 -v -s   # -s shows agreement rates and accuracies
+VISION_MODEL=<model 2> poetry run python -m snippets -l validating -x 2 -v -s   # step 5: run once per model, compare the reports
+```
+
+- `SAMPLES` (default 3) sets $N$; `JUDGE_MODEL` the judge (must accept images)
 
 {{% /section %}}
 
