@@ -1172,6 +1172,8 @@ you> Goodbye!
 
 {{% section %}}
 
+{{< slide id="exercise-caching" >}}
+
 ## Exercise 1: Caching Sync Requests
 
 > __Problem__: when experimenting with _programmatic_ LLM interfaces, one does a lot of trial and erros, possibly consuming credits, or wasting attempts w.r.t. rate limits, etc.
@@ -1205,11 +1207,85 @@ you> Goodbye!
 - run the program, and try to send the same message twice, to see if the second time the response is returned from the cache (e.g. by printing a message like "Cache hit! Returning cached response."), and check that the response is indeed the same as the first time
 - try to change the message slightly (e.g. by adding a punctuation mark), and see that the cache is not hit, and a new request is sent to the model, and check that the response is different from the first time
 
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
 {{% /section %}}
 
 ---
 
 {{% section %}}
+
+{{< slide id="exercise-caching-solution" >}}
+
+## Exercise 1: Caching Sync Requests — Solution
+
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 1](#/exercise-caching) is about to start
+
+- do __not__ proceed until you have _attempted_ the exercise on your own!
+    + press → to _skip_ the solution, ↓ to _see_ it
+- the solution's code is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises)
+    + while students are expected to clone the `exercises` branch, where it is just a placeholder
+
+---
+
+## Exercise 1 — Solution: _where_ to store, and _when_ is it a hit?
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise1/repl_chat_cached.py" from="20" to="28" %}}
+
+- _where_: a local, _untracked_ folder (`.llm-cache/`, git-ignored), overridable via the `LLM_CACHE_DIR` env var
+    + alternatives: the temp folder (lost on reboot), or `~/.cache/...` (shared among projects)
+- _when_: the __cache key__ covers the _whole request_: provider, model, __whole history__, and any other parameter (e.g. `temperature`)
+    + keying on the _last message_ only is a __pitfall__: "and now in italian" means different things in different conversations
+- _how_: the request is serialised as _canonical_ JSON (`sort_keys=True`), then hashed (SHA-256) into a fixed-length, file-name-friendly key
+
+---
+
+## Exercise 1 — Solution: _how_ to store, and _lookup_
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise1/repl_chat_cached.py" from="31" to="43" %}}
+
+- __one JSON file per request__, named after its key $\Rightarrow$ _lookup_ is just a _file-existence check_ (no index to maintain)
+- the _request_ is stored next to the _answer_: human-readable, useful for _debugging_ and _reproducibility_
+- `cached_completion` has the _same parameters_ as `client.chat.completions.create`, so it is a __drop-in replacement__
+    + only the answer's _text_ is cached (not the whole response object), which is all the REPL needs
+
+---
+
+## Exercise 1 — Solution: _restructuring_ the code
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise1/repl_chat_cached.py" from="53" to="68" %}}
+
+- the REPL of Example 1 is _unchanged_, except for the __one line__ calling the model
+- since the key covers the whole history, _replaying_ the same conversation hits the cache at _every_ turn
+    + try: send the same messages twice (restarting the program), and watch for `# Cache hit!`
+- __beware__: with a cache, `/retry` returns the _same_ answer (the request is identical!): caching trades _variety_ for _cost_ and _reproducibility_
+
+---
+
+## Exercise 1 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (`master` branch):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_llmaas/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py">repl_chat_openai.py</a>  # the starting point
+│       └── exercise1/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/exercise1/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/exercise1/repl_chat_cached.py">repl_chat_cached.py</a>  # the solution
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+
+- run it with `poetry run python -m snippets -l llmaas -x 1` (cf. [how to run snippets](../#/lab-snippets-run))
+    + set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), as for Example 1, plus `LLM_CACHE_DIR`
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-retry" >}}
 
 ## Exercise 2: Retry and Exponential Backoff
 
@@ -1247,6 +1323,91 @@ you> Goodbye!
 
 - run the program, and simulate a transient failure (e.g. by disconnecting the network, or by sending too many requests to trigger rate limits), and see that the program retries the request with increasing delays, and eventually succeeds or gives up after the maximum number of retries
 - try to configure the parameters (e.g. number of retries, initial delay, backoff factor) and see that the retry behavior changes accordingly (e.g. more retries, longer delays, etc.)
+
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-retry-solution" >}}
+
+## Exercise 2: Retry and Exponential Backoff — Solution
+
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 2](#/exercise-retry) is about to start
+
+- do __not__ proceed until you have _attempted_ the exercise on your own!
+    + press → to _skip_ the solution, ↓ to _see_ it
+- the solution's code is on the `master` branch of [`lab-snippets`](../#/lab-snippets-exercises)
+    + while students are expected to clone the `exercises` branch, where it is just a placeholder
+
+---
+
+## Exercise 2 — Solution: how to _detect_ a failure?
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py" from="14" to="19" %}}
+
+- the client library signals failures by raising __exceptions__, one class per kind of error (no need to inspect HTTP status codes)
+- only _transient_ errors are worth a retry: _network_ issues, _rate limits_ (HTTP 429), _server_ errors (HTTP 5xx)
+- __pitfall__: retrying _every_ exception (e.g. a wrong API key, or a malformed request) only wastes time, as it would fail again
+
+---
+
+## Exercise 2 — Solution: _retry_ loop and _exponential backoff_
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py" from="22" to="34" %}}
+
+- a plain `for` loop + `try`/`except`, in a _helper function_ wrapping __any__ call (passed as a function)
+    + alternatively: the [`tenacity`](https://tenacity.readthedocs.io/) library, providing retry _decorators_ with built-in backoff
+- delays grow as $d_0 \cdot b^{k}$ (e.g. 1s, 2s, 4s, 8s): after the last retry, the error is _re-raised_ to the caller
+- `sleep` is a _parameter_, so that _tests_ can replace it, and not actually wait
+    + refinement: add random _jitter_ to the delays, so that many clients do not retry all at once
+
+---
+
+## Exercise 2 — Solution: making parameters _configurable_
+
+{{% small "80%" %}}
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py" from="37" to="43" %}}
+{{% /small %}}
+
+- `argparse` for command-line arguments, whose _defaults_ come from _env vars_, whose defaults are _hard-coded_
+    + precedence: __CLI arguments > env vars > defaults__, e.g. `poetry run python -m snippets -l llmaas -x 2 --retries 5 --backoff 3`
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py" from="52" to="53" %}}
+
+- __pitfall__: the `OpenAI` client _already_ retries twice by default (with backoff): it is disabled here, to be in control (and to avoid _multiplying_ retries)
+
+---
+
+## Exercise 2 — Solution: _restructuring_ the code
+
+{{% code path="static/lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py" from="59" to="76" %}}
+
+- the call to the model is wrapped in a `lambda`, and passed to `with_retries`: the rest of the REPL is _unchanged_
+- the _outer_ `except` catches _non-transient_ errors, and transient ones _persisting_ after all retries
+- to test it: disconnect the network (or point `OPENAI_BASE_URL` to an unreachable host) and watch the delays grow
+
+---
+
+## Exercise 2 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (`master` branch):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_llmaas/
+│       ├── example1/
+│       │   └── <a href="../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py">repl_chat_openai.py</a>  # the starting point
+│       └── exercise2/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/exercise2/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/exercise2/repl_chat_retry.py">repl_chat_retry.py</a>  # the solution
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>               # dependencies of all snippets</code></pre></div>
+
+- run it with `poetry run python -m snippets -l llmaas -x 2 [--retries N] [--initial-delay SECONDS] [--backoff FACTOR]` (cf. [how to run snippets](../#/lab-snippets-run))
+    + set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), as for Example 1, plus (optionally) `LLM_RETRIES`, `LLM_INITIAL_DELAY`, `LLM_BACKOFF`
 
 {{% /section %}}
 
