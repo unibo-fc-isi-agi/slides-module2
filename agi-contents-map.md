@@ -60,15 +60,15 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
 
 3. Retrieval augemented generation (RAG)
     - Topics:
-        * [ ] Agentic metaphor: memory & focus
-            + [ ] memory is not "more context": working/episodic/semantic/procedural memory; memory governance (provenance, staleness, forgetting, privacy) _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-        * [ ] Semantic indexing, embeddings, embedding scores
-        * [ ] Chunking, metadata, retrieval
-        * [ ] LangChain API and database adapters
-        * [ ] Evaluating RAG: retrieval metrics (e.g. precision/recall@k), answer groundedness
-        * [ ] Prompt injection via retrieved documents
+        * [x] Agentic metaphor: memory & focus — `rag`
+            + [x] memory is not "more context": working/episodic/semantic/procedural memory; memory governance (provenance, staleness, forgetting, privacy) _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026) — `rag` (CoALA memory types)
+        * [x] Semantic indexing, embeddings, embedding scores — `rag` (example 1; embedding providers landscape)
+        * [x] Chunking, metadata, retrieval — `rag` (vector stores on SQLite: example 2 from scratch, 2 bis with `sqlite-vec`; example 3 hybrid search with FTS5 + RRF)
+        * [x] LangChain API and database adapters — `rag` (example 4 with `SQLiteVec`; example 4 bis agentic RAG)
+        * [x] Evaluating RAG: retrieval metrics (e.g. precision/recall@k), answer groundedness — `rag` (example 5: recall@k, MRR; DeepEval faithfulness)
+        * [x] Prompt injection via retrieved documents — `rag` (+ corpus poisoning, access control at retrieval)
     - Exercises:
-        * [ ] E3.1: Q/A about the slides of a course
+        * [x] E3.1: Q/A about the slides of a course — `rag` exercise 1 (slides' PDFs from the GitHub release, incremental indexing via digests, citations)
 
 4. Agentic skills
     - Topics:
