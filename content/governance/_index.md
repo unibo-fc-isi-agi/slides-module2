@@ -706,6 +706,8 @@ flowchart LR
 
 As models _saturate_ classic benchmarks, new ones try to measure what models __cannot__ (yet) do:
 
+{{% multicol %}}
+{{% col class="col-8" %}}
 - __ARC-AGI__ ([Chollet, 2019](https://arxiv.org/abs/1911.01547)): intelligence as _skill-acquisition efficiency_, measured on visual puzzles that are easy for humans, and require _abstracting_ rules from a few examples
     + [ARC-AGI-2](https://arxiv.org/abs/2505.11831) (2025) raised the difficulty; the [ARC Prize 2025](https://arcprize.org/blog/arc-prize-2025-results-analysis) grand prize went _unclaimed_
     + [ARC-AGI-3](https://arcprize.org/blog/arc-agi-3-launch) (March 2026) is _interactive_: agents must explore game-like environments; at launch, humans solved all of them, frontier models almost none
@@ -714,10 +716,13 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 - __METR's time horizon__ ([Kwa et al., 2025](https://arxiv.org/abs/2503.14499)): the _length_ of tasks (in human-expert time) that an agent completes with 50% success
     + it has been _doubling_ every ~7 months (cf. [live measurements](https://metr.org/time-horizons))
 - __Aggregated views__: the [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report) describes a _jagged frontier_: models winning maths olympiad gold medals, yet failing at reading analog clocks
-
-{{< image src="./benchmark-saturation.png" max-h="40vh" alt="AI Index 2026, Figure 2.1.1: best model performance relative to the human baseline, 2012-2025, on ImageNet, SuperGLUE, MMLU, GPQA Diamond, MATH, MMMU, AIME, SWE-bench Verified, OSWorld and others: each benchmark climbs towards or past the human baseline, newer ones ever faster" >}}
+{{% /col %}}
+{{% col class="col-4" %}}
+{{< image src="./benchmark-saturation.png" max-h="55vh" alt="AI Index 2026, Figure 2.1.1: best model performance relative to the human baseline, 2012-2025, on ImageNet, SuperGLUE, MMLU, GPQA Diamond, MATH, MMMU, AIME, SWE-bench Verified, OSWorld and others: each benchmark climbs towards or past the human baseline, newer ones ever faster" >}}
 
 <small>Source: [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report), ch. 2, Figure 2.1.1 ([CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/))</small>
+{{% /col %}}
+{{% /multicol %}}
 
 > __Engineering take-away__: frontier benchmarks tell you where the _state of the art_ is, not whether a model is good for __your__ task
 

@@ -99,7 +99,7 @@ outputs = ["Reveal"]
 
 {{% section %}}
 
-{{< slide id="test-deepeval" >}}
+{{< slide class="print-compact" id="test-deepeval" >}}
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 1)
 

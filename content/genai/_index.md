@@ -98,7 +98,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 ## Analogy with Dual-System theory
 
-{{< image src="./dual-system.svg" width="100%" max-h="90vh" alt="Dual-system theory concept">}}
+{{< image src="./dual-system.svg" width="100%" max-h="75vh" alt="Dual-system theory concept">}}
 
 (cf. [Thinking, Fast and Slow](https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow))
 
@@ -733,7 +733,7 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Concept: Model-Context Protocol (MCP)
 
-{{< image src="./mcp.svg" width="100%" max-h="70vh" alt="Model-Context Protocol (MCP) concept">}}
+{{< image src="./mcp.svg" width="100%" max-h="60vh" alt="Model-Context Protocol (MCP) concept">}}
 
 - MCP $\approx$ _standard_ protocol for LLM-based applications to _discover_ and _call_ __external tools__ (cf. [specification](https://modelcontextprotocol.io/specification))
 - Allows for _decoupling_ between the agent's logic and the implementation of the tools, thus enabling modularity and interoperability
@@ -751,7 +751,7 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Concept: LLM-as-a-Judge
 
-{{< image src="./llm-as-a-judge.svg" width="100%" max-h="70vh" alt="LLM-as-a-Judge concept">}}
+{{< image src="./llm-as-a-judge.svg" width="100%" max-h="60vh" alt="LLM-as-a-Judge concept">}}
 
 - Exploiting an LLM to _evaluate_ the quality of some other LLM's output...
 - ... based on some _informal_ __criterion__ (e.g. _relevance_, _accuracy_, _completeness_, etc.)

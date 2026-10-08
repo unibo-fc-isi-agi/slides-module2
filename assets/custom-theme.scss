@@ -360,3 +360,22 @@ html.blur-animation-light .backgrounds {
    -webkit-animation-fill-mode: forwards;
    -webkit-animation-delay: 0s;
  }
+
+// Print (PDF) mode: code blocks cannot scroll on paper, so show them whole
+
+html.reveal-print .reveal pre code {
+	max-height: none;
+	overflow: visible;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+// ... and slides with class `print-compact` shrink them, to fit in one page
+html.reveal-print .reveal section.print-compact pre {
+	font-size: 0.45em;
+}
+
+// ... or lay them out in two columns (fenced block attribute `{class="print-2cols"}`)
+html.reveal-print .reveal .print-2cols pre code {
+	column-count: 2;
+}

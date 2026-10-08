@@ -275,7 +275,7 @@ Reference technology: [Ollama](https://ollama.com/)
         + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
 - the _overhead_ covers runtime buffers, activations, and driver context: usually an extra ~10–20%
 
-{{< image src="./memory-footprint.svg" max-h="30vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
+{{< image src="./memory-footprint.svg" max-h="24vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
 
 ---
 
@@ -492,63 +492,67 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
         -d '{"model": "openrouter/auto", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'
     ```
 
-    answer (converted in YAML for the sake of readability):
+---
 
-    ```yaml
-    id: gen-1779447979-077vepCYJjlgJfXKnK2q
-    object: chat.completion
-    created: 1779447979
-    model: openai/gpt-5-nano-2025-08-07
-    provider: OpenAI
-    system_fingerprint: null
-    service_tier: default
-    choices:
-      - index: 0
-        logprobs: null
-        finish_reason: stop
-        native_finish_reason: completed
-        message:
-          role: assistant
-          content: Paris.
-          refusal: null
-          reasoning: '**Providing the capital of France**
+## On-cloud Example with Open Router (pt. 4, cont.)
 
+answer (converted in YAML for the sake of readability):
 
-            The user asked a straightforward question: "What is the capital of France?"
-            The answer is simple: Paris. I should respond concisely. My best guess is
-            to confirm: "The capital of France is Paris." While adding context could be
-            fun, it’s not necessary since the user didn’t request it. If I wanted to be
-            helpful, I could mention that Paris is the largest city and home to famous
-            landmarks like the Eiffel Tower, but I’ll keep it brief.**Confirming details
-            on Paris**
+```yaml {class="print-2cols"}
+id: gen-1779447979-077vepCYJjlgJfXKnK2q
+object: chat.completion
+created: 1779447979
+model: openai/gpt-5-nano-2025-08-07
+provider: OpenAI
+system_fingerprint: null
+service_tier: default
+choices:
+  - index: 0
+    logprobs: null
+    finish_reason: stop
+    native_finish_reason: completed
+    message:
+      role: assistant
+      content: Paris.
+      refusal: null
+      reasoning: '**Providing the capital of France**
 
 
-            I can keep my response short and straightforward. The user asked about the
-            capital of France, and I can simply say: "Paris." If I want to offer more,
-            I could say, "The capital of France is Paris." I think that covers it! But
-            if they are interested, I could mention I''m happy to share more details about
-            Paris if they''d like. For now, I’ll stick with the essential answer.'
-    usage:
-      prompt_tokens: 13
-      completion_tokens: 243
-      total_tokens: 256
-      cost: 9.785e-05
-      is_byok: false
-      prompt_tokens_details:
-        cached_tokens: 0
-        cache_write_tokens: 0
-        audio_tokens: 0
-        video_tokens: 0
-      cost_details:
-        upstream_inference_cost: 9.785e-05
-        upstream_inference_prompt_cost: 6.5e-07
-        upstream_inference_completions_cost: 9.72e-05
-      completion_tokens_details:
-        reasoning_tokens: 192
-        image_tokens: 0
-        audio_tokens: 0
+        The user asked a straightforward question: "What is the capital of France?"
+        The answer is simple: Paris. I should respond concisely. My best guess is
+        to confirm: "The capital of France is Paris." While adding context could be
+        fun, it’s not necessary since the user didn’t request it. If I wanted to be
+        helpful, I could mention that Paris is the largest city and home to famous
+        landmarks like the Eiffel Tower, but I’ll keep it brief.**Confirming details
+        on Paris**
 
-    ```
+
+        I can keep my response short and straightforward. The user asked about the
+        capital of France, and I can simply say: "Paris." If I want to offer more,
+        I could say, "The capital of France is Paris." I think that covers it! But
+        if they are interested, I could mention I''m happy to share more details about
+        Paris if they''d like. For now, I’ll stick with the essential answer.'
+usage:
+  prompt_tokens: 13
+  completion_tokens: 243
+  total_tokens: 256
+  cost: 9.785e-05
+  is_byok: false
+  prompt_tokens_details:
+    cached_tokens: 0
+    cache_write_tokens: 0
+    audio_tokens: 0
+    video_tokens: 0
+  cost_details:
+    upstream_inference_cost: 9.785e-05
+    upstream_inference_prompt_cost: 6.5e-07
+    upstream_inference_completions_cost: 9.72e-05
+  completion_tokens_details:
+    reasoning_tokens: 192
+    image_tokens: 0
+    audio_tokens: 0
+
+```
 
 {{% /section %}}
 
@@ -906,6 +910,10 @@ you> ^CGoodbye!
     - value `required` means that the model must use at least one tool to answer the user's question, and cannot rely solely on its own knowledge and capabilities
     - further variants are available to finely control which tools the model can use
 
+---
+
+## About Chat Completion API (pt. 3, cont.)
+
 - `tools` (list of dicts): the list of tools that the model can use, each one described by a dictionary containing at least a `name` and a `description`, and optionally some additional fields (e.g. `parameters_schema` to describe the expected input for the tool, etc.)
 
     ```python
@@ -944,6 +952,8 @@ you> ^CGoodbye!
     - type=`custom` tools use a custom format description (e.g. a Regex describing the expected input for the tool) instead of JSON schema
 
 ---
+
+{{< slide class="print-compact" >}}
 
 ## About Chat Completion API (pt. 4)
 
@@ -1014,21 +1024,27 @@ response_format:
 
     {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="21" to="58" %}}
 
-    with some differences in the way we i. create the completion request, by setting `stream=True` to receive a stream of response parts, and by awaiting the response with `async for` instead of just `for`; and ii. consume the stream of response parts
+---
 
-    ```python
-    stream = await client.chat.completions.create(..., stream=True) # create the request + open response stream
-    answer_parts = [] # buffer to store the parts of the answer as they arrive
-    async for item in stream:
-        chunk = item.choices[0].delta.content or "" # get each chuck of the answer as it arrives (if any)
-        answer_parts.append(chunk) # store the chunk in the buffer
-    messages.append(dict(role="assistant", content="".join(answer_parts))) # reconstract the full answer and store it in the conversation history
-    ```
+## Example 2: Async CLI Chat with Streaming (pt. 2, cont.)
 
-    - notice the `.delta` field in the response parts
-    - notice that partial responses should be printed with `print(..., end="", flush=True)` to avoid buffering issues in the terminal
+Differences w.r.t. the sync version are in the way we i. create the completion request, by setting `stream=True` to receive a stream of response parts, and by awaiting the response with `async for` instead of just `for`; and ii. consume the stream of response parts
+
+```python
+stream = await client.chat.completions.create(..., stream=True) # create the request + open response stream
+answer_parts = [] # buffer to store the parts of the answer as they arrive
+async for item in stream:
+    chunk = item.choices[0].delta.content or "" # get each chuck of the answer as it arrives (if any)
+    answer_parts.append(chunk) # store the chunk in the buffer
+messages.append(dict(role="assistant", content="".join(answer_parts))) # reconstract the full answer and store it in the conversation history
+```
+
+- notice the `.delta` field in the response parts
+- notice that partial responses should be printed with `print(..., end="", flush=True)` to avoid buffering issues in the terminal
 
 ---
+
+{{< slide class="print-compact" >}}
 
 ## Example 2: Async CLI Chat with Streaming (pt. 3)
 

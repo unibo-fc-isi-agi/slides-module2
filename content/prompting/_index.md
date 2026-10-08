@@ -187,6 +187,12 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
     ```
 
+---
+
+{{< slide class="print-compact" >}}
+
+## Pydantic classes with documentation strings (pt. 2, cont.)
+
 3. For instance, the class definitions above would produce the following JSON Schema (formatted in YAML for better readability):
 
     ```yaml
@@ -360,6 +366,12 @@ From _weakest_ to _strongest_ guarantees:
 7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `score_letter(...)` $\rightarrow$ print the result):
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="91" to="104" %}}
+
+---
+
+{{< slide class="print-compact" >}}
+
+## Example 1: Structured Output with Pydantic Classes (pt. 4, cont.)
 
 8. Possible results below:
 
