@@ -98,12 +98,12 @@ outputs = ["Reveal"]
 
 ## RAG: an intuitive example
 
-{{< image src="./rag-example.svg" max-h="50vh" alt="Sequence diagram of RAG on the running example: offline, the regulations of the PhD programme and the candidates' letters are split into chunks, embedded, and stored; online, the committee asks which language certificate is required, the question is embedded, the three most similar chunks are retrieved (the article on language requirements first), and the LLM answers B2 level citing that article" >}}
+{{< image src="./rag-example.svg" max-h="50vh" alt="RAG on the running example, in two lanes. Indexing, offline: the 3 recommendation letters and the regulations of the PhD programme are split into 44 chunks (paragraphs and articles), embedded one vector each, and stored in a SQLite vector store. Retrieval and generation, online: the committee asks which English certificate a candidate needs; the question is embedded with the same model; KNN search returns the top-3 chunks (Article 5 on language requirements first, then Articles 3 and 4); an augmented prompt with instructions, the chunks as data, and the question goes to the LLM, which answers IELTS Academic at least 6.0, TOEFL iBT at least 80, or Cambridge B2 First, citing regulations-phd#art5" >}}
 
 - _Corpus_: the 3 candidates' [letters](#/running-example), plus the (fictional) __regulations__ of the PhD programme
 - _Question_: "_Which English certificate does a candidate need?_"
-    + the answer is in _one_ article of the regulations, which _never_ uses the words "English certificate"
-    + semantic search finds it anyway; then the LLM answers, citing the article
+    + the answer is in _one_ chunk out of 44: Article 5, "_Language requirements_"
+    + semantic search ranks it first (cosine 0.78, vs. 0.66 for the runner-up, with `nomic-embed-text`); then the LLM answers, _citing_ it
 
 ---
 
@@ -151,7 +151,7 @@ outputs = ["Reveal"]
 
 ## Embeddings: an intuitive example
 
-{{< image src="./embedding-space.svg" max-h="55vh" alt="Sentences as points of a 2D projection of the embedding space: 'Which English certificate is required?' lies close to 'Candidates must prove a B2 level of English', farther from 'The scholarship amounts to 1200 euros per month', and far away from 'I love cooking pasta'; cosine similarity is the angle between vectors from the origin" >}}
+{{< image src="./embedding-space.svg" max-h="55vh" alt="Sentences as vectors from the origin of a 2D sketch of the embedding space: the query 'Which English certificate is required?' forms a small angle with 'Candidates must prove a B2 level of English.' (cosine 0.71), a wider one with 'Scholarships amount to EUR 19,200 per year.' (0.46), and the widest one with 'I love cooking pasta.' (0.27); cosines computed with nomic-embed-text; a smaller angle means a higher cosine" >}}
 
 - Actual embeddings have _hundreds_ of dimensions: pictures like this one are _projections_ (e.g. via PCA or t-SNE), and distort distances
 

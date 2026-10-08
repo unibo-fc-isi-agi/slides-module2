@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+<defs>
+<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3a9a5b"/></marker>
+<marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2690e7"/></marker>
+<marker id="k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+<marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d64545"/></marker>
+</defs>
+<!-- axes -->
+<line x1="80" y1="560" x2="1150" y2="560" stroke="#bbb" stroke-width="2"/>
+<line x1="560" y1="600" x2="560" y2="40" stroke="#bbb" stroke-width="2"/>
+<circle cx="560" cy="560" r="6" fill="#555"/>
+<text x="548" y="590" font-size="18" fill="#555" text-anchor="end">origin</text>
+<!-- angle arc between query and A -->
+<path d="M 658 491 A 120 120 0 0 0 581 442" fill="none" stroke="#3a9a5b" stroke-width="3"/>
+<text x="650" y="455" font-size="20" fill="#3a9a5b" font-style="italic">θ</text>
+<!-- vectors -->
+<line x1="560" y1="560" x2="633" y2="146" stroke="#2690e7" stroke-width="5" marker-end="url(#b)"/>
+<line x1="560" y1="560" x2="904" y2="319" stroke="#3a9a5b" stroke-width="4" marker-end="url(#g)"/>
+<line x1="560" y1="560" x2="225" y2="307" stroke="#555" stroke-width="4" marker-end="url(#k)"/>
+<line x1="560" y1="560" x2="978" y2="516" stroke="#d64545" stroke-width="4" marker-end="url(#r)"/>
+<!-- labels -->
+<text x="660" y="150" font-size="24" font-weight="600" fill="#2690e7" text-anchor="start">query: "Which English certificate is required?"</text>
+<text x="920" y="305" font-size="22" fill="#3a9a5b" text-anchor="start">"Candidates must prove</text>
+<text x="920" y="333" font-size="22" fill="#3a9a5b" text-anchor="start">a B2 level of English."</text>
+<text x="210" y="270" font-size="22" fill="#555" text-anchor="middle">"Scholarships amount to</text>
+<text x="210" y="298" font-size="22" fill="#555" text-anchor="middle">EUR 19,200 per year."</text>
+<text x="995" y="510" font-size="22" fill="#d64545" text-anchor="start">"I love cooking pasta."</text>
+<!-- panel -->
+<g transform="translate(0,70)">
+<rect x="1250" y="150" width="330" height="300" rx="14" fill="#555" fill-opacity="0.06" stroke="#555" stroke-width="2"/>
+<text x="1415" y="190" font-size="22" font-weight="600" text-anchor="middle">cosine with the query</text>
+<text x="1415" y="216" font-size="17" fill="#555" text-anchor="middle">(nomic-embed-text, 768 dims)</text>
+<text x="1280" y="270" font-size="22" fill="#3a9a5b" text-anchor="start">B2 level of English</text>
+<text x="1555" y="270" font-size="22" font-weight="600" fill="#3a9a5b" text-anchor="end">0.71</text>
+<text x="1280" y="320" font-size="22" fill="#555" text-anchor="start">scholarships</text>
+<text x="1555" y="320" font-size="22" font-weight="600" fill="#555" text-anchor="end">0.46</text>
+<text x="1280" y="370" font-size="22" fill="#d64545" text-anchor="start">cooking pasta</text>
+<text x="1555" y="370" font-size="22" font-weight="600" fill="#d64545" text-anchor="end">0.27</text>
+<text x="1415" y="420" font-size="18" fill="#555" text-anchor="middle">smaller angle θ ⇒ higher cosine</text>
+</g>
+</svg>
