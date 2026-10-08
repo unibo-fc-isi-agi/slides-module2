@@ -527,6 +527,97 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + the hallucination margin is reduced, as the model is not asked to directly produce a score, but rather to fill in the boolean fields based on the content of the letter, which is an easier task
 {{% /fragment %}}
 
+> __Solution__: a walkthrough follows in the next (vertical) column ([here](#/exercise-checklist-solution)) — try on your own first!
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-checklist-solution" >}}
+
+## Exercise 1: Improving Letter Scoring with (even more) Structured Output — Solution
+
+> __Spoiler alert__: the _walkthrough_ of the solution is about to start!
+
+- Do __not__ proceed until you have _attempted_ [the exercise](#/exercise-checklist) on your own
+    + press → to _skip_ the walkthrough, ↓ to _see_ it
+- The solution's code is on the `master` branch of [`lab-snippets`]({{< github-url repo="lab-snippets" >}})
+    + you are supposed to work on the `exercises` branch, which only contains _placeholders_
+
+---
+
+## Exercise 1 — Solution: the checklist
+
+> Steps 2–3: the scoring recipe becomes a _checklist_, i.e. a Pydantic class with one __boolean field per criterion__
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py" from="14" to="24" %}}
+
+- Criteria are phrased so that `True` is _always good_: the score is then just a _count_ of failures
+    + mixing polarities (e.g. a `has_weaknesses` field) is an easy source of _bugs_ in the scoring code
+- Each `description` tells the LLM _exactly what to check_: it ends up in the JSON Schema, hence in the prompt
+- Booleans are an _easier_ task than "give a score from 0 to 5": less room for _arbitrariness_
+
+---
+
+## Exercise 1 — Solution: the output schema, and the chain
+
+> Step 4: the LLM fills in the _checklist_, but __no longer outputs the score__
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py" from="27" to="32" %}}
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py" from="57" to="60" %}}
+
+- LLM, prompt, `ApplicantInfo`, and `AuthorInfo` are _imported_ from Example 1 (bis): only the _scoring_ changes
+- The checklist is a _nested_ model: structured output handles nested schemas out of the box
+- The chain is the _same_ `prompt | llm.with_structured_output(...)` as before: only the target class differs
+
+---
+
+## Exercise 1 — Solution: the scoring algorithm
+
+> Step 5: the score is computed __by code__, from the checklist, as `@property`s of the Pydantic class
+
+{{% multicol %}}
+{{% col class="col-7" %}}
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py" from="34" to="54" %}}
+{{% /col %}}
+{{% col %}}
+- _Properties_ are __not__ part of the JSON Schema: the LLM never sees (nor generates) them
+- `penalties` is the _explanation_ of the score: which criteria failed, which fields are missing
+- Same input checklist $\Rightarrow$ same score: __reproducible__
+    + the remaining variability is in the _checklist_, which can be inspected (and corrected) by a human
+{{% /col %}}
+{{% /multicol %}}
+
+---
+
+## Exercise 1 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (branch `master`):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/letter-jean-dupont.txt">letter-jean-dupont.txt</a>               # inputs (running example)
+│   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-mario-rossi.txt</a>
+│   ├── <a href="../lab-snippets/data/letter-mohammed-ali.txt">letter-mohammed-ali.txt</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                          # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       ├── example1bis/
+│       │   └── <a href="../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py">letter_scoring_langchain.py</a>  # LLM, prompt, info classes (reused)
+│       └── exercise1/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/exercise1/letter_scoring_checklist.py">letter_scoring_checklist.py</a>  # the checklist-based scoring
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                           # dependencies of all snippets</code></pre></div>
+
+```bash
+poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g. data/letter-mario-rossi.txt
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), cf. [Free Access to LLMs](../free-access/)
+- try all three letters: are the _penalties_ consistent with your own reading of them?
+
+{{% /section %}}
+
 ---
 
 {{% section %}}
@@ -882,6 +973,110 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | Supported file types | PNG (`.png`), JPEG (`.jpeg`, `.jpg`), WEBP (`.webp`), non-animated GIF (`.gif`) |
 | Size limits | up to 512 MB total payload per request; up to 1500 image inputs per request |
 | Other requirements | no watermarks or logos; no NSFW content; clear enough for a human to understand |
+
+> __Solution__: a walkthrough follows in the next (vertical) column ([here](#/exercise-id-documents-solution)) — try on your own first!
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="exercise-id-documents-solution" >}}
+
+## Exercise 2: Extract Structured Information from Pictures — Solution
+
+> __Spoiler alert__: the _walkthrough_ of the solution is about to start!
+
+- Do __not__ proceed until you have _attempted_ [the exercise](#/exercise-id-documents) on your own
+    + press → to _skip_ the walkthrough, ↓ to _see_ it
+- The solution's code is on the `master` branch of [`lab-snippets`]({{< github-url repo="lab-snippets" >}})
+    + you are supposed to work on the `exercises` branch, which only contains _placeholders_
+
+---
+
+## Exercise 2 — Solution: the vision model
+
+> Step 1: a model with __vision capabilities__, configured _separately_ from the default one
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="20" to="25" %}}
+
+- A _dedicated_ environment variable (`VISION_MODEL`): `OPENAI_MODEL` may point to a _text-only_ model, used by other snippets
+    + text-only models either _reject_ image inputs, or (worse) silently _ignore_ them and hallucinate
+- `temperature=1.0`: samples must _differ_ a bit, otherwise voting is pointless (cf. [self-consistency](#/letter-tone))
+
+---
+
+## Exercise 2 — Solution: output schema and system prompt
+
+> Steps 2–3: a Pydantic class with _documented_ fields, and a system prompt giving the __context__
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="28" to="42" %}}
+
+- Dates are typed as `date`: Pydantic _validates_ them, and code can _compare_ them (e.g. is the passport expired?)
+- Descriptions remove _ambiguities_ which would split votes: name order, _visual_ zone vs. machine-readable zone, multilingual values
+- `nationality` added w.r.t. the hint: the schema is _yours_ to design
+
+---
+
+## Exercise 2 — Solution: passing the picture
+
+> Step 2 (cont.): the _user_ message is a __list of typed pieces__: the instruction (text) + the picture (base64)
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="44" to="53" %}}
+
+- `mimetypes.guess_type` infers the MIME type from the file extension, so that `.jpg` pictures work too
+- LangChain translates the `image` piece into the provider's format (e.g. OpenAI's `image_url` with a `data:` URL)
+- `with_structured_output` works with _multimodal_ inputs exactly as with textual ones
+
+---
+
+## Exercise 2 — Solution: sampling
+
+> Step 4: query the model __several times__, in parallel, on the _same_ picture
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="56" to="63" %}}
+
+- `.batch(...)` sends the requests _concurrently_: $N$ samples cost $N\times$ tokens, but (roughly) _not_ $N\times$ time
+- `return_exceptions=True`: one _invalid_ sample (e.g. malformed JSON, a date that is not a date) should not kill the whole run
+    + small, free models fail _often_: failing only when __all__ samples fail is a pragmatic trade-off
+
+---
+
+## Exercise 2 — Solution: voting, and flagging
+
+> Step 5: _field by field_, keep the __most voted__ value, and flag fields with no clear majority for _human review_
+
+{{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="66" to="83" %}}
+
+- Voting _per field_ (rather than on whole objects) tolerates samples which are wrong on _one_ field only
+- The _agreement rate_ is a cheap __confidence__ measure: at most 50% means _no absolute majority_ $\Rightarrow$ ask a human
+    + the threshold is a _policy_ decision: stricter for fields that matter more (e.g. `id_number`)
+
+---
+
+## Exercise 2 — Solution: Project Structure
+
+Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (branch `master`):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/passport-jean-dupont.png">passport-jean-dupont.png</a>   # inputs (running example)
+│   ├── <a href="../lab-snippets/data/passport-mario-rossi.png">passport-mario-rossi.png</a>
+│   ├── <a href="../lab-snippets/data/passport-mohammed-ali.png">passport-mohammed-ali.png</a>
+│   └── <a href="../lab-snippets/data/__init__.py">__init__.py</a>                # helpers to locate data files
+├── snippets/
+│   └── lecture_prompting/
+│       └── exercise2/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py">id_extraction.py</a>   # sample, vote, flag
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                 # dependencies of all snippets</code></pre></div>
+
+```bash
+poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's ID (or picture path), number of samples
+```
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `VISION_MODEL`), cf. [Free Access to LLMs](../free-access/)
+- Step 6: try all three passports (e.g. Mohammed Ali's is _multilingual_): which fields get flagged? Does it change with more samples?
 
 {{% /section %}}
 
