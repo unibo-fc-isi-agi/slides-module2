@@ -165,6 +165,12 @@
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l free-access -e <span style="color:#0000cf;font-weight:bold">1</span> groq                               <span style="color:#8f5902;font-style:italic"># list the models available now</span>
 </span></span><span style="display:flex;"><span>poetry run python -m snippets -l free-access -e <span style="color:#0000cf;font-weight:bold">1</span> groq openai/gpt-oss-20b <span style="color:#4e9a06">"Hello!"</span>   <span style="color:#8f5902;font-style:italic"># one chat request</span>
 </span></span></code></pre></div><ul>
+<li><code>PROVIDERS</code>: each provider’s <em>endpoint</em>, and the <strong>environment variable</strong> holding <em>its</em> key (e.g. <code>GROQ_API_KEY</code>, asked interactively if missing)
+<ul>
+<li><code>ollama</code>, <code>vllm</code>: open models served <em>locally</em> (on your machine, see <a href="#/local">below</a>), hence no key</li>
+</ul>
+</li>
+<li>Arguments: <code>PROVIDER</code> (required), then optionally <code>MODEL</code> and <code>PROMPT</code> (without them, the script just lists the models)</li>
 <li>Full script <a href="../lab-snippets/snippets/lecture_free_access/example1/free_providers.py">here</a> (cf. <a href="../#/lab-snippets-run">how to run snippets</a>); model IDs are <em>listed live</em>, not hard-coded, since they <strong>go stale quickly</strong></li>
 <li>The same trick works with the <a href="../llmaas">LLM-as-a-Service</a> scripts: just set <code>OPENAI_BASE_URL</code> and <code>OPENAI_API_KEY</code></li>
 </ul>
@@ -590,8 +596,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 
 
-  
-    
   
   
 

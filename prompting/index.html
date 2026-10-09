@@ -325,7 +325,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">content</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The content of the post"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">author</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">User</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The author of the  post"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">created_at</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">datetime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Field</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">default_factory</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">now</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"The date and time when the post was created"</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div></li>
+</span></span></code></pre></div><ul>
+<li><code>Field(...)</code>: the <code>...</code> (<em>Ellipsis</em>) as first argument marks the field as <strong>required</strong>, while <code>default=</code> or <code>default_factory=</code> (a function computing the default) make it <em>optional</em></li>
+</ul>
+</li>
 </ol>
 </section>
 <section data-noprocess="" data-shortcode-slide="" class="print-compact">
@@ -608,6 +611,7 @@
 <li><code>openai</code> will automatically generate the corresponding JSON Schema from the class definition, and include it in the request</li>
 </ul>
 </li>
+<li><code>message.parsed</code> is the <code>LetterInfo</code> instance, unless the model <em>refuses</em> to answer (e.g. for safety reasons): then <code>message.refusal</code> holds its explanation</li>
 </ul>
 </li>
 </ol>
@@ -633,7 +637,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_text</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">letter_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">letter_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">))</span>  <span style="color:#8f5902;font-style:italic"># a LetterInfo object, printed as JSON</span>
-</span></span></code></pre></div></li>
+</span></span></code></pre></div><ul>
+<li><code>data.find_letter(...)</code> (from the <a href="../lab-snippets/data/__init__.py"><code>data</code></a> package of <code>lab-snippets</code>): the <code>Path</code> of a letter, given either a candidate’s ID (e.g. <code>mario-rossi</code>) or a file path</li>
+</ul>
+</li>
 </ol>
 </section>
 <section data-noprocess="" data-shortcode-slide="" class="print-compact">
@@ -831,7 +838,10 @@
 </span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"nvidia/nemotron-3-super-120b-a12b:free"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div></li>
+</span></span></code></pre></div><ul>
+<li><code>ChatOpenAI</code> (package <code>langchain_openai</code>) wraps the <code>openai</code> client: same <code>base_url</code> and <code>api_key</code>, but the <code>model</code> is set <em>once</em>, at construction time</li>
+</ul>
+</li>
 <li>
 <p>Let’s define the prompt as a <strong>template</strong>, with a <em>named placeholder</em> (<code>{letter_text}</code>) for the input data:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">prompt</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatPromptTemplate</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">from_messages</span><span style="color:#000;font-weight:bold">([</span>
@@ -1083,6 +1093,7 @@
 </span></span></code></pre></div></div>
 <div class="col " style="text-align: left;"><ul>
 <li><em>Properties</em> are <strong>not</strong> part of the JSON Schema: the LLM never sees (nor generates) them</li>
+<li><code>model_dump()</code> turns a Pydantic object into a <code>dict</code> (field name $\rightarrow$ value): here, to iterate over the criteria</li>
 <li><code>penalties</code> is the <em>explanation</em> of the score: which criteria failed, which fields are missing</li>
 <li>Same input checklist $\Rightarrow$ same score: <strong>reproducible</strong>
 <ul>
@@ -1254,6 +1265,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. zero-shot: instructions only</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">zero_shot</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatPromptTemplate</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">from_messages</span><span style="color:#000;font-weight:bold">([</span><span style="color:#000">system</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">user</span><span style="color:#000;font-weight:bold">])</span>
 </span></span></code></pre></div><ul>
+<li><code>Literal[...]</code> (from <code>typing</code>): a type admitting <em>only</em> the listed values, which becomes an <code>enum</code> in the JSON Schema</li>
 <li>the <strong>zero-shot</strong> prompt is just <em>system instructions</em> + <em>user input</em></li>
 </ul>
 </li>
@@ -1281,6 +1293,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">user</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">])</span>
 </span></span></code></pre></div><ul>
+<li><code>FewShotChatMessagePromptTemplate</code> fills <code>example_prompt</code> with <em>each</em> dict in <code>examples</code>, producing a (<code>user</code>, <code>ai</code>) message pair per example (<code>"ai"</code> is LangChain’s name for the <code>assistant</code> role)</li>
 <li>examples should be <em>diverse</em> (one per label, at least), <em>short</em>, and <em>representative</em> of real inputs</li>
 <li>the <em>format</em> and the <em>label distribution</em> of examples matter at least as much as their correctness (cf. <a href="https://arxiv.org/abs/2202.12837">Min et al. (2022)</a>)</li>
 </ul>
@@ -1325,7 +1338,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">answers</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">chains</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">technique</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">batch</span><span style="color:#000;font-weight:bold">([{</span><span style="color:#4e9a06">"letter"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">letter</span><span style="color:#000;font-weight:bold">}]</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">votes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Counter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">answer</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">label</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">answer</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">answers</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">votes</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">most_common</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">][</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">votes</span>
-</span></span></code></pre></div></li>
+</span></span></code></pre></div><ul>
+<li><code>Counter</code> (from <code>collections</code>) counts the occurrences of each label; <code>.most_common(1)[0][0]</code> is the most voted one</li>
+</ul>
+</li>
 <li>
 <p>Let’s try it (full code <a href="../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py">here</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">2</span> zero-shot data/letter-jean-dupont.txt
@@ -1523,6 +1539,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"## effort=</span><span style="color:#4e9a06">{</span><span style="color:#000">effort</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: </span><span style="color:#4e9a06">{</span><span style="color:#000">elapsed</span><span style="color:#4e9a06">:</span><span style="color:#4e9a06">.1f</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">s, </span><span style="color:#4e9a06">{</span><span style="color:#000">usage</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">'output_tokens'</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> output tokens, of which </span><span style="color:#4e9a06">{</span><span style="color:#000">reasoning_tokens</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> for reasoning"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n\n</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
+<li><code>llm.invoke(...)</code> also accepts a <em>plain string</em> (as a single user message), and returns an <code>AIMessage</code>, whose <code>.content</code> is the answer’s text</li>
 <li><code>extra_body</code> is LangChain’s <em>escape hatch</em> to send provider-specific parameters, not (yet) modelled by <code>ChatOpenAI</code></li>
 <li><code>usage_metadata</code> is LangChain’s <em>provider-agnostic</em> view of token usage</li>
 </ul>
@@ -1542,7 +1559,10 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Using model: </span><span style="color:#4e9a06">{</span><span style="color:#000">model</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">effort</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"low"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"medium"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"high"</span><span style="color:#000;font-weight:bold">]:</span>  <span style="color:#8f5902;font-style:italic"># same question, increasing effort</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">ask</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">question</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">format</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letters</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letters</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">effort</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">3</span> data/letter-*.txt
+</span></span></code></pre></div><ul>
+<li><code>data.letters()</code>: the paths of <em>all</em> candidates’ letters, used when no letter is given on the command line</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e <span style="color:#0000cf;font-weight:bold">3</span> data/letter-*.txt
 </span></span></code></pre></div></li>
 <li>
 <p>Things to observe:</p>
@@ -1845,6 +1865,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">agreement</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">vote</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sample</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">samples</span><span style="color:#000;font-weight:bold">))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flagged</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">agreement</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
+<li><code>IDDocumentInfo.model_fields</code>: the fields of a Pydantic class (a <code>dict</code> keyed by field name); <code>IDDocumentInfo(**voted)</code> rebuilds (and <em>validates</em>) an object out of the voted values</li>
 <li>Voting <em>per field</em> (rather than on whole objects) tolerates samples which are wrong on <em>one</em> field only</li>
 <li>The <em>agreement rate</em> is a cheap <strong>confidence</strong> measure: at most 50% means <em>no absolute majority</em> $\Rightarrow$ ask a human
 <ul>
@@ -2051,7 +2072,12 @@
 </span></span><span style="display:flex;"><span><span style="color:#000">summary</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">""</span>  <span style="color:#8f5902;font-style:italic"># summary of the older part of the conversation (initially empty)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">BaseMessage</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
 </span></span></code></pre></div><ul>
-<li>the <em>state</em> of the conversation is a (running) <code>summary</code>, plus the recent <code>history</code></li>
+<li>the <em>state</em> of the conversation is a (running) <code>summary</code>, plus the recent <code>history</code>
+<ul>
+<li><code>BaseMessage</code>: LangChain’s common superclass of <code>SystemMessage</code>, <code>HumanMessage</code>, and <code>AIMessage</code></li>
+</ul>
+</li>
+<li>the budget comes from the <code>CONTEXT_BUDGET</code> environment variable (in tokens)</li>
 </ul>
 </li>
 <li>

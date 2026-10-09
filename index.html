@@ -231,6 +231,8 @@
 </span></span><span style="display:flex;"><span>poetry run python -m snippets -l &lt;NAME&gt; -e &lt;ID&gt; <span style="color:#ce5c00;font-weight:bold">[</span>ARGS<span style="color:#ce5c00;font-weight:bold">]</span>               <span style="color:#8f5902;font-style:italic"># same, but shorter</span>
 </span></span><span style="display:flex;"><span>poetry run python -m snippets -l prompting -e 1bis data/letter-mario-rossi.txt   <span style="color:#8f5902;font-style:italic"># e.g.</span>
 </span></span></code></pre></div><ul>
+<li><code>poetry run</code>: runs the command <em>inside</em> the project’s virtual environment (<code>.venv/</code>), with all dependencies available</li>
+<li><code>python -m snippets</code>: runs the <code>snippets</code> package as a program (i.e. its <code>__main__.py</code>, the runner)</li>
 <li><code>ARGS</code> are passed to the snippet (each example’s slides show which ones it accepts)</li>
 <li>prefer the runner to <code>python path/to/snippet.py</code>: same command for every snippet, no paths to remember</li>
 </ul>
@@ -377,11 +379,7 @@
   
 
   
-  
-
-  
-  
-
+    
   
   
 
@@ -406,7 +404,37 @@
   
   
 
+  
+  
 
+  
+  
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({});
+
+    let render = (event) => {
+      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
+      if (!mermaidElems.length){
+          return
+      }
+      mermaidElems.forEach(mermaidElem => {
+          let processed = mermaidElem.getAttribute('data-processed');
+          if (!processed){
+              
+              mermaid.init(undefined, mermaidElem);
+          }
+      });
+    };
+    
+    render({currentSlide: Reveal.getCurrentSlide()});
+
+    Reveal.on('slidechanged', render);
+    Reveal.on('ready', render);
+  </script>
 
 
 

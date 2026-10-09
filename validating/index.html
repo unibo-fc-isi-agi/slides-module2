@@ -255,7 +255,11 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># list of test cases, e.g. [{"input": "letter-mario-rossi.txt", "expectations": {"applicant_name": "Mario Rossi", ...}}, ...]</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">TEST_CASES</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">yaml</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">safe_load</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">TEST_DATA_FILE</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">())</span>
-</span></span></code></pre></div></div>
+</span></span></code></pre></div><ul>
+<li><code>yaml.safe_load</code> (from <a href="https://pyyaml.org/">PyYAML</a>) parses YAML text into Python <code>list</code>s and <code>dict</code>s</li>
+<li><code>read_letter(case)</code>, in the same file, reads the text of the case’s letter from the running example’s <code>data/</code> directory</li>
+</ul>
+</div>
 </div>
 </div>
 </section><section>
@@ -285,7 +289,8 @@
 </ol>
 </li>
 <li>this approach allows to run multiple tests on the same letter without making multiple LLM calls</li>
-<li><code>for_each_case</code> is a <em>decorator</em> making a test run once per test case (named after the applicant)</li>
+<li><code>pytest.mark.parametrize("case", TEST_CASES, ids=...)</code> is a <em>decorator</em> (<code>for_each_case</code>) making a test run once per test case, passed as the <code>case</code> argument; <code>ids</code> names each run (after the applicant)</li>
+<li><code>api_key</code> and <code>base_url</code> are re-used from the system under test, so the judge talks to the <em>same</em> provider; DeepEval’s classes (<code>GEval</code>, <code>OpenRouterModel</code>, <code>SingleTurnParams</code>, <code>LLMTestCase</code>, <code>assert_test</code>) are explained in steps 5–6</li>
 </ul>
 </li>
 </ol>
@@ -307,6 +312,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expected</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">score</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">case</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#204a87;font-weight:bold">case</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"expectations"</span><span style="color:#000;font-weight:bold">]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#000">expected</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"min_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">score</span> <span style="color:#ce5c00;font-weight:bold">&lt;=</span> <span style="color:#000">expected</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"max_score"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
+<li><code>pytest</code> <em>collects</em> and runs every <code>test_*</code> function: a failing <code>assert</code> (or exception) is a failing test</li>
 <li>names and emails must match <em>exactly</em>; scores may vary within a <em>range</em></li>
 </ul>
 </li>
@@ -344,8 +350,8 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
-<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it)</li>
-<li><code>evaluation_params</code> selects which parts of the test case the judge can <em>see</em>:
+<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it), wrapped in <code>OpenRouterModel</code>: DeepEval’s adapter for OpenRouter (or any OpenAI-compatible API, via <code>base_url</code>)</li>
+<li><code>evaluation_params</code> selects, among the fields of a test case (<code>SingleTurnParams.INPUT</code>, <code>.ACTUAL_OUTPUT</code>, <code>.EXPECTED_OUTPUT</code>, …), which parts of the test case the judge can <em>see</em>:
 <ul>
 <li><em>reference-based</em> judge (<code>relationship</code>): compares the actual output with the <em>expected</em> one, written by humans</li>
 <li><em>reference-free</em> judge (<code>groundedness</code>): compares the actual output with the <em>input</em>, no expectation needed</li>
@@ -371,6 +377,8 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">actual</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">score</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">applicant</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">include</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"skills"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"strengths"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"weaknesses"</span><span style="color:#000;font-weight:bold">})</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">assert_test</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">LLMTestCase</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">actual_output</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">actual</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">groundedness</span><span style="color:#000;font-weight:bold">])</span>
 </span></span></code></pre></div><ul>
+<li><code>LLMTestCase(input=..., actual_output=..., expected_output=...)</code>: what the judge may see (strings); <code>assert_test(case, metrics)</code> runs each metric, and <em>fails</em> the test if some score is below its threshold</li>
+<li><code>model_dump_json(include={...})</code> serialises <em>only</em> the listed fields of the Pydantic object</li>
 <li><code>relationship_with_applicant</code> is compared with the <em>expected</em> description</li>
 <li><code>skills</code>, <code>strengths</code>, and <code>weaknesses</code> are checked against the <em>letter</em> (are they <em>grounded</em> in it?)</li>
 </ul>
@@ -403,7 +411,7 @@
 </li>
 <li>
 <p>Let’s run it (full code <a href="../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py">here</a>), from the project’s root directory:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l validating -e <span style="color:#0000cf;font-weight:bold">1</span> -v   <span style="color:#8f5902;font-style:italic"># runs pytest on the test suite, with any option given</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l validating -e <span style="color:#0000cf;font-weight:bold">1</span> -v   <span style="color:#8f5902;font-style:italic"># runs pytest on the test suite, with any option given (-v: one line per test)</span>
 </span></span></code></pre></div><ul>
 <li>would the outputs of <a href="../prompting/#/letter-scoring">Example 1 of the Prompt Engineering lecture</a> pass? <strong>No</strong>: Mohammed Ali’s shallow letter got score 4, whereas the committee expects at most 3
 <ul>
@@ -442,7 +450,11 @@
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">predict_fn</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">model_dump</span><span style="color:#000;font-weight:bold">()</span>
 </span></span></code></pre></div><ul>
-<li>the system under test is a <em>function</em> (<code>predict_fn</code>), called with the <code>inputs</code> as keyword arguments</li>
+<li>the system under test is a <em>function</em> (<code>predict_fn</code>), called with the <code>inputs</code> as keyword arguments
+<ul>
+<li><code>model_dump()</code> turns the <code>LetterInfo</code> object into a plain <code>dict</code> (outputs must be <em>serialisable</em>, to be logged)</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
@@ -485,7 +497,8 @@
 </span></span></code></pre></div><ul>
 <li><code>{{ expectations }}</code> makes the judge <em>reference-based</em> (<code>relationship</code>), <code>{{ inputs }}</code> makes it <em>reference-free</em> (<code>groundedness</code>)</li>
 <li><code>generate_rationale_first=True</code>: rationale <em>before</em> verdict (cf. <a href="../prompting/#/letter-tone">chain-of-thought</a>)</li>
-<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API</li>
+<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API (the key is read from <code>OPENAI_API_KEY</code>)</li>
+<li><code>feedback_value_type</code>: the type of the verdict, here a <code>Literal</code> (cf. <a href="../prompting/#/structured-output">structured outputs</a>) admitting only <code>"yes"</code> or <code>"no"</code></li>
 </ul>
 </li>
 </ol>
@@ -503,6 +516,9 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">failed</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">sys</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">exit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Failed scorers: </span><span style="color:#4e9a06">{</span><span style="color:#000">failed</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># non-zero exit code, as a failing test suite (e.g. to make CI fail)</span>
 </span></span></code></pre></div><ul>
+<li><code>mlflow.set_experiment(name)</code>: selects (or creates) the <em>experiment</em>, i.e. the group of runs to be compared</li>
+<li><code>mlflow.start_run(run_name=...)</code>: a context manager opening a <em>run</em>, i.e. one execution whose parameters, traces, and results are logged</li>
+<li><code>mlflow.genai.evaluate(...)</code>: calls <code>predict_fn</code> on each entry’s <code>inputs</code>, then applies every scorer, and logs everything in the run</li>
 <li><code>results.metrics</code> reports, for each scorer, the <em>fraction</em> of test cases passing it (judges’ <code>"yes"</code> count as 1)</li>
 <li>if some scorer does not pass on <em>every</em> test case, the script fails (non-zero exit code), just like a failing test suite</li>
 </ul>
@@ -760,7 +776,13 @@
 </span></span></code></pre></div></div>
 <div class="col " style="text-align: left;"><ul>
 <li>Example 1’s tests are <em>imported</em>, hence <em>collected</em> and run here too, and share the same <em>cached</em> <code>score</code>: one LLM call per letter, for <strong>all</strong> tests</li>
-<li><code>normalise</code> handles <em>case</em>, <em>accents</em>, <em>punctuation</em>; <code>matches</code> adds <em>containment</em> (“University of Bologna” ⊇ “bologna”) and the list / <code>null</code> conventions</li>
+<li><code>normalise</code> handles <em>case</em>, <em>accents</em>, <em>punctuation</em>:
+<ul>
+<li><code>unicodedata.normalize("NFKD", ...)</code> splits “é” into “e” + accent, then <code>.encode("ascii", "ignore")</code> drops the accent</li>
+<li><code>str.maketrans</code> + <code>translate</code> turn every <code>string.punctuation</code> char into a blank</li>
+</ul>
+</li>
+<li><code>matches</code> adds <em>containment</em> (“University of Bologna” ⊇ “bologna”) and the list / <code>null</code> conventions</li>
 <li>some models write <code>"unknown"</code> instead of <code>None</code>: accepted as <em>empty</em> (a choice: you may want to forbid it)</li>
 </ul>
 </div>
@@ -800,7 +822,7 @@
 </span></span></code></pre></div></div>
 <div class="col " style="text-align: left;"><ul>
 <li><strong>tolerant</strong> match for free-text fields; <strong>set inclusion</strong> for <code>attended</code> (order and extra courses don’t matter); <strong>exact</strong> match among admissible values for <code>seniority</code></li>
-<li><em>parametrised</em> over fields too: a failure names the <em>letter</em> <strong>and</strong> the <em>field</em></li>
+<li><em>parametrised</em> over fields too (stacked <code>parametrize</code> decorators = every letter $\times$ every field): a failure names the <em>letter</em> <strong>and</strong> the <em>field</em></li>
 <li><strong>no LLM-as-a-Judge</strong> needed: all these fields are <em>short facts</em>, which code checks cheaply and <em>deterministically</em>
 <ul>
 <li>judges stay where they were (relationship, groundedness), cf. the <em>cost</em> hint</li>
@@ -931,6 +953,8 @@
 <li>a <strong>YAML file</strong>, written by <em>looking</em> at the pictures, <em>before</em> testing: the committee reviews it without touching code</li>
 <li><em>which</em> zone is the truth? The <em>visual</em> one: the machine-readable zone of Mario’s passport <em>disagrees</em> on the expiry date</li>
 <li><code>legible</code>: <em>human</em> judgement, used later to <em>validate</em> the judge</li>
+<li><code>SAMPLES</code> (env var, default 3) is $N$; <code>IDDocumentInfo.model_fields</code> lists the <em>names</em> of the fields of the Pydantic class</li>
+<li><code>sample</code> (from <a href="../prompting/#/exercise-id-documents">Exercise 2 of the Prompt Engineering lecture</a>) queries the model $N$ times on the picture in <code>data.DIR</code> (the running example’s <code>data/</code> directory)</li>
 <li><code>samples_of</code> caches samples <strong>within</strong> a run only: caching <em>across</em> runs would <em>hide</em> the variance we want to measure</li>
 </ul>
 </div>
@@ -966,6 +990,7 @@
 <div class="col " style="text-align: left;"><ul>
 <li><strong>exact</strong> match for ID numbers (up to blanks and case) and dates (<code>date</code> objects on both sides: the <em>format</em> is irrelevant)</li>
 <li><em>normalised</em> match for names: a <strong>set</strong> of words, so “DUPONT Jean” = “Jean Dupont”</li>
+<li><code>vote(samples)</code> returns the <em>voted</em> object, and the <em>agreement</em> rate of each field (cf. Prompt Engineering’s Exercise 2)</li>
 <li>the test checks the <em>voted</em> result, i.e. the system <strong>as the committee uses it</strong>; <code>agreement</code> in the message tells <em>how sure</em> it was</li>
 </ul>
 </div>
@@ -1004,7 +1029,7 @@
 <li>consistency is asserted on <strong>rates</strong> (≥ 2/3 agreement), not on single runs: fewer <em>flaky</em> failures</li>
 <li>voting vs. single queries is a <em>measure</em> more than a requirement: it fails only if voting makes things <strong>worse</strong>
 <ul>
-<li>read the printed accuracies with <code>-s</code></li>
+<li>read the printed accuracies with <code>-s</code> (<code>pytest</code> option: do not <em>capture</em> <code>print</code> outputs)</li>
 </ul>
 </li>
 </ul>

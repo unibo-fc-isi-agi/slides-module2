@@ -429,6 +429,9 @@
 <p>The interaction remains of the <em>request-response</em> type</p>
 <ul>
 <li>the <strong>program</strong> sends a <em>request</em>, the AI <em>responds</em></li>
+<li>e.g. with the <code>openai</code> library: <code>chat.completions.create(...)</code> sends the <code>messages</code> of a <em>chat</em> (each with a <code>role</code> and a <code>content</code>) to a <code>model</code></li>
+<li>the response comes in <em>chunks</em> (<code>stream=True</code>), each carrying a piece (<code>delta</code>) of the generated text</li>
+<li>details in the <a href="../llmaas/">LLM-as-a-Service</a> lecture</li>
 </ul>
 </li>
 </ul>
@@ -1259,11 +1262,7 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
   
 
   
-  
-
-  
-  
-
+    
   
   
 
@@ -1288,7 +1287,37 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
   
   
 
+  
+  
 
+  
+  
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({});
+
+    let render = (event) => {
+      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
+      if (!mermaidElems.length){
+          return
+      }
+      mermaidElems.forEach(mermaidElem => {
+          let processed = mermaidElem.getAttribute('data-processed');
+          if (!processed){
+              
+              mermaid.init(undefined, mermaidElem);
+          }
+      });
+    };
+    
+    render({currentSlide: Reveal.getCurrentSlide()});
+
+    Reveal.on('slidechanged', render);
+    Reveal.on('ready', render);
+  </script>
 
 
 
