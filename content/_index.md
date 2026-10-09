@@ -28,7 +28,7 @@ aliases = [
 5. [Tools and Agents](agents)
     + _exercises_: 1. [inspection tools](agents/#/exercise-inspect) ([solution](agents/#/exercise-inspect-solution)) · 2. [decision tools](agents/#/exercise-decide) ([solution](agents/#/exercise-decide-solution)) · 3. [MCP gateway](agents/#/exercise-gateway) ([solution](agents/#/exercise-gateway-solution))
 6. [Retrieval-Augmented Generation (RAG)](rag)
-    + <small>_exercises_: [1. Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))</small>
+    + _exercises_: 1. [Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))
 7. _Agentic Skills_ (coming soon)
 8. _Workflows and Agent Orchestration_ (coming soon)
 9. [AI Governance 101](governance)
