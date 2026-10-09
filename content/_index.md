@@ -156,7 +156,7 @@ lab-snippets/
 
 3. Configure the LLM provider via __environment variables__ (cf. [Free Access to LLMs](./free-access/)):
     + `OPENAI_API_KEY`: your API key (if missing, snippets ask for it interactively)
-    + `OPENAI_BASE_URL` (default: `https://openrouter.ai/api/v1/`), `OPENAI_MODEL` (default: `openrouter/auto`)
+    + `OPENAI_BASE_URL` (default: `https://openrouter.ai/api/v1/`), `OPENAI_MODEL` (default: `nvidia/nemotron-3-super-120b-a12b:free`, free)
 
     ```bash
     export OPENAI_API_KEY="sk-or-v1-..."     # on Windows (PowerShell): $env:OPENAI_API_KEY="sk-or-v1-..."

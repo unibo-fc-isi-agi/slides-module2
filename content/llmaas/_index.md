@@ -431,7 +431,7 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 
 
 - To allow for __dynamic routing__ of requests to different providers in a _transparent_ way, OR allows for the following meta-models:
-    + `openrouter/auto` ([AutoRouter](https://openrouter.ai/openrouter/auto)): let OR decide which provider/model to use for each request, based on the request's content and the current availability of models
+    + `openrouter/auto` ([AutoRouter](https://openrouter.ai/openrouter/auto)): let OR decide which provider/model to use for each request, based on the request's content and the current availability of models (__paid__: it may route to paid models, so it fails on accounts without credits)
     + `provider/*` (e.g. `anthropic/*`, `google/*`, etc.): OR will serve each request with the best available model from the specified provider, according to the request's content and the current availability of models
     + in general, you can reason like with Unix globs, so for instance `openai/gpt*` will match any OpenAI model whose name starts with `gpt` (as currently provided by OR)
     + in the [routing settings](https://openrouter.ai/workspaces/default/routing) of your OR account, you can set up the __routing strategy__ OR should adopt:
@@ -489,7 +489,7 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
     curl -X POST "https://openrouter.ai/api/v1/chat/completions" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer YOUR_API_KEY" \
-        -d '{"model": "openrouter/auto", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'
+        -d '{"model": "nvidia/nemotron-3-super-120b-a12b:free", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'
     ```
 
 ---
@@ -818,7 +818,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 ```text
 Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
-Using model: openrouter/auto
+Using model: nvidia/nemotron-3-super-120b-a12b:free
 Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
 
 you> hi there, what time is it?
@@ -1054,7 +1054,7 @@ messages.append(dict(role="assistant", content="".join(answer_parts))) # reconst
 
 ```text
 Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
-Using model: openrouter/auto
+Using model: nvidia/nemotron-3-super-120b-a12b:free
 Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
 
 you> hi bro

@@ -823,7 +823,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 > __Goal__: _rank_ the three candidates according to their letters, at _different_ reasoning efforts, and compare
 
-1. Let's pick a _reasoning_ model by default (e.g. [`openai/gpt-oss-20b`](https://openrouter.ai/openai/gpt-oss-20b)), and write the question as a template:
+1. Let's pick a _reasoning_ model by default (e.g. [`nvidia/nemotron-3-super-120b-a12b:free`](https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free)), and write the question as a template:
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="12" to="19" %}}
 

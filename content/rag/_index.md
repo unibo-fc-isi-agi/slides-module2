@@ -638,6 +638,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
     - the second query uses words (_conflict of interest_) which are _not_ in the question: the agent __rewrites__ queries
     - yet query writing is up to the LLM: in another run, the second query missed Article 13, and the agent (honestly) said it could not tell
     - the docstring line "_ONLY that candidate's letter is searched, NOT the regulations_" was needed to get _two_ searches reliably: [tool docs matter](../agents/#/tools-concept)
+    - some LLM once called `search_documents(candidate='None')` (a _string_!), got an _empty_ result, and searched on and on, until LangGraph's step limit: tools must [never trust the LLM's arguments](../agents/#/tools-examples) (unknown candidates are ignored), and never return _empty_ results (`"No documents found."`)
 
 ---
 
@@ -867,7 +868,8 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 {{% code path="static/lab-snippets/snippets/lecture_rag/exercise1/slides.py" from="45" to="51" %}}
 
 - A digest changes _if and only if_ the file changes: it tells which lectures to re-index, _without_ downloading anything
-- No authentication is needed for public repositories (up to 60 requests per hour)
+- No authentication is needed for public repositories (up to 60 requests per hour, per IP)
+- On _shared_ networks (labs, CI) that quota runs out quickly: set `GITHUB_TOKEN` (e.g. `export GITHUB_TOKEN=$(gh auth token)`) to get 5,000 per hour
 
 ---
 
@@ -1023,7 +1025,7 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 └── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                       # dependencies of all snippets</code></pre></div>
 
 - run via `poetry run python -m snippets -l rag -x 1 [--tag TAG] [--only LECTURE] [-k K] ["QUESTION"]`, then _pick_ `qa.py` (no question: chat), `index.py` (indexing only), `slides.py` (prints the chunks), or `test_slides_qa.py` (e.g. `-s -k retrieval`: retrieval metrics only)
-- set `OPENAI_*` and `EMBEDDINGS_*` (cf. [Example 1](#/embeddings-example)), plus `JUDGE_MODEL` for the tests; optionally `RAG_CACHE_DIR`
+- set `OPENAI_*` and `EMBEDDINGS_*` (cf. [Example 1](#/embeddings-example)), plus `JUDGE_MODEL` for the tests; optionally `RAG_CACHE_DIR`, and `GITHUB_TOKEN` (on shared networks)
 
 {{% /section %}}
 

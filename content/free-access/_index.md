@@ -44,7 +44,7 @@ _(Appendix)_
 
 | Need | First choice |
 |---|---|
-| A few hundred calls, prototyping, exercises | [Free tiers](#/free-tiers): Gemini, Mistral, Groq, GitHub Models, OpenRouter |
+| A few hundred calls, prototyping, exercises | [Free tiers](#/free-tiers): Gemini, Mistral, Groq, OpenRouter, Cohere |
 | Thousands or millions of calls, for a paper | [Research grants](#/grants) or [cloud credits](#/students) |
 | Sensitive or personal data | [Local open model](#/local), or a _contracted_ API with suitable data terms |
 | A course, repeated every semester | [Department gateway](#/gateway) + local model + free tiers as fallback |
@@ -63,9 +63,8 @@ No application: just sign up, get a key, and stay within the quota
 | [Google Gemini API](https://ai.google.dev/gemini-api/docs/pricing) | Zero-price quota on several current models (e.g. Flash, Flash-Lite), model-specific limits | Best overall free frontier-ish API |
 | [Mistral](https://mistral.ai/pricing/) (Free plan) | __$10/month__ of API credits | Direct access to Mistral models |
 | [Groq](https://console.groq.com/docs/rate-limits) | e.g. `gpt-oss-120b`: 30 req/min, 1,000 req/day, 200k tokens/day | Fast open models |
-| [GitHub Models](https://docs.github.com/en/billing/concepts/product-billing/github-models) | Rate-limited access to its catalog, with any GitHub account | Comparing many models, quickly |
 | [OpenRouter](https://openrouter.ai/docs/api_reference/limits) `:free` models | 20 req/min, __50 req/day__ | One key, many open models |
-| [Cohere](https://docs.cohere.com/docs/rate-limits) (trial key) | 1,000 calls/month | Evaluation, embeddings, rerankers |
+| [Cohere](https://docs.cohere.com/docs/rate-limits) (trial key) | 1,000 calls/month, also via an [OpenAI-compatible endpoint](https://docs.cohere.com/docs/compatibility-api) | Evaluation, embeddings, rerankers |
 
 ---
 
@@ -94,6 +93,7 @@ poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello
 | [Hugging Face ZeroGPU](https://huggingface.co/docs/hub/spaces-zerogpu) | 5 GPU-minutes/day: fine for _demos_, not for experiments |
 | [Google Colab](https://research.google.com/colaboratory/faq.html) | Free GPUs, but type and limits _not guaranteed_ |
 | [Replicate](https://replicate.com/docs/pricing) | __No__ standing free tier: pay-as-you-go |
+| GitHub Models | Free, rate-limited access with any GitHub account... until it was __retired__: closed to new users on 16 Jun 2026, shut down on 30 Jul 2026 |
 
 ---
 
