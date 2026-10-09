@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-08
+<p>Compiled on: 2026-10-09
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -649,7 +649,7 @@
 <li>
 <p>To allow for <strong>dynamic routing</strong> of requests to different providers in a <em>transparent</em> way, OR allows for the following meta-models:</p>
 <ul>
-<li><code>openrouter/auto</code> (<a href="https://openrouter.ai/openrouter/auto">AutoRouter</a>): let OR decide which provider/model to use for each request, based on the request’s content and the current availability of models</li>
+<li><code>openrouter/auto</code> (<a href="https://openrouter.ai/openrouter/auto">AutoRouter</a>): let OR decide which provider/model to use for each request, based on the request’s content and the current availability of models (<strong>paid</strong>: it may route to paid models, so it fails on accounts without credits)</li>
 <li><code>provider/*</code> (e.g. <code>anthropic/*</code>, <code>google/*</code>, etc.): OR will serve each request with the best available model from the specified provider, according to the request’s content and the current availability of models</li>
 <li>in general, you can reason like with Unix globs, so for instance <code>openai/gpt*</code> will match any OpenAI model whose name starts with <code>gpt</code> (as currently provided by OR)</li>
 <li>in the <a href="https://openrouter.ai/workspaces/default/routing">routing settings</a> of your OR account, you can set up the <strong>routing strategy</strong> OR should adopt:
@@ -725,7 +725,7 @@
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>curl -X POST <span style="color:#4e9a06">"https://openrouter.ai/api/v1/chat/completions"</span> <span style="color:#4e9a06">\
 </span></span></span><span style="display:flex;"><span>    -H <span style="color:#4e9a06">"Content-Type: application/json"</span> <span style="color:#4e9a06">\
 </span></span></span><span style="display:flex;"><span>    -H <span style="color:#4e9a06">"Authorization: Bearer YOUR_API_KEY"</span> <span style="color:#4e9a06">\
-</span></span></span><span style="display:flex;"><span>    -d <span style="color:#4e9a06">'{"model": "openrouter/auto", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'</span>
+</span></span></span><span style="display:flex;"><span>    -d <span style="color:#4e9a06">'{"model": "nvidia/nemotron-3-super-120b-a12b:free", "messages": [{"role": "user", "content": "What is the capital of France?"}]}'</span>
 </span></span></code></pre></div></li>
 </ol>
 </section><section>
@@ -817,7 +817,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791492284934262825" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791542508090677701" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -839,7 +839,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791492284934262825");
+    handlePlantumlFigureByID("plantuml-figure-1791542508090677701");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1086,7 +1086,7 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># connection parameters: env vars, with defaults (the API key is asked interactively, if missing)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"https://openrouter.ai/api/v1/"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openrouter/auto"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"nvidia/nemotron-3-super-120b-a12b:free"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># stateless: the conversation history is kept by us</span>
 </span></span></code></pre></div><p>notice that:</p>
@@ -1152,7 +1152,7 @@ P -&gt; U: “It’s … in Cesena”
 </li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
-</span></span><span style="display:flex;"><span>Using model: openrouter/auto
+</span></span><span style="display:flex;"><span>Using model: nvidia/nemotron-3-super-120b-a12b:free
 </span></span><span style="display:flex;"><span>Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>you&gt; hi there, what time is it?
@@ -1353,7 +1353,7 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"https://openrouter.ai/api/v1/"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"openrouter/auto"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"nvidia/nemotron-3-super-120b-a12b:free"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">AsyncOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># same API as OpenAI, but methods are coroutines</span>
 </span></span></code></pre></div><p>notice that:</p>
@@ -1438,7 +1438,7 @@ P -&gt; U: “It’s … in Cesena”
 </li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Enter your API key for https://openrouter.ai/api/v1/: sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXXX
-</span></span><span style="display:flex;"><span>Using model: openrouter/auto
+</span></span><span style="display:flex;"><span>Using model: nvidia/nemotron-3-super-120b-a12b:free
 </span></span><span style="display:flex;"><span>Type '/exit' or '/quit' to stop. Type '/retry' to retry the last message.
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>you&gt; hi bro
@@ -2045,7 +2045,7 @@ P -&gt; U: “It’s … in Cesena”
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-08
+<p>Compiled on: 2026-10-09
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

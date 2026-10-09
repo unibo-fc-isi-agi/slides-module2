@@ -32,7 +32,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-08
+<p>Compiled on: 2026-10-09
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -85,7 +85,7 @@
 	<tbody>
 			<tr>
 					<td>A few hundred calls, prototyping, exercises</td>
-					<td><a href="#/free-tiers">Free tiers</a>: Gemini, Mistral, Groq, GitHub Models, OpenRouter</td>
+					<td><a href="#/free-tiers">Free tiers</a>: Gemini, Mistral, Groq, OpenRouter, Cohere</td>
 			</tr>
 			<tr>
 					<td>Thousands or millions of calls, for a paper</td>
@@ -136,18 +136,13 @@
 					<td>Fast open models</td>
 			</tr>
 			<tr>
-					<td><a href="https://docs.github.com/en/billing/concepts/product-billing/github-models">GitHub Models</a></td>
-					<td>Rate-limited access to its catalog, with any GitHub account</td>
-					<td>Comparing many models, quickly</td>
-			</tr>
-			<tr>
 					<td><a href="https://openrouter.ai/docs/api_reference/limits">OpenRouter</a> <code>:free</code> models</td>
 					<td>20 req/min, <strong>50 req/day</strong></td>
 					<td>One key, many open models</td>
 			</tr>
 			<tr>
 					<td><a href="https://docs.cohere.com/docs/rate-limits">Cohere</a> (trial key)</td>
-					<td>1,000 calls/month</td>
+					<td>1,000 calls/month, also via an <a href="https://docs.cohere.com/docs/compatibility-api">OpenAI-compatible endpoint</a></td>
 					<td>Evaluation, embeddings, rerankers</td>
 			</tr>
 	</tbody>
@@ -161,7 +156,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#000">PROVIDERS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"gemini"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://generativelanguage.googleapis.com/v1beta/openai/"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"GEMINI_API_KEY"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"groq"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://api.groq.com/openai/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"GROQ_API_KEY"</span><span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"github"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://models.github.ai/inference"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"GITHUB_TOKEN"</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"cohere"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://api.cohere.ai/compatibility/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"COHERE_API_KEY"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"openrouter"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://openrouter.ai/api/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"OPENROUTER_API_KEY"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"mistral"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"https://api.mistral.ai/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"MISTRAL_API_KEY"</span><span style="color:#000;font-weight:bold">),</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"ollama"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"http://localhost:11434/v1"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">),</span>  <span style="color:#8f5902;font-style:italic"># local, no key needed</span>
@@ -202,6 +197,10 @@
 			<tr>
 					<td><a href="https://replicate.com/docs/pricing">Replicate</a></td>
 					<td><strong>No</strong> standing free tier: pay-as-you-go</td>
+			</tr>
+			<tr>
+					<td>GitHub Models</td>
+					<td>Free, rate-limited access with any GitHub account… until it was <strong>retired</strong>: closed to new users on 16 Jun 2026, shut down on 30 Jul 2026</td>
 			</tr>
 	</tbody>
 </table>
@@ -515,7 +514,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-08
+<p>Compiled on: 2026-10-09
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
