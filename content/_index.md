@@ -178,6 +178,8 @@ lab-snippets/
     poetry run python -m snippets -l prompting -e 1bis data/letter-mario-rossi.txt   # e.g.
     ```
 
+    - `poetry run`: runs the command _inside_ the project's virtual environment (`.venv/`), with all dependencies available
+    - `python -m snippets`: runs the `snippets` package as a program (i.e. its `__main__.py`, the runner)
     - `ARGS` are passed to the snippet (each example's slides show which ones it accepts)
     - prefer the runner to `python path/to/snippet.py`: same command for every snippet, no paths to remember
 

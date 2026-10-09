@@ -187,6 +187,8 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
     ```
 
+    + `Field(...)`: the `...` (_Ellipsis_) as first argument marks the field as __required__, while `default=` or `default_factory=` (a function computing the default) make it _optional_
+
 ---
 
 {{< slide class="print-compact" >}}
@@ -356,6 +358,7 @@ From _weakest_ to _strongest_ guarantees:
         + to automatically parse the model's response into an instance of the `LetterInfo`
     - the `response_format` parameter is set to a _reference_ to the `LetterInfo` class
         + `openai` will automatically generate the corresponding JSON Schema from the class definition, and include it in the request
+    - `message.parsed` is the `LetterInfo` instance, unless the model _refuses_ to answer (e.g. for safety reasons): then `message.refusal` holds its explanation
 
 ---
 
@@ -366,6 +369,8 @@ From _weakest_ to _strongest_ guarantees:
 7. At this point, the logic of the program is trivial (load letter file $\rightarrow$ call `score_letter(...)` $\rightarrow$ print the result):
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example1/letter_scoring_openai.py" from="91" to="104" %}}
+
+    - `data.find_letter(...)` (from the [`data`](../lab-snippets/data/__init__.py) package of `lab-snippets`): the `Path` of a letter, given either a candidate's ID (e.g. `mario-rossi`) or a file path
 
 ---
 
@@ -446,6 +451,8 @@ poetry run python -m snippets -l prompting -e 1 data/letter-mario-rossi.txt   # 
 1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="8" to="16" %}}
+
+    - `ChatOpenAI` (package `langchain_openai`) wraps the `openai` client: same `base_url` and `api_key`, but the `model` is set _once_, at construction time
 
 2. Let's define the prompt as a __template__, with a _named placeholder_ (`{letter_text}`) for the input data:
 
@@ -595,6 +602,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 {{% /col %}}
 {{% col %}}
 - _Properties_ are __not__ part of the JSON Schema: the LLM never sees (nor generates) them
+- `model_dump()` turns a Pydantic object into a `dict` (field name $\rightarrow$ value): here, to iterate over the criteria
 - `penalties` is the _explanation_ of the score: which criteria failed, which fields are missing
 - Same input checklist $\Rightarrow$ same score: __reproducible__
     + the remaining variability is in the _checklist_, which can be inspected (and corrected) by a human
@@ -695,6 +703,7 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="22" to="32" %}}
 
+    - `Literal[...]` (from `typing`): a type admitting _only_ the listed values, which becomes an `enum` in the JSON Schema
     - the __zero-shot__ prompt is just _system instructions_ + _user input_
 
 ---
@@ -705,6 +714,7 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="34" to="50" %}}
 
+    - `FewShotChatMessagePromptTemplate` fills `example_prompt` with _each_ dict in `examples`, producing a (`user`, `ai`) message pair per example (`"ai"` is LangChain's name for the `assistant` role)
     - examples should be _diverse_ (one per label, at least), _short_, and _representative_ of real inputs
     - the _format_ and the _label distribution_ of examples matter at least as much as their correctness (cf. [Min et al. (2022)](https://arxiv.org/abs/2202.12837))
 
@@ -727,6 +737,8 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
 5. __Self-consistency__: run _the same_ chain $N$ times, in parallel, and take the _majority_ vote:
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example2/letter_tone.py" from="67" to="71" %}}
+
+    - `Counter` (from `collections`) counts the occurrences of each label; `.most_common(1)[0][0]` is the most voted one
 
 6. Let's try it (full code [here](../lab-snippets/snippets/lecture_prompting/example2/letter_tone.py)):
 
@@ -831,6 +843,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="22" to="31" %}}
 
+    - `llm.invoke(...)` also accepts a _plain string_ (as a single user message), and returns an `AIMessage`, whose `.content` is the answer's text
     - `extra_body` is LangChain's _escape hatch_ to send provider-specific parameters, not (yet) modelled by `ChatOpenAI`
     - `usage_metadata` is LangChain's _provider-agnostic_ view of token usage
 
@@ -841,6 +854,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 3. Let's run it on all letters (full code [here](../lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py)):
 
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example3/reasoning_effort.py" from="34" to="42" %}}
+
+    - `data.letters()`: the paths of _all_ candidates' letters, used when no letter is given on the command line
 
     ```bash
     poetry run python -m snippets -l prompting -e 3 data/letter-*.txt
@@ -1061,6 +1076,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 {{% code path="static/lab-snippets/snippets/lecture_prompting/exercise2/id_extraction.py" from="66" to="83" %}}
 
+- `IDDocumentInfo.model_fields`: the fields of a Pydantic class (a `dict` keyed by field name); `IDDocumentInfo(**voted)` rebuilds (and _validates_) an object out of the voted values
 - Voting _per field_ (rather than on whole objects) tolerates samples which are wrong on _one_ field only
 - The _agreement rate_ is a cheap __confidence__ measure: at most 50% means _no absolute majority_ $\Rightarrow$ ask a human
     + the threshold is a _policy_ decision: stricter for fields that matter more (e.g. `id_number`)
@@ -1184,6 +1200,8 @@ poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's I
     {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="12" to="22" %}}
 
     - the _state_ of the conversation is a (running) `summary`, plus the recent `history`
+        + `BaseMessage`: LangChain's common superclass of `SystemMessage`, `HumanMessage`, and `AIMessage`
+    - the budget comes from the `CONTEXT_BUDGET` environment variable (in tokens)
 
 2. The _context_ sent at each request is: system instructions + summary (if any) + recent history:
 

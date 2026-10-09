@@ -79,6 +79,9 @@ poetry run python -m snippets -l free-access -e 1 groq                          
 poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello!"   # one chat request
 ```
 
+- `PROVIDERS`: each provider's _endpoint_, and the __environment variable__ holding _its_ key (e.g. `GROQ_API_KEY`, asked interactively if missing)
+    + `ollama`, `vllm`: open models served _locally_ (on your machine, see [below](#/local)), hence no key
+- Arguments: `PROVIDER` (required), then optionally `MODEL` and `PROMPT` (without them, the script just lists the models)
 - Full script [here](../lab-snippets/snippets/lecture_free_access/example1/free_providers.py) (cf. [how to run snippets](../#/lab-snippets-run)); model IDs are _listed live_, not hard-coded, since they __go stale quickly__
 - The same trick works with the [LLM-as-a-Service](../llmaas) scripts: just set `OPENAI_BASE_URL` and `OPENAI_API_KEY`
 

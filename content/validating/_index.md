@@ -122,6 +122,9 @@ outputs = ["Reveal"]
     * full code [here](../lab-snippets/snippets/lecture_validating/dataset.py):
 
 {{% code path="static/lab-snippets/snippets/lecture_validating/dataset.py" from="6" to="13" %}}
+
+- `yaml.safe_load` (from [PyYAML](https://pyyaml.org/)) parses YAML text into Python `list`s and `dict`s
+- `read_letter(case)`, in the same file, reads the text of the case's letter from the running example's `data/` directory
 {{% /col %}}
 {{% /multicol %}}
 
@@ -138,7 +141,8 @@ outputs = ["Reveal"]
         1. each time `score(l)` is called, the cache checks if the same letter `l` has already been scored
         2. if yes, the cached output is returned; if not, the function `score_letter` is called and the output is cached
     - this approach allows to run multiple tests on the same letter without making multiple LLM calls
-    - `for_each_case` is a _decorator_ making a test run once per test case (named after the applicant)
+    - `pytest.mark.parametrize("case", TEST_CASES, ids=...)` is a _decorator_ (`for_each_case`) making a test run once per test case, passed as the `case` argument; `ids` names each run (after the applicant)
+    - `api_key` and `base_url` are re-used from the system under test, so the judge talks to the _same_ provider; DeepEval's classes (`GEval`, `OpenRouterModel`, `SingleTurnParams`, `LLMTestCase`, `assert_test`) are explained in steps 5–6
 
 ---
 
@@ -148,6 +152,7 @@ outputs = ["Reveal"]
 
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="23" to="34" %}}
 
+    - `pytest` _collects_ and runs every `test_*` function: a failing `assert` (or exception) is a failing test
     - names and emails must match _exactly_; scores may vary within a _range_
 
 4. __Relational__ properties hold _across_ inputs (a.k.a. _metamorphic_ testing): they are robust to the variability of single scores
@@ -162,8 +167,8 @@ outputs = ["Reveal"]
 
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="43" to="62" %}}
 
-    - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it)
-    - `evaluation_params` selects which parts of the test case the judge can _see_:
+    - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it), wrapped in `OpenRouterModel`: DeepEval's adapter for OpenRouter (or any OpenAI-compatible API, via `base_url`)
+    - `evaluation_params` selects, among the fields of a test case (`SingleTurnParams.INPUT`, `.ACTUAL_OUTPUT`, `.EXPECTED_OUTPUT`, ...), which parts of the test case the judge can _see_:
         * _reference-based_ judge (`relationship`): compares the actual output with the _expected_ one, written by humans
         * _reference-free_ judge (`groundedness`): compares the actual output with the _input_, no expectation needed
 
@@ -175,6 +180,8 @@ outputs = ["Reveal"]
 
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="64" to="74" %}}
 
+    - `LLMTestCase(input=..., actual_output=..., expected_output=...)`: what the judge may see (strings); `assert_test(case, metrics)` runs each metric, and _fails_ the test if some score is below its threshold
+    - `model_dump_json(include={...})` serialises _only_ the listed fields of the Pydantic object
     - `relationship_with_applicant` is compared with the _expected_ description
     - `skills`, `strengths`, and `weaknesses` are checked against the _letter_ (are they _grounded_ in it?)
 
@@ -206,7 +213,7 @@ outputs = ["Reveal"]
 8. Let's run it (full code [here](../lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py)), from the project's root directory:
 
     ```bash
-    poetry run python -m snippets -l validating -e 1 -v   # runs pytest on the test suite, with any option given
+    poetry run python -m snippets -l validating -e 1 -v   # runs pytest on the test suite, with any option given (-v: one line per test)
     ```
 
     - would the outputs of [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) pass? __No__: Mohammed Ali's shallow letter got score 4, whereas the committee expects at most 3
@@ -228,6 +235,7 @@ outputs = ["Reveal"]
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="9" to="24" %}}
 
     - the system under test is a _function_ (`predict_fn`), called with the `inputs` as keyword arguments
+        * `model_dump()` turns the `LetterInfo` object into a plain `dict` (outputs must be _serialisable_, to be logged)
 
 2. Deterministic scorers are _functions_ decorated with `@scorer`, whose parameters are _named_ after what they need (`inputs`, `outputs`, `expectations`, `trace`):
 
@@ -243,7 +251,8 @@ outputs = ["Reveal"]
 
     - `{{ expectations }}` makes the judge _reference-based_ (`relationship`), `{{ inputs }}` makes it _reference-free_ (`groundedness`)
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
-    - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API
+    - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API (the key is read from `OPENAI_API_KEY`)
+    - `feedback_value_type`: the type of the verdict, here a `Literal` (cf. [structured outputs](../prompting/#/structured-output)) admitting only `"yes"` or `"no"`
 
 ---
 
@@ -253,6 +262,9 @@ outputs = ["Reveal"]
 
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="57" to="64" %}}
 
+    - `mlflow.set_experiment(name)`: selects (or creates) the _experiment_, i.e. the group of runs to be compared
+    - `mlflow.start_run(run_name=...)`: a context manager opening a _run_, i.e. one execution whose parameters, traces, and results are logged
+    - `mlflow.genai.evaluate(...)`: calls `predict_fn` on each entry's `inputs`, then applies every scorer, and logs everything in the run
     - `results.metrics` reports, for each scorer, the _fraction_ of test cases passing it (judges' `"yes"` count as 1)
     - if some scorer does not pass on _every_ test case, the script fails (non-zero exit code), just like a failing test suite
 
@@ -411,7 +423,10 @@ outputs = ["Reveal"]
 {{% /col %}}
 {{% col %}}
 - Example 1's tests are _imported_, hence _collected_ and run here too, and share the same _cached_ `score`: one LLM call per letter, for __all__ tests
-- `normalise` handles _case_, _accents_, _punctuation_; `matches` adds _containment_ ("University of Bologna" ⊇ "bologna") and the list / `null` conventions
+- `normalise` handles _case_, _accents_, _punctuation_:
+    + `unicodedata.normalize("NFKD", ...)` splits "é" into "e" + accent, then `.encode("ascii", "ignore")` drops the accent
+    + `str.maketrans` + `translate` turn every `string.punctuation` char into a blank
+- `matches` adds _containment_ ("University of Bologna" ⊇ "bologna") and the list / `null` conventions
 - some models write `"unknown"` instead of `None`: accepted as _empty_ (a choice: you may want to forbid it)
 {{% /col %}}
 {{% /multicol %}}
@@ -426,7 +441,7 @@ outputs = ["Reveal"]
 {{% /col %}}
 {{% col %}}
 - __tolerant__ match for free-text fields; __set inclusion__ for `attended` (order and extra courses don't matter); __exact__ match among admissible values for `seniority`
-- _parametrised_ over fields too: a failure names the _letter_ __and__ the _field_
+- _parametrised_ over fields too (stacked `parametrize` decorators = every letter $\times$ every field): a failure names the _letter_ __and__ the _field_
 - __no LLM-as-a-Judge__ needed: all these fields are _short facts_, which code checks cheaply and _deterministically_
     + judges stay where they were (relationship, groundedness), cf. the _cost_ hint
 {{% /col %}}
@@ -537,6 +552,8 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 - a __YAML file__, written by _looking_ at the pictures, _before_ testing: the committee reviews it without touching code
 - _which_ zone is the truth? The _visual_ one: the machine-readable zone of Mario's passport _disagrees_ on the expiry date
 - `legible`: _human_ judgement, used later to _validate_ the judge
+- `SAMPLES` (env var, default 3) is $N$; `IDDocumentInfo.model_fields` lists the _names_ of the fields of the Pydantic class
+- `sample` (from [Exercise 2 of the Prompt Engineering lecture](../prompting/#/exercise-id-documents)) queries the model $N$ times on the picture in `data.DIR` (the running example's `data/` directory)
 - `samples_of` caches samples __within__ a run only: caching _across_ runs would _hide_ the variance we want to measure
 {{% /col %}}
 {{% /multicol %}}
@@ -552,6 +569,7 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 {{% col %}}
 - __exact__ match for ID numbers (up to blanks and case) and dates (`date` objects on both sides: the _format_ is irrelevant)
 - _normalised_ match for names: a __set__ of words, so "DUPONT Jean" = "Jean Dupont"
+- `vote(samples)` returns the _voted_ object, and the _agreement_ rate of each field (cf. Prompt Engineering's Exercise 2)
 - the test checks the _voted_ result, i.e. the system __as the committee uses it__; `agreement` in the message tells _how sure_ it was
 {{% /col %}}
 {{% /multicol %}}
@@ -568,7 +586,7 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 - _invariants_ hold whatever the expected values: checked on __every__ sample
 - consistency is asserted on __rates__ (≥ 2/3 agreement), not on single runs: fewer _flaky_ failures
 - voting vs. single queries is a _measure_ more than a requirement: it fails only if voting makes things __worse__
-    + read the printed accuracies with `-s`
+    + read the printed accuracies with `-s` (`pytest` option: do not _capture_ `print` outputs)
 {{% /col %}}
 {{% /multicol %}}
 

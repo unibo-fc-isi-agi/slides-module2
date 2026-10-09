@@ -879,6 +879,8 @@ flowchart LR
 - models are passed on the command line as `MODEL` (Open Router) or `MODEL@BASE_URL` (e.g. Ollama): _one_ script, many providers, thanks to OpenAI-compatible APIs
 - `REFERENCE` = the committee's __own__ scores: without it, one can tell whether models _agree_, not who is _right_
 - `max_retries=0`: retries are handled explicitly (next slide)
+- `base_url`, `api_key`: imported from [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) (i.e. `OPENAI_BASE_URL`, `OPENAI_API_KEY`)
+- env vars: `REPETITIONS` (runs per letter), `TEMPERATURE` (default: the provider's), `COMMITTEE_OUTPUT` (directory of the CSV file)
 {{% /col %}}
 {{% /multicol %}}
 
@@ -928,6 +930,8 @@ flowchart LR
 {{% code path="static/lab-snippets/snippets/lecture_governance/exercise1/compare_models.py" from="67" to="84" %}}
 {{% /col %}}
 {{% col %}}
+- `statistics` (Python's standard library): `mean`, and `pstdev` (_population_ standard deviation)
+- `dict.fromkeys(...)`: the models, _de-duplicated_ but in order
 - _standard deviation_ per letter → __consistency__ of each model
 - mean absolute _error_ w.r.t. the reference → who is __right__
 - _ranking_ of candidates → __agreement__ among models (compare the rankings across lines)
@@ -947,7 +951,8 @@ flowchart LR
 {{% /col %}}
 {{% col %}}
 - 3 models × 3 letters × 5 runs = __45 rows__, saved in `output/model-comparison.csv` for further analysis
-- the summary is printed as a _Markdown table_: ready to be pasted into the [decision record](#/decision-record) of Exercise 2
+- `csv.DictWriter` (standard library): writes `dict`s as CSV rows, one column per key
+- the summary is printed as a _Markdown table_ (by `markdown(...)`, a tiny helper in the same file): ready to be pasted into the [decision record](#/decision-record) of Exercise 2
 - try `TEMPERATURE=0` vs. `TEMPERATURE=1`: the _variance_ should change visibly
 {{% /col %}}
 {{% /multicol %}}

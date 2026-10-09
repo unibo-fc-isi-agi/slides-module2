@@ -336,6 +336,9 @@ Belgium
 
 - The interaction remains of the _request-response_ type
     + the __program__ sends a _request_, the AI _responds_
+    + e.g. with the `openai` library: `chat.completions.create(...)` sends the `messages` of a _chat_ (each with a `role` and a `content`) to a `model`
+    + the response comes in _chunks_ (`stream=True`), each carrying a piece (`delta`) of the generated text
+    + details in the [LLM-as-a-Service](../llmaas/) lecture
 
 {{% fragment %}}
 
