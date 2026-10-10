@@ -114,6 +114,8 @@ outputs = ["Reveal"]
 
 - E.g. the repository of these slides has an [`AGENTS.md`]({{< github-url repo="slides-module2" >}}/blob/master/AGENTS.md) telling coding agents how lectures are written: an _instruction file_, not a skill (it is _always_ relevant there)
 
+{{< import path="reusable/antigravity.md" >}}
+
 ---
 
 ## Skills: a brief history
@@ -127,6 +129,8 @@ outputs = ["Reveal"]
 - The idea is _not_ new: it is a (much) simplified version of _plan libraries_ in BDI agents (cf. [agents](../agents/#/agents-concept)), and of _standard operating procedures_ in organisations
     + what is new is that procedures are written in __natural language__, and interpreted by an LLM
     + $\Rightarrow$ easy to write, _not_ guaranteed to be followed (more on this in [testing](#/testing-skills) and [hooks](#/hooks))
+
+{{< import path="reusable/antigravity.md" >}}
 
 {{% /section %}}
 
@@ -245,6 +249,8 @@ metadata:
 - __Same metamodel__ everywhere: a folder with a `SKILL.md`; _name_ + _description_ in the context; the _body_ loaded on activation
 - __Different__ _locations_ (yet `.agents/skills/` is becoming the common one), _activation_ (automatic vs. explicit vs. confirmed), and _extensions_ to the front matter
     + stick to the [spec's fields](https://agentskills.io/specification) for _portable_ skills; harness-specific fields are ignored elsewhere
+
+{{< import path="reusable/antigravity.md" >}}
 
 ---
 
@@ -679,6 +685,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + most CLIs converge on Claude Code's protocol; OpenClaw uses an _in-process_ API instead
     + [`agent-hooks`](https://github.com/responsibleai/agent-hooks): an _early_ (v0.1, 2026) attempt at a _vendor-neutral_ contract (8 interception points, 3 verdicts: `allow`, `transform`, `deny`; __fail-closed__), targeting agent _frameworks_ rather than coding CLIs
 
+{{< import path="reusable/antigravity.md" >}}
+
 ---
 
 ## Hook events per harness (pt. 1)
@@ -725,6 +733,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 - Gemini CLI is the only one letting a hook _rewrite_ (or _replace_) the LLM request: `BeforeModel` may return a synthetic response, without calling the model
 - Cursor has _tool-specific_ events (shell, MCP, file read) besides the generic `preToolUse`
 
+{{< import path="reusable/antigravity.md" >}}
+
 ---
 
 ## Hook events: similarities and differences
@@ -745,6 +755,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + _fail-closed_ is opt-in (`onFailure: "block"` in Claude Code, `failClosed: true` in Cursor), or limited to a few events (Copilot's `preToolUse`, OpenClaw's `before_tool_call`, `before_agent_run`, `before_install`)
     + for _guardrails_, always check this: a guard that crashes open is no guard
 
+{{< import path="reusable/antigravity.md" >}}
+
 ---
 
 ## Harness-agnostic hooks
@@ -763,6 +775,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + _failure semantics_ differ: the same hook may fail open on one harness and closed on another
 
 - In practice: [ponytail](#/ponytail) ships the same hooks for ~20 harnesses; vendor-neutral contracts (e.g. `agent-hooks`) are still early, so the plugin _author_ pays the adaptation cost
+
+{{< import path="reusable/antigravity.md" >}}
 
 ---
 
@@ -862,6 +876,8 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 - The spec has no `version` field: use `metadata.version`, or rely on the _package_'s versioning
 - Skills alone do _not_ bring hooks: hooks (and MCP servers) need a __plugin__, i.e. a _harness-specific_ package
 
+{{< import path="reusable/antigravity.md" >}}
+
 {{% /section %}}
 
 ---
@@ -942,6 +958,8 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 {{% /small %}}
 
 - Rule of thumb: treat third-party skills as __untrusted code__ _and_ __untrusted prompts__ — both at once
+
+{{< import path="reusable/antigravity.md" >}}
 
 {{% /section %}}
 
