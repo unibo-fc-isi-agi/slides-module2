@@ -72,20 +72,20 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
 
 4. Agentic skills
     - Topics:
-        * [ ] Platform-agnostic definition of skill (textally-described reusable functionality)
-        * [ ] Context: copilots frameworks (Claude Code, Codex, Cursor, OpenClaw) (introduced in `genai`)
-        * [ ] Convention for writing skills (SKILL.md, json files, Python scripts, etc.)
-            + [ ] allowing tools in skills
-            + [ ] skills as a context-loading mechanism (progressive disclosure)
-        * [ ] Convention for testing skills
-        * [ ] Hooks and events for skills
-            + [ ] Analogies and differences among technologies (sorts of events, configuration files, etc)
-            + [ ] https://github.com/responsibleai/agent-hooks
-        * [ ] Publishing / installing skills
-        * [ ] Anatomy of interesting skills: [ponytail](https://github.com/dietrichgebert/ponytail)
-        * [ ] Security of skills: trusting third-party skills, tool permissions
+        * [x] Platform-agnostic definition of skill (textally-described reusable functionality) — `skills` (+ procedural memory, comparison with prompts/tools/MCP/workflows)
+        * [x] Context: copilots frameworks (Claude Code, Codex, Cursor, OpenClaw) (introduced in `genai`) — `skills` (extension points, brief history)
+        * [x] Convention for writing skills (SKILL.md, json files, Python scripts, etc.) — `skills` (Agent Skills spec, landscape, best practices; example 1 on the running example, used from OpenClaw)
+            + [x] allowing tools in skills — `skills` (scripts vs. instructions, `allowed-tools`; examples 2 from scratch and 2 bis with Deep Agents)
+            + [x] skills as a context-loading mechanism (progressive disclosure) — `skills`
+        * [x] Convention for testing skills — `skills` (triggering vs. outcome tests, landscape; example 3)
+        * [x] Hooks and events for skills — `skills` (example 4: privacy guard hook)
+            + [x] Analogies and differences among technologies (sorts of events, configuration files, etc) — `skills`
+            + [x] https://github.com/responsibleai/agent-hooks — `skills`
+        * [x] Publishing / installing skills — `skills`
+        * [x] Anatomy of interesting skills: [ponytail](https://github.com/dietrichgebert/ponytail) — `skills`
+        * [x] Security of skills: trusting third-party skills, tool permissions — `skills` (ClawHavoc, ToxicSkills, mitigations)
     - Exercises:
-        * [ ] E4.1: Creating a pre-check skill for student theses
+        * [x] E4.1: Creating a pre-check skill for student theses — `skills` exercise 1 (own bachelor thesis, or the teacher's PhD thesis)
 
 5. Workflows and Agent Orchestration
     - Topics:

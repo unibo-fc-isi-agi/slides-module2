@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 560" font-family="Signika Negative, Helvetica, Arial, sans-serif" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<!-- the skill folder -->
+<rect x="20" y="20" width="560" height="520" rx="14" fill="#fff" stroke="#555" stroke-width="3"/>
+<text x="300" y="64" font-size="26" font-weight="600" text-anchor="middle">A skill (a folder)</text>
+<g font-family="monospace" font-size="21">
+<text x="50" y="112">phd-application-review/</text>
+<text x="70" y="152">└─ SKILL.md</text>
+<rect x="110" y="170" width="440" height="70" rx="8" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="2"/>
+<text x="125" y="198">---</text>
+<text x="125" y="226">name, description</text>
+<rect x="110" y="250" width="440" height="70" rx="8" fill="#3a9a5b" fill-opacity="0.15" stroke="#3a9a5b" stroke-width="2"/>
+<text x="125" y="278">---</text>
+<text x="125" y="306"># Reviewing an application…</text>
+<rect x="60" y="340" width="490" height="180" rx="8" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="2"/>
+<text x="70" y="378">├─ scripts/check_application.py</text>
+<text x="70" y="428">├─ references/rubric.md</text>
+<text x="70" y="478">└─ assets/report-template.md</text>
+</g>
+<!-- arrows -->
+<g stroke="#555" stroke-width="3" fill="none">
+<line x1="552" y1="205" x2="676" y2="100" marker-end="url(#a)"/>
+<line x1="552" y1="285" x2="676" y2="270" marker-end="url(#a)"/>
+<line x1="552" y1="430" x2="676" y2="440" marker-end="url(#a)"/>
+</g>
+<!-- the levels -->
+<rect x="680" y="30" width="900" height="140" rx="14" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7" stroke-width="3"/>
+<text x="705" y="72" font-size="27" font-weight="600">1. Metadata</text>
+<text x="1555" y="72" font-size="22" text-anchor="end" font-style="italic">~100 tokens per skill</text>
+<text x="705" y="112" font-size="21">in the context from startup, for <tspan font-weight="600">all</tspan> installed skills</text>
+<text x="705" y="146" font-size="20" fill="#555">what the LLM uses to decide whether a skill is relevant</text>
+<rect x="680" y="200" width="900" height="140" rx="14" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/>
+<text x="705" y="242" font-size="27" font-weight="600">2. Instructions</text>
+<text x="1555" y="242" font-size="22" text-anchor="end" font-style="italic">&lt; 5,000 tokens recommended</text>
+<text x="705" y="282" font-size="21">loaded upon <tspan font-weight="600">activation</tspan>: when the LLM picks the skill</text>
+<text x="705" y="316" font-size="20" fill="#555">the procedure: steps, criteria, pointers to resources</text>
+<rect x="680" y="370" width="900" height="170" rx="14" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="3"/>
+<text x="705" y="412" font-size="27" font-weight="600">3. Resources</text>
+<text x="1555" y="412" font-size="22" text-anchor="end" font-style="italic">unbounded</text>
+<text x="705" y="452" font-size="21">read <tspan font-weight="600">only if</tspan> the instructions require them</text>
+<text x="705" y="486" font-size="20" fill="#555">scripts are run: only their output enters the context</text>
+<text x="705" y="518" font-size="20" fill="#555">possibly never loaded at all</text>
+</svg>

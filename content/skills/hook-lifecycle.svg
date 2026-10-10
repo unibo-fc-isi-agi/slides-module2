@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 420" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<!-- the ReAct loop -->
+<rect x="560" y="100" width="780" height="230" rx="16" fill="#555" fill-opacity="0.05" stroke="#555" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="1325" y="130" font-size="19" font-style="italic" fill="#555" text-anchor="end">the ReAct loop (cf. agents)</text>
+<!-- steps -->
+<g stroke-width="3">
+<rect x="20" y="170" width="150" height="70" rx="10" fill="#fff" stroke="#555"/>
+<rect x="590" y="170" width="160" height="70" rx="10" fill="#2690e7" fill-opacity="0.15" stroke="#2690e7"/>
+<rect x="1000" y="170" width="160" height="70" rx="10" fill="#fff" stroke="#555"/>
+<rect x="1560" y="170" width="140" height="70" rx="10" fill="#fff" stroke="#555"/>
+</g>
+<g font-size="22" font-weight="600">
+<text x="95" y="213">session</text>
+<text x="670" y="213">LLM call</text>
+<text x="1080" y="213">tool runs</text>
+<text x="1630" y="213">end of turn</text>
+</g>
+<!-- hooks, as diamonds on the arrows -->
+<g fill="#d64545" fill-opacity="0.18" stroke="#d64545" stroke-width="3">
+<path d="M270,175 l30,30 l-30,30 l-30,-30 z"/>
+<path d="M470,175 l30,30 l-30,30 l-30,-30 z"/>
+<path d="M875,175 l30,30 l-30,30 l-30,-30 z"/>
+<path d="M1240,175 l30,30 l-30,30 l-30,-30 z"/>
+<path d="M1460,175 l30,30 l-30,30 l-30,-30 z"/>
+<path d="M940,286 l24,24 l-24,24 l-24,-24 z"/>
+</g>
+<g stroke="#555" stroke-width="3" fill="none">
+<line x1="170" y1="205" x2="238" y2="205" marker-end="url(#a)"/>
+<line x1="300" y1="205" x2="438" y2="205" marker-end="url(#a)"/>
+<line x1="500" y1="205" x2="588" y2="205" marker-end="url(#a)"/>
+<line x1="750" y1="205" x2="843" y2="205" marker-end="url(#a)"/>
+<line x1="905" y1="205" x2="998" y2="205" marker-end="url(#a)"/>
+<line x1="1160" y1="205" x2="1208" y2="205" marker-end="url(#a)"/>
+<path d="M1270,205 L1305,205 L1305,310 L966,310" marker-end="url(#a)"/>
+<path d="M914,310 L670,310 L670,242" marker-end="url(#a)"/>
+<path d="M670,170 L670,80 L1460,80 L1460,172" stroke-dasharray="8 6" marker-end="url(#a)"/>
+<line x1="1490" y1="205" x2="1558" y2="205" marker-end="url(#a)"/>
+</g>
+<text x="1060" y="70" font-size="18" font-style="italic" fill="#555">no tool call: final answer</text>
+<!-- hook names and powers -->
+<g font-size="20" font-weight="600" fill="#d64545">
+<text x="270" y="160">SessionStart</text>
+<text x="460" y="160">UserPromptSubmit</text>
+<text x="875" y="160">PreToolUse</text>
+<text x="1240" y="160">PostToolUse</text>
+<text x="1478" y="152" text-anchor="start">Stop</text>
+<text x="940" y="358">PreCompact</text>
+</g>
+<g font-size="18" fill="#555">
+<text x="270" y="270">add context</text>
+<text x="270" y="294">(e.g. a skill's rules)</text>
+<text x="470" y="270">block the prompt,</text>
+<text x="470" y="294">or add context</text>
+<text x="875" y="262">allow · deny · ask</text>
+<text x="875" y="284">· modify arguments</text>
+<text x="1225" y="262">add context,</text>
+<text x="1225" y="284">or block</text>
+<text x="1460" y="270">force the agent</text>
+<text x="1460" y="294">to continue</text>
+<text x="940" y="382">when the context is full</text>
+</g>
+<text x="860" y="412" font-size="19" font-style="italic" fill="#d64545">◆ hook events: deterministic code, run by the harness, outside the LLM (names as in Claude Code)</text>
+</svg>

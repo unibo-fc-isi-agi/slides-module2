@@ -29,7 +29,8 @@ aliases = [
     + _exercises_: 1. [inspection tools](agents/#/exercise-inspect) ([solution](agents/#/exercise-inspect-solution)) · 2. [decision tools](agents/#/exercise-decide) ([solution](agents/#/exercise-decide-solution)) · 3. [MCP gateway](agents/#/exercise-gateway) ([solution](agents/#/exercise-gateway-solution))
 6. [Retrieval-Augmented Generation (RAG)](rag)
     + _exercises_: 1. [Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))
-7. _Agentic Skills_ (coming soon)
+7. [Agentic Skills](skills)
+    + _exercises_: 1. [thesis pre-check](skills/#/exercise-thesis-precheck) ([solution](skills/#/exercise-thesis-precheck-solution))
 8. _Workflows and Agent Orchestration_ (coming soon)
 9. [AI Governance 101](governance)
     + _exercises_: 1. [comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution)) · 2. [decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))
@@ -139,7 +140,7 @@ lab-snippets/
 
 ## The code of examples and exercises: setup
 
-1. Requirements: [Python](https://www.python.org/downloads/) 3.10+, and [Git](https://git-scm.com/downloads)
+1. Requirements: [Python](https://www.python.org/downloads/) 3.11+, and [Git](https://git-scm.com/downloads)
 
 2. Clone the repository, and install its dependencies _once_, via [Poetry](https://python-poetry.org) (a dependency manager for Python):
 
