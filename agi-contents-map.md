@@ -110,8 +110,8 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
         * [x] guidelines for technology selection upon use case patterns — `governance`
             + [x] prompting vs. RAG vs. fine-tuning — `governance`
         * [x] detail on model evaluation: model cards and model evaluation (maybe mention ARC-AGI, and other benchmarks?) — `governance`
-        * [ ] Enveloping (Floridi): the world adapting to AI; bad (silent adaptation) vs. good (explicit, contestable representations) enveloping _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-        * [ ] Responsibility remains human: biases in LLM-agent use (over-trust, artificial salience, false certainty) and countermeasures _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
+        * [x] Enveloping (Floridi): the world adapting to AI; bad (silent adaptation) vs. good (explicit, contestable representations) enveloping _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026) — `governance` (+ examples in the LLM era, running example)
+        * [x] Responsibility remains human: biases in LLM-agent use (over-trust, artificial salience, false certainty) and countermeasures _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026) — `governance` (+ responsibility gap, moral crumple zone, AI Act Art. 14(4)(b); Exercise 2 extended)
     - Exercises:
         * [x] E6.1: Comparing models on the running example (quality, consistency, latency, cost) — `governance` exercise 1
         * [x] E6.2: Governance decision record for the running example (AI Act, GDPR, deployment, model, oversight) — `governance` exercise 2

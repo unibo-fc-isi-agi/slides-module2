@@ -20,7 +20,8 @@ outputs = ["Reveal"]
 4. _Open_ models, licensing, and "sovereignty"
 5. _Which technique_? Prompting vs. RAG vs. fine-tuning vs. agents
 6. _Which model_? Selection, documentation, and evaluation
-7. Exercises
+7. _Responsibility_ remains human: enveloping and biases in AI use
+8. Exercises
 
 ---
 
@@ -992,6 +993,193 @@ poetry run python -m snippets -l governance -x 1 MODEL1 MODEL2@URL ...  # custom
 
 ---
 
+# Responsibility Remains Human
+
+---
+
+{{% section %}}
+
+{{< slide id="enveloping" >}}
+
+## Enveloping: the world adapting to AI
+
+- Machines work well only in environments _shaped_ around them
+    + a dishwasher does not wash dishes as we do: we build a __box__ where a simple machine can succeed
+    + industrial robots work in _cages_, robot lawnmowers need _perimeter wires_, self-driving cars need _mapped_ and well-marked roads
+- __Enveloping__ = adapting the _environment_ (and our own _behaviour_) so that AI can operate in it (cf. [Floridi, 2011](https://doi.org/10.1007/s13347-011-0042-7))
+    + digital data, sensors, standard formats, and APIs progressively turn the world into a place where machines can _act_
+- LLMs are _agency without intelligence_ ([Floridi, 2023](https://doi.org/10.1007/s13347-023-00621-y)): they succeed _because_ much of our world is already made of text and data
+    + recall: _intelligence_, _autonomy_, and _agency_ are separable dimensions ([genai lecture](../genai/#/genai-uses))
+
+{{% fragment %}}
+> __Question__: when we envelop the world for AI, _who_ decides what changes, and does anyone _notice_?
+{{% /fragment %}}
+
+---
+
+## Enveloping in the age of LLMs: examples
+
+| What is adapted | How | For which AI |
+|---|---|---|
+| Websites | [`llms.txt`](https://llmstxt.org/) files, Markdown versions of pages, agent-friendly APIs | LLM crawlers, coding assistants |
+| Web content | _generative engine optimisation_: content rewritten to be cited in LLM answers ([Aggarwal et al., 2024](https://arxiv.org/abs/2311.09735)) | AI search engines |
+| Software | MCP servers, tool docstrings, structured outputs (cf. [agents](../agents/#/tools-concept) lecture) | agents |
+| Code bases | `AGENTS.md` / `CLAUDE.md` files, skills (cf. [skills](../skills/) lecture) | coding assistants |
+| Processes | forms, documents, and tickets re-designed to be _machine-readable_ | extraction pipelines |
+| People | applicants writing CVs for screening software, authors hiding prompts for AI reviewers in their papers | classifiers, scorers |
+
+- Most of these are _reasonable_ engineering choices...
+- ... but they change how people _write_, _work_, and are _evaluated_, often without anyone __deciding__ it
+
+---
+
+## Bad vs. good enveloping
+
+{{% multicol %}}
+{{% col %}}
+#### _Bad_ enveloping: __silent__ adaptation
+
+- the process shrinks to what the model handles well
+    + e.g. "typed PDFs in English only", because extraction fails on the rest
+- people learn to _please the model_, rather than to pursue the goal
+    + e.g. keyword stuffing, instructions hidden for AI readers
+- criteria live _implicitly_ in prompts and weights
+    + nobody can say _what_ is evaluated, nor contest it
+- the adaptation is __not__ decided, documented, or reversible
+{{% /col %}}
+{{% col %}}
+#### _Good_ enveloping: __explicit__, __contestable__ representations
+
+- adapt the world through _artefacts_ humans can read: __schemas__, __checklists__, __plans__, __tool contracts__, __process models__
+- these artefacts are _published_, _versioned_, and can be _challenged_
+- the LLM fills them in, software and humans __verify__ them
+    + recall: LLMs _propose_, software _verifies_ ([genai](../genai/)), cf. [LLM-Modulo](../agents/#/planning)
+- what the AI does not handle is handled _by hand_, not dropped
+{{% /col %}}
+{{% /multicol %}}
+
+> __Rule of thumb__: if the world must adapt to the AI, make the adaptation _visible_ and _contestable_: an artefact, not a habit
+
+---
+
+## Enveloping in the running example
+
+Recall the [running example](../prompting/#/running-example) (PhD admission committee assistant):
+
+{{% multicol %}}
+{{% col %}}
+#### Good: explicit
+
+- the letter [checklist](../prompting/#/exercise-checklist) makes the evaluation criteria __explicit__: they can be published in the call for applications
+- extraction _schemas_ (Pydantic) state which fields matter, and code validates them
+- uncertain fields are _flagged_ for humans, not silently guessed
+{{% /col %}}
+{{% col %}}
+#### Bad: silent
+
+- candidates learn which words "the AI likes", and write letters for the scorer
+    + or _inject_ instructions into their documents (cf. [prompt injection](../agents/#/security))
+- the call restricts the accepted formats to what extraction handles, without saying why
+- the committee stops reading letters, and reads _scores_
+{{% /col %}}
+{{% /multicol %}}
+
+> The last item is no longer about the _world_ adapting to AI, but about the _people_ using it: see next slides
+
+---
+
+{{< slide id="responsibility" >}}
+
+## Responsibility remains human: the general concept
+
+- An AI system cannot be held _accountable_: it cannot be sanctioned, has no duties, cannot answer for its outputs
+    + accountability stays with _people_ and _organisations_: providers, deployers, the humans in the loop
+    + e.g. in the Italian public administration, the official remains solely responsible ([L. 132/2025](#/regulation), Art. 14)
+- Yet learning, autonomous systems open a _responsibility gap_: nobody fully controls, nor can fully predict, their behaviour ([Matthias, 2004](https://doi.org/10.1007/s10676-004-3422-1))
+- The usual remedy is a _human in the loop_... who risks becoming a __moral crumple zone__ ([Elish, 2019](https://doi.org/10.17351/ests2019.260))
+    + the human with _little actual control_ absorbs the blame when the system fails, protecting the system itself
+    + e.g. the safety driver of a self-driving car, the official signing an AI-drafted decision
+- Human oversight works only if the human can _actually_ understand, question, and override the output
+
+{{% fragment %}}
+> __Responsibility remains human__: systems must be designed so that humans can _exercise_ it, not just _sign_ for it
+{{% /fragment %}}
+
+---
+
+## Biases in LLM-agent use
+
+| Bias | What happens | LLM-specific twist |
+|---|---|---|
+| __Over-trust__ (_automation bias_, _complacency_) | humans accept automated outputs without checking them: they miss errors, or follow wrong advice ([Parasuraman & Manzey, 2010](https://doi.org/10.1177/0018720810376055)) | outputs are _fluent_ and look like expert work; checking a long output costs more than accepting it |
+| __Artificial salience__ | what the system _shows_ or _highlights_ becomes what humans _attend to_, the rest is ignored (_anchoring_) | summaries, scores, and rankings _frame_ the decision before the human reads the sources |
+| __False certainty__ | humans read confidence where there is none | LLMs use the same assertive tone whether right or wrong; their verbalised confidence is poorly _calibrated_ ([Xiong et al., 2024](https://arxiv.org/abs/2306.13063)) |
+
+- Expertise and practice do __not__ eliminate automation bias ([Parasuraman & Manzey, 2010](https://doi.org/10.1177/0018720810376055))
+- Telling users to "be careful" does not fix overreliance, and some mitigations (e.g. explanations) can even _increase_ it ([Passi & Vorvoreanu, 2022](https://www.microsoft.com/en-us/research/publication/overreliance-on-ai-literature-review/))
+
+---
+
+## Automation bias in the law
+
+- The EU AI Act names automation bias __explicitly__: high-risk systems must enable their overseers ([Art. 14(4)](https://artificialintelligenceact.eu/article/14/)):
+    + (a) to _understand_ the system's capacities and limitations, and to _monitor_ it
+    + (b) "to remain aware of the possible tendency of automatically relying or over-relying on the output [...] (__automation bias__)", in particular for systems providing _recommendations_ for decisions taken by people
+    + (c) to correctly _interpret_ the output
+    + (d) to decide _not_ to use it, or to _disregard_, _override_, or _reverse_ its output
+    + (e) to _interrupt_ it (a "stop" button)
+- __Deployers__ must assign oversight to people with the necessary _competence_, _training_, and _authority_ ([Art. 26(2)](https://artificialintelligenceact.eu/article/26/)), and support their staff's _AI literacy_ (Art. 4)
+- __GDPR__ (Art. 22): rubber-stamping does __not__ turn an automated decision into a human one
+    + human involvement must be _meaningful_, by someone with the authority and competence to change the decision ([WP29 guidelines on automated decision-making](https://ec.europa.eu/newsroom/article29/items/612053), endorsed by the EDPB)
+
+---
+
+## Countermeasures: designing for real oversight
+
+| Countermeasure | Against | How, in practice |
+|---|---|---|
+| __Evidence next to outputs__ | over-trust | show the _source_ (picture, sentence, document) supporting each field or claim: no evidence $\rightarrow$ no claim |
+| __Surfaced uncertainty__ | false certainty | flag low-agreement fields (cf. [self-consistency](../prompting/#/prompting-techniques)), never pre-fill them |
+| __Independent judgement first__ | salience | humans judge (at least a sample) _before_ seeing the AI output, then compare |
+| __Neutral presentation__ | salience | do not rank, sort, or colour by AI score until humans have reviewed |
+| __Friction for irreversible actions__ | over-trust | require an approval with a written motivation (cf. [human-in-the-loop tools](../agents/#/exercise-decide)) |
+| __Monitoring of overrides__ | rubber-stamping | too many overrides: the AI is unreliable; _too few_: humans may have stopped checking |
+| __Training__ | all | teach the system's _failure modes_ (e.g. prompt injection), not just its features |
+| __Logging and tracing__ | lack of accountability | who decided what, based on which output, with which model and prompt version |
+
+> Oversight is a _feature to engineer_, with its own requirements and tests, not a checkbox
+
+---
+
+## Human oversight in the running example
+
+{{% multicol %}}
+{{% col %}}
+#### Rubber-stamp design
+
+- the assistant extracts fields and scores letters
+- the committee sees a _ranked list_ of candidates, with scores
+- a member "approves" the ranking
+- nobody can tell whether the letters were read
+{{% /col %}}
+{{% col %}}
+#### Design for oversight
+
+- fields shown next to the source picture; uncertain fields _flagged_
+- each letter score shown with the _sentences_ supporting each checklist item
+- candidates listed _alphabetically_ until reviewed
+- a sample of letters scored _blindly_ by a member first; disagreements discussed
+- rejections need a written, _human_ motivation
+- override rate monitored _in both directions_
+{{% /col %}}
+{{% /multicol %}}
+
+> These choices are part of the _human oversight_ decision of [Exercise 2](#/decision-record)
+
+{{% /section %}}
+
+---
+
 {{% section %}}
 
 {{< slide id="decision-record" >}}
@@ -1011,7 +1199,7 @@ Write a short (2–4 pages) __decision record__, answering:
 3. __Model__: which model? Support the choice with the results of [Exercise 1](#/compare-models), and with the model's _documentation_
     + apply the [pre-adoption checklist](#/open-models-checklist) to the __exact checkpoint__: license, multimodal restrictions, derivatives, AI Act role
 4. __Technique__: which parts rely on prompting / structured output / tools / RAG? Why not fine-tuning?
-5. __Human oversight__: which outputs are _reviewed_ by humans, how, and who is _accountable_ for the final decision?
+5. __Human oversight__: what do humans _review_, with which [countermeasures](#/responsibility) to _automation bias_? Who is _accountable_?
 6. __Monitoring__: what is _logged_, and when is the decision _re-assessed_ (e.g. model deprecation, new regulations)?
 
 ---
@@ -1025,6 +1213,7 @@ Write a short (2–4 pages) __decision record__, answering:
 - For regulation, cite the __article__ of the law supporting each claim
 - For costs, state your _assumptions_ explicitly (e.g. tokens per document), and compute a _break-even_ point
 - Be explicit about what the system does __not__ decide: e.g. scores as _suggestions_ to the committee, never automatic rejections
+- Be explicit about what the process _adapts_ to the assistant ([enveloping](#/enveloping)): e.g. what candidates are told about how their documents are evaluated
 
 ### How to assess it?
 
@@ -1096,27 +1285,40 @@ Write a short (2–4 pages) __decision record__, answering:
 
 ---
 
-## Exercise 2 — Solution: Human Oversight and Monitoring
+## Exercise 2 — Solution: Human Oversight
 
-> _Decisions 5–6_: what is __reviewed__ by whom, what is _logged_, and when the decision is _re-assessed_
+> _Decision 5_: what is __reviewed__ by whom, who is __accountable__, and how [automation bias](#/responsibility) is countered
 
 {{% multicol %}}
 {{% col %}}
-#### Human oversight
+#### Review and accountability
 
 - every _extracted field_ is shown next to the source picture; flagged fields are confirmed by the secretary
 - every _letter score_ is shown with its checklist; overrides are logged with a reason
 - committee members __decide__, under their name; the chair is __accountable__ for the final ranking, and answers requests for explanation
 - members are _trained_ on the assistant's limitations (e.g. prompt injection in documents; scores are not grades)
+- [enveloping](#/enveloping), explicitly: checklist and schemas are _published_ in the call; formats the assistant cannot handle are processed by hand
 {{% /col %}}
 {{% col %}}
-#### Monitoring
+#### Countermeasures against automation bias (Art. 14(4)(b))
 
-- _logged_: model and checkpoint, prompts' version, tool calls, extractions, scores, human overrides
-- test suites __re-run__ before each admission round, and at every change of prompt, model, or provider
-- __re-assess__ when: the model is deprecated or changed, tests fail, overrides exceed 20% in a round, regulations or guidelines change, the DPO asks, or by the _revise-by_ date
+- _independent judgement first_: 20% of letters are scored by a member __before__ seeing the assistant's score
+- _evidence, not verdicts_: each satisfied criterion comes with the supporting sentence of the letter
+- _no false certainty_: uncertain fields are never pre-filled; candidates are listed _alphabetically_, not by score, until all are reviewed
+- _friction_: a rejection needs a written motivation by a member, not copied from the assistant
 {{% /col %}}
 {{% /multicol %}}
+
+---
+
+## Exercise 2 — Solution: Monitoring
+
+> _Decision 6_: what is _logged_, and when the decision is _re-assessed_
+
+- _logged_: model and checkpoint, prompts' version, tool calls, extractions, scores, human overrides
+- _override rate_ monitored __in both directions__: too many overrides $\rightarrow$ unreliable assistant; too few (or no disagreement in the blind sample) $\rightarrow$ __rubber-stamping__
+- test suites __re-run__ before each admission round, and at every change of prompt, model, or provider
+- __re-assess__ when: the model is deprecated or changed, tests fail, overrides exceed 20% or fall below 2% in a round, regulations or guidelines change, the DPO asks, or by the _revise-by_ date
 
 > _Consequence_: the committee's workload moves from _reading_ to __reviewing__, and reviews must be real, not rubber stamps
 
