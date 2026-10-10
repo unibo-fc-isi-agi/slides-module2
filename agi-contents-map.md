@@ -89,18 +89,19 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
 
 5. Workflows and Agent Orchestration
     - Topics:
-        * [ ] Workflows as state machines
-        * [ ] LLM steps, Data steps, Action steps, User input steps
-        * [ ] State management
-        * [ ] Patterns (prompt chaining, master-worker, evaluator-optimizer, routing, human-in-the-loop, etc)
-            + [ ] plan-and-execute _(proposed)_
-        * [ ] Intermediate representations (checklists, plans, schemas, process models, tool contracts): intention → representation → verification → execution _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-            + [ ] plan before acting, log & trace, verify & test; ask humans for irreversible / norm-sensitive actions _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026)
-        * [ ] Multi-agent systems: agent communication, A2A protocol (vs. MCP)
-        * [ ] Streaming and observability
-        * [ ] Evaluating workflows end-to-end (reusing the E1.2 infrastructure)
+        * [x] Workflows as state machines — `workflows` (steps, transitions, shared state; StateFlow)
+        * [x] LLM steps, Data steps, Action steps, User input steps — `workflows`
+        * [x] State management — `workflows` (reducers, checkpoints, durable execution, time travel, interrupts; examples 1 and 1 bis, from scratch and with LangGraph)
+        * [x] Patterns (prompt chaining, master-worker, evaluator-optimizer, routing, human-in-the-loop, etc) — `workflows` (catalogue + example 2: routing, parallelisation, evaluator-optimizer)
+            + [x] plan-and-execute _(proposed)_ — `workflows` (example 3: validated, approved plans, with re-planning)
+        * [x] Intermediate representations (checklists, plans, schemas, process models, tool contracts): intention → representation → verification → execution _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026) — `workflows`
+            + [x] plan before acting, log & trace, verify & test; ask humans for irreversible / norm-sensitive actions _(proposed)_ (cf. keynote "From Language to Agency", SKILLED-LLMs 2026) — `workflows`
+        * [x] Multi-agent systems: agent communication, A2A protocol (vs. MCP) — `workflows` (architectures, contested evidence; example 4 supervisor, example 4 bis via A2A)
+        * [x] Streaming and observability — `workflows` (OTel GenAI conventions, landscape; example 5 with MLflow tracing)
+        * [x] Evaluating workflows end-to-end (reusing the E1.2 infrastructure) — `workflows` (example 6: step, path, end-to-end tests)
     - Exercises:
-        * [ ] E5.1: Semi-automatic customer support email bot with LangGraph
+        * [x] E5.1: Semi-automatic customer support email bot with LangGraph — `workflows` exercise 1 (candidates' e-mails to the admission office)
+        * [x] E5.2: the e-mail bot as an A2A agent _(added)_ — `workflows` exercise 2
 
 6. AI governance 101
     - Topics:

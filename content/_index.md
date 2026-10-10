@@ -31,7 +31,8 @@ aliases = [
     + _exercises_: 1. [Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))
 7. [Agentic Skills](skills)
     + _exercises_: 1. [thesis pre-check](skills/#/exercise-thesis-precheck) ([solution](skills/#/exercise-thesis-precheck-solution))
-8. _Workflows and Agent Orchestration_ (coming soon)
+8. [Workflows and Agent Orchestration](workflows)
+    + _exercises_: 1. [e-mail bot](workflows/#/exercise-email-bot) ([solution](workflows/#/exercise-email-bot-solution)) · 2. [A2A agent](workflows/#/exercise-a2a) ([solution](workflows/#/exercise-a2a-solution))
 9. [AI Governance 101](governance)
     + _exercises_: 1. [comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution)) · 2. [decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))
 
