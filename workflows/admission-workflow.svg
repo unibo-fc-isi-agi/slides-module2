@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<!-- legend -->
+<g font-size="20" text-anchor="start">
+<rect x="250" y="30" width="26" height="26" rx="5" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/><text x="286" y="51">LLM step</text>
+<rect x="470" y="30" width="26" height="26" rx="5" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/><text x="506" y="51">data step</text>
+<rect x="690" y="30" width="26" height="26" rx="5" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="3"/><text x="726" y="51">user-input step (interrupt)</text>
+<rect x="1010" y="30" width="26" height="26" rx="5" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="3"/><text x="1046" y="51">action step (side effects)</text>
+</g>
+<!-- start / end -->
+<circle cx="45" cy="300" r="20" fill="#555"/><text x="45" y="345" font-size="18" fill="#555">start</text>
+<circle cx="1550" cy="300" r="20" fill="#fff" stroke="#555" stroke-width="3"/><circle cx="1550" cy="300" r="11" fill="#555"/><text x="1550" y="265" font-size="18" fill="#555">end</text>
+<!-- nodes -->
+<g font-size="22">
+<rect x="114" y="234" width="180" height="100" rx="12" fill="#fff" stroke="#2690e7" stroke-width="2"/>
+<rect x="107" y="242" width="180" height="100" rx="12" fill="#fff" stroke="#2690e7" stroke-width="2"/>
+<rect x="100" y="250" width="180" height="100" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/>
+<text x="190" y="292" font-weight="600">read</text><text x="190" y="318" font-weight="600">transcript</text>
+<text x="190" y="380" font-size="17" font-style="italic" fill="#555">one per candidate,</text><text x="190" y="401" font-size="17" font-style="italic" fill="#555">in parallel (vision LLM)</text>
+
+<rect x="335" y="250" width="180" height="100" rx="12" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/>
+<text x="425" y="292" font-weight="600">check</text><text x="425" y="318" font-weight="600">eligibility</text>
+<text x="425" y="380" font-size="17" font-style="italic" fill="#555">Master's degree?</text><text x="425" y="401" font-size="17" font-style="italic" fill="#555">(Art. 3)</text>
+
+<rect x="580" y="250" width="180" height="100" rx="12" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/>
+<text x="670" y="292" font-weight="600">score</text><text x="670" y="318" font-weight="600">letters</text>
+<text x="670" y="380" font-size="17" font-style="italic" fill="#555">eligible candidates</text><text x="670" y="401" font-size="17" font-style="italic" fill="#555">only (checklist)</text>
+
+<rect x="815" y="250" width="180" height="100" rx="12" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/>
+<text x="905" y="306" font-weight="600">rank</text>
+<text x="905" y="380" font-size="17" font-style="italic" fill="#555">grade + letter (Art. 8),</text><text x="905" y="401" font-size="17" font-style="italic" fill="#555">top 2 to the interview</text>
+
+<rect x="1050" y="250" width="180" height="100" rx="12" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="3"/>
+<text x="1140" y="292" font-weight="600">committee</text><text x="1140" y="318" font-weight="600">approval</text>
+<text x="1140" y="380" font-size="17" font-style="italic" fill="#555">the run stops, and resumes</text><text x="1140" y="401" font-size="17" font-style="italic" fill="#555">upon the answer (hours later?)</text>
+
+<rect x="1300" y="250" width="180" height="100" rx="12" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="3"/>
+<text x="1390" y="292" font-weight="600">notify</text><text x="1390" y="318" font-weight="600">candidates</text>
+<text x="1390" y="380" font-size="17" font-style="italic" fill="#555">e-mails: idempotent</text><text x="1390" y="401" font-size="17" font-style="italic" fill="#555">(never sent twice)</text>
+</g>
+<!-- edges -->
+<g stroke="#555" stroke-width="3" fill="none">
+<line x1="65" y1="300" x2="96" y2="300" marker-end="url(#a)"/>
+<line x1="294" y1="300" x2="331" y2="300" marker-end="url(#a)"/>
+<line x1="515" y1="300" x2="576" y2="300" stroke-dasharray="9 6" marker-end="url(#a)"/>
+<line x1="760" y1="300" x2="811" y2="300" marker-end="url(#a)"/>
+<line x1="995" y1="300" x2="1046" y2="300" marker-end="url(#a)"/>
+<line x1="1230" y1="300" x2="1296" y2="300" stroke-dasharray="9 6" marker-end="url(#a)"/>
+<line x1="1480" y1="300" x2="1526" y2="300" marker-end="url(#a)"/>
+<path d="M425,250 C425,150 1140,150 1140,246" stroke-dasharray="9 6" marker-end="url(#a)"/>
+<path d="M1140,410 C1140,470 1550,470 1550,324" stroke-dasharray="9 6" marker-end="url(#a)"/>
+</g>
+<g font-size="18" fill="#555" font-style="italic">
+<text x="546" y="290">some</text><text x="546" y="330">eligible</text>
+<text x="782" y="160">nobody eligible</text>
+<text x="1265" y="290">yes</text>
+<text x="1400" y="490">no: nothing is sent</text>
+</g>
+<text x="300" y="490" font-size="18" fill="#555" font-style="italic">dashed: conditional edges (guards on the state)</text>
+<!-- state -->
+<rect x="40" y="540" width="1520" height="130" rx="12" fill="#7e57c2" fill-opacity="0.10" stroke="#7e57c2" stroke-width="3"/>
+<text x="800" y="578" font-size="24" font-weight="600" fill="#7e57c2">State (saved after each step: a checkpoint)</text>
+<g font-size="20" font-family="Menlo, Consolas, monospace">
+<text x="800" y="616">run · candidates · transcripts · problems · scores · ranking · approved · notified</text>
+</g>
+<text x="800" y="652" font-size="19" font-style="italic" fill="#555">each step reads (part of) the state, and returns a partial update; the engine merges it, and picks the next step</text>
+</svg>

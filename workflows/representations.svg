@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 520" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<rect x="30" y="150" width="270" height="150" rx="9" fill="#555" fill-opacity="0.12" stroke="#555" stroke-width="2.5"/>
+<text x="165.0" y="197" font-size="19" font-weight="600">Intention</text>
+<text x="165.0" y="220" font-size="19">“invite the two best</text>
+<text x="165.0" y="243" font-size="19">candidates to an</text>
+<text x="165.0" y="266" font-size="19">interview on Monday”</text>
+<line x1="300" y1="225" x2="346" y2="225" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="350" y="110" width="330" height="230" rx="9" fill="#7e57c2" fill-opacity="0.12" stroke="#7e57c2" stroke-width="2.5"/>
+<text x="515.0" y="184" font-size="20" font-weight="600">Representation</text>
+<text x="515.0" y="208" font-size="20">a structured artefact:</text>
+<text x="515.0" y="232" font-size="20">checklist · plan · schema</text>
+<text x="515.0" y="256" font-size="20">process model</text>
+<text x="515.0" y="280" font-size="20">tool contract</text>
+<line x1="680" y1="225" x2="726" y2="225" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="730" y="110" width="330" height="230" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="895.0" y="184" font-size="20" font-weight="600">Verification</text>
+<text x="895.0" y="208" font-size="20">code checks first</text>
+<text x="895.0" y="232" font-size="20">(schemas, preconditions)</text>
+<text x="895.0" y="256" font-size="20">then critics</text>
+<text x="895.0" y="280" font-size="20">(LLM judges, humans)</text>
+<line x1="1060" y1="225" x2="1106" y2="225" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1110" y="150" width="300" height="150" rx="9" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="2.5"/>
+<text x="1260.0" y="208" font-size="20" font-weight="600">Execution</text>
+<text x="1260.0" y="232" font-size="20">steps with side effects,</text>
+<text x="1260.0" y="256" font-size="20">only once verified</text>
+<line x1="1410" y1="225" x2="1446" y2="225" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<circle cx="1470" cy="225" r="18" fill="#fff" stroke="#555" stroke-width="3"/><circle cx="1470" cy="225" r="9" fill="#555"/>
+<path d="M895,110 C895,40 515,40 515,106" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="705" y="52" font-size="18" fill="#555" font-style="italic" text-anchor="middle">rejected: back, with the reasons (e.g. LLM-Modulo)</text>
+<rect x="30" y="390" width="1440" height="90" rx="12" fill="#555" fill-opacity="0.08" stroke="#555" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="750" y="428" font-size="21" fill="#222" font-weight="600" text-anchor="middle">Log and trace: every intention, representation, verdict, and action is recorded</text>
+<text x="750" y="460" font-size="18" fill="#555" font-style="italic" text-anchor="middle">humans can inspect, contest, and audit what was meant, what was checked, and what was done</text>
+<line x1="165" y1="300" x2="165" y2="388" stroke="#555" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="515" y1="340" x2="515" y2="388" stroke="#555" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="895" y1="340" x2="895" y2="388" stroke="#555" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="1260" y1="300" x2="1260" y2="388" stroke="#555" stroke-width="2" stroke-dasharray="4 4"/>
+</svg>

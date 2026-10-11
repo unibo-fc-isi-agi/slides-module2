@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 860" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+<rect x="20" y="20" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="210.0" y="54" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Prompt chaining</text>
+<text x="210.0" y="404" font-size="16" fill="#555" font-style="italic" text-anchor="middle">fixed sub-tasks, checked in between</text>
+<rect x="50" y="110" width="90" height="60" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="95.0" y="146" font-size="18" font-weight="600">LLM 1</text>
+<line x1="140" y1="140" x2="166" y2="140" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="168" y="110" width="84" height="60" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="210.0" y="146" font-size="18" font-weight="600">gate</text>
+<line x1="252" y1="140" x2="278" y2="140" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="280" y="110" width="90" height="60" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="325.0" y="146" font-size="18" font-weight="600">LLM 2</text>
+<path d="M210,170 L210,250" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<rect x="160" y="252" width="100" height="50" rx="9" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="2.5"/>
+<text x="210.0" y="283" font-size="17" font-weight="600">stop</text>
+<text x="270" y="220" font-size="15" fill="#555" font-style="italic" text-anchor="middle">check fails</text>
+<text x="210.0" y="350" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. extract → validate → score</text>
+<rect x="415" y="20" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="605.0" y="54" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Routing</text>
+<text x="605.0" y="404" font-size="16" fill="#555" font-style="italic" text-anchor="middle">distinct categories, distinct handling</text>
+<rect x="445" y="180" width="110" height="64" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="500.0" y="218" font-size="18" font-weight="600">router</text>
+<rect x="645" y="100" width="120" height="60" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="705.0" y="136" font-size="17" font-weight="600">route A</text>
+<path d="M555,212 L643,130" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<rect x="645" y="182" width="120" height="60" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="705.0" y="218" font-size="17" font-weight="600">route B</text>
+<path d="M555,212 L643,212" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<rect x="645" y="264" width="120" height="60" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="705.0" y="300" font-size="17" font-weight="600">route C</text>
+<path d="M555,212 L643,294" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="605.0" y="360" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. regulations / status / suspicious</text>
+<rect x="810" y="20" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="1000.0" y="54" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Parallelisation</text>
+<text x="1000.0" y="404" font-size="16" fill="#555" font-style="italic" text-anchor="middle">independent sub-tasks (or votes)</text>
+<rect x="835" y="180" width="80" height="60" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="875.0" y="216" font-size="18" font-weight="600">split</text>
+<rect x="960" y="100" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1000.0" y="134" font-size="17" font-weight="600">LLM</text>
+<line x1="915" y1="210" x2="958" y2="128" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="1040" y1="128" x2="1083" y2="210" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="960" y="182" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1000.0" y="216" font-size="17" font-weight="600">LLM</text>
+<line x1="915" y1="210" x2="958" y2="210" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="1040" y1="210" x2="1083" y2="210" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="960" y="264" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1000.0" y="298" font-size="17" font-weight="600">LLM</text>
+<line x1="915" y1="210" x2="958" y2="292" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="1040" y1="292" x2="1083" y2="210" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1085" y="180" width="85" height="60" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="1127.5" y="206" font-size="16" font-weight="600">merge</text>
+<text x="1127.5" y="226" font-size="16">or vote</text>
+<text x="1000.0" y="360" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. one transcript per branch</text>
+<rect x="1205" y="20" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="1395.0" y="54" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Orchestrator–workers</text>
+<text x="1395.0" y="404" font-size="16" fill="#555" font-style="italic" text-anchor="middle">sub-tasks decided by an LLM</text>
+<rect x="1230" y="180" width="115" height="64" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1287.5" y="218" font-size="17" font-weight="600">orchestrator</text>
+<rect x="1385" y="100" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1425.0" y="134" font-size="16" font-weight="600">worker</text>
+<line x1="1345" y1="212" x2="1383" y2="128" stroke="#555" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<line x1="1465" y1="128" x2="1488" y2="212" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1385" y="182" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1425.0" y="216" font-size="16" font-weight="600">worker</text>
+<line x1="1345" y1="212" x2="1383" y2="210" stroke="#555" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<line x1="1465" y1="210" x2="1488" y2="212" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1385" y="264" width="80" height="56" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1425.0" y="298" font-size="16" font-weight="600">worker</text>
+<line x1="1345" y1="212" x2="1383" y2="292" stroke="#555" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<line x1="1465" y1="292" x2="1488" y2="212" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1490" y="180" width="80" height="64" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1530.0" y="208" font-size="16" font-weight="600">synthe-</text>
+<text x="1530.0" y="228" font-size="16">sizer</text>
+<text x="1395.0" y="360" font-size="17" fill="#555" font-style="italic" text-anchor="middle">how many workers? the LLM decides</text>
+<rect x="20" y="440" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="210.0" y="474" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Evaluator–optimizer</text>
+<text x="210.0" y="824" font-size="16" fill="#555" font-style="italic" text-anchor="middle">clear criteria; bounded loop</text>
+<rect x="60" y="580" width="120" height="70" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="120.0" y="621" font-size="18" font-weight="600">generator</text>
+<rect x="240" y="580" width="120" height="70" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="300.0" y="610" font-size="17" font-weight="600">evaluator</text>
+<text x="300.0" y="631" font-size="17">(judge)</text>
+<path d="M180,600 L238,600" stroke="#555" stroke-width="2.5" fill="none" marker-end="url(#a)"/>
+<path d="M240,635 L182,635" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="210" y="672" font-size="15" fill="#555" font-style="italic" text-anchor="middle">issues</text>
+<path d="M300,650 L300,720" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="270" y="742" font-size="15" fill="#555" font-style="italic" text-anchor="middle">done: accepted, or N rounds</text>
+<text x="210.0" y="785" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. feedback letters</text>
+<rect x="415" y="440" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="605.0" y="474" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Human-in-the-loop</text>
+<text x="605.0" y="824" font-size="16" fill="#555" font-style="italic" text-anchor="middle">irreversible or norm-sensitive actions</text>
+<rect x="440" y="590" width="90" height="60" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="485.0" y="626" font-size="18" font-weight="600">draft</text>
+<line x1="530" y1="620" x2="558" y2="620" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="560" y="590" width="95" height="60" rx="9" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="2.5"/>
+<text x="607.5" y="626" font-size="18" font-weight="600">human</text>
+<line x1="655" y1="620" x2="683" y2="620" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="685" y="590" width="85" height="60" rx="9" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="2.5"/>
+<text x="727.5" y="626" font-size="18" font-weight="600">act</text>
+<text x="607" y="685" font-size="15" fill="#555" font-style="italic" text-anchor="middle">approve / edit / reject</text>
+<path d="M607,590 C607,540 485,540 485,588" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="545" y="540" font-size="15" fill="#555" font-style="italic" text-anchor="middle">revise</text>
+<text x="605.0" y="785" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. the committee's approval</text>
+<rect x="810" y="440" width="380" height="400" rx="14" fill="#fff" stroke="#ccc" stroke-width="2"/>
+<text x="1000.0" y="474" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Plan-and-execute</text>
+<text x="1000.0" y="824" font-size="16" fill="#555" font-style="italic" text-anchor="middle">a plan, checked before acting</text>
+<rect x="830" y="580" width="80" height="64" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="870.0" y="618" font-size="18" font-weight="600">plan</text>
+<line x1="910" y1="612" x2="928" y2="612" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="930" y="580" width="80" height="64" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="970.0" y="618" font-size="16" font-weight="600">validate</text>
+<line x1="1010" y1="612" x2="1028" y2="612" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1030" y="580" width="60" height="64" rx="9" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="2.5"/>
+<text x="1060.0" y="618" font-size="16" font-weight="600">ok?</text>
+<line x1="1090" y1="612" x2="1103" y2="612" stroke="#555" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="1105" y="580" width="70" height="64" rx="9" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="2.5"/>
+<text x="1140.0" y="618" font-size="16" font-weight="600">exec.</text>
+<path d="M1140,644 C1140,730 870,730 870,646" stroke="#555" stroke-width="2.5" fill="none" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="1005" y="750" font-size="15" fill="#555" font-style="italic" text-anchor="middle">re-plan, seeing the results</text>
+<text x="1000.0" y="785" font-size="17" fill="#555" font-style="italic" text-anchor="middle">e.g. ad-hoc requests</text>
+<rect x="1205" y="440" width="380" height="400" rx="14" fill="#fafafa" stroke="#ccc" stroke-width="2"/>
+<text x="1395.0" y="480" font-size="23" fill="#222" font-weight="600" text-anchor="middle">Legend</text>
+<rect x="1245" y="510" width="34" height="34" rx="9" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="2.5"/>
+<text x="1262.0" y="533" font-size="18" font-weight="600"></text>
+<text x="1295" y="534" font-size="19" fill="#222" text-anchor="start">LLM step</text>
+<rect x="1245" y="568" width="34" height="34" rx="9" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="2.5"/>
+<text x="1262.0" y="591" font-size="18" font-weight="600"></text>
+<text x="1295" y="592" font-size="19" fill="#222" text-anchor="start">data step (code)</text>
+<rect x="1245" y="626" width="34" height="34" rx="9" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="2.5"/>
+<text x="1262.0" y="649" font-size="18" font-weight="600"></text>
+<text x="1295" y="650" font-size="19" fill="#222" text-anchor="start">user-input step</text>
+<rect x="1245" y="684" width="34" height="34" rx="9" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="2.5"/>
+<text x="1262.0" y="707" font-size="18" font-weight="600"></text>
+<text x="1295" y="708" font-size="19" fill="#222" text-anchor="start">action step</text>
+<line x1="1245" y1="760" x2="1315" y2="760" stroke="#555" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#a)"/>
+<text x="1330" y="766" font-size="19" fill="#222" text-anchor="start">conditional edge</text>
+<text x="1395.0" y="815" font-size="16" fill="#555" font-style="italic" text-anchor="middle">patterns compose: e.g. routing, then a loop</text>
+</svg>

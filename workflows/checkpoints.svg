@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 560" font-family="Signika Negative, Helvetica, Arial, sans-serif" text-anchor="middle" fill="#222">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+<marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7e57c2"/></marker>
+</defs>
+<!-- lanes -->
+<g font-size="21" font-weight="600" fill="#555" text-anchor="start">
+<text x="20" y="88">process A</text><text x="20" y="112" font-size="17" font-weight="400" font-style="italic">(e.g. Monday)</text>
+<text x="20" y="438">process B</text><text x="20" y="462" font-size="17" font-weight="400" font-style="italic">(e.g. Wednesday)</text>
+</g>
+<!-- lane A -->
+<g font-size="19">
+<rect x="180" y="60" width="160" height="64" rx="10" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/><text x="260" y="99">read transcripts</text>
+<rect x="380" y="60" width="160" height="64" rx="10" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/><text x="460" y="99">check eligibility</text>
+<rect x="580" y="60" width="160" height="64" rx="10" fill="#2690e7" fill-opacity="0.18" stroke="#2690e7" stroke-width="3"/><text x="660" y="99">score letters</text>
+<rect x="780" y="60" width="160" height="64" rx="10" fill="#3a9a5b" fill-opacity="0.18" stroke="#3a9a5b" stroke-width="3"/><text x="860" y="99">rank</text>
+<rect x="980" y="60" width="160" height="64" rx="10" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="3"/><text x="1060" y="92">approval</text><text x="1060" y="114" font-size="16" font-style="italic">interrupt()</text>
+</g>
+<g stroke="#555" stroke-width="3">
+<line x1="340" y1="92" x2="376" y2="92" marker-end="url(#a)"/>
+<line x1="540" y1="92" x2="576" y2="92" marker-end="url(#a)"/>
+<line x1="740" y1="92" x2="776" y2="92" marker-end="url(#a)"/>
+<line x1="940" y1="92" x2="976" y2="92" marker-end="url(#a)"/>
+</g>
+<text x="1290" y="86" font-size="20" fill="#d64545" font-weight="600">✕ the process exits</text>
+<text x="1290" y="112" font-size="17" fill="#555" font-style="italic">the question goes to the committee</text>
+<!-- checkpointer -->
+<rect x="170" y="230" width="1400" height="80" rx="14" fill="#7e57c2" fill-opacity="0.10" stroke="#7e57c2" stroke-width="3"/>
+<text x="1440" y="263" font-size="20" font-weight="600" fill="#7e57c2">checkpointer</text>
+<text x="1440" y="288" font-size="17" fill="#7e57c2">(e.g. SQLite), thread T1</text>
+<g stroke="#7e57c2" stroke-width="2.5" stroke-dasharray="6 5">
+<line x1="260" y1="124" x2="260" y2="246" marker-end="url(#p)"/>
+<line x1="460" y1="124" x2="460" y2="246" marker-end="url(#p)"/>
+<line x1="660" y1="124" x2="660" y2="246" marker-end="url(#p)"/>
+<line x1="860" y1="124" x2="860" y2="246" marker-end="url(#p)"/>
+<line x1="1060" y1="124" x2="1060" y2="246" marker-end="url(#p)"/>
+</g>
+<g font-size="18" font-weight="600" fill="#fff">
+<circle cx="260" cy="270" r="17" fill="#7e57c2"/><text x="260" y="276">1</text>
+<circle cx="460" cy="270" r="17" fill="#7e57c2"/><text x="460" y="276">2</text>
+<circle cx="660" cy="270" r="17" fill="#7e57c2"/><text x="660" y="276">3</text>
+<circle cx="860" cy="270" r="17" fill="#7e57c2"/><text x="860" y="276">4</text>
+<circle cx="1060" cy="270" r="17" fill="#7e57c2"/><text x="1060" y="276">5</text>
+<circle cx="1200" cy="270" r="17" fill="#7e57c2"/><text x="1200" y="276">6</text>
+</g>
+<text x="660" y="214" font-size="17" fill="#555" font-style="italic" text-anchor="start" dx="10">state + next step(s)</text>
+<!-- lane B -->
+<g font-size="19">
+<rect x="980" y="410" width="160" height="64" rx="10" fill="#e7a626" fill-opacity="0.22" stroke="#e7a626" stroke-width="3"/><text x="1060" y="442">approval</text><text x="1060" y="464" font-size="16" font-style="italic">answer: “yes”</text>
+<rect x="1180" y="410" width="160" height="64" rx="10" fill="#d64545" fill-opacity="0.15" stroke="#d64545" stroke-width="3"/><text x="1260" y="449">notify</text>
+</g>
+<g stroke="#555" stroke-width="3"><line x1="1140" y1="442" x2="1176" y2="442" marker-end="url(#a)"/><line x1="1340" y1="442" x2="1386" y2="442" marker-end="url(#a)"/></g>
+<circle cx="1405" cy="442" r="16" fill="#fff" stroke="#555" stroke-width="3"/><circle cx="1405" cy="442" r="8" fill="#555"/>
+<path d="M1060,287 L1060,406" stroke="#7e57c2" stroke-width="3" fill="none" marker-end="url(#p)"/>
+<text x="1048" y="355" font-size="18" fill="#7e57c2" font-weight="600" text-anchor="end">resume: Command(resume="yes")</text>
+<text x="1048" y="379" font-size="17" fill="#7e57c2" text-anchor="end">same thread, last checkpoint</text>
+<path d="M1200,410 L1200,290" stroke="#7e57c2" stroke-width="2.5" stroke-dasharray="6 5" fill="none" marker-end="url(#p)"/>
+<!-- crash & time travel -->
+<text x="340" y="448" font-size="18" fill="#d64545" font-weight="600">⚡ a crash during “rank”?</text>
+<text x="340" y="473" font-size="17" fill="#555" font-style="italic">resume from checkpoint 3: transcripts</text>
+<text x="340" y="495" font-size="17" fill="#555" font-style="italic">and letters are NOT processed again</text>
+<path d="M460,287 C460,470 760,500 800,500" stroke="#7e57c2" stroke-width="2.5" stroke-dasharray="6 5" fill="none" marker-end="url(#p)"/>
+<text x="810" y="497" font-size="18" fill="#7e57c2" font-weight="600" text-anchor="start">time travel</text>
+<text x="810" y="521" font-size="17" fill="#555" font-style="italic" text-anchor="start">e.g. re-run from checkpoint 2,</text>
+<text x="810" y="543" font-size="17" fill="#555" font-style="italic" text-anchor="start">after fixing the scoring prompt</text>
+</svg>
