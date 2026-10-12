@@ -68,77 +68,77 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 ## `llmaas`
 
 ### Errors
-- [ ] Example 2 stores `assistant> ` prefixes in history (`example2/repl_chat_openai_async.py:46-48`) ✓; slide's simplified version (`:1043-1050`) differs from real code
-    - [ ] Fix: in lab-snippets `master` (and merge to `exercises`), print `chunk.replace("\n", "\nassistant> ")` but append the raw `chunk` to `answer_parts`; same pattern in exercise solutions reusing it. Line count unchanged, so `:1029` range `21-58` stays valid; slide `:1043-1050` then matches
-- [ ] `ollama chat gemma4:e2b` → `ollama run` (`:176`) ✓
-- [ ] Ollama base URL needs `/v1` for OpenAI client (`:209`) ✓; also `governance:819`
-    - [ ] Fix: `:209` → `http://localhost:11434/v1`; `governance:819` → "(and `OPENAI_BASE_URL=http://localhost:11434/v1` for Ollama)"
-- [ ] `response_format` json_schema shape wrong, typed as str (`:899-902`); correct in `prompting:278`
-    - [ ] Fix: type `dict`; value `{"type": "json_schema", "json_schema": {"name": STR, "description": STR, "schema": {...}, "strict": BOOL}}` (name required); `strict` = constrained decoding guaranteeing schema adherence, not just "extra fields"
-- [ ] Response YAML not a real `chat.completion` (`:972-1001`): Responses-API fields, `tool_calls` lacks `type`/`function` nesting, `tool_call` → `tool_calls`, content + tool_calls with `finish_reason: stop`
-    - [ ] Fix: drop `request_id`, `tool_choice`, `seed`, `top_p`, `temperature`, `*_penalty`, `metadata`, `response_format` (request params, not response fields; move `top_p`/penalties to the request-param slides); keep `id, object, created, model, system_fingerprint, service_tier, choices, usage`
-    - [ ] Fix: `tool_calls: [{id: call_..., type: function, function: {name: get_current_time, arguments: '{"timezone":"Europe/Rome"}'}}]`, `content: null`, `finish_reason: tool_calls`; comment lists `stop|length|tool_calls|content_filter`; or show two choices (text/stop vs tool call)
-- [ ] Sync/async conflated with non-streaming/streaming (`:753-755`, `:762`)
-    - [ ] Fix: two orthogonal axes: sync (`OpenAI`, blocking call) vs async (`AsyncOpenAI`, coroutines, `await`); `stream=False` (whole response) vs `stream=True` (chunks); both clients support both. Say Example 1 = sync/non-stream, Example 2 = async/stream by choice
-- [ ] Open Router routing described wrongly (`:437-441`): sorting is among providers of a model; throughput = tokens/s; `:exacto` is a model suffix
-    - [ ] Fix: rewrite as "for a given model, OR picks among the _providers_ serving it; default = load-balanced, price-weighted; override with `provider.sort` = `price` | `latency` | `throughput` (tokens/s), or suffixes `:floor` (price), `:nitro` (throughput), `:exacto` (providers with better tool-calling quality, e.g. `moonshotai/kimi-k2-0905:exacto`)". Cite <https://openrouter.ai/docs/guides/routing/provider-selection>, <https://openrouter.ai/docs/guides/routing/model-variants/exacto>
-- [ ] Check `provider/*`, `openai/gpt*` wildcards as `model` names (`:435-436`)
-    - [ ] Fix: wildcards are NOT valid `model` values: they are `allowed_models` patterns of the Auto Router (`model="openrouter/auto"`, `plugins=[{"id": "auto-router", "allowed_models": ["anthropic/*", "openai/gpt-5*"]}]`, or Settings > Plugins). Merge into the `openrouter/auto` bullet; cf. <https://openrouter.ai/docs/guides/routing/routers/auto-router>
+- [x] Example 2 stores `assistant> ` prefixes in history (`example2/repl_chat_openai_async.py:46-48`) ✓; slide's simplified version (`:1043-1050`) differs from real code
+    - [x] Fix: in lab-snippets `master` (and merge to `exercises`), print `chunk.replace("\n", "\nassistant> ")` but append the raw `chunk` to `answer_parts`; same pattern in exercise solutions reusing it. Line count unchanged, so `:1029` range `21-58` stays valid; slide `:1043-1050` then matches
+- [x] `ollama chat gemma4:e2b` → `ollama run` (`:176`) ✓
+- [x] Ollama base URL needs `/v1` for OpenAI client (`:209`) ✓; also `governance:819`
+    - [x] Fix: `:209` → `http://localhost:11434/v1`; `governance:819` → "(and `OPENAI_BASE_URL=http://localhost:11434/v1` for Ollama)"
+- [x] `response_format` json_schema shape wrong, typed as str (`:899-902`); correct in `prompting:278`
+    - [x] Fix: type `dict`; value `{"type": "json_schema", "json_schema": {"name": STR, "description": STR, "schema": {...}, "strict": BOOL}}` (name required); `strict` = constrained decoding guaranteeing schema adherence, not just "extra fields"
+- [x] Response YAML not a real `chat.completion` (`:972-1001`): Responses-API fields, `tool_calls` lacks `type`/`function` nesting, `tool_call` → `tool_calls`, content + tool_calls with `finish_reason: stop`
+    - [x] Fix: drop `request_id`, `tool_choice`, `seed`, `top_p`, `temperature`, `*_penalty`, `metadata`, `response_format` (request params, not response fields; move `top_p`/penalties to the request-param slides); keep `id, object, created, model, system_fingerprint, service_tier, choices, usage`
+    - [x] Fix: `tool_calls: [{id: call_..., type: function, function: {name: get_current_time, arguments: '{"timezone":"Europe/Rome"}'}}]`, `content: null`, `finish_reason: tool_calls`; comment lists `stop|length|tool_calls|content_filter`; or show two choices (text/stop vs tool call)
+- [x] Sync/async conflated with non-streaming/streaming (`:753-755`, `:762`)
+    - [x] Fix: two orthogonal axes: sync (`OpenAI`, blocking call) vs async (`AsyncOpenAI`, coroutines, `await`); `stream=False` (whole response) vs `stream=True` (chunks); both clients support both. Say Example 1 = sync/non-stream, Example 2 = async/stream by choice
+- [x] Open Router routing described wrongly (`:437-441`): sorting is among providers of a model; throughput = tokens/s; `:exacto` is a model suffix
+    - [x] Fix: rewrite as "for a given model, OR picks among the _providers_ serving it; default = load-balanced, price-weighted; override with `provider.sort` = `price` | `latency` | `throughput` (tokens/s), or suffixes `:floor` (price), `:nitro` (throughput), `:exacto` (providers with better tool-calling quality, e.g. `moonshotai/kimi-k2-0905:exacto`)". Cite <https://openrouter.ai/docs/guides/routing/provider-selection>, <https://openrouter.ai/docs/guides/routing/model-variants/exacto>
+- [x] Check `provider/*`, `openai/gpt*` wildcards as `model` names (`:435-436`)
+    - [x] Fix: wildcards are NOT valid `model` values: they are `allowed_models` patterns of the Auto Router (`model="openrouter/auto"`, `plugins=[{"id": "auto-router", "allowed_models": ["anthropic/*", "openai/gpt-5*"]}]`, or Settings > Plugins). Merge into the `openrouter/auto` bullet; cf. <https://openrouter.ai/docs/guides/routing/routers/auto-router>
 - [ ] curl request model ≠ response model/cost (`:492` vs `:505`, `:539`)
-    - [ ] Fix: re-run the `:492` curl with `nvidia/nemotron-3-super-120b-a12b:free` and paste real output (cost 0, provider Nvidia/other); don't switch curl to `gpt-5-nano` (paid, clashes with "no credit needed" `:460`)
+    - [ ] Fix: re-run the `:492` curl with `nvidia/nemotron-3-super-120b-a12b:free` and paste real output (cost 0, provider Nvidia/other); don't switch curl to `gpt-5-nano` (paid, clashes with "no credit needed" `:460`) — left for the final re-run with your keys
     - [ ] @gciatto says we will do a finall re-run of all exercises with his keys later
-- [ ] Ollama response YAML malformed nesting (`:232-249`)
-    - [ ] Fix: indent `message:` at the same level as `index:` (2 spaces after `- `), its fields +2 under it, `finish_reason` aligned with `message`; indent `prompt_tokens/completion_tokens/total_tokens` under `usage:`
-- [ ] KV cache description wrong + garbled "the neural has processes" (`:272`)
-    - [ ] Fix: "the __key-value (KV) cache__ stores, for every layer, the attention _keys_ and _values_ computed for each token processed so far (prompt + generated)..."; size ∝ layers × context length × KV heads × head dim
-- [ ] Response called "a dictionary" (`:764`): it's a pydantic `ChatCompletion`
-- [ ] "Responses mostly OpenAI/Azure-native" possibly stale (`:648-649`), contradicts table `:1188`
-    - [ ] Fix: "Chat Completions: supported nearly everywhere; Responses: native in OpenAI/Azure, increasingly mirrored (OpenRouter beta, Ollama ≥0.13.3 stateless only, vLLM) but often partially" — consistent with `~` in the table
-- [ ] Ollama unsupported features mis-exemplified (fine-tuning, custom models) (`:208`)
-    - [ ] Fix: per <https://docs.ollama.com/api/openai-compatibility>: unsupported request fields `tool_choice`, `logit_bias`, `user`, `n`; `/v1/responses` stateless only; no files/batches/fine-tuning endpoints
-- [ ] Ollama Cloud prices in USD, not € (`:129`)
-- [ ] Example 2 sample output (`:1080-1102`) is a hallucinated translation: flag it as such or replace
-    - [ ] @gciatto wants to keep and add a fragment "notice: these are _not_ Longfellow's lines (real l.3: 'For the straightforward pathway had been lost'): a confident _hallucination_" (recommended: free teaching moment). Reference to actual lines: https://en.wikisource.org/wiki/Divine_Comedy_(Longfellow_1867)/Volume_1/Canto_1 as proof
+- [x] Ollama response YAML malformed nesting (`:232-249`)
+    - [x] Fix: indent `message:` at the same level as `index:` (2 spaces after `- `), its fields +2 under it, `finish_reason` aligned with `message`; indent `prompt_tokens/completion_tokens/total_tokens` under `usage:`
+- [x] KV cache description wrong + garbled "the neural has processes" (`:272`)
+    - [x] Fix: "the __key-value (KV) cache__ stores, for every layer, the attention _keys_ and _values_ computed for each token processed so far (prompt + generated)..."; size ∝ layers × context length × KV heads × head dim
+- [x] Response called "a dictionary" (`:764`): it's a pydantic `ChatCompletion`
+- [x] "Responses mostly OpenAI/Azure-native" possibly stale (`:648-649`), contradicts table `:1188`
+    - [x] Fix: "Chat Completions: supported nearly everywhere; Responses: native in OpenAI/Azure, increasingly mirrored (OpenRouter beta, Ollama ≥0.13.3 stateless only, vLLM) but often partially" — consistent with `~` in the table
+- [x] Ollama unsupported features mis-exemplified (fine-tuning, custom models) (`:208`)
+    - [x] Fix: per <https://docs.ollama.com/api/openai-compatibility>: unsupported request fields `tool_choice`, `logit_bias`, `user`, `n`; `/v1/responses` stateless only; no files/batches/fine-tuning endpoints
+- [x] Ollama Cloud prices in USD, not € (`:129`)
+- [x] Example 2 sample output (`:1080-1102`) is a hallucinated translation: flag it as such or replace
+    - [x] @gciatto wants to keep and add a fragment "notice: these are _not_ Longfellow's lines (real l.3: 'For the straightforward pathway had been lost'): a confident _hallucination_" (recommended: free teaching moment). Reference to actual lines: https://en.wikisource.org/wiki/Divine_Comedy_(Longfellow_1867)/Volume_1/Canto_1 as proof
 
 ### Inconsistencies
-- [ ] Open Router limits URL differs: `docs/api/reference/limits` (`:414`) vs `docs/api_reference/limits` (`free-access:66`, `:191`)
-    - [ ] Fix: use `https://openrouter.ai/docs/api_reference/limits` everywhere (the `:414` one 308-redirects to it)
-- [ ] API key format `sk-or-XXXX` (`:480`) vs `sk-or-v1-...` (`:823`, landing `:164`)
-- [ ] Gemini "structurally different" (`:685-691`) but `free-access:14,63,73` relies on its OpenAI-compatible endpoint
-    - [ ] Fix: add to pt. 4 Portability: "...but Google also exposes an [OpenAI-compatible endpoint](https://ai.google.dev/gemini-api/docs/openai) (`https://generativelanguage.googleapis.com/v1beta/openai/`), with a subset of features"
-- [ ] Overhead 10–20% (`:276`) vs 10–30% (`:295`)
-    - [ ] Fix: `:276` is runtime overhead only, `:295` includes KV cache; reword `:295` to "add ~10–20% runtime overhead, plus the KV cache (grows with context: several GB at 32k+ tokens)"
-- [ ] "2× 80 GB" row understates capacity (`:377`)
-    - [ ] Fix: "≤ 70B at 16-bit (140 GB, tight), ~120B+ at 8-bit, larger with 4-bit or MoE"
-- [ ] Deployment options: 2 here (`:19-25`) vs 3 in `governance:92-98` (hosted open weights missing here)
-    - [ ] Fix: add under on-cloud: "+ incl. _open-weights_ models hosted by third parties (e.g. OR, HF Inference): cf. [three options](../governance/#/deployment-options)"
-- [ ] `openai.AsyncClient` (`:759`) vs `AsyncOpenAI` in code
-- [ ] List numbering skips 6 (`:840`); 2-space indentation at `:1015-1021`
+- [x] Open Router limits URL differs: `docs/api/reference/limits` (`:414`) vs `docs/api_reference/limits` (`free-access:66`, `:191`)
+    - [x] Fix: use `https://openrouter.ai/docs/api_reference/limits` everywhere (the `:414` one 308-redirects to it)
+- [x] API key format `sk-or-XXXX` (`:480`) vs `sk-or-v1-...` (`:823`, landing `:164`)
+- [x] Gemini "structurally different" (`:685-691`) but `free-access:14,63,73` relies on its OpenAI-compatible endpoint
+    - [x] Fix: add to pt. 4 Portability: "...but Google also exposes an [OpenAI-compatible endpoint](https://ai.google.dev/gemini-api/docs/openai) (`https://generativelanguage.googleapis.com/v1beta/openai/`), with a subset of features"
+- [x] Overhead 10–20% (`:276`) vs 10–30% (`:295`)
+    - [x] Fix: `:276` is runtime overhead only, `:295` includes KV cache; reword `:295` to "add ~10–20% runtime overhead, plus the KV cache (grows with context: several GB at 32k+ tokens)"
+- [x] "2× 80 GB" row understates capacity (`:377`)
+    - [x] Fix: "≤ 70B at 16-bit (140 GB, tight), ~120B+ at 8-bit, larger with 4-bit or MoE"
+- [x] Deployment options: 2 here (`:19-25`) vs 3 in `governance:92-98` (hosted open weights missing here)
+    - [x] Fix: add under on-cloud: "+ incl. _open-weights_ models hosted by third parties (e.g. OR, HF Inference): cf. [three options](../governance/#/deployment-options)"
+- [x] `openai.AsyncClient` (`:759`) vs `AsyncOpenAI` in code
+- [x] List numbering skips 6 (`:840`); 2-space indentation at `:1015-1021`
 
 ### Redundancies / placement
-- [ ] Capabilities listed 3 times (`:614-632`, `:643-647`, table `:1176-1188`); pt. 1–6 (`:636-713`) vs table
-    - [ ] @gciatto: (a) keep `:614-632` (generic expectations) + table
-- [ ] Chat Completion concept (`:567-581`) restated in "ingredients" (`:757-769`)
-    - [ ] Fix: shorten ingredients 3–6 to SDK-specific facts (types, method names, doc links), replacing statelessness prose (`:767-769`) with "(cf. [Chat Completion concept](#/chat-completion-concept))"
-- [ ] OR free limits duplicated with `free-access:66`: link `../free-access/#/free-tiers`
-- [ ] LangChain promised in "Reference technologies" (`:729`, `:741-743`) but introduced only in `prompting`
-    - [ ] Fix: drop LangChain from `:729`; in `:741-743` add "(used from the [next lecture](../prompting/#/...) on)" with the prompting anchor where LangChain is introduced
-- [ ] `custom` grammar tool example (`:927-938`, `:959`) too advanced / unused later
-    - [ ] Fix: remove the `custom` dict from the code block and `:959`; replace with one line "OpenAI also supports `custom` tools with free-text/grammar inputs (rarely supported by other providers)"
-- [ ] "Focus on Anthropic's Client Library" (`:1116`) should be `#`, not `##`
+- [x] Capabilities listed 3 times (`:614-632`, `:643-647`, table `:1176-1188`); pt. 1–6 (`:636-713`) vs table
+    - [x] @gciatto: (a) keep `:614-632` (generic expectations) + table — done: pt. 1 capabilities reduced to one line linking the table
+- [x] Chat Completion concept (`:567-581`) restated in "ingredients" (`:757-769`)
+    - [x] Fix: shorten ingredients 3–6 to SDK-specific facts (types, method names, doc links), replacing statelessness prose (`:767-769`) with "(cf. [Chat Completion concept](#/chat-completion-concept))"
+- [x] OR free limits duplicated with `free-access:66`: link `../free-access/#/free-tiers`
+- [x] LangChain promised in "Reference technologies" (`:729`, `:741-743`) but introduced only in `prompting`
+    - [x] Fix: drop LangChain from `:729`; in `:741-743` add "(used from the [next lecture](../prompting/#/...) on)" with the prompting anchor where LangChain is introduced
+- [x] `custom` grammar tool example (`:927-938`, `:959`) too advanced / unused later
+    - [x] Fix: remove the `custom` dict from the code block and `:959`; replace with one line "OpenAI also supports `custom` tools with free-text/grammar inputs (rarely supported by other providers)"
+- [x] "Focus on Anthropic's Client Library" (`:1116`) should be `#`, not `##`
 
 ### Holes
-- [ ] No link to Free Access appendix
-    - [ ] Fix: in OR pt. 1 (`:413`) and Example 1 setup, add "other free options: [Free Access appendix](../free-access/)"
-- [ ] Explain `e2b` / effective parameters (`:89-93`), and why `ollama ps` shows 7.2 GB (`:388`)
-    - [ ] Fix: add to `_size_`: "`e2b`: _effective_ 2B (Gemma 3n/4: 2.3B compute, 5.1B incl. per-layer embeddings)"; at `:388` note size = all weights (5.1B, vision/audio encoders, higher-precision tags: Ollama lists 4.6–7.5 GB) + KV cache
-    - [ ] @gciatto: output is "illustrative": verify 7.2 GB with a real `ollama ps` on your machine
-- [ ] Forward pointer to embeddings endpoint (used in `rag:147`)
-    - [ ] Fix: in pt. 2 (`:655`) add "(`/v1/embeddings` turns text into vectors: cf. the [RAG lecture](../rag/))"
-- [ ] How to pick a local model supporting tools / structured output (Ollama tags, OR "supported parameters")
-    - [ ] Fix: add 2 bullets to Model zoos pt. 2: Ollama zoo `tools`/`thinking`/`vision` badges (filter <https://ollama.com/search?c=tools>); OR models page filter "Supported parameters" (`tools`, `structured_outputs`, `response_format`)
-- [ ] HTTP 429, `Retry-After`, usage/cost fields before Exercise 2
-    - [ ] Fix: add one slide before `#/exercise-retry` (or into "About Chat Completion API" pt. 4): status codes 400/401/402/429/5xx, `Retry-After` header, `openai.RateLimitError`/`APIStatusError`, SDK `max_retries`, `usage` + OR `usage.cost`
+- [x] No link to Free Access appendix
+    - [x] Fix: in OR pt. 1 (`:413`) and Example 1 setup, add "other free options: [Free Access appendix](../free-access/)"
+- [x] Explain `e2b` / effective parameters (`:89-93`), and why `ollama ps` shows 7.2 GB (`:388`)
+    - [x] Fix: add to `_size_`: "`e2b`: _effective_ 2B (Gemma 3n/4: 2.3B compute, 5.1B incl. per-layer embeddings)"; at `:388` note size = all weights (5.1B, vision/audio encoders, higher-precision tags: Ollama lists 4.6–7.5 GB) + KV cache
+    - [x] @gciatto: output is "illustrative": verify 7.2 GB with a real `ollama ps` on your machine — verified on this Mac: `ollama ps` shows 1.7 GB (7.2 GB is the on-disk size from `ollama list`); slide updated with the real output
+- [x] Forward pointer to embeddings endpoint (used in `rag:147`)
+    - [x] Fix: in pt. 2 (`:655`) add "(`/v1/embeddings` turns text into vectors: cf. the [RAG lecture](../rag/))"
+- [x] How to pick a local model supporting tools / structured output (Ollama tags, OR "supported parameters")
+    - [x] Fix: add 2 bullets to Model zoos pt. 2: Ollama zoo `tools`/`thinking`/`vision` badges (filter <https://ollama.com/search?c=tools>); OR models page filter "Supported parameters" (`tools`, `structured_outputs`, `response_format`)
+- [x] HTTP 429, `Retry-After`, usage/cost fields before Exercise 2
+    - [x] Fix: add one slide before `#/exercise-retry` (or into "About Chat Completion API" pt. 4): status codes 400/401/402/429/5xx, `Retry-After` header, `openai.RateLimitError`/`APIStatusError`, SDK `max_retries`, `usage` + OR `usage.cost` — new slide `#/api-errors` before Exercise 2
 ## `free-access`
 
 - [ ] Env-var advice (`:86`) omits `OPENAI_MODEL` (default is OR-only)

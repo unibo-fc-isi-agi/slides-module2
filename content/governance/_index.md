@@ -774,7 +774,7 @@ flowchart LR
     + one larger (possibly free) model on Open Router,
     + one _local_ model via Ollama (if your hardware allows it)
 2. Run the letter-scoring system on __all 3 letters__ of the running example, __5 times__ per letter per model
-    + the script is already parametric w.r.t. the model: just change `OPENAI_MODEL` (and `OPENAI_BASE_URL` for Ollama)
+    + the script is already parametric w.r.t. the model: just change `OPENAI_MODEL` (and `OPENAI_BASE_URL=http://localhost:11434/v1` for Ollama)
 3. For each model, __collect__:
     + the _scores_ (average, and _variance_ across the 5 runs: is the model _consistent_?)
     + the _agreement_ among models (do they rank candidates in the same way?)

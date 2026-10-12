@@ -23,6 +23,7 @@ outputs = ["Reveal"]
         + most commonly, containerized solutions provide the same _API_ as the on-cloud service, to facilitate migration between the two deployment options
     - On-cloud: the model is hosted and run on the _service provider's infrastructure_, and accessed via _API calls_
         + implies _<u>no</u> hardware requirements_ for the user, but a _cost per usage_ (e.g. per token, per request, etc.)
+        + incl. _open-weights_ models hosted by third parties (e.g. OR, Hugging Face Inference): cf. the [three options](../governance/#/deployment-options) in the governance lecture
 
 1. **Service Provider**: several exist, with different offerings in terms of models, pricing, and features
     - e.g. [OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google](https://cloud.google.com/vertex-ai), [Microsoft](https://azure.microsoft.com/en-us/services/cognitive-services/), [Hugging Face](https://huggingface.co/inference-api), or aggregators like [OpenRouter](https://openrouter.ai/)
@@ -84,10 +85,14 @@ outputs = ["Reveal"]
 | __Metadata__ | full model card, files, license, community | size, context, capabilities, quantization | price, context, latency/throughput stats, supported parameters |
 | __License__ | per model (shown as a tag) | per model (in the model page) | provider's _terms of service_ apply |
 
+- Need a model supporting _tools_ or _structured output_?
+    + Ollama: look for the `tools`, `thinking`, `vision` badges (e.g. [filter by tools](https://ollama.com/search?c=tools))
+    + Open Router: filter the models page by _supported parameters_ (e.g. `tools`, `structured_outputs`, `response_format`)
+
 ### Recurring naming conventions (worth decoding)
 
 - _family_ + _version_: `llama-3.1`, `qwen3`, `gemma-4`
-- _size_: `8b`, `70b`, or `26b-a4b` (MoE: total vs. active parameters)
+- _size_: `8b`, `70b`, or `26b-a4b` (MoE: total vs. active parameters), or `e2b` (_effective_ 2B: Gemma's ~2.3B parameters used in computation, 5.1B including per-layer embeddings)
 - _flavour_: `base` (pure next-token predictor) vs. `instruct` / `it` / `chat` (tuned to follow instructions: __this is what you want__ for Chat Completion), or `coder`, `vl` / `vision`, `thinking`
 - _quantization_ / _format_: `Q4_K_M`, `GGUF`, `AWQ`, `fp8`
 - _date_ / _snapshot_: `gpt-4o-2024-08-06` (pin it for _reproducibility_!)
@@ -126,7 +131,7 @@ Reference technology: [Ollama](https://ollama.com/)
 - Ollama's API supports both a native __CLI conversational interface__ and a __Web API__ for programmatic access, making it versatile for different use cases and user preferences
 
 - Ollama may also be used an [on-cloud service](https://ollama.com/pricing), but here we will focus on the on-premise deployment option alone
-    + three levels of premiumships (0€/month, 20€/month, 100€/month) with widening rate limitations
+    + three levels of premiumships ($0/month, $20/month, $100/month) with widening rate limitations
 
 ---
 
@@ -173,7 +178,7 @@ Reference technology: [Ollama](https://ollama.com/)
 5. You may use Ollama's native __CLI conversational interface__ to try the model out:
 
     ```bash
-    ollama chat gemma4:e2b
+    ollama run gemma4:e2b
     ```
 
     example of conversation (notice that the model is also showing its _thinking process_):
@@ -205,8 +210,8 @@ Reference technology: [Ollama](https://ollama.com/)
 ## On-premise Example with Ollama pt. 4
 
 6. Should you ever want to use the model _programmatically_, you can use Ollama's __API__, which is _partially_ compatible with OpenAI's API
-    * e.g. it supports the same `/v1/chat/completions` endpoint, but not all the features of OpenAI's API, e.g. fine-tuning, custom models, etc.
-    * in the client program, recall to set the __API base URL__ to point to your local Ollama service (by default: <http://localhost:11434>)
+    * e.g. it supports the same `/v1/chat/completions` endpoint, but not all the features of OpenAI's API, e.g. the `tool_choice`, `logit_bias`, `user`, and `n` request fields, nor the files, batches, or fine-tuning endpoints (cf. [compatibility page](https://docs.ollama.com/api/openai-compatibility))
+    * in the client program, recall to set the __API base URL__ to point to your local Ollama service (by default: <http://localhost:11434/v1>)
     * to prove that the API is working, you can send a test request via `curl`:
 
         ```bash
@@ -230,11 +235,11 @@ Reference technology: [Ollama](https://ollama.com/)
         model: gemma4:e2b
         system_fingerprint: fp_ollama
         choices:
-        - index: 0
+          - index: 0
             message:
-            role: assistant
-            content: The capital of France is **Paris**.
-            reasoning: |-
+              role: assistant
+              content: The capital of France is **Paris**.
+              reasoning: |-
                 Thinking Process:
 
                 1.  **Analyze the Request:** The user is asking a factual question: "What is the capital of France?"
@@ -244,9 +249,9 @@ Reference technology: [Ollama](https://ollama.com/)
                 5.  **Final Review:** The answer is correct and directly addresses the query. (Capital of France = Paris).
             finish_reason: stop
         usage:
-        prompt_tokens: 29
-        completion_tokens: 121
-        total_tokens: 150
+          prompt_tokens: 29
+          completion_tokens: 121
+          total_tokens: 150
         ```
 
 {{% /section %}}
@@ -269,9 +274,9 @@ Reference technology: [Ollama](https://ollama.com/)
 
 > __memory__ ≈ (number of params × bits per param / 8) [_weights_] + _KV cache_ [grows with context length] + _overhead_
 
-- the __key-value (KV) cache__ stores the attention values for the tokens (keys) that the neural has processes so far...
+- the __key-value (KV) cache__ stores, for every layer, the attention _keys_ and _values_ computed for each token processed so far (prompt + generated)...
     + ... so that they do not need to be recomputed for every new token generated
-    + its size _grows linearly_ with the _context length_
+    + its size _grows linearly_ with the _context length_ (∝ layers × context length × KV heads × head size)
         + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
 - the _overhead_ covers runtime buffers, activations, and driver context: usually an extra ~10–20%
 
@@ -292,7 +297,7 @@ Reference technology: [Ollama](https://ollama.com/)
 | 70B | 280 GB | 140 GB | ~74 GB | ~43 GB  |
 
 - i.e. GB ≈ billions of params × bits per weight / 8 (`Q8_0` ≈ 8.5 bits, `Q4_K_M` ≈ 4.9 bits, cf. [llama.cpp's quantize docs](https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md))
-- add ~10–30% on top for the KV cache and the runtime (more for long contexts)
+- add ~10–20% runtime overhead, plus the KV cache (it grows with the context: several GB at 32k+ tokens)
 - models are _trained_ in 16/32 bits, but most local users run them at __8 or 4 bits__: this is called _quantization_
 
 {{% fragment %}}
@@ -374,21 +379,23 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 | laptop, 16 GB unified memory (Apple Silicon) | ≤ 8B |
 | desktop, 12–16 GB VRAM GPU | ≤ 14B |
 | workstation, 24 GB VRAM GPU (or 32–64 GB unified memory) | ≤ 32B |
-| server, 2× 80 GB GPUs | ≤ 70B at 8-bit, larger with 4-bit or MoE |
+| server, 2× 80 GB GPUs | ≤ 70B at 16-bit (140 GB, tight), ~120B+ at 8-bit, larger with 4-bit or MoE |
 
 ### Software
 
 - up-to-date __GPU drivers__ (CUDA for Nvidia, ROCm for AMD; Metal is built into macOS)
 - a __runtime__: [Ollama](https://ollama.com) (simplest), [LM Studio](https://lmstudio.ai/) (GUI), [llama.cpp](https://github.com/ggml-org/llama.cpp) (lowest level), [vLLM](https://docs.vllm.ai/) (server-grade, high throughput, many concurrent users)
     + all of them expose an _OpenAI-compatible_ Web API, so client code does not change
-- check what is running, and _where_, with `ollama ps` (illustrative output):
+- check what is running, and _where_, with `ollama ps` (on an Apple Silicon laptop):
 
     ```text
-    NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL
-    gemma4:e2b    a1b2c3d4e5f6    7.2 GB    100% GPU     4096       4 minutes from now
+    NAME          ID              SIZE      PROCESSOR    CONTEXT    RUNNER    UNTIL
+    gemma4:e2b    7fbdbf8f5e45    1.7 GB    100% GPU     4096                 4 minutes from now
     ```
 
+    + `SIZE` is the memory _actually allocated_ (weights in use + KV cache), whereas `ollama list` shows the size _on disk_ (7.2 GB for `gemma4:e2b`: all weights, incl. per-layer embeddings and vision/audio encoders)
     + `PROCESSOR` tells whether the model is fully on the GPU, or split between CPU and GPU (e.g. `48%/52% CPU/GPU`)
+    + `CONTEXT` is the context window in use: Ollama's [default](https://docs.ollama.com/context-length) depends on the VRAM (4k tokens below 24 GiB, 32k up to 48 GiB, 256k above)
 
 {{% /section %}}
 
@@ -411,7 +418,8 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 
 - Its distinguishing feature is that it acts as an _aggregator_ of multiple service providers, allowing users to access a variety of models from different providers via a single API, and helping to avoid vendor lock-in
     + one can use OR for __free__, with _very limited rates_ (20 requests per minute, max 50 per day)
-        * one may __buy credits__ to widen the limitations for free models (see <https://openrouter.ai/docs/api/reference/limits> for details), or to use _pay-per-use_ models
+        * one may __buy credits__ to widen the limitations for free models (see <https://openrouter.ai/docs/api_reference/limits> for details), or to use _pay-per-use_ models
+        * other free options are listed in the [Free Access appendix](../free-access/#/free-tiers)
 
 - Pretty rich [model zoo](https://openrouter.ai/models), exposing models from <u>many</u> different providers, most notably: OpenAI, Anthropic, Google, xAI, Mistral, etc.
     + notice that models come with __price-per-token__, commonly expressed a `$/1M tokens` (some times the prices is different for _input_ or _output_ tokens)
@@ -430,15 +438,12 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
     + `tier` is an optional suffix that denotes a specific variant of the model (most commonly `free` for free models)
 
 
-- To allow for __dynamic routing__ of requests to different providers in a _transparent_ way, OR allows for the following meta-models:
-    + `openrouter/auto` ([AutoRouter](https://openrouter.ai/openrouter/auto)): let OR decide which provider/model to use for each request, based on the request's content and the current availability of models (__paid__: it may route to paid models, so it fails on accounts without credits)
-    + `provider/*` (e.g. `anthropic/*`, `google/*`, etc.): OR will serve each request with the best available model from the specified provider, according to the request's content and the current availability of models
-    + in general, you can reason like with Unix globs, so for instance `openai/gpt*` will match any OpenAI model whose name starts with `gpt` (as currently provided by OR)
-    + in the [routing settings](https://openrouter.ai/workspaces/default/routing) of your OR account, you can set up the __routing strategy__ OR should adopt:
-        1. __"Price"__ (cost-first): OR will route requests to the currently _cheapest_ model that can serve them
-        2. __"Latency"__: OR will route requests to the model that is _currently quicker_ to respond
-        3. __"Throughput"__: OR will route requests to the one that has currently the best stats in terms of _throughput_ (requests per minute)
-        4. __"Exacto"__ (quality-first): OR will route requests to the _best available_ model that can serve them (based on model's stats on tools usage)
+- __Dynamic routing__ of requests happens at two levels:
+    + among __models__: `openrouter/auto` ([Auto Router](https://openrouter.ai/docs/guides/routing/routers/auto-router)) lets OR pick the model for each request, based on its content (__paid__: it may route to paid models, so it fails on accounts without credits)
+        * the candidates can be restricted with _glob_ patterns, e.g. `anthropic/*` or `openai/gpt-5*`, in the router's `allowed_models` (these are __not__ valid `model` names by themselves)
+    + among __providers__ of a _given_ model: OR picks one of the providers serving it ([provider selection](https://openrouter.ai/docs/guides/routing/provider-selection)); by default, load-balanced and price-weighted
+        * override per request with `provider.sort` = `price` | `latency` | `throughput` (tokens per second), or in the [routing settings](https://openrouter.ai/workspaces/default/routing) of your OR account
+        * or with model _suffixes_: `:floor` (cheapest), `:nitro` (fastest throughput), [`:exacto`](https://openrouter.ai/docs/guides/routing/model-variants/exacto) (providers with better tool-calling quality, e.g. `moonshotai/kimi-k2-0905:exacto`)
 
 - __Bring your own API key__ (BYOK): OR allows you to _link_ your account with your API keys from _other providers_ so that you can use OR's API to access models from those providers, and therefore be charged according to the prices of those providers instead of OR's prices
     + this is a great feature to avoid vendor lock-in, and to have more control over the costs and the models you want to use
@@ -477,7 +482,7 @@ e.g. `ollama pull gemma4:e2b` downloads the default quantization, whereas tags l
 
     {{< image src="open-router-apikeys.png" alt="Open Router's API Keys Settings" max-h="40vh" >}}
 
-    + an API key is a string of the form: `sk-or-XXXXXXXXXXXXXXXXXXXXXXXX`: it is sufficient to <u>consume your credit</u> and to make requests on your behalf
+    + an API key is a string of the form: `sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXX`: it is sufficient to <u>consume your credit</u> and to make requests on your behalf
 
 ---
 
@@ -639,14 +644,10 @@ P -> U: "It's ... in Cesena"
 * **Abstraction**: Chat is role-message based; Responses is typed-item based
     - e.g. chat can be a content (e.g. text, image), provided by a role (e.g. user, assistant); responses can be a tool call, a tool result, a reasoning step, etc.
     - e.g. responses could be messages, or tool call or results
-* **Capabilities**:
-    - _calling tools_ (implies including tool definitions in the prompt, so that the model can call them)
-    - _structured_ output (e.g. constrain model response to match a given JSON schema)
-    - _multimodal_ (e.g. include images, audio, video in the prompt and/or response)
-    - _streaming_ (e.g. receive partial responses as they are generated by the model, instead of waiting for the full response)
-    - _reasoning traces_ (e.g. receive the model's reasoning process as part of the response, to understand how it arrived at its answer)
+* **Capabilities**: all the expected ones (tools, structured output, multimodality, streaming, reasoning traces), cf. the [comparison](#/api-comparison) below
+    - plus `/v1/embeddings`, turning text into _vectors_ (cf. the [RAG lecture](../rag/))
 * **Peculiarities**: "Responses" is more modern; "Chat Completions" is more compatible
-* **Portability**: "Chat Completions" is high; "Responses" is mostly OpenAI/Azure-native
+* **Portability**: "Chat Completions" is supported nearly everywhere; "Responses" is native in OpenAI/Azure, increasingly mirrored (e.g. OpenRouter, Ollama, vLLM), but often only _partially_
 
 ---
 
@@ -689,6 +690,7 @@ when this is the case, the client will fail at run-time, complaining about unsup
   - Example: analyze a PDF/image, call a function, return schema-constrained JSON
 * **Peculiarities**: multimodality is core, not an add-on to chat
 * **Portability**: powerful native API; structurally different from OpenAI/Anthropic
+  - ... but Google also exposes an [OpenAI-compatible endpoint](https://ai.google.dev/gemini-api/docs/openai) (`https://generativelanguage.googleapis.com/v1beta/openai/`), with a subset of the features
 
 ---
 
@@ -726,7 +728,7 @@ __OpenAI-like__ APIs are becoming the _de-facto_ standard, yet they are currentl
 
 # Client-side libraries for LLMs
 
-Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/api/docs/libraries), [LangChain](https://docs.langchain.com/oss/python/langchain/overview)
+Reference technology: [OpenAI Client Libraries](https://developers.openai.com/api/docs/libraries)
 
 ---
 
@@ -741,6 +743,7 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
     2. [LangChain](https://docs.langchain.com/oss/python/langchain/overview) flavoured for Python and JavaScript
         + it is a _third-party_ client library, which supports [multiple providers](https://docs.langchain.com/oss/python/integrations/providers/overview) and APIs (e.g. OpenAI, Anthropic, Google, Azure, etc.)
         + it is more focused on _orchestrating_ interactions with LLMs and tools, rather than just wrapping Web APIs
+        + used from the [next lecture](../prompting/#/langchain) on
 
 ---
 
@@ -750,23 +753,23 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
     * just run `pip install openai` to install it, into your (virtual) Python environment
     * in your Python scripts, just import the `openai` module
 
-- API comes with _synchronous_ and _asynchronous_ variants
-    * __synchronous__: the model's _response_ is returned as a _whole_, after the model has finished generating it (which may take _time_)
-    * __asynchronous__: the model's _response_ is returned as a _stream_ of parts, as they are generated by the model, allowing for a more fluid experience (content shown _ASAP_)
+- Two _orthogonal_ choices:
+    * __sync__ (`OpenAI`: each call _blocks_ until done) vs. __async__ (`AsyncOpenAI`: calls are _coroutines_, to be `await`ed, so that many can run concurrently)
+    * __non-streaming__ (`stream=False`: the _response_ is returned as a _whole_, after the model has finished generating it, which may take _time_) vs. __streaming__ (`stream=True`: a _stream_ of parts, as they are generated, so content is shown _ASAP_)
+    * both clients support both modes: Example 1 below is sync + non-streaming, Example 2 is async + streaming, by choice
 
 - In both cases, ingredients are essentially the same:
     1. __Env vars__ (or command line arguments): to parametrize your program w.r.t. _API keys_, API providers' _base urls_, _model names_, etc.
-    2. __Client__: an object of type `openai.OpenAI` (for _sync_) or `openai.AsyncClient` (for _async_) by which you interact with a model as provided by some provider
+    2. __Client__: an object of type `openai.OpenAI` (for _sync_) or `openai.AsyncOpenAI` (for _async_) by which you interact with a model as provided by some provider
         - documented "by example" at <https://github.com/openai/openai-python/blob/main/README.md>
     3. __Conversation history__: literally a _list_ of _dictionaries_, each one having two keys: `role` (e.g. "system", "user", "assistant") and `content` (actual text)
-    4. __Chat completion request__: a call to the `client.chat.completions.create()` method, accepting the conversation hystory as input plus some additional parameters (e.g. `temperature`, `max_tokens`, etc.) and returing either the full response (sync) or a stream of response parts (async), depending the parameter `stream` (respectively `False` or `True`)
+    4. __Chat completion request__: a call to the `client.chat.completions.create()` method, accepting the conversation history as input plus some additional parameters (e.g. `temperature`, `max_tokens`, etc.) and returning either the full response or a stream of response parts, depending on the parameter `stream` (respectively `False` or `True`)
         + documented here <https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create>
-    5. __Chat completion response__: a dictionary containing the model's response, including the generated content (e.g. in `.choices[0].message.content`), plus some additional metadata (e.g. `usage`, `model`, etc.)
+    5. __Chat completion response__: a `ChatCompletion` object (a `pydantic` model, mirroring the JSON response) containing the model's response, including the generated content (e.g. in `.choices[0].message.content`), plus some additional metadata (e.g. `usage`, `model`, etc.)
         + in principle, there could be multiple _choices_ in the response (in practice is often just one): the idea is that the model may produce alternative responses at once
         + documented here <https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve>
-    6. The __agent__, i.e. the program exploiting the aformentioned functionalities to accomplish some task
-        + in case multiple subsequent request–response interactions are needed, the agent should include also reponses' messages in the chat history
-        + this is because the model is _stateless_, and the HTTP API are _ReSTful_, but the "conversation" is _mutable_ entity
+    6. The __agent__, i.e. the program exploiting the aforementioned functionalities to accomplish some task
+        + it must append the responses' messages to the history, as the API is _stateless_ (cf. [Chat Completion concept](#/chat-completion-concept))
 
 ---
 
@@ -839,7 +842,7 @@ Example: if UTC is 13:00, then Cesena is 15:00. Want me to convert a specific ti
 you> ^CGoodbye!
 ```
 
-7. When you run it, pay attention to:
+6. When you run it, pay attention to:
     - time to get a response from the model (latency)
     - you have no way to know which model is actually serving your request, do you?
     - the model does not have access to real-time information, so it cannot answer questions about (e.g.) the current time
@@ -898,10 +901,10 @@ you> ^CGoodbye!
 
 - `stream` (bool, default: `False`): whether to receive the response as a stream of parts, as they are generated by the model, instead of waiting for the full response. If `True`, the API will return an iterator that yields partial responses.
 
-- `response_format` (str, default: `None`): the format in which the model should return the response
+- `response_format` (dict, default: `None`): the format in which the model should return the response
     - value `{ "type": "text" }` (default) means that the model should return a plain text response
-    - value `{ "type": "json_object" }` forces the model to produce a JSON outout (assumes the schema of the object is described in the system prompt, or in some previous message)
-    - value `{ "type": "json_schema", "description": STRING, "strict": BOOL, "schema": "..." }` forces the model to produce a JSON output matching the provided [JSON schema](https://json-schema.org/), with an optional `description` to better describe the schema to the model, and an optional `strict` flag to control how strictly the model should follow the schema (e.g. whether to allow extra fields or not)
+    - value `{ "type": "json_object" }` forces the model to produce a JSON output (assumes the schema of the object is described in the system prompt, or in some previous message)
+    - value `{ "type": "json_schema", "json_schema": { "name": STRING, "description": STRING, "schema": {...}, "strict": BOOL } }` forces the model to produce a JSON output matching the provided [JSON schema](https://json-schema.org/), where `name` is mandatory, `description` optionally describes the schema to the model, and `strict: true` enables _constrained decoding_, guaranteeing that the output adheres to the schema
         * this is important to support [structured output](https://developers.openai.com/api/docs/guides/structured-outputs), explained in the [next lecture](../prompting/#/structured-output)
 
 - `stop` (str or list of str, default: `None`): one or more sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
@@ -928,17 +931,6 @@ you> ^CGoodbye!
 
     tools=[
       dict(
-        type="custom",
-        custom={
-          "name": "timezone_lookup_dsl",
-          "description": "Resolve a city and country into an IANA timezone. The input must follow the DSL form TIMEZONE(\"City, Country\").",
-          "format": {
-            "type": "grammar",
-            "grammar": { "syntax": "regex", "definition": "^TIMEZONE\\(\"[A-Za-z .'-]+, [A-Za-z .'-]+\"\\)$" }
-          }
-        }
-      ),
-      dict(
         type="function",
         function={
           "name": "get_current_time",
@@ -958,7 +950,7 @@ you> ^CGoodbye!
 
     - type=`function` tools are described by their name, a natural language description of what they do, and a JSON schema describing the expected input for the tool (e.g. the parameters of the function)
         + `properties`: the arguments and their types; `required`: the mandatory ones; `additionalProperties: False`: no other argument allowed
-    - type=`custom` tools use a custom format description (e.g. a Regex describing the expected input for the tool) instead of JSON schema
+    - OpenAI also supports `custom` tools, with free-text or grammar-constrained inputs (rarely supported by other providers)
 
 ---
 
@@ -968,39 +960,32 @@ you> ^CGoodbye!
 
 ### What can you expect in the response of a chat completion request?
 
-Reponses are JSON objects containing many relevant metadata, explanation below in YAML syntax for better readability:
+Responses are JSON objects containing many relevant metadata, explanation below in YAML syntax for better readability:
 
 ```yaml
-object: chat.completion # the type of the returned object, which is "chat.completion" for chat completion requests
-id: chatcmpl-abc123 # a unique identifier for this chat completion, which can be used for tracking and debugging purposes
-model: gpt-4o-2024-08-06 # the actual model that served this request, which may be different from the one specified in the request due to dynamic routing or other factors
-created: 1738960610 # the Unix timestamp of when the chat completion was created, which can be useful for logging and debugging purposes
-request_id: req_ded8ab984ec4bf840f37566c1011c417 # a unique identifier for the request that led to this chat completion, which can be used for tracking and debugging purposes
-tool_choice: auto # the tool choice mode that was used for this chat completion, which can be "none", "auto", "required", or other variants
+object: chat.completion # the type of the returned object
+id: chatcmpl-abc123 # a unique identifier for this chat completion, for tracking and debugging purposes
+model: gpt-4o-2024-08-06 # the actual model that served this request, which may differ from the requested one (e.g. due to dynamic routing)
+created: 1738960610 # the Unix timestamp of when the chat completion was created
+system_fingerprint: fp_50cad350e4 # a fingerprint of the backend configuration that served this request
+service_tier: default # the processing tier used to serve the request
 usage: # the usage statistics for this chat completion
   prompt_tokens: 13 # input tokens
   completion_tokens: 18 # output tokens
   total_tokens: 31 # total tokens (input + output)
-seed: 4944116822809980000 # the random seed used for this chat completion, which can be useful for reproducibility and debugging purposes
-top_p: 1 # the top_p value used for this chat completion (settable in the request)
-temperature: 1 # the temperature value used for this chat completion (settable in the request)
-presence_penalty: 0 # the presence_penalty value used for this chat completion (settable in the request)
-frequency_penalty: 0  # the frequency_penalty value used for this chat completion (settable in the request)
-system_fingerprint: fp_50cad350e4 # a fingerprint of the system configuration that served this request, which can be used for tracking and debugging purposes
-metadata: {} # any additional metadata associated with this chat completion
-choices: # list of choices generated by the model for this chat completion, each one containing the same fields
+choices: # list of choices generated by the model (usually just one)
 - index: 0 # the index of this choice in the list of choices
-  message: # the message generated by the model for this choice, which can contain various fields depending on the content and the features used
-    content: "Mind of circuits hum,  \nLearning patterns in silence—  \nFuture's quiet
-      spark."
-    role: assistant # the role of the message, which can be "assistant", "tool", "system", etc.
-    tool_calls: # the list of tool calls made by the model in this message, if any, each one containing at least a `name` and `arguments`, and optionally some additional fields (e.g. `id`, `type`, etc.)
-      - name: get_current_time # the name of the tool that was called by the model
-        arguments: "{\"timezone\":\"Europe/Rome\"}" # the arguments passed to the tool call, which can be a JSON string or other format depending on the tool's definition
-        id: call_current_time_001 # a unique identifier for this tool call, which can
-  finish_reason: stop # the reason why the model stopped generating tokens for this choice, which can be "stop" (if the model reached a stop sequence), "length" (if the model reached the max_completion_tokens limit), "tool_call" (if the model made a tool call and stopped), or other reasons
-  logprobs: # the log probabilities of the generated tokens for this choice, which can be useful for analyzing the model's confidence and behavior (not always present in the response)
-response_format:
+  message: # the message generated by the model for this choice
+    role: assistant
+    content: null # the text of the answer, if any (here none, as the model asks for a tool call)
+    tool_calls: # the tool calls requested by the model, if any
+      - id: call_current_time_001 # a unique identifier for this tool call, to be referenced by the tool result
+        type: function
+        function:
+          name: get_current_time # the name of the tool to be called
+          arguments: "{\"timezone\":\"Europe/Rome\"}" # the arguments, as a JSON string
+  finish_reason: tool_calls # why the model stopped: "stop" (natural end, or stop sequence), "length" (max_completion_tokens reached), "tool_calls", "content_filter"
+  logprobs: null # the log probabilities of the generated tokens, if requested
 ```
 
 - _sampling_ parameters (besides `temperature`): `top_p` samples only among the most likely tokens whose probabilities sum to `top_p` (_nucleus sampling_); `presence_penalty` / `frequency_penalty` discourage _repeating_ tokens already generated
@@ -1016,11 +1001,11 @@ response_format:
 
 1. Client setup is very similar to the sync version, but we use `AsyncOpenAI(...)` and keep the same env-driven configuration style:
 
-  {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="7" to="15" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example2/repl_chat_openai_async.py" from="7" to="15" %}}
 
-  notice that:
-  - `AsyncOpenAI(...)` is the async counterpart of `OpenAI(...)`
-  - we need module `asyncio` to run the main async function, and to handle async calls in general
+    notice that:
+    - `AsyncOpenAI(...)` is the async counterpart of `OpenAI(...)`
+    - we need module `asyncio` to run the main async function, and to handle async calls in general
 
 2. As the program is asynchronous, we need to define an `async def main():` function, which will contain the main logic of our program, and then run it with `asyncio.run(main())` at the end of the script
 
@@ -1046,9 +1031,10 @@ Differences w.r.t. the sync version are in the way we i. create the completion r
 stream = await client.chat.completions.create(..., stream=True) # create the request + open response stream
 answer_parts = [] # buffer to store the parts of the answer as they arrive
 async for item in stream:
-    chunk = item.choices[0].delta.content or "" # get each chuck of the answer as it arrives (if any)
+    chunk = item.choices[0].delta.content or "" # get each chunk of the answer as it arrives (if any)
+    print(chunk, end="", flush=True) # show it immediately
     answer_parts.append(chunk) # store the chunk in the buffer
-messages.append(dict(role="assistant", content="".join(answer_parts))) # reconstract the full answer and store it in the conversation history
+messages.append(dict(role="assistant", content="".join(answer_parts))) # reconstruct the full answer and store it in the conversation history
 ```
 
 - notice the `.delta` field in the response parts: the _new_ piece of text, rather than the whole `message`
@@ -1111,11 +1097,15 @@ you> Goodbye!
 6. When you run it, pay attention to:
     - perceived latency (first token arrives earlier than full-response mode)
 
+{{% fragment %}}
+> Notice: these are __not__ Longfellow's lines (his line 3 is "_For the straightforward pathway had been lost_", cf. [Wikisource](https://en.wikisource.org/wiki/Divine_Comedy_(Longfellow_1867)/Volume_1/Canto_1)): a confident __hallucination__
+{{% /fragment %}}
+
 {{% /section %}}
 
 ---
 
-## Focus on Anthropic's Client Library for Python
+# Focus on Anthropic's Client Library for Python
 
 ---
 
@@ -1171,6 +1161,8 @@ you> Goodbye!
 ```
 
 ---
+
+{{< slide id="api-comparison" >}}
 
 ## Analogies and differences among providers' APIs
 
@@ -1314,6 +1306,21 @@ Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippet
     + set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), as for Example 1, plus `LLM_CACHE_DIR`
 
 {{% /section %}}
+
+---
+
+{{< slide id="api-errors" >}}
+
+## When things go wrong: errors, rate limits, and costs
+
+- Requests may __fail__, with HTTP status codes worth distinguishing:
+    + `400` (bad request, e.g. unsupported parameter), `401` (wrong API key), `402` (no credits left, on OR): fix the request, do __not__ retry
+    + `429` (_rate limit_ exceeded): wait, then retry; the `Retry-After` header (if any) says how long
+    + `5xx` (server-side failure, overload): retry later, with _exponential backoff_
+- In the `openai` SDK, they surface as _exceptions_: `openai.RateLimitError` (429), `openai.APIStatusError` (any other status, with `.status_code`), `openai.APIConnectionError` (network)
+    + the client _already_ retries some of them (2 times by default, cf. the `max_retries` constructor parameter)
+- Each response carries its __usage__ (`prompt_tokens`, `completion_tokens`, ...): log it to keep track of _costs_
+    + OR also adds `usage.cost` (in credits, i.e. USD), cf. the [response above](#/open-router)
 
 ---
 
