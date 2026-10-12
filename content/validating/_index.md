@@ -33,7 +33,8 @@ outputs = ["Reveal"]
     + outputs are _non-deterministic_ (same input, different outputs)
     + outputs are _open-ended_ (many correct answers, no single expected value)
     + behaviour changes whenever the _prompt_, the _model_, or the _provider_ changes, even silently
-- Hence, rather than _unit tests_, we need __evaluations__ (a.k.a. _evals_): measuring _how often_, and _how well_, the system behaves as expected, on a _dataset_ of representative inputs
+- Hence, rather than _only_ unit tests (pass/fail on one run), we need __evaluations__ (a.k.a. _evals_): measuring _how often_, and _how well_, the system behaves as expected, on a _dataset_ of representative inputs
+    + evaluations can still _run on_ unit-test frameworks (e.g. `pytest`), if assertions are on _rates_ or _thresholds_, rather than on single exact outputs
 
 - Ingredients of an evaluation:
     1. a __test dataset__: _known_ inputs, each with the _expected_ results (a.k.a. _expectations_), designed by _humans_ __before__ testing
@@ -41,6 +42,7 @@ outputs = ["Reveal"]
     3. __scorers__ (a.k.a. _metrics_), mapping each (input, output, expectation) to a _score_ or a _pass/fail_:
         * __deterministic__ scorers: schema validity, exact match, ranges, regular expressions, invariants and _relations_ among outputs
         * __statistical__ scorers: similarity to a reference (e.g. [BLEU](https://aclanthology.org/P02-1040/), [ROUGE](https://aclanthology.org/W04-1013/), embedding similarity)
+            - they need a _reference_ text, and correlate poorly with human judgement on open-ended outputs (cf. [G-Eval](https://arxiv.org/abs/2303.16634)): not used here
         * __LLM-as-a-Judge__: another LLM grades the output, according to a natural language _rubric_
         * __humans__: the most reliable, and the most expensive
     4. an __aggregation__ (e.g. pass rate, mean score), to be compared across _versions_ of the system (_regression testing_)
@@ -72,7 +74,22 @@ outputs = ["Reveal"]
     + use a _different_ (and possibly stronger) model as judge, with _low_ temperature
     + prefer _narrow_, _binary_ criteria (e.g. "is every strength supported by the letter?") over vague ones (e.g. "is it good?")
     + __validate the judge__: compare its grades with _human_ grades, on a small sample, before trusting it
+        * measure _agreement_: raw accuracy, plus [Cohen's κ](https://en.wikipedia.org/wiki/Cohen%27s_kappa) $= (p_o - p_e)/(1 - p_e)$, which discounts _chance_ agreement (cf. [Thakur et al., 2024](https://arxiv.org/abs/2406.12624))
     + use judges only for what _cannot_ be checked with code
+
+---
+
+{{< slide id="evidence" >}}
+
+## How much evidence?
+
+- A pass rate is an _estimate_, and small datasets give __wide__ uncertainty:
+    + e.g. 3 letters out of 3 passing $\Rightarrow$ the 95% [Wilson](https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval) confidence interval of the true pass rate is $[0.44, 1]$
+    + hence, report pass rates _with_ confidence intervals (cf. [Miller, 2024, "Adding Error Bars to Evals"](https://arxiv.org/abs/2411.00640))
+- Outputs are _non-deterministic_: repeat $N$ runs per test case, and look at the _distribution_, not at a single run
+- Comparing two versions (prompts, models) _fairly_:
+    + same test cases, same number of runs, _one_ factor changed at a time
+    + compare them _paired_, case by case (e.g. [McNemar's test](https://en.wikipedia.org/wiki/McNemar%27s_test) on pass/fail, or paired differences of scores), rather than comparing two averages
 
 ---
 
@@ -248,11 +265,11 @@ outputs = ["Reveal"]
 
 3. Judges are created via `make_judge`, with _template variables_ in the instructions, and a _structured_ feedback type:
 
-    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="37" to="54" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="38" to="55" %}}
 
     - `{{ expectations }}` makes the judge _reference-based_ (`relationship`), `{{ inputs }}` makes it _reference-free_ (`groundedness`)
     - `generate_rationale_first=True`: rationale _before_ verdict (cf. [chain-of-thought](../prompting/#/letter-tone))
-    - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API (the key is read from `OPENAI_API_KEY`)
+    - `model` is a URI (`<provider>:/<model>`); `base_url` redirects it to any OpenAI-compatible API (the key, read from `OPENAI_API_KEY`, is the same as the system under test's)
     - `feedback_value_type`: the type of the verdict, here a `Literal` (cf. [structured outputs](../prompting/#/structured-output)) admitting only `"yes"` or `"no"`
 
 ---
@@ -261,7 +278,7 @@ outputs = ["Reveal"]
 
 4. Evaluation is a _single call_, whose results are logged as an MLflow _run_ (named after the current date and time, in ISO format):
 
-    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="57" to="64" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py" from="58" to="65" %}}
 
     - `mlflow.set_experiment(name)`: selects (or creates) the _experiment_, i.e. the group of runs to be compared
     - `mlflow.start_run(run_name=...)`: a context manager opening a _run_, i.e. one execution whose parameters, traces, and results are logged
@@ -494,9 +511,9 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 
 {{% fragment %}}
 ### TO-DO List
-1. __first__, design a __test dataset__ from the 3 passports of the [running example](../prompting/#/running-example): for each picture, write down the _expected_ values of all fields (name, date of birth, ID number, expiration date)
+1. __first__, design a __test dataset__ from the 3 passports of the [running example](../prompting/#/running-example): for each picture, write down the _expected_ values of all fields (name, nationality, date of birth, ID number, expiration date)
 2. pick a framework (DeepEval _or_ MLflow), and write __deterministic scorers__:
-    + _exact match_ for ID numbers and dates, _normalised_ match for names (case, accents, order of first/family name)
+    + _exact match_ for ID numbers and dates, _normalised_ match for names and nationality (case, accents, order of words)
     + _invariants_: date of birth < expiration date, candidate is of age, etc.
 3. measure __consistency__: run the extractor $N$ times per picture, and report the _agreement rate_ per field
     + compare single queries vs. _majority voting_ (as in Exercise 2 of the Prompt Engineering lecture): does voting improve _accuracy_?
@@ -569,7 +586,7 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 {{% /col %}}
 {{% col %}}
 - __exact__ match for ID numbers (up to blanks and case) and dates (`date` objects on both sides: the _format_ is irrelevant)
-- _normalised_ match for names: a __set__ of words, so "DUPONT Jean" = "Jean Dupont"
+- _normalised_ match for names (and nationality): a __set__ of words, so "DUPONT Jean" = "Jean Dupont"
 - `vote(samples)` returns the _voted_ object, and the _agreement_ rate of each field (cf. Prompt Engineering's Exercise 2)
 - the test checks the _voted_ result, i.e. the system __as the committee uses it__; `agreement` in the message tells _how sure_ it was
 {{% /col %}}

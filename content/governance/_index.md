@@ -788,6 +788,7 @@ flowchart LR
 
 ### Decision points and hints
 
+- Recall step 5 of [Exercise 2 of the validating lecture](../validating/#/exercise-id-tests): same idea (compare models on _your_ task), there on ID extraction, here on letter scoring, with _costs_ and _latency_
 - How to automate the runs?
     * e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file
     * reuse the caching mechanism of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching)? (careful: caching would hide the variance!)
