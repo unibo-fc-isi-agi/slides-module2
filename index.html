@@ -38,7 +38,8 @@
 <section data-noprocess="" data-shortcode-slide="" id="toc">
   
 <h2 id="table-of-contents">Table of Contents</h2>
-<ol>
+<ol start="0">
+<li><a href="./">About the course</a> (this page): <a href="#/links">useful links</a> · <a href="#/prerequisites">prerequisites</a> · <a href="#/exam">exam</a> · <a href="#/rules">project work rules</a></li>
 <li><a href="genai">Generative AI 101</a></li>
 <li><a href="llmaas">LLM-as-a-Service</a>
 <ul>
@@ -121,6 +122,215 @@
 <li><a href="https://apice.unibo.it/xwiki/bin/view/Course/Iag2627/">APICe Page of the Course</a></li>
 <li><a href="https://github.com/unibo-fc-isi-agi/lab-snippets">Code of examples and exercises</a></li>
 <li><a href="./">These slides</a></li>
+<li>Support material for the <a href="#/prerequisites">prerequisites</a>:
+<ul>
+<li><a href="https://matteomagnini.github.io/distributed-systems-python-101/#/">Python Programming 101</a></li>
+<li><a href="https://unibo-dtm-se.github.io/course-slides/dvcs-basics/#/">Git basics</a></li>
+<li><a href="https://unibo-dtm-se.github.io/course-slides/preliminaries/#/">Shell basics</a></li>
+<li><a href="./free-access/">Free Access to LLMs</a> (how to get an API key, or run models locally)</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="organization-of-module-2">Organization of Module 2</h2>
+<ul>
+<li>Lectures in lab, with immediate <em>hands-on</em></li>
+<li>Examples and exercises in <strong>Python</strong>, all in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository
+<ul>
+<li>each exercise is followed by a (skippable) <em>walkthrough</em> of its solution: try <strong>before</strong> looking!</li>
+</ul>
+</li>
+<li><em>Optional</em> <strong>project work</strong> in any programming language of your choice (cf. <a href="#/exam">exam</a> and <a href="#/rules">rules</a>)
+<ul>
+<li>report must be in English and follow <a href="https://github.com/unibo-fc-isi-agi/template-report">this LaTeX template</a></li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="timetable">Time—table</h2>
+<ul>
+<li>cf. the <a href="https://www.unibo.it/it/studiare/insegnamenti-competenze-trasversali-moocs/insegnamenti/insegnamento/2026/558662/orariolezioni">official timetable</a></li>
+</ul>
+<p>Changes will be published on the <a href="https://virtuale.unibo.it/mod/forum/view.php?id=2433004">News forum</a></p>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="exam">
+  
+<h2 id="exam">Exam</h2>
+<blockquote>
+<p>Detailed rules: <a href="https://apice.unibo.it/xwiki/bin/view/Course/Iag2627/?mode=data&amp;data=course$&amp;display=Exam">Exam page on APICe</a></p>
+</blockquote>
+<ul>
+<li><strong>Written test</strong> (<em>mandatory</em>, max <strong>27/30</strong>): closed-book, open-ended questions, in person on campus, on the university’s computers
+<ul>
+<li>assesses the <em>theoretical</em> knowledge (of both modules)</li>
+<li>a <a href="https://virtuale.unibo.it/course/view.php?id=80509">list of potential questions</a> is available, and updated throughout the course</li>
+</ul>
+</li>
+<li><strong>Project work</strong> (<em>optional</em>, max <strong>6/30</strong>): assesses the <em>practical</em> knowledge
+<ul>
+<li>it should cover, or follow from, a <em>specific topic</em> of the course</li>
+<li><em>theoretical</em>, <em>technological</em>, or <em>methodological</em> (e.g. an analysis, a technology, a methodology)</li>
+</ul>
+</li>
+<li><strong>Final score</strong> = written test + project, <em>capped</em> at 30/30
+<ul>
+<li>after passing the written test (18/30 or higher), <em>tell the teachers</em> whether you:
+<ol>
+<li><em>accept</em> the result, skipping the project (exam finalised), or</li>
+<li><em>continue</em> with the project (finalisation postponed)</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="rules">
+  
+<h2 id="workflow-for-the-project-work-pt-1">Workflow for the project work (pt. 1)</h2>
+<blockquote>
+<p>Detailed rules: <a href="https://apice.unibo.it/xwiki/bin/view/Course/Iag2627/?mode=data&amp;data=course$&amp;display=Exam">Exam page on APICe</a></p>
+</blockquote>
+<ol>
+<li>
+<p><strong>Propose</strong> your project idea on the <a href="https://virtuale.unibo.it/mod/forum/view.php?id=2433008">Projects forum</a></p>
+<ul>
+<li>individual, or 1-3 students per <em>group</em>
+<ul>
+<li>groups must be <em>declared on <a href="https://virtuale.unibo.it/course/view.php?id=80509">Virtuale</a></em> before starting, and stay <em>unchanged</em> until the end</li>
+</ul>
+</li>
+<li>open a discussion thread named <code>[Surname1, Surname2, ...] Project Proposal: &lt;your project name&gt;</code></li>
+<li>please indicate:
+<ol>
+<li>names and <strong>email-addresses</strong> of the members of the group;</li>
+<li>the project <em>vision</em>, i.e. what you want to realise, eliciting the <em>functionalities</em> of the envisioned system;</li>
+<li>a <em>motivation</em> of why/how the project is letting you <em>explore</em> the <strong>topics of the course</strong> (e.g. structured outputs, tools, RAG, skills, orchestration, validation);</li>
+<li><em>which technologies</em> (programming languages, libraries, LLM providers and <em>models</em>) you intend to use and <em>why</em>;</li>
+<li>which <em>deliverable(s)</em> you intend to produce (application, library, presentation, etc), <strong>aside from the final report</strong>;</li>
+<li>some strict <em>temporal constraint</em>, if any (e.g., someone in the group is going to graduate soon)</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>Any <em>subsequent communication</em> on the project should be done on the <strong>same thread</strong></p>
+<ul>
+<li>use the thread as a <em>backlog</em> of any official communication concerning the administration of your project work</li>
+<li>if you want to talk <em>privately</em> about your project work, <em>mention the URL</em> of your project’s thread in your email</li>
+</ul>
+</li>
+<li>
+<p><strong>Wait</strong> for the teachers to <em>approve</em> your proposal</p>
+<ul>
+<li>the topic is <em>negotiated</em>, to ensure its focus on <em>Intelligent Agents</em>, and its feasibility in a reasonable time</li>
+<li>most likely, we’ll try to estimate the effort and ask for changes if too much or too little</li>
+<li>we’ll also check for overlaps with other groups</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="workflow-for-the-project-work-pt-2">Workflow for the project work (pt. 2)</h2>
+<ol start="4">
+<li>
+<p>Create a <strong>GitHub repository</strong> where to develop your project and post the URL onto your project’s thread</p>
+<ul>
+<li>make all the <em>members</em> of the group collaborators on the repository</li>
+<li>give <em>full admin</em> rights to the teachers:
+<ul>
+<li>Username: <a href="https://github.com/gciatto"><code>gciatto</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Work</strong> on your project:</p>
+<ul>
+<li><em>commit</em> and <em>push</em> your changes often
+<ul>
+<li>only the <code>master</code> or <code>main</code> branch will be considered for the evaluation</li>
+</ul>
+</li>
+<li><strong>never</strong> commit API keys (read them from environment variables, as in <a href="#/lab-snippets-setup"><code>lab-snippets</code></a>)</li>
+<li>make the project <em>runnable by the teachers</em>: document how to install and run it, and which LLM provider/model it needs
+<ul>
+<li>prefer <em>free</em> providers or <em>local</em> models (cf. <a href="./free-access/">Free Access to LLMs</a>), or let the model be configurable</li>
+</ul>
+</li>
+<li><em>validate</em> your system (cf. <a href="./validating/">Validating Generative Software</a>), and report on how well it works</li>
+<li>in parallel, or later, write a <em>report</em> about your project following <a href="https://github.com/unibo-fc-isi-agi/template-report">this LaTeX template</a></li>
+</ul>
+</li>
+<li>
+<p>Once done, post a <em>message</em> on your <em>project’s thread</em> to signal the end of the work</p>
+<ul>
+<li>we’ll <em>clone</em> your repository and evaluate the code</li>
+</ul>
+</li>
+<li>
+<p><strong>Edits</strong> may be requested by the teachers, to either the code or the report (or both)</p>
+</li>
+<li>
+<p>Once the teachers are satisfied, you’ll be requested to <strong>present</strong> your work to the teachers</p>
+<ul>
+<li>all members of the group present <em>together</em></li>
+<li>about half an hour: <em>presentation</em> + <em>discussion</em></li>
+<li>both the <em>software</em> and the <em>report</em> are evaluated</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="goals">Goals</h2>
+<ul>
+<li>Teach you how to <strong>design</strong>, <strong>develop</strong>, and <strong>validate</strong> <em>LLM-based</em> agentic software, in practice…</li>
+<li>… via a <em>running example</em> (namely, an assistant for a <a href="./prompting/#/running-example">PhD admission committee</a>)</li>
+<li>Give you a <em>reference</em> for developing your final <strong>project work</strong></li>
+</ul>
+</section><section>
+<h2 id="topics">Topics</h2>
+<ul>
+<li>Generative AI and <strong>LLMs</strong>, consumed <em>as a service</em> (APIs, costs, caching, retries)</li>
+<li><strong>Prompt engineering</strong> and <em>structured outputs</em></li>
+<li><strong>Validating</strong> generative software (testing non-deterministic systems)</li>
+<li><strong>Tools</strong> and <strong>agents</strong> (function calling, MCP)</li>
+<li><strong>Retrieval-Augmented Generation</strong> (RAG)</li>
+<li>Agentic <strong>skills</strong></li>
+<li><strong>Workflows</strong> and agent <em>orchestration</em> (A2A)</li>
+<li>AI <strong>governance</strong> (regulation, model choice, costs)</li>
+</ul>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="prerequisites">
+  
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Basic knowledge of <strong>Python</strong> (see <a href="https://matteomagnini.github.io/distributed-systems-python-101/#/">Python Programming 101</a> if missing)
+<ul>
+<li>including <em>type hints</em>, <em>virtual environments</em>, and (ideally) <code>async</code>/<code>await</code></li>
+</ul>
+</li>
+<li>Basic knowledge of <strong>Git</strong> (see <a href="https://unibo-dtm-se.github.io/course-slides/dvcs-basics/#/">these slides</a> if missing)</li>
+<li>Basic knowledge of the <strong>Linux shell</strong> (see <a href="https://unibo-dtm-se.github.io/course-slides/preliminaries/#/">these slides</a> if missing)</li>
+<li>Basic understanding of <strong>HTTP</strong> APIs and <strong>JSON</strong></li>
+<li>Basic notions of <em>machine learning</em> and <em>neural networks</em> (recalled in <a href="./genai/">Generative AI 101</a>)</li>
+</ul>
+</section><section>
+<h2 id="software-requirements">Software Requirements</h2>
+<h3 id="required">Required</h3>
+<ul>
+<li>A working internet connection</li>
+<li>A working <a href="https://www.python.org/downloads/">Python</a> 3.11+ installation, and <a href="https://git-scm.com/downloads">Git</a></li>
+<li>An <strong>API key</strong> for some LLM provider, or a <em>local</em> LLM runtime (cf. <a href="./free-access/">Free Access to LLMs</a>)</li>
+</ul>
+<h3 id="recommended">Recommended</h3>
+<ul>
+<li><em>Visual Studio Code</em> OR PyCharm</li>
+<li>A decent Unix terminal
+<ul>
+<li>prefer <em>Git Bash</em> on Windows</li>
+</ul>
+</li>
 </ul>
 </section>
 
@@ -390,11 +600,7 @@
   
 
   
-  
-
-  
-  
-
+    
   
   
 
@@ -422,7 +628,37 @@
   
   
 
+  
+  
 
+  
+  
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({});
+
+    let render = (event) => {
+      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
+      if (!mermaidElems.length){
+          return
+      }
+      mermaidElems.forEach(mermaidElem => {
+          let processed = mermaidElem.getAttribute('data-processed');
+          if (!processed){
+              
+              mermaid.init(undefined, mermaidElem);
+          }
+      });
+    };
+    
+    render({currentSlide: Reveal.getCurrentSlide()});
+
+    Reveal.on('slidechanged', render);
+    Reveal.on('ready', render);
+  </script>
 
 
 
