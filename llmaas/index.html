@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -51,6 +51,7 @@
 <li>On-cloud: the model is hosted and run on the <em>service provider’s infrastructure</em>, and accessed via <em>API calls</em>
 <ul>
 <li>implies <em><u>no</u> hardware requirements</em> for the user, but a <em>cost per usage</em> (e.g. per token, per request, etc.)</li>
+<li>incl. <em>open-weights</em> models hosted by third parties (e.g. OR, Hugging Face Inference): cf. the <a href="../governance/#/deployment-options">three options</a> in the governance lecture</li>
 </ul>
 </li>
 </ul>
@@ -110,7 +111,7 @@
 </ul>
 </li>
 <li>
-<p>Zoos are the <em>entry point</em> for <strong>model selection</strong>, which is a recurring activity in GenAI engineering (cf. <a href="../genai/#/genai-workflow">GenAI workflow</a>)</p>
+<p>Zoos are the <em>entry point</em> for <strong>model selection</strong>, which is a recurring activity in GenAI engineering (cf. <a href="../genai/#/genai-workflow">GenAI lifecycle</a>)</p>
 </li>
 </ul>
 <!-- 
@@ -181,10 +182,18 @@
 			</tr>
 	</tbody>
 </table>
+<ul>
+<li>Need a model supporting <em>tools</em> or <em>structured output</em>?
+<ul>
+<li>Ollama: look for the <code>tools</code>, <code>thinking</code>, <code>vision</code> badges (e.g. <a href="https://ollama.com/search?c=tools">filter by tools</a>)</li>
+<li>Open Router: filter the models page by <em>supported parameters</em> (e.g. <code>tools</code>, <code>structured_outputs</code>, <code>response_format</code>)</li>
+</ul>
+</li>
+</ul>
 <h3 id="recurring-naming-conventions-worth-decoding">Recurring naming conventions (worth decoding)</h3>
 <ul>
 <li><em>family</em> + <em>version</em>: <code>llama-3.1</code>, <code>qwen3</code>, <code>gemma-4</code></li>
-<li><em>size</em>: <code>8b</code>, <code>70b</code>, or <code>26b-a4b</code> (MoE: total vs. active parameters)</li>
+<li><em>size</em>: <code>8b</code>, <code>70b</code>, or <code>26b-a4b</code> (MoE: total vs. active parameters), or <code>e2b</code> (<em>effective</em> 2B: Gemma’s ~2.3B parameters used in computation, 5.1B including per-layer embeddings)</li>
 <li><em>flavour</em>: <code>base</code> (pure next-token predictor) vs. <code>instruct</code> / <code>it</code> / <code>chat</code> (tuned to follow instructions: <strong>this is what you want</strong> for Chat Completion), or <code>coder</code>, <code>vl</code> / <code>vision</code>, <code>thinking</code></li>
 <li><em>quantization</em> / <em>format</em>: <code>Q4_K_M</code>, <code>GGUF</code>, <code>AWQ</code>, <code>fp8</code></li>
 <li><em>date</em> / <em>snapshot</em>: <code>gpt-4o-2024-08-06</code> (pin it for <em>reproducibility</em>!)</li>
@@ -229,7 +238,7 @@
 <li>
 <p>Ollama may also be used an <a href="https://ollama.com/pricing">on-cloud service</a>, but here we will focus on the on-premise deployment option alone</p>
 <ul>
-<li>three levels of premiumships (0€/month, 20€/month, 100€/month) with widening rate limitations</li>
+<li>three levels of premiumships ($0/month, $20/month, $100/month) with widening rate limitations</li>
 </ul>
 </li>
 </ul>
@@ -275,7 +284,7 @@
 </span></span></code></pre></div></li>
 <li>
 <p>You may use Ollama’s native <strong>CLI conversational interface</strong> to try the model out:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>ollama chat gemma4:e2b
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>ollama run gemma4:e2b
 </span></span></code></pre></div><p>example of conversation (notice that the model is also showing its <em>thinking process</em>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>&gt;&gt;&gt; ciao!
 </span></span><span style="display:flex;"><span>Thinking...
@@ -304,10 +313,10 @@
 <li>Should you ever want to use the model <em>programmatically</em>, you can use Ollama’s <strong>API</strong>, which is <em>partially</em> compatible with OpenAI’s API
 <ul>
 <li>
-<p>e.g. it supports the same <code>/v1/chat/completions</code> endpoint, but not all the features of OpenAI’s API, e.g. fine-tuning, custom models, etc.</p>
+<p>e.g. it supports the same <code>/v1/chat/completions</code> endpoint, but not all the features of OpenAI’s API, e.g. the <code>tool_choice</code>, <code>logit_bias</code>, <code>user</code>, and <code>n</code> request fields, nor the files, batches, or fine-tuning endpoints (cf. <a href="https://docs.ollama.com/api/openai-compatibility">compatibility page</a>)</p>
 </li>
 <li>
-<p>in the client program, recall to set the <strong>API base URL</strong> to point to your local Ollama service (by default: <a href="http://localhost:11434">http://localhost:11434</a>)</p>
+<p>in the client program, recall to set the <strong>API base URL</strong> to point to your local Ollama service (by default: <a href="http://localhost:11434/v1">http://localhost:11434/v1</a>)</p>
 </li>
 <li>
 <p>to prove that the API is working, you can send a test request via <code>curl</code>:</p>
@@ -327,11 +336,11 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">model</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">gemma4:e2b</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">system_fingerprint</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">fp_ollama</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">choices</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span>- <span style="color:#204a87;font-weight:bold">index</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span>- <span style="color:#204a87;font-weight:bold">index</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">message</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">role</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">assistant</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">content</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">The capital of France is **Paris**.</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">reasoning</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000;font-weight:bold">|-</span><span style="color:#8f5902;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">      </span><span style="color:#204a87;font-weight:bold">role</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">assistant</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">      </span><span style="color:#204a87;font-weight:bold">content</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">The capital of France is **Paris**.</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">      </span><span style="color:#204a87;font-weight:bold">reasoning</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000;font-weight:bold">|-</span><span style="color:#8f5902;font-style:italic">
 </span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">        Thinking Process:
 </span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">
 </span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">        1.  **Analyze the Request:** The user is asking a factual question: "What is the capital of France?"
@@ -341,9 +350,9 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">        5.  **Final Review:** The answer is correct and directly addresses the query. (Capital of France = Paris).</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">finish_reason</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">stop</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">usage</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">prompt_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">29</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">completion_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">121</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">total_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">150</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">prompt_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">29</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">completion_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">121</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">total_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">150</span><span style="color:#f8f8f8">
 </span></span></span></code></pre></div></li>
 </ul>
 </li>
@@ -374,10 +383,10 @@
 <p><strong>memory</strong> ≈ (number of params × bits per param / 8) [<em>weights</em>] + <em>KV cache</em> [grows with context length] + <em>overhead</em></p>
 </blockquote>
 <ul>
-<li>the <strong>key-value (KV) cache</strong> stores the attention values for the tokens (keys) that the neural has processes so far…
+<li>the <strong>key-value (KV) cache</strong> stores, for every layer, the attention <em>keys</em> and <em>values</em> computed for each token processed so far (prompt + generated)…
 <ul>
 <li>… so that they do not need to be recomputed for every new token generated</li>
-<li>its size <em>grows linearly</em> with the <em>context length</em>
+<li>its size <em>grows linearly</em> with the <em>context length</em> (∝ layers × context length × KV heads × head size)
 <ul>
 <li>this is why local runtimes (e.g. Ollama) use a <em>smaller</em> default context window than the model’s maximum</li>
 </ul>
@@ -440,7 +449,7 @@
 </table>
 <ul>
 <li>i.e. GB ≈ billions of params × bits per weight / 8 (<code>Q8_0</code> ≈ 8.5 bits, <code>Q4_K_M</code> ≈ 4.9 bits, cf. <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md">llama.cpp’s quantize docs</a>)</li>
-<li>add ~10–30% on top for the KV cache and the runtime (more for long contexts)</li>
+<li>add ~10–20% runtime overhead, plus the KV cache (it grows with the context: several GB at 32k+ tokens)</li>
 <li>models are <em>trained</em> in 16/32 bits, but most local users run them at <strong>8 or 4 bits</strong>: this is called <em>quantization</em></li>
 </ul>
 <span class="fragment ">
@@ -573,7 +582,7 @@
 			</tr>
 			<tr>
 					<td>server, 2× 80 GB GPUs</td>
-					<td>≤ 70B at 8-bit, larger with 4-bit or MoE</td>
+					<td>≤ 70B at 16-bit (140 GB, tight), ~120B+ at 8-bit, larger with 4-bit or MoE</td>
 			</tr>
 	</tbody>
 </table>
@@ -589,11 +598,13 @@
 </ul>
 </li>
 <li>
-<p>check what is running, and <em>where</em>, with <code>ollama ps</code> (illustrative output):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL
-</span></span><span style="display:flex;"><span>gemma4:e2b    a1b2c3d4e5f6    7.2 GB    100% GPU     4096       4 minutes from now
+<p>check what is running, and <em>where</em>, with <code>ollama ps</code> (on an Apple Silicon laptop):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>NAME          ID              SIZE      PROCESSOR    CONTEXT    RUNNER    UNTIL
+</span></span><span style="display:flex;"><span>gemma4:e2b    7fbdbf8f5e45    1.7 GB    100% GPU     4096                 4 minutes from now
 </span></span></code></pre></div><ul>
+<li><code>SIZE</code> is the memory <em>actually allocated</em> (weights in use + KV cache), whereas <code>ollama list</code> shows the size <em>on disk</em> (7.2 GB for <code>gemma4:e2b</code>: all weights, incl. per-layer embeddings and vision/audio encoders)</li>
 <li><code>PROCESSOR</code> tells whether the model is fully on the GPU, or split between CPU and GPU (e.g. <code>48%/52% CPU/GPU</code>)</li>
+<li><code>CONTEXT</code> is the context window in use: Ollama’s <a href="https://docs.ollama.com/context-length">default</a> depends on the VRAM (4k tokens below 24 GiB, 32k up to 48 GiB, 256k above)</li>
 </ul>
 </li>
 </ul>
@@ -617,7 +628,8 @@
 <ul>
 <li>one can use OR for <strong>free</strong>, with <em>very limited rates</em> (20 requests per minute, max 50 per day)
 <ul>
-<li>one may <strong>buy credits</strong> to widen the limitations for free models (see <a href="https://openrouter.ai/docs/api/reference/limits">https://openrouter.ai/docs/api/reference/limits</a> for details), or to use <em>pay-per-use</em> models</li>
+<li>one may <strong>buy credits</strong> to widen the limitations for free models (see <a href="https://openrouter.ai/docs/api_reference/limits">https://openrouter.ai/docs/api_reference/limits</a> for details), or to use <em>pay-per-use</em> models</li>
+<li>other free options are listed in the <a href="../free-access/#/free-tiers">Free Access appendix</a></li>
 </ul>
 </li>
 </ul>
@@ -647,18 +659,18 @@
 </ul>
 </li>
 <li>
-<p>To allow for <strong>dynamic routing</strong> of requests to different providers in a <em>transparent</em> way, OR allows for the following meta-models:</p>
+<p><strong>Dynamic routing</strong> of requests happens at two levels:</p>
 <ul>
-<li><code>openrouter/auto</code> (<a href="https://openrouter.ai/openrouter/auto">AutoRouter</a>): let OR decide which provider/model to use for each request, based on the request’s content and the current availability of models (<strong>paid</strong>: it may route to paid models, so it fails on accounts without credits)</li>
-<li><code>provider/*</code> (e.g. <code>anthropic/*</code>, <code>google/*</code>, etc.): OR will serve each request with the best available model from the specified provider, according to the request’s content and the current availability of models</li>
-<li>in general, you can reason like with Unix globs, so for instance <code>openai/gpt*</code> will match any OpenAI model whose name starts with <code>gpt</code> (as currently provided by OR)</li>
-<li>in the <a href="https://openrouter.ai/workspaces/default/routing">routing settings</a> of your OR account, you can set up the <strong>routing strategy</strong> OR should adopt:
-<ol>
-<li><strong>“Price”</strong> (cost-first): OR will route requests to the currently <em>cheapest</em> model that can serve them</li>
-<li><strong>“Latency”</strong>: OR will route requests to the model that is <em>currently quicker</em> to respond</li>
-<li><strong>“Throughput”</strong>: OR will route requests to the one that has currently the best stats in terms of <em>throughput</em> (requests per minute)</li>
-<li><strong>“Exacto”</strong> (quality-first): OR will route requests to the <em>best available</em> model that can serve them (based on model’s stats on tools usage)</li>
-</ol>
+<li>among <strong>models</strong>: <code>openrouter/auto</code> (<a href="https://openrouter.ai/docs/guides/routing/routers/auto-router">Auto Router</a>) lets OR pick the model for each request, based on its content (<strong>paid</strong>: it may route to paid models, so it fails on accounts without credits)
+<ul>
+<li>the candidates can be restricted with <em>glob</em> patterns, e.g. <code>anthropic/*</code> or <code>openai/gpt-5*</code>, in the router’s <code>allowed_models</code> (these are <strong>not</strong> valid <code>model</code> names by themselves)</li>
+</ul>
+</li>
+<li>among <strong>providers</strong> of a <em>given</em> model: OR picks one of the providers serving it (<a href="https://openrouter.ai/docs/guides/routing/provider-selection">provider selection</a>); by default, load-balanced and price-weighted
+<ul>
+<li>override per request with <code>provider.sort</code> = <code>price</code> | <code>latency</code> | <code>throughput</code> (tokens per second), or in the <a href="https://openrouter.ai/workspaces/default/routing">routing settings</a> of your OR account</li>
+<li>or with model <em>suffixes</em>: <code>:floor</code> (cheapest), <code>:nitro</code> (fastest throughput), <a href="https://openrouter.ai/docs/guides/routing/model-variants/exacto"><code>:exacto</code></a> (providers with better tool-calling quality, e.g. <code>moonshotai/kimi-k2-0905:exacto</code>)</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -713,7 +725,7 @@
 </ul>
  <img src="open-router-apikeys.png" alt="Open Router's API Keys Settings" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
 <ul>
-<li>an API key is a string of the form: <code>sk-or-XXXXXXXXXXXXXXXXXXXXXXXX</code>: it is sufficient to <u>consume your credit</u> and to make requests on your behalf</li>
+<li>an API key is a string of the form: <code>sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXX</code>: it is sufficient to <u>consume your credit</u> and to make requests on your behalf</li>
 </ul>
 </li>
 </ol>
@@ -817,7 +829,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791714919934469252" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791802197209283736" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -839,7 +851,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791714919934469252");
+    handlePlantumlFigureByID("plantuml-figure-1791802197209283736");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -895,17 +907,13 @@ P -&gt; U: “It’s … in Cesena”
 <li>e.g. responses could be messages, or tool call or results</li>
 </ul>
 </li>
-<li><strong>Capabilities</strong>:
+<li><strong>Capabilities</strong>: all the expected ones (tools, structured output, multimodality, streaming, reasoning traces), cf. the <a href="#/api-comparison">comparison</a> below
 <ul>
-<li><em>calling tools</em> (implies including tool definitions in the prompt, so that the model can call them)</li>
-<li><em>structured</em> output (e.g. constrain model response to match a given JSON schema)</li>
-<li><em>multimodal</em> (e.g. include images, audio, video in the prompt and/or response)</li>
-<li><em>streaming</em> (e.g. receive partial responses as they are generated by the model, instead of waiting for the full response)</li>
-<li><em>reasoning traces</em> (e.g. receive the model’s reasoning process as part of the response, to understand how it arrived at its answer)</li>
+<li>plus <code>/v1/embeddings</code>, turning text into <em>vectors</em> (cf. the <a href="../rag/">RAG lecture</a>)</li>
 </ul>
 </li>
 <li><strong>Peculiarities</strong>: “Responses” is more modern; “Chat Completions” is more compatible</li>
-<li><strong>Portability</strong>: “Chat Completions” is high; “Responses” is mostly OpenAI/Azure-native</li>
+<li><strong>Portability</strong>: “Chat Completions” is supported nearly everywhere; “Responses” is native in OpenAI/Azure, increasingly mirrored (e.g. OpenRouter, Ollama, vLLM), but often only <em>partially</em></li>
 </ul>
 </section><section>
 <h2 id="about-llms-web-api-compatibility-pt-2--openai-compatible-apis">About LLMs’ Web API Compatibility (pt. 2) – OpenAI-compatible APIs</h2>
@@ -962,7 +970,11 @@ P -&gt; U: “It’s … in Cesena”
 </ul>
 </li>
 <li><strong>Peculiarities</strong>: multimodality is core, not an add-on to chat</li>
-<li><strong>Portability</strong>: powerful native API; structurally different from OpenAI/Anthropic</li>
+<li><strong>Portability</strong>: powerful native API; structurally different from OpenAI/Anthropic
+<ul>
+<li>… but Google also exposes an <a href="https://ai.google.dev/gemini-api/docs/openai">OpenAI-compatible endpoint</a> (<code>https://generativelanguage.googleapis.com/v1beta/openai/</code>), with a subset of the features</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h2 id="about-llms-web-api-compatibility-pt-5--cloud-provider-apis">About LLMs’ Web API Compatibility (pt. 5) – Cloud-provider APIs</h2>
@@ -998,7 +1010,7 @@ P -&gt; U: “It’s … in Cesena”
 </section>
 </section><section>
 <h1 id="client-side-libraries-for-llms">Client-side libraries for LLMs</h1>
-<p>Reference technologies: <a href="https://developers.openai.com/api/docs/libraries">OpenAI Client Libraries</a>, <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a></p>
+<p>Reference technology: <a href="https://developers.openai.com/api/docs/libraries">OpenAI Client Libraries</a></p>
 </section><section>
 <h2 id="about-client-libraries">About client libraries</h2>
 <ul>
@@ -1020,6 +1032,7 @@ P -&gt; U: “It’s … in Cesena”
 <ul>
 <li>it is a <em>third-party</em> client library, which supports <a href="https://docs.langchain.com/oss/python/integrations/providers/overview">multiple providers</a> and APIs (e.g. OpenAI, Anthropic, Google, Azure, etc.)</li>
 <li>it is more focused on <em>orchestrating</em> interactions with LLMs and tools, rather than just wrapping Web APIs</li>
+<li>used from the <a href="../prompting/#/langchain">next lecture</a> on</li>
 </ul>
 </li>
 </ol>
@@ -1036,46 +1049,47 @@ P -&gt; U: “It’s … in Cesena”
 </ul>
 </li>
 <li>
-<p>API comes with <em>synchronous</em> and <em>asynchronous</em> variants</p>
+<p>Two <em>orthogonal</em> choices:</p>
 <ul>
-<li><strong>synchronous</strong>: the model’s <em>response</em> is returned as a <em>whole</em>, after the model has finished generating it (which may take <em>time</em>)</li>
-<li><strong>asynchronous</strong>: the model’s <em>response</em> is returned as a <em>stream</em> of parts, as they are generated by the model, allowing for a more fluid experience (content shown <em>ASAP</em>)</li>
+<li><strong>sync</strong> (<code>OpenAI</code>: each call <em>blocks</em> until done) vs. <strong>async</strong> (<code>AsyncOpenAI</code>: calls are <em>coroutines</em>, to be <code>await</code>ed, so that many can run concurrently)</li>
+<li><strong>non-streaming</strong> (<code>stream=False</code>: the <em>response</em> is returned as a <em>whole</em>, after the model has finished generating it, which may take <em>time</em>) vs. <strong>streaming</strong> (<code>stream=True</code>: a <em>stream</em> of parts, as they are generated, so content is shown <em>ASAP</em>)</li>
+<li>both clients support both modes: Example 1 below is sync + non-streaming, Example 2 is async + streaming, by choice</li>
 </ul>
 </li>
 <li>
 <p>In both cases, ingredients are essentially the same:</p>
 <ol>
 <li><strong>Env vars</strong> (or command line arguments): to parametrize your program w.r.t. <em>API keys</em>, API providers’ <em>base urls</em>, <em>model names</em>, etc.</li>
-<li><strong>Client</strong>: an object of type <code>openai.OpenAI</code> (for <em>sync</em>) or <code>openai.AsyncClient</code> (for <em>async</em>) by which you interact with a model as provided by some provider
+<li><strong>Client</strong>: an object of type <code>openai.OpenAI</code> (for <em>sync</em>) or <code>openai.AsyncOpenAI</code> (for <em>async</em>) by which you interact with a model as provided by some provider
 <ul>
 <li>documented “by example” at <a href="https://github.com/openai/openai-python/blob/main/README.md">https://github.com/openai/openai-python/blob/main/README.md</a></li>
 </ul>
 </li>
 <li><strong>Conversation history</strong>: literally a <em>list</em> of <em>dictionaries</em>, each one having two keys: <code>role</code> (e.g. “system”, “user”, “assistant”) and <code>content</code> (actual text)</li>
-<li><strong>Chat completion request</strong>: a call to the <code>client.chat.completions.create()</code> method, accepting the conversation hystory as input plus some additional parameters (e.g. <code>temperature</code>, <code>max_tokens</code>, etc.) and returing either the full response (sync) or a stream of response parts (async), depending the parameter <code>stream</code> (respectively <code>False</code> or <code>True</code>)
+<li><strong>Chat completion request</strong>: a call to the <code>client.chat.completions.create()</code> method, accepting the conversation history as input plus some additional parameters (e.g. <code>temperature</code>, <code>max_tokens</code>, etc.) and returning either the full response or a stream of response parts, depending on the parameter <code>stream</code> (respectively <code>False</code> or <code>True</code>)
 <ul>
 <li>documented here <a href="https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create">https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create</a></li>
 </ul>
 </li>
-<li><strong>Chat completion response</strong>: a dictionary containing the model’s response, including the generated content (e.g. in <code>.choices[0].message.content</code>), plus some additional metadata (e.g. <code>usage</code>, <code>model</code>, etc.)
+<li><strong>Chat completion response</strong>: a <code>ChatCompletion</code> object (a <code>pydantic</code> model, mirroring the JSON response) containing the model’s response, including the generated content (e.g. in <code>.choices[0].message.content</code>), plus some additional metadata (e.g. <code>usage</code>, <code>model</code>, etc.)
 <ul>
 <li>in principle, there could be multiple <em>choices</em> in the response (in practice is often just one): the idea is that the model may produce alternative responses at once</li>
 <li>documented here <a href="https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve">https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve</a></li>
 </ul>
 </li>
-<li>The <strong>agent</strong>, i.e. the program exploiting the aformentioned functionalities to accomplish some task
+<li>The <strong>agent</strong>, i.e. the program exploiting the aforementioned functionalities to accomplish some task
 <ul>
-<li>in case multiple subsequent request–response interactions are needed, the agent should include also reponses’ messages in the chat history</li>
-<li>this is because the model is <em>stateless</em>, and the HTTP API are <em>ReSTful</em>, but the “conversation” is <em>mutable</em> entity</li>
+<li>it must append the responses’ messages to the history, as the API is <em>stateless</em> (cf. <a href="#/chat-completion-concept">Chat Completion concept</a>)</li>
 </ul>
 </li>
 </ol>
 </li>
 </ul>
-</section><section>
+</section>
 
 
 <section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="sync-chat">
 <h2 id="example-1-sync-cli-chat-pt-1">Example 1: Sync CLI Chat (pt. 1)</h2>
 <ol>
 <li>
@@ -1175,7 +1189,7 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span>Example: if UTC is 13:00, then Cesena is 15:00. Want me to convert a specific time? Or you can just check your phone or a world clock for the exact minute and second.
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>you&gt; ^CGoodbye!
-</span></span></code></pre></div><ol start="7">
+</span></span></code></pre></div><ol start="6">
 <li>When you run it, pay attention to:
 <ul>
 <li>time to get a response from the model (latency)</li>
@@ -1246,11 +1260,11 @@ P -&gt; U: “It’s … in Cesena”
 <p><code>stream</code> (bool, default: <code>False</code>): whether to receive the response as a stream of parts, as they are generated by the model, instead of waiting for the full response. If <code>True</code>, the API will return an iterator that yields partial responses.</p>
 </li>
 <li>
-<p><code>response_format</code> (str, default: <code>None</code>): the format in which the model should return the response</p>
+<p><code>response_format</code> (dict, default: <code>None</code>): the format in which the model should return the response</p>
 <ul>
 <li>value <code>{ "type": "text" }</code> (default) means that the model should return a plain text response</li>
-<li>value <code>{ "type": "json_object" }</code> forces the model to produce a JSON outout (assumes the schema of the object is described in the system prompt, or in some previous message)</li>
-<li>value <code>{ "type": "json_schema", "description": STRING, "strict": BOOL, "schema": "..." }</code> forces the model to produce a JSON output matching the provided <a href="https://json-schema.org/">JSON schema</a>, with an optional <code>description</code> to better describe the schema to the model, and an optional <code>strict</code> flag to control how strictly the model should follow the schema (e.g. whether to allow extra fields or not)
+<li>value <code>{ "type": "json_object" }</code> forces the model to produce a JSON output (assumes the schema of the object is described in the system prompt, or in some previous message)</li>
+<li>value <code>{ "type": "json_schema", "json_schema": { "name": STRING, "description": STRING, "schema": {...}, "strict": BOOL } }</code> forces the model to produce a JSON output matching the provided <a href="https://json-schema.org/">JSON schema</a>, where <code>name</code> is mandatory, <code>description</code> optionally describes the schema to the model, and <code>strict: true</code> enables <em>constrained decoding</em>, guaranteeing that the output adheres to the schema
 <ul>
 <li>this is important to support <a href="https://developers.openai.com/api/docs/guides/structured-outputs">structured output</a>, explained in the <a href="../prompting/#/structured-output">next lecture</a></li>
 </ul>
@@ -1282,17 +1296,6 @@ P -&gt; U: “It’s … in Cesena”
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"custom"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">custom</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">{</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"timezone_lookup_dsl"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#4e9a06">"description"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"Resolve a city and country into an IANA timezone. The input must follow the DSL form TIMEZONE(</span><span style="color:#4e9a06">\"</span><span style="color:#4e9a06">City, Country</span><span style="color:#4e9a06">\"</span><span style="color:#4e9a06">)."</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#4e9a06">"format"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">"type"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"grammar"</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">"grammar"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#4e9a06">"syntax"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"regex"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"definition"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"^TIMEZONE</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">(</span><span style="color:#4e9a06">\"</span><span style="color:#4e9a06">[A-Za-z .'-]+, [A-Za-z .'-]+</span><span style="color:#4e9a06">\"\\</span><span style="color:#4e9a06">)$"</span> <span style="color:#000;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#000;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#000;font-weight:bold">),</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"function"</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">function</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">{</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">"get_current_time"</span><span style="color:#000;font-weight:bold">,</span>
@@ -1314,7 +1317,7 @@ P -&gt; U: “It’s … in Cesena”
 <li><code>properties</code>: the arguments and their types; <code>required</code>: the mandatory ones; <code>additionalProperties: False</code>: no other argument allowed</li>
 </ul>
 </li>
-<li>type=<code>custom</code> tools use a custom format description (e.g. a Regex describing the expected input for the tool) instead of JSON schema</li>
+<li>OpenAI also supports <code>custom</code> tools, with free-text or grammar-constrained inputs (rarely supported by other providers)</li>
 </ul>
 </li>
 </ul>
@@ -1322,37 +1325,30 @@ P -&gt; U: “It’s … in Cesena”
 <section data-noprocess="" data-shortcode-slide="" class="print-compact">
 <h2 id="about-chat-completion-api-pt-4">About Chat Completion API (pt. 4)</h2>
 <h3 id="what-can-you-expect-in-the-response-of-a-chat-completion-request">What can you expect in the response of a chat completion request?</h3>
-<p>Reponses are JSON objects containing many relevant metadata, explanation below in YAML syntax for better readability:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">object</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">chat.completion</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the type of the returned object, which is "chat.completion" for chat completion requests</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">chatcmpl-abc123</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for this chat completion, which can be used for tracking and debugging purposes</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">model</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">gpt-4o-2024-08-06</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the actual model that served this request, which may be different from the one specified in the request due to dynamic routing or other factors</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">created</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">1738960610</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the Unix timestamp of when the chat completion was created, which can be useful for logging and debugging purposes</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">request_id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">req_ded8ab984ec4bf840f37566c1011c417</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for the request that led to this chat completion, which can be used for tracking and debugging purposes</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">tool_choice</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">auto</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the tool choice mode that was used for this chat completion, which can be "none", "auto", "required", or other variants</span><span style="color:#f8f8f8">
+<p>Responses are JSON objects containing many relevant metadata, explanation below in YAML syntax for better readability:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">object</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">chat.completion</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the type of the returned object</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">chatcmpl-abc123</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for this chat completion, for tracking and debugging purposes</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">model</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">gpt-4o-2024-08-06</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the actual model that served this request, which may differ from the requested one (e.g. due to dynamic routing)</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">created</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">1738960610</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the Unix timestamp of when the chat completion was created</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">system_fingerprint</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">fp_50cad350e4</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a fingerprint of the backend configuration that served this request</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">service_tier</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">default</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the processing tier used to serve the request</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">usage</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the usage statistics for this chat completion</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">prompt_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">13</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># input tokens</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">completion_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">18</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># output tokens</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">total_tokens</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">31</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># total tokens (input + output)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">seed</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">4944116822809980000</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the random seed used for this chat completion, which can be useful for reproducibility and debugging purposes</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">top_p</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the top_p value used for this chat completion (settable in the request)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">temperature</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the temperature value used for this chat completion (settable in the request)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">presence_penalty</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the presence_penalty value used for this chat completion (settable in the request)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">frequency_penalty</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8">  </span><span style="color:#8f5902;font-style:italic"># the frequency_penalty value used for this chat completion (settable in the request)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">system_fingerprint</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">fp_50cad350e4</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a fingerprint of the system configuration that served this request, which can be used for tracking and debugging purposes</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">metadata</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span>{}<span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># any additional metadata associated with this chat completion</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">choices</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># list of choices generated by the model for this chat completion, each one containing the same fields</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">choices</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># list of choices generated by the model (usually just one)</span><span style="color:#f8f8f8">
 </span></span></span><span style="display:flex;"><span>- <span style="color:#204a87;font-weight:bold">index</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the index of this choice in the list of choices</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">message</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the message generated by the model for this choice, which can contain various fields depending on the content and the features used</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">content</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#4e9a06">"Mind of circuits hum,  \nLearning patterns in silence—  \nFuture's quiet
-</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">      spark."</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">role</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">assistant</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the role of the message, which can be "assistant", "tool", "system", etc.</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">tool_calls</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the list of tool calls made by the model in this message, if any, each one containing at least a `name` and `arguments`, and optionally some additional fields (e.g. `id`, `type`, etc.)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">      </span>- <span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">get_current_time</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the name of the tool that was called by the model</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">arguments</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#4e9a06">"{\"timezone\":\"Europe/Rome\"}"</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the arguments passed to the tool call, which can be a JSON string or other format depending on the tool's definition</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">call_current_time_001</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for this tool call, which can</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">finish_reason</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">stop</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the reason why the model stopped generating tokens for this choice, which can be "stop" (if the model reached a stop sequence), "length" (if the model reached the max_completion_tokens limit), "tool_call" (if the model made a tool call and stopped), or other reasons</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">logprobs</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the log probabilities of the generated tokens for this choice, which can be useful for analyzing the model's confidence and behavior (not always present in the response)</span><span style="color:#f8f8f8">
-</span></span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">response_format</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">message</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the message generated by the model for this choice</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">role</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">assistant</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">content</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#204a87;font-weight:bold">null</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the text of the answer, if any (here none, as the model asks for a tool call)</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">    </span><span style="color:#204a87;font-weight:bold">tool_calls</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the tool calls requested by the model, if any</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">      </span>- <span style="color:#204a87;font-weight:bold">id</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">call_current_time_001</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># a unique identifier for this tool call, to be referenced by the tool result</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">function</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">        </span><span style="color:#204a87;font-weight:bold">function</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">          </span><span style="color:#204a87;font-weight:bold">name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">get_current_time</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the name of the tool to be called</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">          </span><span style="color:#204a87;font-weight:bold">arguments</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#4e9a06">"{\"timezone\":\"Europe/Rome\"}"</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the arguments, as a JSON string</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">finish_reason</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">tool_calls</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># why the model stopped: "stop" (natural end, or stop sequence), "length" (max_completion_tokens reached), "tool_calls", "content_filter"</span><span style="color:#f8f8f8">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8">  </span><span style="color:#204a87;font-weight:bold">logprobs</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#204a87;font-weight:bold">null</span><span style="color:#f8f8f8"> </span><span style="color:#8f5902;font-style:italic"># the log probabilities of the generated tokens, if requested</span><span style="color:#f8f8f8">
 </span></span></span></code></pre></div><ul>
 <li><em>sampling</em> parameters (besides <code>temperature</code>): <code>top_p</code> samples only among the most likely tokens whose probabilities sum to <code>top_p</code> (<em>nucleus sampling</em>); <code>presence_penalty</code> / <code>frequency_penalty</code> discourage <em>repeating</em> tokens already generated</li>
 <li>most commonly, one cares about the first choice (<code>choices[0]</code>), and in particular about the generated message (<code>choices[0].message.content</code>), but the rest of the metadata can be useful for debugging, analysis, and cost control purposes</li>
@@ -1365,8 +1361,8 @@ P -&gt; U: “It’s … in Cesena”
 <section data-shortcode-section="">
 <h2 id="example-2-async-cli-chat-with-streaming-pt-1">Example 2: Async CLI Chat with Streaming (pt. 1)</h2>
 <ol>
-<li>Client setup is very similar to the sync version, but we use <code>AsyncOpenAI(...)</code> and keep the same env-driven configuration style:</li>
-</ol>
+<li>
+<p>Client setup is very similar to the sync version, but we use <code>AsyncOpenAI(...)</code> and keep the same env-driven configuration style:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">asyncio</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">AsyncOpenAI</span>
@@ -1381,7 +1377,7 @@ P -&gt; U: “It’s … in Cesena”
 <li><code>AsyncOpenAI(...)</code> is the async counterpart of <code>OpenAI(...)</code></li>
 <li>we need module <code>asyncio</code> to run the main async function, and to handle async calls in general</li>
 </ul>
-<ol start="2">
+</li>
 <li>
 <p>As the program is asynchronous, we need to define an <code>async def main():</code> function, which will contain the main logic of our program, and then run it with <code>asyncio.run(main())</code> at the end of the script</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
@@ -1421,9 +1417,9 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span>                    <span style="color:#000">chunk</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">item</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span>  <span style="color:#8f5902;font-style:italic"># "delta": the new piece of text</span>
 </span></span><span style="display:flex;"><span>                    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>                        <span style="color:#204a87;font-weight:bold">continue</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#000">chunk</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">chunk</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">assistant&gt; "</span><span style="color:#000;font-weight:bold">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># show it immediately</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#000">answer_parts</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">shown</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">chunk</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">assistant&gt; "</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># prefix new lines, on screen only</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">shown</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># show it immediately</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">answer_parts</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># the raw text, for the history</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">exc</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># streams may fail midway too</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">error&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">exc</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
@@ -1442,9 +1438,10 @@ P -&gt; U: “It’s … in Cesena”
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">await</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">chat</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">completions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">...</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># create the request + open response stream</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">answer_parts</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span> <span style="color:#8f5902;font-style:italic"># buffer to store the parts of the answer as they arrive</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">item</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">chunk</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">item</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span> <span style="color:#8f5902;font-style:italic"># get each chuck of the answer as it arrives (if any)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">chunk</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">item</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">choices</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">""</span> <span style="color:#8f5902;font-style:italic"># get each chunk of the answer as it arrives (if any)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># show it immediately</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">answer_parts</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">chunk</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># store the chunk in the buffer</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">answer_parts</span><span style="color:#000;font-weight:bold">)))</span> <span style="color:#8f5902;font-style:italic"># reconstract the full answer and store it in the conversation history</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">answer_parts</span><span style="color:#000;font-weight:bold">)))</span> <span style="color:#8f5902;font-style:italic"># reconstruct the full answer and store it in the conversation history</span>
 </span></span></code></pre></div><ul>
 <li>notice the <code>.delta</code> field in the response parts: the <em>new</em> piece of text, rather than the whole <code>message</code></li>
 <li>some chunks carry no <code>choices</code> at all (e.g. the last one, with <code>usage</code> statistics only), so they are skipped</li>
@@ -1508,10 +1505,15 @@ P -&gt; U: “It’s … in Cesena”
 </ul>
 </li>
 </ol>
+<span class="fragment ">
+  <blockquote>
+<p>Notice: these are <strong>not</strong> Longfellow’s lines (his line 3 is “<em>For the straightforward pathway had been lost</em>”, cf. <a href="https://en.wikisource.org/wiki/Divine_Comedy_(Longfellow_1867)/Volume_1/Canto_1">Wikisource</a>): a confident <strong>hallucination</strong></p>
+</blockquote>
+</span>
 
 </section>
 </section><section>
-<h2 id="focus-on-anthropics-client-library-for-python">Focus on Anthropic’s Client Library for Python</h2>
+<h1 id="focus-on-anthropics-client-library-for-python">Focus on Anthropic’s Client Library for Python</h1>
 </section>
 
 
@@ -1522,7 +1524,7 @@ P -&gt; U: “It’s … in Cesena”
 <p><strong>Goal</strong>: re-implement <a href="../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py">Example 1</a> with a <em>different</em> API and client library, to appreciate <em>analogies</em> and <em>differences</em></p>
 </blockquote>
 <ul>
-<li>We use the official <a href="https://github.com/anthropics/anthropic-sdk-python"><code>anthropic</code> Python SDK</a> (<code>pip install anthropic</code>), which speaks Anthropic’s <a href="https://docs.anthropic.com/en/api/messages">Messages API</a> (<code>POST /v1/messages</code>)</li>
+<li>We use the official <a href="https://github.com/anthropics/anthropic-sdk-python"><code>anthropic</code> Python SDK</a> (<code>pip install anthropic</code>), which speaks Anthropic’s <a href="https://platform.claude.com/docs/en/api/messages">Messages API</a> (<code>POST /v1/messages</code>)</li>
 <li>No need for an Anthropic account: <a href="https://docs.ollama.com/api/anthropic-compatibility">Ollama exposes an Anthropic-compatible API</a> too, so we can run everything <strong>locally</strong> (and for free)
 <ul>
 <li>Open Router supports the Messages API as well (<a href="https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message">docs</a>): set <code>ANTHROPIC_BASE_URL=https://openrouter.ai/api</code> and your OR key</li>
@@ -1587,7 +1589,8 @@ P -&gt; U: “It’s … in Cesena”
 </span></span><span style="display:flex;"><span>you&gt; and now in italian
 </span></span><span style="display:flex;"><span>assistant&gt; Ciao a tutti!
 </span></span><span style="display:flex;"><span>you&gt; Goodbye!
-</span></span></code></pre></div></section><section>
+</span></span></code></pre></div></section>
+<section data-noprocess="" data-shortcode-slide="" id="api-comparison">
 <h2 id="analogies-and-differences-among-providers-apis">Analogies and differences among providers’ APIs</h2>
 <div style="font-size: 55%;">
 <table>
@@ -1681,7 +1684,7 @@ P -&gt; U: “It’s … in Cesena”
 	</tbody>
 </table>
 </div>
-<p>(cf. <a href="https://developers.openai.com/api/reference">OpenAI</a>, <a href="https://docs.anthropic.com/en/api/messages">Anthropic</a>, <a href="https://ai.google.dev/api/generate-content">Google</a> API references; <a href="https://docs.ollama.com/api/openai-compatibility">Ollama’s OpenAI</a> and <a href="https://docs.ollama.com/api/anthropic-compatibility">Anthropic</a> compatibility pages)</p>
+<p>(cf. <a href="https://developers.openai.com/api/reference">OpenAI</a>, <a href="https://platform.claude.com/docs/en/api/messages">Anthropic</a>, <a href="https://ai.google.dev/api/generate-content">Google</a> API references; <a href="https://docs.ollama.com/api/openai-compatibility">Ollama’s OpenAI</a> and <a href="https://docs.ollama.com/api/anthropic-compatibility">Anthropic</a> compatibility pages)</p>
 <span class="fragment ">
   <blockquote>
 <p>Same <strong>metamodel</strong> everywhere (model + instructions + ordered history of role-tagged, possibly multimodal, messages $\rightarrow$ next message + usage), different <strong>syntax</strong>: switching provider means rewriting the <em>adapter</em> layer, not the application logic</p>
@@ -1868,6 +1871,30 @@ P -&gt; U: “It’s … in Cesena”
 </ul>
 
 </section>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="api-errors">
+  
+<h2 id="when-things-go-wrong-errors-rate-limits-and-costs">When things go wrong: errors, rate limits, and costs</h2>
+<ul>
+<li>Requests may <strong>fail</strong>, with HTTP status codes worth distinguishing:
+<ul>
+<li><code>400</code> (bad request, e.g. unsupported parameter), <code>401</code> (wrong API key), <code>402</code> (no credits left, on OR): fix the request, do <strong>not</strong> retry</li>
+<li><code>429</code> (<em>rate limit</em> exceeded): wait, then retry; the <code>Retry-After</code> header (if any) says how long</li>
+<li><code>5xx</code> (server-side failure, overload): retry later, with <em>exponential backoff</em></li>
+</ul>
+</li>
+<li>In the <code>openai</code> SDK, they surface as <em>exceptions</em>: <code>openai.RateLimitError</code> (429), <code>openai.APIStatusError</code> (any other status, with <code>.status_code</code>), <code>openai.APIConnectionError</code> (network)
+<ul>
+<li>the client <em>already</em> retries some of them (2 times by default, cf. the <code>max_retries</code> constructor parameter)</li>
+</ul>
+</li>
+<li>Each response carries its <strong>usage</strong> (<code>prompt_tokens</code>, <code>completion_tokens</code>, …): log it to keep track of <em>costs</em>
+<ul>
+<li>OR also adds <code>usage.cost</code> (in credits, i.e. USD), cf. the <a href="#/open-router">response above</a></li>
+</ul>
+</li>
+</ul>
 </section>
 
 
@@ -2081,7 +2108,7 @@ P -&gt; U: “It’s … in Cesena”
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -2179,6 +2206,8 @@ P -&gt; U: “It’s … in Cesena”
   
   
 
+  
+    
   
   
 

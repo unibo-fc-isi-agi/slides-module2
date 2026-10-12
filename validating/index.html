@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -61,7 +61,10 @@
 </ul>
 </li>
 <li>
-<p>Hence, rather than <em>unit tests</em>, we need <strong>evaluations</strong> (a.k.a. <em>evals</em>): measuring <em>how often</em>, and <em>how well</em>, the system behaves as expected, on a <em>dataset</em> of representative inputs</p>
+<p>Hence, rather than <em>only</em> unit tests (pass/fail on one run), we need <strong>evaluations</strong> (a.k.a. <em>evals</em>): measuring <em>how often</em>, and <em>how well</em>, the system behaves as expected, on a <em>dataset</em> of representative inputs</p>
+<ul>
+<li>evaluations can still <em>run on</em> unit-test frameworks (e.g. <code>pytest</code>), if assertions are on <em>rates</em> or <em>thresholds</em>, rather than on single exact outputs</li>
+</ul>
 </li>
 <li>
 <p>Ingredients of an evaluation:</p>
@@ -71,7 +74,11 @@
 <li><strong>scorers</strong> (a.k.a. <em>metrics</em>), mapping each (input, output, expectation) to a <em>score</em> or a <em>pass/fail</em>:
 <ul>
 <li><strong>deterministic</strong> scorers: schema validity, exact match, ranges, regular expressions, invariants and <em>relations</em> among outputs</li>
-<li><strong>statistical</strong> scorers: similarity to a reference (e.g. <a href="https://aclanthology.org/P02-1040/">BLEU</a>, <a href="https://aclanthology.org/W04-1013/">ROUGE</a>, embedding similarity)</li>
+<li><strong>statistical</strong> scorers: similarity to a reference (e.g. <a href="https://aclanthology.org/P02-1040/">BLEU</a>, <a href="https://aclanthology.org/W04-1013/">ROUGE</a>, embedding similarity)
+<ul>
+<li>they need a <em>reference</em> text, and correlate poorly with human judgement on open-ended outputs (cf. <a href="https://arxiv.org/abs/2303.16634">G-Eval</a>): not used here</li>
+</ul>
+</li>
 <li><strong>LLM-as-a-Judge</strong>: another LLM grades the output, according to a natural language <em>rubric</em></li>
 <li><strong>humans</strong>: the most reliable, and the most expensive</li>
 </ul>
@@ -110,8 +117,30 @@
 <ul>
 <li>use a <em>different</em> (and possibly stronger) model as judge, with <em>low</em> temperature</li>
 <li>prefer <em>narrow</em>, <em>binary</em> criteria (e.g. “is every strength supported by the letter?”) over vague ones (e.g. “is it good?”)</li>
-<li><strong>validate the judge</strong>: compare its grades with <em>human</em> grades, on a small sample, before trusting it</li>
+<li><strong>validate the judge</strong>: compare its grades with <em>human</em> grades, on a small sample, before trusting it
+<ul>
+<li>measure <em>agreement</em>: raw accuracy, plus <a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen’s κ</a> $= (p_o - p_e)/(1 - p_e)$, which discounts <em>chance</em> agreement (cf. <a href="https://arxiv.org/abs/2406.12624">Thakur et al., 2024</a>)</li>
+</ul>
+</li>
 <li>use judges only for what <em>cannot</em> be checked with code</li>
+</ul>
+</li>
+</ul>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="evidence">
+<h2 id="how-much-evidence">How much evidence?</h2>
+<ul>
+<li>A pass rate is an <em>estimate</em>, and small datasets give <strong>wide</strong> uncertainty:
+<ul>
+<li>e.g. 3 letters out of 3 passing $\Rightarrow$ the 95% <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson</a> confidence interval of the true pass rate is $[0.44, 1]$</li>
+<li>hence, report pass rates <em>with</em> confidence intervals (cf. <a href="https://arxiv.org/abs/2411.00640">Miller, 2024, “Adding Error Bars to Evals”</a>)</li>
+</ul>
+</li>
+<li>Outputs are <em>non-deterministic</em>: repeat $N$ runs per test case, and look at the <em>distribution</em>, not at a single run</li>
+<li>Comparing two versions (prompts, models) <em>fairly</em>:
+<ul>
+<li>same test cases, same number of runs, <em>one</em> factor changed at a time</li>
+<li>compare them <em>paired</em>, case by case (e.g. <a href="https://en.wikipedia.org/wiki/McNemar%27s_test">McNemar’s test</a> on pass/fail, or paired differences of scores), rather than comparing two averages</li>
 </ul>
 </li>
 </ul>
@@ -193,7 +222,7 @@
 <section data-noprocess="" data-shortcode-slide="" class="print-compact" id="test-deepeval">
 <h2 id="example-1-testing-the-letter-scoring-system-with-deepeval-pt-1">Example 1: Testing the Letter Scoring System with DeepEval (pt. 1)</h2>
 <blockquote>
-<p><strong>Goal</strong>: set up a <em>test suite</em> for the <a href="../prompting/#/langchain">LangChain letter-scoring system</a> of Example 1 (bis) of the Prompt Engineering lecture, checking <em>some</em> fields of the <code>LetterInfo</code> objects it produces</p>
+<p><strong>Goal</strong>: set up a <em>test suite</em> for the <a href="../prompting/#/letter-scoring-langchain">LangChain letter-scoring system</a> of Example 1 (bis) of the Prompt Engineering lecture, checking <em>some</em> fields of the <code>LetterInfo</code> objects it produces</p>
 </blockquote>
 <ol>
 <li><strong>First</strong>, design the <strong>test dataset</strong>: <em>known</em> inputs (the letters), each with the results <em>expected</em> from a correct scoring
@@ -350,7 +379,11 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">threshold</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">0.7</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
-<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it), wrapped in <code>OpenRouterModel</code>: DeepEval’s adapter for OpenRouter (or any OpenAI-compatible API, via <code>base_url</code>)</li>
+<li>the judge is a <em>different</em> model than the one under test (set <code>JUDGE_MODEL</code> to change it), wrapped in <code>OpenRouterModel</code>: DeepEval’s adapter for OpenRouter (or any OpenAI-compatible API, via <code>base_url</code>)
+<ul>
+<li>default: <code>google/gemma-4-31b-it:free</code>, of a <em>different family</em> than the system under test (avoiding <em>self-preference</em>), with comparable <em>active</em> parameters (31B dense vs. 12B active out of 120B), free, and able to see <em>images</em></li>
+</ul>
+</li>
 <li><code>evaluation_params</code> selects, among the fields of a test case (<code>SingleTurnParams.INPUT</code>, <code>.ACTUAL_OUTPUT</code>, <code>.EXPECTED_OUTPUT</code>, …), which parts of the test case the judge can <em>see</em>:
 <ul>
 <li><em>reference-based</em> judge (<code>relationship</code>): compares the actual output with the <em>expected</em> one, written by humans</li>
@@ -441,7 +474,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">scorer</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">mlflow.genai.judges</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">make_judge</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_validating.dataset</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">read_letter</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_prompting.example1bis.letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">snippets.lecture_prompting.example1bis.letter_scoring_langchain</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">score_letter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 1. the dataset: "inputs" are passed to predict_fn, "expectations" to the scorers</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">inputs</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">letter_text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">read_letter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">)),</span> <span style="color:#000">expectations</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"expectations"</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">c</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">TEST_CASES</span><span style="color:#000;font-weight:bold">]</span>
@@ -476,7 +509,7 @@
 <ol start="3">
 <li>
 <p>Judges are created via <code>make_judge</code>, with <em>template variables</em> in the instructions, and a <em>structured</em> feedback type:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># 4. LLM-as-a-judge (the API key is read from OPENAI_API_KEY)</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">setdefault</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span><span style="color:#000">judge_options</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"openai:/</span><span style="color:#4e9a06">{</span><span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">'JUDGE_MODEL'</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">'google/gemma-4-31b-it:free'</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>                     <span style="color:#000">feedback_value_type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">Literal</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"yes"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"no"</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">generate_rationale_first</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
@@ -497,7 +530,7 @@
 </span></span></code></pre></div><ul>
 <li><code>{{ expectations }}</code> makes the judge <em>reference-based</em> (<code>relationship</code>), <code>{{ inputs }}</code> makes it <em>reference-free</em> (<code>groundedness</code>)</li>
 <li><code>generate_rationale_first=True</code>: rationale <em>before</em> verdict (cf. <a href="../prompting/#/letter-tone">chain-of-thought</a>)</li>
-<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API (the key is read from <code>OPENAI_API_KEY</code>)</li>
+<li><code>model</code> is a URI (<code>&lt;provider&gt;:/&lt;model&gt;</code>); <code>base_url</code> redirects it to any OpenAI-compatible API (the key, read from <code>OPENAI_API_KEY</code>, is the same as the system under test’s)</li>
 <li><code>feedback_value_type</code>: the type of the verdict, here a <code>Literal</code> (cf. <a href="../prompting/#/structured-output">structured outputs</a>) admitting only <code>"yes"</code> or <code>"no"</code></li>
 </ul>
 </li>
@@ -668,7 +701,7 @@
 <section data-noprocess="" data-shortcode-slide="" id="exercise-all-fields-solution">
 <h2 id="exercise-1-complete-the-test-suite-of-the-letter-scoring-system--solution">Exercise 1: Complete the Test Suite of the Letter Scoring System — Solution</h2>
 <blockquote>
-<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of a possible solution starts below</p>
+<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution of <a href="#/exercise-all-fields">Exercise 1</a> is about to start</p>
 </blockquote>
 <ul>
 <li>do <strong>not</strong> proceed until you have <em>attempted</em> <a href="#/exercise-all-fields">the exercise</a> on your own</li>
@@ -873,10 +906,10 @@
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
-<li><strong>first</strong>, design a <strong>test dataset</strong> from the 3 passports of the <a href="../prompting/#/running-example">running example</a>: for each picture, write down the <em>expected</em> values of all fields (name, date of birth, ID number, expiration date)</li>
+<li><strong>first</strong>, design a <strong>test dataset</strong> from the 3 passports of the <a href="../prompting/#/running-example">running example</a>: for each picture, write down the <em>expected</em> values of all fields (name, nationality, date of birth, ID number, expiration date)</li>
 <li>pick a framework (DeepEval <em>or</em> MLflow), and write <strong>deterministic scorers</strong>:
 <ul>
-<li><em>exact match</em> for ID numbers and dates, <em>normalised</em> match for names (case, accents, order of first/family name)</li>
+<li><em>exact match</em> for ID numbers and dates, <em>normalised</em> match for names and nationality (case, accents, order of words)</li>
 <li><em>invariants</em>: date of birth &lt; expiration date, candidate is of age, etc.</li>
 </ul>
 </li>
@@ -897,7 +930,7 @@
 <li><em>Tolerance</em>: which fields must be exactly right, and which ones may be <em>flagged</em> for human review instead?</li>
 <li><em>Cost</em>: $N$ samples $\times$ 3 pictures $\times$ $M$ models $\times$ (1 + judge) requests: keep $N$ small while developing, and use <code>:free</code> models (cf. <a href="../free-access/">Free Access to LLMs</a>)</li>
 <li><em>Flakiness</em>: a test that fails 1 time out of 10 is telling you something; consider asserting on <em>rates</em> (e.g. “at least 4 out of 5 runs are correct”) rather than on single runs</li>
-<li>Do <strong>not</strong> cache LLM responses while measuring consistency (cf. <a href="../llmaas/">Exercise 1 of the LLM-as-a-Service lecture</a>)</li>
+<li>Do <strong>not</strong> cache LLM responses while measuring consistency (cf. <a href="../llmaas/#/exercise-caching">Exercise 1 of the LLM-as-a-Service lecture</a>)</li>
 </ul>
 <h3 id="how-to-test-it">How to test it?</h3>
 <ul>
@@ -916,7 +949,7 @@
 <section data-noprocess="" data-shortcode-slide="" id="exercise-id-tests-solution">
 <h2 id="exercise-2-testing-infrastructure-for-id-document-extraction--solution">Exercise 2: Testing Infrastructure for ID Document Extraction — Solution</h2>
 <blockquote>
-<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of a possible solution starts below</p>
+<p>⚠️ <strong>Spoiler alert</strong>: the <em>walkthrough</em> of the solution of <a href="#/exercise-id-tests">Exercise 2</a> is about to start</p>
 </blockquote>
 <ul>
 <li>do <strong>not</strong> proceed until you have <em>attempted</em> <a href="#/exercise-id-tests">the exercise</a> on your own</li>
@@ -963,15 +996,15 @@
 </section><section>
 <h2 id="exercise-2--solution-deterministic-scorers-step-2">Exercise 2 — Solution: deterministic scorers (step 2)</h2>
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col col-7" style="text-align: left;"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 2: deterministic scorers, i.e. exact match for IDs and dates, normalised match for names (case, accents, order of names)</span>
-</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">normalise_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">set</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
+    <div class="row "><div class="col col-7" style="text-align: left;"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># step 2: deterministic scorers, i.e. exact match for IDs and dates, normalised match for names and nationality (case, accents, order of words)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">normalise_words</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">set</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""e.g. 'DUPONT Jean' -&gt; {'jean', 'dupont'}"""</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87">set</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">unicodedata</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">normalize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"NFKD"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"ascii"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"ignore"</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">","</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">" "</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">split</span><span style="color:#000;font-weight:bold">())</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">correct</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">info</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">IDDocumentInfo</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">expected</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">field</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">bool</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">actual</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">getattr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">field</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">field</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"nationality"</span><span style="color:#000;font-weight:bold">}:</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">normalise_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">actual</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">normalise_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">expected</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">normalise_words</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">actual</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">normalise_words</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">expected</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">])</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">field</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"id_number"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">actual</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">upper</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">expected</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">actual</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">expected</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">field</span><span style="color:#000;font-weight:bold">]</span>  <span style="color:#8f5902;font-style:italic"># dates: `date` objects on both sides, so the format does not matter</span>
@@ -989,7 +1022,7 @@
 </span></span></code></pre></div></div>
 <div class="col " style="text-align: left;"><ul>
 <li><strong>exact</strong> match for ID numbers (up to blanks and case) and dates (<code>date</code> objects on both sides: the <em>format</em> is irrelevant)</li>
-<li><em>normalised</em> match for names: a <strong>set</strong> of words, so “DUPONT Jean” = “Jean Dupont”</li>
+<li><em>normalised</em> match for names (and nationality): a <strong>set</strong> of words, so “DUPONT Jean” = “Jean Dupont”</li>
 <li><code>vote(samples)</code> returns the <em>voted</em> object, and the <em>agreement</em> rate of each field (cf. Prompt Engineering’s Exercise 2)</li>
 <li>the test checks the <em>voted</em> result, i.e. the system <strong>as the committee uses it</strong>; <code>agreement</code> in the message tells <em>how sure</em> it was</li>
 </ul>
@@ -1101,7 +1134,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -1199,6 +1232,8 @@
   
   
 
+  
+    
   
   
 

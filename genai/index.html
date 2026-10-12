@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -222,6 +222,17 @@
 </ul>
 </blockquote>
 </span>
+<span class="fragment ">
+  <blockquote>
+<ul>
+<li>But also: data <em>leave your premises</em>, costs <em>scale</em> with usage, <em>lock-in</em> with the provider, and regulations (GDPR, AI Act) apply
+<ul>
+<li>alternatives, e.g. <a href="../llmaas/#/ollama">on-premise</a> models; trade-offs and <a href="../governance/#/regulation">regulation</a> in the <a href="../governance/#/deployment-options">governance</a> lecture</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</span>
 
 </section>
 </section><section>
@@ -281,25 +292,11 @@
 </blockquote>
 </span>
 </section><section>
-<h2 id="some-technological-solutions-let-you-choose-pt-1">Some technological solutions let you <em>choose</em> (pt. 1)</h2>
+<h2 id="some-technological-solutions-let-you-opt-out-of-training">Some technological solutions let you <em>opt out</em> of training</h2>
 <img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
 <br>
-<img src="./chatgpt-settings/no-learn-1.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
-</section><section>
-<h2 id="some-technological-solutions-let-you-choose-pt-2">Some technological solutions let you <em>choose</em> (pt. 2)</h2>
-<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<br>
-<img src="./chatgpt-settings/no-learn-2.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
-</section><section>
-<h2 id="some-technological-solutions-let-you-choose-pt-3">Some technological solutions let you <em>choose</em> (pt. 3)</h2>
-<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<br>
-<img src="./chatgpt-settings/no-learn-3.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
-</section><section>
-<h2 id="some-technological-solutions-let-you-choose-pt-4">Some technological solutions let you <em>choose</em> (pt. 4)</h2>
-<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<br>
-<img src="./chatgpt-settings/no-learn-4.png" alt="" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+<img src="./chatgpt-settings/no-learn-4.png" alt="ChatGPT settings: the toggle allowing OpenAI to use your conversations to train its models" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+<p>(cf. <a href="../governance/#/regulation">regulation</a> in the governance lecture)</p>
 
 </section>
 </section>
@@ -319,7 +316,7 @@
 <li><span style="color: red;">unreliable</span>: OpenAI itself <a href="https://techcrunch.com/2023/07/25/openai-scuttles-ai-written-text-detector-over-low-rate-of-accuracy/">withdrew</a> its AI-text classifier, due to its low accuracy</li>
 </ul>
 </li>
-<li><em>Agentic</em>: e.g. <a href="https://code.claude.com/docs">Claude Code</a>, <a href="https://github.com/openai/codex">Codex</a>, <a href="https://openclaw.ai">OpenClaw</a></li>
+<li><em>Agentic</em> (a.k.a. <em>coding agents</em>): e.g. <a href="https://code.claude.com/docs">Claude Code</a>, <a href="https://github.com/openai/codex">Codex</a>, <a href="https://openclaw.ai">OpenClaw</a></li>
 </ul>
 <p><span style="color: red;">Non-exhaustive list!</span></p>
 </section><section>
@@ -591,8 +588,11 @@
 </div>
 </div>
 </div>
-</section><section>
-<h2 id="agentic-interfaces-the-landscape"><strong>Agentic</strong> interfaces: the landscape</h2>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="coding-agents">
+  
+<h2 id="agentic-interfaces-aka-coding-agents-the-landscape"><strong>Agentic</strong> interfaces (a.k.a. <em>coding agents</em>): the landscape</h2>
 <table>
 	<thead>
 			<tr>
@@ -639,7 +639,11 @@
 <span class="fragment ">
   <h3 id="common-anatomy">Common anatomy</h3>
 <ul>
-<li>An LLM + <strong>tools</strong> (shell, files, Web) + a <strong>loop</strong> $\Rightarrow$ an <em>agent</em></li>
+<li>An LLM + <strong>tools</strong> (shell, files, Web) + a <strong>loop</strong> $\Rightarrow$ an <em>agent</em>
+<ul>
+<li>the software wrapping the LLM (loop, tools, policies) is called the <strong>harness</strong></li>
+</ul>
+</li>
 <li>Project-specific instructions in Markdown files (e.g. <code>CLAUDE.md</code>, <a href="https://agents.md"><code>AGENTS.md</code></a>)</li>
 <li>Extensible via <a href="https://modelcontextprotocol.io"><strong>MCP</strong></a> servers, <strong>skills</strong>, and <strong>hooks</strong></li>
 <li><strong>Permission</strong> modes: from “ask before every action” to “fully autonomous”</li>
@@ -779,7 +783,7 @@
 			</tr>
 			<tr>
 					<td>(1) + (2) + (3)</td>
-					<td>an assistant for a PhD admission committee: <em>workflows</em> to extract data from candidates’ documents, an <em>agent</em> to answer the committee’s questions, all <em>coded</em> with a coding agent</td>
+					<td>an assistant for a PhD admission committee (our <a href="../prompting/#/running-example">running example</a>): <em>workflows</em> to extract data from candidates’ documents, an <em>agent</em> to answer the committee’s questions, all <em>coded</em> with a coding agent</td>
 			</tr>
 	</tbody>
 </table>
@@ -794,7 +798,8 @@
 </li>
 </ul>
 </span>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="language-to-action">
 <h2 id="from-language-to-action">From <strong>language</strong> to <strong>action</strong></h2>
 <ul>
 <li>
@@ -822,9 +827,9 @@
 <span class="fragment ">
   <h3 id="intelligence-vs-autonomy-vs-agency-are-separable-dimensions-cf-floridi-2025"><em>Intelligence</em> vs. <em>autonomy</em> vs. <em>agency</em> are <strong>separable</strong> dimensions (cf. <a href="https://doi.org/10.1007/s13347-025-00858-9">Floridi, 2025</a>)</h3>
 <ul>
-<li>What can the system <strong>do</strong>? (<em>agency</em>)</li>
+<li>How <strong>well</strong> does it solve problems? (<em>intelligence</em>)</li>
+<li>What can it <strong>do</strong>, i.e. what <strong>state</strong> does it actually <em>change</em>? (<em>agency</em>)</li>
 <li>Who <strong>controls</strong> <em>when</em> and <em>why</em> it does it? (<em>autonomy</em>)</li>
-<li>What <strong>state</strong> does it actually <em>change</em>?</li>
 </ul>
 </span>
 </section><section>
@@ -890,14 +895,14 @@
 <h2 id="lets-explain-the-nomenclature">Let’s explain the nomenclature</h2>
 <ul>
 <li>
-<p><strong><u>Pre-trained</u> foundation models</strong> (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. ‘understanding’ and generating text, images, code), most commonly accessed <em>as-a-Service</em> via API, as provided by third-party companies</p>
+<p><strong>Foundation models</strong> (FM, always <em>pre-trained</em>): large neural-networks trained on massive datasets to learn general skills (e.g. ‘understanding’ and generating text, images, code), most commonly accessed <em>as-a-Service</em> via API, as provided by third-party companies</p>
 <ul>
 <li>e.g. GPT (OpenAI), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, Qwen (Alibaba), etc.</li>
 <li>some are <em>proprietary</em> (usable only via the provider’s API), others are <em>open-weight</em> (downloadable and runnable locally, cf. <a href="../llmaas/#/ollama">on-premise deployment</a> and <a href="../governance/#/open-models">open models</a>)</li>
 </ul>
 </li>
 <li>
-<p><strong>Prompts</strong>: carefully <em>crafted textual inputs</em> that guide some PFM to produce <em>desired outputs</em></p>
+<p><strong>Prompts</strong>: carefully <em>crafted textual inputs</em> that guide some FM to produce <em>desired outputs</em></p>
 <ul>
 <li>prompt <strong>templates</strong> are prompts with <em>named placeholders</em> to be filled with specific data at runtime
 <ul>
@@ -907,7 +912,7 @@
 </ul>
 </li>
 <li>
-<p><strong>Tools</strong>: external <em>software components</em> (e.g. WebAPIs, databases, search engines) that PFMs can <em>ask</em> to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information</p>
+<p><strong>Tools</strong>: external <em>software components</em> (e.g. WebAPIs, databases, search engines) that FMs can <em>ask</em> to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information</p>
 <ul>
 <li>e.g. a calculator API, a weather API, a database query interface</li>
 </ul>
@@ -919,10 +924,10 @@
 </ul>
 </li>
 <li>
-<p><strong>Agents</strong>: software systems that <em>orchestrate</em> the interaction between PFMs and tools, enabling dynamic decision-making and task execution based on the context and user input</p>
+<p><strong>Agents</strong>: software systems that <em>orchestrate</em> the interaction between FMs and tools, enabling dynamic decision-making and task execution based on the context and user input</p>
 <ul>
-<li>e.g. a chatbot that uses a PFM for conversation and invokes a weather API when asked about the weather</li>
-<li>e.g. an assistant that uses a PFM to understand user requests and a database to fetch relevant information</li>
+<li>e.g. a chatbot that uses a FM for conversation and invokes a weather API when asked about the weather</li>
+<li>e.g. an assistant that uses a FM to understand user requests and a database to fetch relevant information</li>
 </ul>
 </li>
 </ul>
@@ -930,7 +935,7 @@
 
 
 <section data-shortcode-section="">
-<h2 id="what-does-an-ai-powered-application-include">What does an AI-powered application include?</h2>
+<h2 id="what-does-an-ai-powered-application-include-pt-1">What does an AI-powered application include? (pt. 1)</h2>
 <p>(i.e. a product exploiting GenAI as per dimensions (2) and (3))</p>
 <ol>
 <li>
@@ -939,30 +944,34 @@
 <li>must be available, configured, and most commonly imply <em>costs</em> (per call, per token, etc.)</li>
 <li>imply the choice of some <strong>client library</strong>, and the related <em>programmatic interface</em>
 <ul>
-<li>e.g. <a href="https://github.com/openai/openai-python">OpenAI Python SDK</a>, <a href="https://huggingface.co/docs/transformers/index">Hugging Face Transformers</a>, etc.</li>
+<li>e.g. <a href="https://github.com/openai/openai-python">OpenAI Python SDK</a>, <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a>, <a href="https://huggingface.co/docs/huggingface_hub/guides/inference">Hugging Face <code>InferenceClient</code></a>, etc. (or local runtimes, e.g. Ollama, Transformers, cf. <a href="../llmaas/#/ollama">LLM-as-a-Service</a>)</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>
-<p>A set of <strong>prompt templates</strong> (text files, or code snippets) that are known to work well for the tasks at hand</p>
+<p>A set of <strong>prompt templates</strong> (text files, or code snippets) that are known to work well for the tasks at hand (cf. <a href="../prompting/">prompting</a>)</p>
 <ul>
 <li>commonly assessed via semi-automatic <em>evaluations</em> on a <em>validation set</em> of inputs</li>
 </ul>
 </li>
 <li>
-<p>A set of <strong>tools</strong> that PFMs can <em>ask</em> the application to invoke</p>
+<p>A set of <strong>tools</strong> that FMs can <em>ask</em> the application to invoke</p>
 <ul>
 <li>these may be plain <em>functions</em> in the application’s code…</li>
-<li>… or <em>software modules</em> exposing tools via the <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP protocol</a> (<strong>MCP servers</strong>), somewhat similar to ordinary Web services</li>
+<li>… or <em>software modules</em> exposing tools via <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP</a> (<strong>MCP servers</strong>), somewhat similar to ordinary Web services</li>
 </ul>
 </li>
 <li>
-<p>A set of <strong>agents</strong>, implementing the logic to orchestrate the interaction between PFMs and tools</p>
+<p>A set of <strong>agents</strong>, implementing the logic to orchestrate the interaction between FMs and tools</p>
 <ul>
 <li>these are <em>software modules</em>, commonly implemented via libraries such as <a href="https://docs.langchain.com/oss/python/langchain/overview">LangChain</a> or <a href="https://developers.llamaindex.ai/python/framework/">LlamaIndex</a></li>
 </ul>
 </li>
+</ol>
+</section><section>
+<h2 id="what-does-an-ai-powered-application-include-pt-2">What does an AI-powered application include? (pt. 2)</h2>
+<ol start="5">
 <li>
 <p>A set of <strong>vector stores</strong> (if needed), populated with relevant data, and accessible by the agents</p>
 <ul>
@@ -970,19 +979,73 @@
 </ul>
 </li>
 <li>
-<p>LLM-as-a-Judge <strong>evaluations</strong> to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents</p>
+<p><strong>Evaluations</strong> (deterministic scorers + LLM-as-a-Judge) to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents</p>
 <ul>
 <li>e.g. by comparing the output to a <em>reference</em> answer, and by assigning a score based on some <em>criterion</em></li>
 </ul>
 </li>
+<li>
+<p>A set of <strong>workflows</strong> (if needed): <em>code-controlled</em> flows (state machines) whose steps call FMs, for procedures that must be <em>reliable</em></p>
+</li>
+<li>
+<p>A set of <strong>skills</strong> (if needed): packaged <em>instructions</em> and <em>scripts</em> that agents load <em>on demand</em></p>
+</li>
+<li>
+<p><strong>Governance</strong> decisions: where models run (cloud vs. on-premise), at which <em>cost</em>, and under which <em>regulations</em> (e.g. the AI Act)</p>
+</li>
 </ol>
 </section><section>
-<h2 id="concept-prompt-templates">Concept: Prompt Templates</h2>
+<h2 id="roadmap-of-this-module">Roadmap of this module</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Component</th>
+					<th>Lecture</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>FMs, as-a-Service or on-premise; client libraries</td>
+					<td><a href="../llmaas/">LLM-as-a-Service</a> (+ <a href="../free-access/">free access</a>)</td>
+			</tr>
+			<tr>
+					<td>Prompts, prompt templates, structured outputs</td>
+					<td><a href="../prompting/">Prompt engineering</a></td>
+			</tr>
+			<tr>
+					<td>Evaluations</td>
+					<td><a href="../validating/">Validating generative software</a></td>
+			</tr>
+			<tr>
+					<td>Tools, MCP servers, agents</td>
+					<td><a href="../agents/">Tools and agents</a></td>
+			</tr>
+			<tr>
+					<td>Vector stores</td>
+					<td><a href="../rag/">Retrieval-Augmented Generation</a></td>
+			</tr>
+			<tr>
+					<td>Skills</td>
+					<td><a href="../skills/">Agentic skills</a></td>
+			</tr>
+			<tr>
+					<td>Workflows, multi-agent systems</td>
+					<td><a href="../workflows/">Workflows</a></td>
+			</tr>
+			<tr>
+					<td>Model selection, deployment, regulation</td>
+					<td><a href="../governance/">AI governance</a></td>
+			</tr>
+	</tbody>
+</table>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="prompt-patterns">
+<h2 id="concept-prompt-patterns">Concept: Prompt Patterns</h2>
 <table>
 	<thead>
 			<tr>
 					<th>Technique</th>
-					<th>Prompt template</th>
+					<th>Pattern template</th>
 					<th>Description</th>
 			</tr>
 	</thead>
@@ -1016,14 +1079,26 @@
 </table>
 <p>(source: <a href="https://www.lennysnewsletter.com/">Lenny’s Newsletter</a>)</p>
 <ul>
-<li><code>{placeholders}</code> are filled with <em>actual data</em> at runtime</li>
+<li><code>{placeholders}</code> are filled with <em>actual data</em> at runtime $\rightarrow$ prompt <em>templates</em> (cf. <a href="../prompting/#/langchain">prompting</a>)</li>
+</ul>
+</section><section>
+<h2 id="concept-structured-outputs">Concept: Structured Outputs</h2>
+<ul>
+<li>Constrain the FM to answer with <em>data</em> (e.g. JSON) matching a given <strong>schema</strong>, rather than free text
+<ul>
+<li>the output can be <em>parsed</em> and <em>validated</em> by code, then stored or passed to other components</li>
+<li>e.g. extracting name, nationality, and expiry date from a passport’s picture</li>
+</ul>
+</li>
+<li>(more on this in the <a href="../prompting/#/structured-output">prompting</a> lecture)</li>
 </ul>
 </section><section>
 <h2 id="concept-agents-calling-external-tools">Concept: Agents Calling External Tools</h2>
 <img src="./tools.svg" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" style="width: 100%; max-width: 95vw; max-height: 85vh; object-fit: contain;">
-</section><section>
-<h2 id="concept-model-context-protocol-mcp">Concept: Model-Context Protocol (MCP)</h2>
-<img src="./mcp.svg" alt="Model-Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="mcp-concept">
+<h2 id="concept-model-context-protocol-mcp">Concept: Model Context Protocol (MCP)</h2>
+<img src="./mcp.svg" alt="Model Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
 <ul>
 <li>MCP $\approx$ <em>standard</em> protocol for LLM-based applications to <em>discover</em> and <em>call</em> <strong>external tools</strong> (cf. <a href="https://modelcontextprotocol.io/specification">specification</a>)</li>
 <li>Allows for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
@@ -1034,7 +1109,8 @@
 </ul>
 </li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="rag-concept">
 <h2 id="concept-retrieval-augmented-generation-rag">Concept: Retrieval-Augmented Generation (RAG)</h2>
 <img src="./rag.svg" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
 </section><section>
@@ -1046,6 +1122,29 @@
 <li>… by comparing the output to some <em>reference</em> (e.g. a human-written checklist)</li>
 </ul>
 <p>(more on this in the <a href="../validating/#/llm-as-a-judge">validating</a> lecture)</p>
+</section><section>
+<h2 id="concept-agentic-skills">Concept: Agentic Skills</h2>
+<ul>
+<li><em>Folders</em> of <strong>instructions</strong> (Markdown) and <em>scripts</em>, which an agent loads <em>on demand</em>, when relevant to the task
+<ul>
+<li>reusable <em>procedures</em>, written by domain experts in natural language</li>
+<li>only names and descriptions stay in the context, until needed</li>
+</ul>
+</li>
+<li>(more on this in the <a href="../skills/#/skills-concept">skills</a> lecture)</li>
+</ul>
+</section><section>
+<h2 id="concept-workflows">Concept: Workflows</h2>
+<ul>
+<li>The <em>code</em> decides the <strong>flow</strong> (a state machine, a graph of steps), and FMs fill in the <em>steps</em>
+<ul>
+<li>as opposed to <em>agents</em>, where the FM decides what to do next</li>
+<li>predictable, testable, auditable; less flexible</li>
+<li>e.g. extract $\rightarrow$ validate $\rightarrow$ score $\rightarrow$ report</li>
+</ul>
+</li>
+<li>(more on this in the <a href="../workflows/#/workflows-concept">workflows</a> lecture)</li>
+</ul>
 
 </section>
 </section>
@@ -1053,21 +1152,21 @@
 
 <section data-shortcode-section="">
 <section data-noprocess="" data-shortcode-slide="" id="genai-workflow">
-<h2 id="the-genai-workflow">The GenAI workflow</h2>
-<p>(The workflow of engineering products as per dimensions (2) and (3).
-Similar to the ML workflow in the sense that the goal is to process data, but different in many details: e.g. training is <em>optional</em>, and commonly <em>not</em> performed in-house, as pre-trained models are exploited)</p>
+<h2 id="the-genai-project-lifecycle">The GenAI project lifecycle</h2>
+<p>(The lifecycle of engineering products as per dimensions (2) and (3).
+Similar to the ML lifecycle in the sense that the goal is to process data, but different in many details: e.g. training is <em>optional</em>, and commonly <em>not</em> performed in-house, as pre-trained FMs are exploited)</p>
 <img src="./genai-workflow.svg" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" style="width: 100%; max-width: 95vw; max-height: 40vh; object-fit: contain;">
 <ul>
-<li>there could be <strong>many iterations</strong> (e.g. for PFM selection, and prompt tuning)</li>
-<li>the whole workflow may be <strong>re-started</strong> upon <em>data changes</em>, or <em>task changes</em>, or new <em>PFM availability</em></li>
+<li>there could be <strong>many iterations</strong> (e.g. for FM selection, and prompt tuning)</li>
+<li>the whole lifecycle may be <strong>re-started</strong> upon <em>data changes</em>, or <em>task changes</em>, or new <em>FM availability</em></li>
 <li>the <strong>interplay</strong> between prompts, models, tasks, and data may need to be <em>monitored</em> and <em>adjusted</em> continuously</li>
-<li>the <strong>data-flow</strong> between components (agents, PFM, tools, vector stores) may need to be <em>tracked</em> for the sake of <em>debugging</em> and <em>monitoring</em></li>
+<li>the <strong>data-flow</strong> between components (agents, FM, tools, vector stores) may need to be <em>tracked</em> for the sake of <em>debugging</em> and <em>monitoring</em></li>
 </ul>
 </section><section>
-<h2 id="peculiar-activities-in-a-typical-genai-workflow">Peculiar activities in a typical GenAI workflow</h2>
+<h2 id="peculiar-activities-in-a-typical-genai-lifecycle">Peculiar activities in a typical GenAI lifecycle</h2>
 <ol>
 <li>
-<p><strong>Foundation model selection</strong>: choose the most suitable pre-trained model(s) based on task requirements, performance, cost, data protection, and availability</p>
+<p><strong>Foundation model selection</strong>: choose the most suitable FM(s) based on task requirements, performance, cost, data protection, and availability</p>
 <ul>
 <li>implies trying out prompts (even manually) on different models</li>
 </ul>
@@ -1079,14 +1178,14 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
 </ul>
 </li>
 <li>
-<p><strong>Evaluations</strong>: establish assertions and metrics to assess PFM responses to prompts (attained by instantiating templates over actual data)</p>
+<p><strong>Evaluations</strong>: establish assertions and metrics to assess FM responses to prompts (attained by instantiating templates over actual data)</p>
 <ul>
 <li>somewhat similar to <em>unit tests</em> in ordinary software</li>
 <li>important when automatic, as they allow quick evaluations on prompt/model combinations</li>
 </ul>
 </li>
 <li>
-<p><strong>Tracking</strong> the <em>data-flow</em> between components (agents, PFM, tools, vector stores) to monitor <em>costs</em>, <em>latency</em>, and to <em>debug</em> unexpected behaviors</p>
+<p><strong>Tracking</strong> the <em>data-flow</em> between components (agents, FM, tools, vector stores) to monitor <em>costs</em>, <em>latency</em>, and to <em>debug</em> unexpected behaviors</p>
 <ul>
 <li>also useful for the sake of <em>auditing</em> and <em>governance</em></li>
 <li>commonly performed via <em>logging</em> and <em>tracing</em> tools, e.g. <a href="https://smith.langchain.com/">LangSmith</a>, or <a href="https://mlflow.org/">MLflow</a></li>
@@ -1094,7 +1193,7 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
 </li>
 </ol>
 </section><section>
-<h2 id="example-of-genai-workflow-pt-1">Example of GenAI workflow (pt. 1)</h2>
+<h2 id="example-of-genai-lifecycle-pt-1">Example of GenAI lifecycle (pt. 1)</h2>
 <blockquote>
 <p>Support public officers in managing tenders through a GenAI assistant that understands and compares procurement decisions transparently.</p>
 </blockquote>
@@ -1131,7 +1230,7 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
 </li>
 </ol>
 </section><section>
-<h2 id="example-of-genai-workflow-pt-2">Example of GenAI workflow (pt. 2)</h2>
+<h2 id="example-of-genai-lifecycle-pt-2">Example of GenAI lifecycle (pt. 2)</h2>
 <p><strong>Adapt and align</strong></p>
 <ol start="5">
 <li>
@@ -1182,7 +1281,7 @@ Similar to the ML workflow in the sense that the goal is to process data, but di
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>

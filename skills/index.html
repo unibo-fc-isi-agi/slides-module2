@@ -31,14 +31,14 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
 <h2 id="outline">Outline</h2>
 <ol>
 <li><a href="#/skills-concept">Skills</a>: reusable procedures, written in natural language, which agents load <em>when relevant</em></li>
-<li><a href="#/copilots">Copilot frameworks</a>: the <em>harnesses</em> where skills were born, and their extension points</li>
+<li><a href="#/copilots">Coding agents</a>: the <em>harnesses</em> where skills were born, and their extension points</li>
 <li><a href="#/writing-skills">Writing skills</a>: the <code>SKILL.md</code> format, <a href="#/progressive-disclosure">progressive disclosure</a>, and <a href="#/skills-committee">a skill for the committee</a></li>
 <li><a href="#/skills-from-scratch">Skills in your own agents</a>: <a href="#/skills-from-scratch">from scratch</a>, then <a href="#/skills-deepagents">with Deep Agents</a></li>
 <li><a href="#/testing-skills">Testing skills</a>: does the skill <em>trigger</em> when it should, and does it <em>help</em>?</li>
@@ -49,8 +49,57 @@
 <li>Exercise: <a href="#/exercise-thesis-precheck">a pre-check skill for theses</a></li>
 </ol>
 <blockquote>
-<p>Recall: we assume the reader is familiar with <a href="../agents/">tools, agents, and MCP</a>, with the <a href="../rag/#/memory">CoALA memory types</a>, and with <a href="../genai/">coding agents</a> (e.g. Claude Code, Codex, OpenClaw)</p>
+<p>Recall: we assume the reader is familiar with <a href="../agents/">tools, agents, and MCP</a>, with the <a href="../rag/#/memory">CoALA memory types</a>, and with <a href="../genai/#/coding-agents">coding agents</a> (e.g. Claude Code, Codex, OpenClaw)</p>
 </blockquote>
+</section>
+
+<section data-noprocess="" data-shortcode-slide="" id="running-example">
+  
+<h2 id="running-example">Running example</h2>
+<h3 id="admission-committee-assistant-for-phd-applications-evaluation">Admission committee assistant for PhD applications evaluation</h3>
+<ul>
+<li>
+<p>3 candidates, and as many applications, with their <em>passport</em>, <em>transcript of records</em>, and <em>presentation letter</em> (in natural language)</p>
+</li>
+<li>
+<p>we want to extract structured information from these documents (e.g. name, age, grades, research experience, etc.) to ease evaluation</p>
+</li>
+</ul>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mario-rossi.png" alt=""></p>
+<ul>
+<li><a href="../lab-snippets/data/transcript-mario-rossi.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mario-rossi.txt">Presentation letter</a>
+<ul>
+<li>letter is very positive</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-jean-dupont.png" alt=""></p>
+<ul>
+<li><a href="../lab-snippets/data/transcript-jean-dupont.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-jean-dupont.txt">Presentation letter</a>
+<ul>
+<li>letter contains some criticisms</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mohammed-ali.png" alt=""></p>
+<ul>
+<li><a href="../lab-snippets/data/transcript-mohammed-ali.png">Transcript of records</a></li>
+<li><a href="../lab-snippets/data/letter-mohammed-ali.txt">Presentation letter</a>
+<ul>
+<li>letter is positive but shallow</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
 </section>
 
 
@@ -100,7 +149,8 @@
 </ul>
 </li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="skills-vs-others">
 <h2 id="skills-vs-prompts-tools-mcp-servers-and-workflows">Skills vs. prompts, tools, MCP servers, and workflows</h2>
 <div style="font-size: 80%;">
 <table>
@@ -143,7 +193,7 @@
 					<td><em>Context cost</em></td>
 					<td>full, at each step</td>
 					<td>schema, at each step</td>
-					<td>schemas of all its tools, at each step</td>
+					<td>schemas of all its tools, at each step (unless the harness <em>defers</em> them, e.g. Claude Code’s tool search: names only, schemas fetched on demand)</td>
 					<td><strong>description only</strong>, until activated</td>
 					<td>only what each step needs</td>
 			</tr>
@@ -168,7 +218,11 @@
 </div>
 <ul>
 <li>Skills and the others are <strong>complementary</strong>: a skill can tell the agent <em>which tools</em> (or MCP servers) to use, and <em>how</em></li>
-<li>Rule of thumb (cf. the <a href="../governance/">governance lecture</a>): <em>procedures</em> that change often, or that domain experts must own $\rightarrow$ skills; <em>procedures</em> that must be reliable and auditable $\rightarrow$ workflows (next lecture)</li>
+<li>Rule of thumb (cf. the <a href="../agents/#/autonomy-spectrum">autonomy spectrum</a>): <em>procedures</em> that change often, or that domain experts must own $\rightarrow$ skills; <em>procedures</em> that must be reliable and auditable $\rightarrow$ workflows (next lecture)
+<ul>
+<li>business-level trade-offs (cost, compliance, time-to-market) in the <a href="../governance/#/which-technique">governance lecture</a></li>
+</ul>
+</li>
 </ul>
 
 </section>
@@ -177,10 +231,10 @@
 
 <section data-shortcode-section="">
 <section data-noprocess="" data-shortcode-slide="" id="copilots">
-<h2 id="where-skills-come-from-copilot-frameworks">Where skills come from: copilot frameworks</h2>
+<h2 id="where-skills-come-from-coding-agents-harnesses">Where skills come from: coding agents (harnesses)</h2>
 <ul>
 <li>
-<p>Recall from the <a href="../genai/">introductory lecture</a>: <em>coding agents</em> such as <a href="https://code.claude.com/docs">Claude Code</a>, <a href="https://github.com/openai/codex">Codex</a>, <a href="https://cursor.com">Cursor</a>, <a href="https://github.com/features/copilot">Copilot</a>, <a href="https://geminicli.com">Gemini CLI</a>, and <a href="https://openclaw.ai">OpenClaw</a></p>
+<p>Recall the <a href="../genai/#/coding-agents"><em>coding agents</em></a> of the introductory lecture, such as <a href="https://code.claude.com/docs">Claude Code</a>, <a href="https://github.com/openai/codex">Codex</a>, <a href="https://cursor.com">Cursor</a>, <a href="https://github.com/features/copilot">GitHub Copilot</a>, and <a href="https://openclaw.ai">OpenClaw</a>; others exist, e.g. <a href="https://geminicli.com">Gemini CLI</a></p>
 <ul>
 <li>they are <strong>harnesses</strong>: <em>controller</em> + <em>LLM</em> + <em>tools</em> (shell, file system, Web) + <em>memory</em> + <em>policies</em> (cf. <a href="../agents/">agents</a>)</li>
 <li>general-purpose by construction: the <em>same</em> harness is used for coding, data analysis, document writing, …</li>
@@ -211,7 +265,7 @@
 					<td><em>MCP servers</em></td>
 					<td>tools (cf. <a href="../agents/#/mcp">MCP</a>)</td>
 					<td><code>.mcp.json</code></td>
-					<td>always (their schemas)</td>
+					<td>always (names; schemas on demand with <a href="https://code.claude.com/docs/en/mcp">tool search</a>, the default in Claude Code)</td>
 			</tr>
 			<tr>
 					<td><strong>Skills</strong></td>
@@ -221,7 +275,7 @@
 			</tr>
 			<tr>
 					<td><em>Subagents</em></td>
-					<td>specialised agents, with their own context</td>
+					<td>specialised agents, with their own context: the main agent calls them <em>like a tool</em>, with a fresh context, and gets back only their result (more in <a href="../workflows/#/multi-agent">multi-agent systems</a>)</td>
 					<td><code>.claude/agents/&lt;name&gt;.md</code></td>
 					<td>on demand</td>
 			</tr>
@@ -414,7 +468,7 @@
 					<td><a href="https://cursor.com/docs/context/skills">link</a></td>
 			</tr>
 			<tr>
-					<td>Copilot / VS Code</td>
+					<td>Copilot (CLI, VS Code)</td>
 					<td><code>.github/skills/</code>, <code>.agents/skills/</code>, <code>.claude/skills/</code></td>
 					<td><code>~/.copilot/skills/</code>, <code>~/.agents/skills/</code></td>
 					<td>automatic, or <code>/skill-name</code></td>
@@ -514,7 +568,7 @@
 </div>
 <ul>
 <li>Sources: the <a href="https://agentskills.io/specification">spec</a>, and Anthropic’s <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices">skill authoring best practices</a></li>
-<li>Skills are <strong>prompts</strong>: all the <a href="../prompting/">prompt engineering</a> best practices apply</li>
+<li>Skills are <strong>prompts</strong>: all the <a href="../prompting/#/prompt-anatomy">prompt engineering</a> best practices apply</li>
 </ul>
 
 </section>
@@ -824,7 +878,7 @@
 <ul>
 <li><a href="https://docs.langchain.com/oss/python/deepagents/overview">Deep Agents</a> (<code>deepagents</code>): LangChain’s library for <em>harness-like</em> agents, built on <a href="https://docs.langchain.com/oss/python/langgraph/overview">LangGraph</a>
 <ul>
-<li>an agent with a <em>virtual file system</em> (<code>ls</code>, <code>read_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>glob</code>, <code>grep</code>), <em>subagents</em> (<code>task</code>), and optionally a <em>shell</em> (<code>execute</code>)</li>
+<li>an agent with a <em>planning</em> tool (<code>write_todos</code>), a <em>virtual file system</em> (<code>ls</code>, <code>read_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>glob</code>, <code>grep</code>), <em>subagents</em> (<code>task</code>), and optionally a <em>shell</em> (<code>execute</code>)</li>
 <li><em>backends</em> decide where files live: in memory (<code>StateBackend</code>), on disk (<code>FilesystemBackend</code>), on disk + shell (<code>LocalShellBackend</code>), in a sandbox, …</li>
 <li><strong>skills</strong> are supported natively: <code>create_deep_agent(..., skills=["/path/to/skills/"])</code></li>
 </ul>
@@ -915,8 +969,8 @@
 			</tr>
 			<tr>
 					<td>Lines of code</td>
-					<td>~100</td>
-					<td>~30</td>
+					<td>~110</td>
+					<td>~55</td>
 			</tr>
 	</tbody>
 </table>
@@ -1160,10 +1214,13 @@
 <li>
 <p>So, in hook engineering, the set of <strong>events</strong> (names + payloads + answers) <em>is</em> the <strong>interface</strong> between your code and the harness</p>
 <ul>
-<li>you can only act <em>where</em> the harness emits an event: no <code>BeforeModel</code>-like event $\rightarrow$ no way to redact the prompt before it reaches the LLM</li>
+<li>you can only act <em>where</em> the harness emits an event: no <code>BeforeModel</code>-like event $\rightarrow$ no way to redact the prompt before it reaches the LLM, <em>in that harness</em> (libraries like LangChain or Deep Agents allow it, via <code>before_model</code> middleware)</li>
 <li>the <em>granularity</em> of events bounds what you can enforce: a <code>beforeShellExecution</code> sees shell commands only, a <code>PreToolUse</code> sees <em>every</em> tool (incl. MCP ones)</li>
 <li>events are a <em>contract</em>: renaming one, or changing its payload, silently breaks every hook relying on it (the hook just stops being called)</li>
 </ul>
+</li>
+<li>
+<p>Libraries have hooks too: LangChain’s <a href="../agents/#/agent-middleware">middleware</a> (before/after each model or tool call, incl. PII redaction)</p>
 </li>
 <li>
 <p>Rule of thumb: before writing a hook, look up the harness’ <strong>event list</strong>, and check that the event you need <em>exists</em>, and fires on <em>all</em> the paths you want to cover</p>
@@ -1198,7 +1255,7 @@
 					<td><code>.codex/hooks.json</code> or <code>config.toml</code>; to be <em>trusted</em> via <code>/hooks</code></td>
 					<td><code>command</code>, <code>mcp_tool</code></td>
 					<td>as Claude Code’s (<code>permissionDecision</code>: <code>allow</code>, <code>deny</code>)</td>
-					<td><a href="https://learn.chatgpt.com/docs/hooks">link</a></td>
+					<td><a href="https://developers.openai.com/codex/hooks">link</a></td>
 			</tr>
 			<tr>
 					<td>Cursor</td>
@@ -1209,7 +1266,7 @@
 					<td><a href="https://cursor.com/docs/agent/hooks">link</a></td>
 			</tr>
 			<tr>
-					<td>Copilot</td>
+					<td>Copilot CLI</td>
 					<td><code>sessionStart</code>, <code>userPromptSubmitted</code>, <code>preToolUse</code>, <code>postToolUse</code>, <code>agentStop</code>, …</td>
 					<td><code>.github/hooks/*.json</code></td>
 					<td><code>command</code>, <code>http</code>, <code>prompt</code></td>
@@ -1246,147 +1303,11 @@
 </ul>
 <p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
 </section><section>
-<h2 id="hook-events-per-harness-pt-1">Hook events per harness (pt. 1)</h2>
-<div style="font-size: 60%;">
-<table>
-	<thead>
-			<tr>
-					<th>Phase</th>
-					<th><a href="https://code.claude.com/docs/en/hooks">Claude Code</a> (<strong>33</strong>)</th>
-					<th><a href="https://learn.chatgpt.com/docs/hooks">Codex</a> (<strong>12</strong>)</th>
-					<th><a href="https://docs.github.com/en/copilot/reference/hooks-reference">Copilot CLI</a> (<strong>14</strong>)</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td>Session</td>
-					<td><code>SessionStart</code>, <code>Setup</code>, <code>SessionEnd</code></td>
-					<td><code>SessionStart</code>, <code>SessionEnd</code></td>
-					<td><code>sessionStart</code>, <code>sessionEnd</code></td>
-			</tr>
-			<tr>
-					<td>User prompt</td>
-					<td><code>UserPromptSubmit</code>, <code>UserPromptExpansion</code></td>
-					<td><code>UserPromptSubmit</code></td>
-					<td><code>userPromptSubmitted</code>, <code>userPromptTransformed</code></td>
-			</tr>
-			<tr>
-					<td>Model call</td>
-					<td><code>PreModelSwitch</code>, <code>PostModelSwitch</code> (on model <em>switch</em> only)</td>
-					<td>—</td>
-					<td>—</td>
-			</tr>
-			<tr>
-					<td>Tool call</td>
-					<td><code>PreToolUse</code>, <code>PermissionRequest</code>, <code>PermissionDenied</code>, <code>PostToolUse</code>, <code>PostToolUseFailure</code>, <code>PostToolBatch</code></td>
-					<td><code>PreToolUse</code>, <code>PermissionRequest</code>, <code>PostToolUse</code></td>
-					<td><code>preToolUse</code>, <code>permissionRequest</code>, <code>postToolUse</code>, <code>postToolUseFailure</code></td>
-			</tr>
-			<tr>
-					<td>Subagents, tasks</td>
-					<td><code>SubagentStart</code>, <code>SubagentStop</code>, <code>TaskCreated</code>, <code>TaskCompleted</code>, <code>TeammateIdle</code></td>
-					<td><code>SubagentStart</code>, <code>SubagentStop</code></td>
-					<td><code>subagentStart</code>, <code>subagentStop</code></td>
-			</tr>
-			<tr>
-					<td>Context</td>
-					<td><code>PreCompact</code>, <code>PostCompact</code>, <code>InstructionsLoaded</code></td>
-					<td><code>PreCompact</code>, <code>PostCompact</code></td>
-					<td><code>preCompact</code></td>
-			</tr>
-			<tr>
-					<td>Stop</td>
-					<td><code>Stop</code>, <code>StopFailure</code></td>
-					<td><code>Stop</code>, <code>Interrupt</code></td>
-					<td><code>agentStop</code></td>
-			</tr>
-			<tr>
-					<td>Other</td>
-					<td><code>Notification</code>, <code>MessageDisplay</code>, <code>ConfigChange</code>, <code>CwdChanged</code>, <code>DirectoryAdded</code>, <code>FileChanged</code>, <code>WorktreeCreate</code>, <code>WorktreeRemove</code>, <code>Elicitation</code>, <code>ElicitationResult</code></td>
-					<td>—</td>
-					<td><code>notification</code>, <code>errorOccurred</code></td>
-			</tr>
-	</tbody>
-</table>
-</div>
-<ul>
-<li>Copilot accepts <em>PascalCase aliases</em> too (<code>PreToolUse</code>, …), for compatibility with Claude Code’s files</li>
-<li>Copilot in <strong>VS Code</strong> (<em>Local</em> agent, preview) exposes only <strong>8</strong> events (<code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>, <code>PreCompact</code>, <code>SubagentStart</code>, <code>SubagentStop</code>, <code>Stop</code>), and <a href="https://code.visualstudio.com/docs/copilot/customization/hooks">ignores matchers</a> in Claude Code’s files</li>
-<li>Lists as of October 2026, from each harness’s docs: they change often, so check them again before relying on them</li>
-</ul>
-</section><section>
-<h2 id="hook-events-per-harness-pt-2">Hook events per harness (pt. 2)</h2>
-<div style="font-size: 60%;">
-<table>
-	<thead>
-			<tr>
-					<th>Phase</th>
-					<th><a href="https://cursor.com/docs/agent/hooks">Cursor</a> (<strong>21</strong>)</th>
-					<th><a href="https://geminicli.com/docs/hooks/reference/">Gemini CLI</a> (<strong>11</strong>)</th>
-					<th><a href="https://docs.openclaw.ai/plugins/hooks/reference">OpenClaw</a> (<strong>40</strong> plugin hooks)</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td>Session</td>
-					<td><code>sessionStart</code>, <code>sessionEnd</code>, <code>workspaceOpen</code></td>
-					<td><code>SessionStart</code>, <code>SessionEnd</code></td>
-					<td><code>session_start</code>, <code>session_end</code>, <code>before_reset</code></td>
-			</tr>
-			<tr>
-					<td>User prompt</td>
-					<td><code>beforeSubmitPrompt</code></td>
-					<td><code>BeforeAgent</code></td>
-					<td>8 <em>message</em> hooks (<code>message_received</code>, <code>inbound_claim</code>, <code>before_dispatch</code>, <code>message_sending</code>, …): prompts come from <em>chat channels</em></td>
-			</tr>
-			<tr>
-					<td>Model call</td>
-					<td><code>afterAgentResponse</code>, <code>afterAgentThought</code> (observe only)</td>
-					<td><code>BeforeModel</code>, <code>AfterModel</code>, <code>BeforeToolSelection</code></td>
-					<td><code>before_model_resolve</code>, <code>before_prompt_build</code>, <code>before_agent_run</code>, <code>llm_input</code>, <code>llm_output</code>, … (12)</td>
-			</tr>
-			<tr>
-					<td>Tool call</td>
-					<td><code>preToolUse</code>, <code>postToolUse</code>, <code>postToolUseFailure</code>, <code>beforeShellExecution</code>, <code>afterShellExecution</code>, <code>beforeMCPExecution</code>, <code>afterMCPExecution</code>, <code>beforeReadFile</code>, <code>afterFileEdit</code></td>
-					<td><code>BeforeTool</code>, <code>AfterTool</code></td>
-					<td><code>before_tool_call</code>, <code>after_tool_call</code>, <code>resolve_exec_env</code>, <code>tool_result_persist</code>, <code>before_message_write</code></td>
-			</tr>
-			<tr>
-					<td>Subagents</td>
-					<td><code>subagentStart</code>, <code>subagentStop</code></td>
-					<td>—</td>
-					<td><code>subagent_spawned</code>, <code>subagent_ended</code>, <code>subagent_progress</code>, <code>subagent_delivery_target</code></td>
-			</tr>
-			<tr>
-					<td>Context</td>
-					<td><code>preCompact</code></td>
-					<td><code>PreCompress</code></td>
-					<td><code>before_compaction</code>, <code>after_compaction</code></td>
-			</tr>
-			<tr>
-					<td>Stop</td>
-					<td><code>stop</code></td>
-					<td><code>AfterAgent</code></td>
-					<td>(<code>before_agent_finalize</code>, <code>agent_end</code>, among the model ones)</td>
-			</tr>
-			<tr>
-					<td>Other</td>
-					<td><code>beforeTabFileRead</code>, <code>afterTabFileEdit</code> (Tab completion)</td>
-					<td><code>Notification</code></td>
-					<td><code>gateway_start</code>, <code>gateway_stop</code>, <code>cron_reconciled</code>, <code>cron_changed</code>, <code>before_install</code>, <code>skill_changed</code></td>
-			</tr>
-	</tbody>
-</table>
-</div>
-<ul>
-<li>OpenClaw also has 15 <em>internal</em> hook events (<code>HOOK.md</code> + handler, e.g. <code>command:new</code>, <code>session:compact:before</code>, <code>message:received</code>), mostly <em>observe-only</em></li>
-<li>Gemini CLI is the only one letting a hook <em>rewrite</em> (or <em>replace</em>) the LLM request: <code>BeforeModel</code> may return a synthetic response, without calling the model</li>
-<li>Cursor has <em>tool-specific</em> events (shell, MCP, file read) besides the generic <code>preToolUse</code></li>
-</ul>
-<p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
-</section><section>
 <h2 id="hook-events-similarities-and-differences">Hook events: similarities and differences</h2>
 <ul>
+<li>
+<p>Full event lists per harness: cf. the <a href="#/hook-events-appendix">appendix</a></p>
+</li>
 <li>
 <p><strong>Common core</strong>, in all six harnesses (under different names): <em>session start/end</em>, <em>user prompt</em>, <em>before/after tool call</em>, <em>compaction</em>, <em>stop</em>; and <em>subagents</em> in all but Gemini CLI</p>
 <ul>
@@ -1396,7 +1317,7 @@
 <li>
 <p><strong>Different coverage</strong> beyond the core</p>
 <ul>
-<li>only Gemini CLI and OpenClaw expose the <em>model call</em>: elsewhere, there is no place to <em>redact</em> what is sent to the LLM</li>
+<li>only Gemini CLI and OpenClaw expose the <em>model call</em>: in the other harnesses, there is no place to <em>redact</em> what is sent to the LLM</li>
 <li>Claude Code exposes many <em>housekeeping</em> events (configuration, worktrees, files, MCP elicitations); OpenClaw, <em>chat channels</em> and <em>gateway</em> events</li>
 </ul>
 </li>
@@ -1411,13 +1332,14 @@
 <li>
 <p><strong>Failures</strong>: most hooks <em>fail open</em> (a crashing hook lets the action through) by default</p>
 <ul>
-<li><em>fail-closed</em> is opt-in (<code>onFailure: "block"</code> in Claude Code, <code>failClosed: true</code> in Cursor), or limited to a few events (Copilot’s <code>preToolUse</code>, OpenClaw’s <code>before_tool_call</code>, <code>before_agent_run</code>, <code>before_install</code>)</li>
+<li><em>fail-closed</em> is opt-in (<code>onFailure: "block"</code> in Claude Code, for <code>command</code>/<code>http</code> hooks; <code>failClosed: true</code> in Cursor), or limited to a few events (Copilot’s <code>preToolUse</code>, OpenClaw’s <code>before_tool_call</code>, <code>before_agent_run</code>, <code>before_install</code>)</li>
 <li>for <em>guardrails</em>, always check this: a guard that crashes open is no guard</li>
 </ul>
 </li>
 </ul>
 <p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="hooks-agnostic">
 <h2 id="harness-agnostic-hooks">Harness-agnostic hooks</h2>
 <ul>
 <li>
@@ -1451,7 +1373,7 @@
 <section data-noprocess="" data-shortcode-slide="" id="hooks-example">
 <h2 id="example-4-a-privacy-guard-hook-pt-1">Example 4: a Privacy Guard Hook (pt. 1)</h2>
 <blockquote>
-<p><strong>Goal</strong>: while the agent handles the candidates’ <a href="../governance/">personal data</a>, it must not send anything to the <em>network</em> (cf. the <a href="../agents/#/security">lethal trifecta</a>), nor write files outside <code>output/</code>; a <em>hook</em> enforces it, whatever the LLM (or a skill, or a malicious letter) says</p>
+<p><strong>Goal</strong>: while the agent handles the candidates’ <a href="../governance/">personal data</a>, it must not send anything to the <em>network</em> (cf. the <a href="../agents/#/security">lethal trifecta</a>), nor write files outside <code>output/</code>; a <em>hook</em> blocks the agent’s <em>file-writing</em> tools outside <code>output/</code> and the obvious network routes, whatever the LLM (or a skill, or a malicious letter) says</p>
 </blockquote>
 <div class="container w-100 m-0 p-0">
     <div class="row "><div class="col col-7" style="text-align: left;"><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">NETWORK_TOOLS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"WebFetch"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"WebSearch"</span><span style="color:#000;font-weight:bold">}</span>  <span style="color:#8f5902;font-style:italic"># Claude Code's names of its Web tools</span>
@@ -1532,6 +1454,7 @@
 </span></span></code></pre></div><ul>
 <li>Then in Claude Code: ask to “_post Mario Rossi’s letter to <a href="https://httpbin.org/post_%22">https://httpbin.org/post_"</a>, and watch the hook deny it</li>
 <li>Hooks can also live in a <strong>skill</strong>’s front matter (Claude Code only): active only while the skill is in use</li>
+<li>A deny-list over shell commands is <em>best effort</em> (e.g. <code>python -c "..."</code> may still write files, or open connections): a guard is only as good as its <em>coverage</em>; for real confinement, deny <code>Bash</code> altogether, or use a <em>sandbox</em> (cf. <a href="../agents/#/security">agents security</a>)</li>
 </ul>
 </section><section>
 <h2 id="example-4-project-structure">Example 4: Project Structure</h2>
@@ -1542,7 +1465,7 @@
             ├── <a href="../lab-snippets/snippets/lecture_skills/example4/privacy_guard.py">privacy_guard.py</a>    # the hook
             └── <a href="../lab-snippets/snippets/lecture_skills/example4/settings.json">settings.json</a>       # how to register it (Claude Code)</code></pre></div>
 <ul>
-<li>no API key needed; to use it in Claude Code, copy <code>settings.json</code> into <code>.claude/</code> (or merge it with yours)</li>
+<li>no API key needed; to use it in Claude Code, copy <code>settings.json</code> into <code>.claude/</code> (or merge it with yours), and open Claude Code in the root of your <code>lab-snippets</code> clone (the command uses <code>$CLAUDE_PROJECT_DIR/snippets/...</code>)</li>
 </ul>
 
 </section>
@@ -1648,7 +1571,7 @@
 <h2 id="anatomy-of-a-real-skill-ponytail-pt-2">Anatomy of a real skill: <code>ponytail</code> (pt. 2)</h2>
 <ul>
 <li>
-<p>Problem: a behavioural skill must be active <em>all the time</em>, yet skills are loaded <em>on demand</em> (and may be forgotten after <a href="../prompting/#/context-management">compaction</a>)</p>
+<p>Problem: a behavioural skill must be active <em>all the time</em>, yet skills are loaded <em>on demand</em> (and may be forgotten after <a href="../prompting/#/chat-compaction">compaction</a>)</p>
 </li>
 <li>
 <p>Solution: <strong>hooks</strong> (cf. <a href="https://github.com/DietrichGebert/ponytail/blob/main/hooks/claude-codex-hooks.json"><code>hooks/claude-codex-hooks.json</code></a>), shipped in a <em>plugin</em>:</p>
@@ -1661,7 +1584,7 @@
 <li>
 <p><em>Portability</em>: ~20 harnesses, via per-harness plugin manifests, hook files, and rules files (e.g. <code>AGENTS.md</code>, <code>.cursor/rules/</code>), plus a <a href="https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-runtime.js">runtime</a> adapting the hooks’ output to each harness’s protocol</p>
 <ul>
-<li>in practice, the cost of the <a href="#/hooks">landscape’s differences</a>: <em>one</em> prompt, <em>many</em> adapters</li>
+<li>a concrete instance of <a href="#/hooks-agnostic">one core, many adapters</a></li>
 </ul>
 </li>
 <li>
@@ -1759,55 +1682,6 @@
 <p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
 
 </section>
-</section>
-
-<section data-noprocess="" data-shortcode-slide="" id="running-example">
-  
-<h2 id="running-example">Running example</h2>
-<h3 id="admission-committee-assistant-for-phd-applications-evaluation">Admission committee assistant for PhD applications evaluation</h3>
-<ul>
-<li>
-<p>3 candidates, and as many applications, with their <em>passport</em>, <em>transccript of records</em>, and <em>presentation letter</em> (in natural language)</p>
-</li>
-<li>
-<p>we want to extract structured information from these documents (e.g. name, age, grades, research experience, etc.) to ease evaluation</p>
-</li>
-</ul>
-
-<div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mario-rossi.png" alt=""></p>
-<ul>
-<li><a href="../lab-snippets/data/transcript-mario-rossi.png">Transcript of records</a></li>
-<li><a href="../lab-snippets/data/letter-mario-rossi.txt">Presentation letter</a>
-<ul>
-<li>letter is very positive</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-jean-dupont.png" alt=""></p>
-<ul>
-<li><a href="../lab-snippets/data/transcript-jean-dupont.png">Transcript of records</a></li>
-<li><a href="../lab-snippets/data/letter-jean-dupont.txt">Presentation letter</a>
-<ul>
-<li>letter contains some criticisms</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="col " style="text-align: left;"><p><img src="../lab-snippets/data/passport-mohammed-ali.png" alt=""></p>
-<ul>
-<li><a href="../lab-snippets/data/transcript-mohammed-ali.png">Transcript of records</a></li>
-<li><a href="../lab-snippets/data/letter-mohammed-ali.txt">Presentation letter</a>
-<ul>
-<li>letter is positive but shallow</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-</div>
-
 </section>
 
 
@@ -2051,7 +1925,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#4e9a06">"| Severity |"</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">report</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">"| # |"</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">report</span>  <span style="color:#8f5902;font-style:italic"># the report follows the template</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">assert</span> <span style="color:#4e9a06">"314"</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">report</span>  <span style="color:#8f5902;font-style:italic"># page with "the the": a fact found by the script, which must be reported</span>
 </span></span></code></pre></div><ul>
-<li>Triggering cases come from the skill’s own <a href="../lab-snippets/snippets/lecture_skills/exercise1/thesis-precheck/evals/evals.json"><code>evals/evals.json</code></a> (in the format of <a href="https://agentskills.io/skill-creation/evaluating-skills">agentskills.io</a>): the tests travel <em>with</em> the skill</li>
+<li>Triggering cases come from the skill’s own <a href="../lab-snippets/snippets/lecture_skills/exercise1/thesis-precheck/evals/evals.json"><code>evals/evals.json</code></a> (outcome cases in the <a href="https://agentskills.io/skill-creation/evaluating-skills">agentskills.io</a> format; triggering cases, under <code>triggers</code>, in the style of Anthropic’s <a href="https://github.com/anthropics/skills/tree/main/skills/skill-creator"><code>skill-creator</code></a>): the tests travel <em>with</em> the skill</li>
 <li>The outcome test asserts on a <em>known</em> defect of the thesis (page 314); to go further, compare reports with and without the skill, via an <a href="../validating/#/llm-as-a-judge">LLM-as-a-Judge</a></li>
 </ul>
 </section><section>
@@ -2075,6 +1949,154 @@
 </ul>
 
 </section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="hook-events-appendix">
+<h1 id="appendix-hook-events-per-harness">Appendix: hook events per harness</h1>
+<p>(as of October 2026; skip it unless you need the details)</p>
+</section><section>
+<h2 id="hook-events-per-harness-pt-1">Hook events per harness (pt. 1)</h2>
+<div style="font-size: 60%;">
+<table>
+	<thead>
+			<tr>
+					<th>Phase</th>
+					<th><a href="https://code.claude.com/docs/en/hooks">Claude Code</a> (<strong>33</strong>)</th>
+					<th><a href="https://developers.openai.com/codex/hooks">Codex</a> (<strong>12</strong>)</th>
+					<th><a href="https://docs.github.com/en/copilot/reference/hooks-reference">Copilot CLI</a> (<strong>14</strong>)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Session</td>
+					<td><code>SessionStart</code>, <code>Setup</code>, <code>SessionEnd</code></td>
+					<td><code>SessionStart</code>, <code>SessionEnd</code></td>
+					<td><code>sessionStart</code>, <code>sessionEnd</code></td>
+			</tr>
+			<tr>
+					<td>User prompt</td>
+					<td><code>UserPromptSubmit</code>, <code>UserPromptExpansion</code></td>
+					<td><code>UserPromptSubmit</code></td>
+					<td><code>userPromptSubmitted</code>, <code>userPromptTransformed</code></td>
+			</tr>
+			<tr>
+					<td>Model call</td>
+					<td><code>PreModelSwitch</code>, <code>PostModelSwitch</code> (on model <em>switch</em> only)</td>
+					<td>—</td>
+					<td>—</td>
+			</tr>
+			<tr>
+					<td>Tool call</td>
+					<td><code>PreToolUse</code>, <code>PermissionRequest</code>, <code>PermissionDenied</code>, <code>PostToolUse</code>, <code>PostToolUseFailure</code>, <code>PostToolBatch</code></td>
+					<td><code>PreToolUse</code>, <code>PermissionRequest</code>, <code>PostToolUse</code></td>
+					<td><code>preToolUse</code>, <code>permissionRequest</code>, <code>postToolUse</code>, <code>postToolUseFailure</code></td>
+			</tr>
+			<tr>
+					<td>Subagents, tasks</td>
+					<td><code>SubagentStart</code>, <code>SubagentStop</code>, <code>TaskCreated</code>, <code>TaskCompleted</code>, <code>TeammateIdle</code></td>
+					<td><code>SubagentStart</code>, <code>SubagentStop</code></td>
+					<td><code>subagentStart</code>, <code>subagentStop</code></td>
+			</tr>
+			<tr>
+					<td>Context</td>
+					<td><code>PreCompact</code>, <code>PostCompact</code>, <code>InstructionsLoaded</code></td>
+					<td><code>PreCompact</code>, <code>PostCompact</code></td>
+					<td><code>preCompact</code></td>
+			</tr>
+			<tr>
+					<td>Stop</td>
+					<td><code>Stop</code>, <code>StopFailure</code></td>
+					<td><code>Stop</code>, <code>Interrupt</code></td>
+					<td><code>agentStop</code></td>
+			</tr>
+			<tr>
+					<td>Other</td>
+					<td><code>Notification</code>, <code>MessageDisplay</code>, <code>ConfigChange</code>, <code>CwdChanged</code>, <code>DirectoryAdded</code>, <code>FileChanged</code>, <code>WorktreeCreate</code>, <code>WorktreeRemove</code>, <code>Elicitation</code>, <code>ElicitationResult</code></td>
+					<td>—</td>
+					<td><code>notification</code>, <code>errorOccurred</code></td>
+			</tr>
+	</tbody>
+</table>
+</div>
+<ul>
+<li>Copilot accepts <em>PascalCase aliases</em> too (<code>PreToolUse</code>, …), for compatibility with Claude Code’s files</li>
+<li>Copilot in <strong>VS Code</strong> (<em>Local</em> agent, preview) exposes only <strong>8</strong> events (<code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>, <code>PreCompact</code>, <code>SubagentStart</code>, <code>SubagentStop</code>, <code>Stop</code>), and <a href="https://code.visualstudio.com/docs/copilot/customization/hooks">ignores matchers</a> in Claude Code’s files</li>
+<li>Lists as of October 2026, from each harness’s docs: they change often, so check them again before relying on them</li>
+</ul>
+</section><section>
+<h2 id="hook-events-per-harness-pt-2">Hook events per harness (pt. 2)</h2>
+<div style="font-size: 60%;">
+<table>
+	<thead>
+			<tr>
+					<th>Phase</th>
+					<th><a href="https://cursor.com/docs/agent/hooks">Cursor</a> (<strong>21</strong>)</th>
+					<th><a href="https://geminicli.com/docs/hooks/reference/">Gemini CLI</a> (<strong>11</strong>)</th>
+					<th><a href="https://docs.openclaw.ai/plugins/hooks/reference">OpenClaw</a> (<strong>40</strong> plugin hooks)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Session</td>
+					<td><code>sessionStart</code>, <code>sessionEnd</code>, <code>workspaceOpen</code></td>
+					<td><code>SessionStart</code>, <code>SessionEnd</code></td>
+					<td><code>session_start</code>, <code>session_end</code>, <code>before_reset</code></td>
+			</tr>
+			<tr>
+					<td>User prompt</td>
+					<td><code>beforeSubmitPrompt</code></td>
+					<td><code>BeforeAgent</code></td>
+					<td>8 <em>message</em> hooks (<code>message_received</code>, <code>inbound_claim</code>, <code>before_dispatch</code>, <code>message_sending</code>, …): prompts come from <em>chat channels</em></td>
+			</tr>
+			<tr>
+					<td>Model call</td>
+					<td><code>afterAgentResponse</code>, <code>afterAgentThought</code> (observe only)</td>
+					<td><code>BeforeModel</code>, <code>AfterModel</code>, <code>BeforeToolSelection</code></td>
+					<td><code>before_model_resolve</code>, <code>before_prompt_build</code>, <code>before_agent_run</code>, <code>llm_input</code>, <code>llm_output</code>, … (12)</td>
+			</tr>
+			<tr>
+					<td>Tool call</td>
+					<td><code>preToolUse</code>, <code>postToolUse</code>, <code>postToolUseFailure</code>, <code>beforeShellExecution</code>, <code>afterShellExecution</code>, <code>beforeMCPExecution</code>, <code>afterMCPExecution</code>, <code>beforeReadFile</code>, <code>afterFileEdit</code></td>
+					<td><code>BeforeTool</code>, <code>AfterTool</code></td>
+					<td><code>before_tool_call</code>, <code>after_tool_call</code>, <code>resolve_exec_env</code>, <code>tool_result_persist</code>, <code>before_message_write</code></td>
+			</tr>
+			<tr>
+					<td>Subagents</td>
+					<td><code>subagentStart</code>, <code>subagentStop</code></td>
+					<td>—</td>
+					<td><code>subagent_spawned</code>, <code>subagent_ended</code>, <code>subagent_progress</code>, <code>subagent_delivery_target</code></td>
+			</tr>
+			<tr>
+					<td>Context</td>
+					<td><code>preCompact</code></td>
+					<td><code>PreCompress</code></td>
+					<td><code>before_compaction</code>, <code>after_compaction</code></td>
+			</tr>
+			<tr>
+					<td>Stop</td>
+					<td><code>stop</code></td>
+					<td><code>AfterAgent</code></td>
+					<td>(<code>before_agent_finalize</code>, <code>agent_end</code>, among the model ones)</td>
+			</tr>
+			<tr>
+					<td>Other</td>
+					<td><code>beforeTabFileRead</code>, <code>afterTabFileEdit</code> (Tab completion)</td>
+					<td><code>Notification</code></td>
+					<td><code>gateway_start</code>, <code>gateway_stop</code>, <code>cron_reconciled</code>, <code>cron_changed</code>, <code>before_install</code>, <code>skill_changed</code></td>
+			</tr>
+	</tbody>
+</table>
+</div>
+<ul>
+<li>OpenClaw also has 15 <em>internal</em> hook events (<code>HOOK.md</code> + handler, e.g. <code>command:new</code>, <code>session:compact:before</code>, <code>message:received</code>), mostly <em>observe-only</em></li>
+<li>Gemini CLI is the only one letting a hook <em>rewrite</em> (or <em>replace</em>) the LLM request: <code>BeforeModel</code> may return a synthetic response, without calling the model</li>
+<li>Cursor has <em>tool-specific</em> events (shell, MCP, file read) besides the generic <code>preToolUse</code></li>
+</ul>
+<p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
+
+</section>
 </section><section>
 <h2 id="whats-next">What’s next?</h2>
 <ul>
@@ -2089,7 +2111,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -2187,6 +2209,8 @@
   
   
 
+  
+    
   
   
 

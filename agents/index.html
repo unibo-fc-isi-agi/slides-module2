@@ -31,7 +31,7 @@
 <h3 id="hahahugoshortcode1s2hbhb"><a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section><section>
@@ -47,7 +47,7 @@
 <li>Exercises on the <a href="#/running-example">running example</a>: <a href="#/exercise-inspect">read-only tools to inspect applications</a>, <a href="#/exercise-decide">tools to take decisions</a>, <a href="#/exercise-gateway">MCP gateway</a></li>
 </ol>
 <blockquote>
-<p>Recall: we assume the reader is familiar with <a href="../llmaas/">tool-call messages and <code>tool_choice</code></a> in the Chat Completion API, with <a href="../prompting/#/structured-output">structured outputs</a>, and with <a href="../validating/">validating generative software</a></p>
+<p>Recall: we assume the reader is familiar with <a href="../llmaas/#/chat-completion-concept">tool-call messages and <code>tool_choice</code></a> in the Chat Completion API, with <a href="../prompting/#/structured-output">structured outputs</a>, and with <a href="../validating/">validating generative software</a></p>
 </blockquote>
 </section>
 
@@ -97,7 +97,7 @@
 <h2 id="llms-are-not-agents-by-themselves">LLMs are not agents by themselves</h2>
 <ul>
 <li>
-<p>Recall from the <a href="../genai/">introductory lecture</a>: LLMs produce <strong>text</strong>, not <em>action</em></p>
+<p>Recall from the <a href="../genai/#/language-to-action">introductory lecture</a>: LLMs produce <strong>text</strong>, not <em>action</em></p>
 <ul>
 <li>they do not perceive nor act on environments <em>directly</em></li>
 <li>they do not <em>persistently</em> manage goals and state</li>
@@ -114,10 +114,7 @@
 </ul>
 </li>
 <li>
-<p><em>Intelligence</em>, <em>autonomy</em>, and <em>agency</em> are <strong>separable</strong> dimensions (cf. <a href="https://doi.org/10.1007/s13347-025-00858-9">Floridi, 2025</a>):</p>
-<ul>
-<li>what can the system <strong>do</strong>? Who <strong>controls</strong> <em>when</em> and <em>why</em> it does it? What <strong>state</strong> does it actually <em>change</em>?</li>
-</ul>
+<p>Recall: <em>intelligence</em>, <em>autonomy</em>, and <em>agency</em> are <strong>separable</strong> dimensions (cf. <a href="https://doi.org/10.1007/s13347-025-00858-9">Floridi, 2025</a>, and the <a href="../genai/#/language-to-action">introductory lecture</a>)</p>
 </li>
 </ul>
 </section>
@@ -125,6 +122,9 @@
 <h2 id="the-spectrum-of-autonomy">The spectrum of autonomy</h2>
 <img src="./autonomy-spectrum.svg" alt="The spectrum of autonomy, from the code controlling the flow to the LLM controlling the flow: single LLM call (score one letter), workflow (score all letters, then rank), router (the LLM picks a branch), agent (the LLM picks the next tool in a loop); more autonomy brings more flexibility, but also more cost, latency, unpredictability, risk, and testing effort" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
 <ul>
+<li>
+<p>Recall the <a href="../genai/#/genai-uses">developer’s code vs. LLM</a> distinction of the introductory lecture:</p>
+</li>
 <li>
 <p><strong>Workflows</strong>: LLMs and tools are orchestrated along <em>predefined</em> code paths (the <em>code</em> controls the flow)</p>
 </li>
@@ -138,7 +138,7 @@
 <p>Rule of thumb: use the <strong>least autonomy</strong> that does the job</p>
 <ul>
 <li>start with a single call; move to workflows when steps are <em>known</em> in advance; move to agents only when they are <em>not</em></li>
-<li><em>autonomy is a cost</em> (risks, testing, governance), not a goal (recall: <a href="../genai/">customers buy automation</a>)</li>
+<li><em>autonomy is a cost</em> (risks, testing, governance), not a goal (recall: <a href="../genai/#/genai-uses">customers buy automation</a>)</li>
 <li>workflows will be the topic of a later lecture; here we focus on <em>agents</em></li>
 </ul>
 </li>
@@ -162,7 +162,7 @@
 </ol>
 </li>
 <li>
-<p>Tool definitions are sent along with each request; the LLM may answer with a <strong>tool call</strong> instead of text (recall <a href="../llmaas/"><code>tool_calls</code></a>)</p>
+<p>Tool definitions are sent along with each request; the LLM may answer with a <strong>tool call</strong> instead of text (recall <a href="../llmaas/#/chat-completion-concept"><code>tool_calls</code></a>)</p>
 <ul>
 <li>a tool call is nothing but a <a href="../prompting/#/structured-output">structured output</a>, matching the tool’s <em>schema</em></li>
 <li>the agent <em>executes</em> it, and sends the <em>result</em> back, as a <code>tool</code> message</li>
@@ -243,7 +243,7 @@
 </li>
 <li><code>get_weather</code>’s docstring tells the LLM what the result contains (units included!)</li>
 <li><code>get_current_time</code> <em>validates</em> its argument, and its error <em>says how to fix it</em>: never trust the LLM’s arguments</li>
-<li>all three tools are <em>read-only</em>: calling them has no side effects, so a wrong call costs only time</li>
+<li>all three tools are <em>read-only</em> (no side effects on the world), yet <code>web_search</code> <em>sends</em> the query to a third party, and brings <em>untrusted</em> text into the context (cf. <a href="#/security">security</a>)</li>
 </ul>
 </li>
 </ul>
@@ -303,7 +303,23 @@
 <li>Tool documentation is a <strong>prompt</strong>: treat it like one, i.e. <em>iterate</em> and <em>measure</em> (cf. <a href="#/evaluating-agents">evaluating agents</a>)</li>
 </ul>
 </section><section>
+<h2 id="too-many-tools">Too many tools?</h2>
+<ul>
+<li>Each tool definition is sent at <em>each</em> request: dozens of tools (e.g. from several MCP servers) mean <em>thousands</em> of tokens, and <em>worse</em> choices</li>
+<li>Remedies:
+<ul>
+<li><strong>tool search</strong>: only a search tool is loaded upfront, the other definitions are <em>deferred</em> and loaded on demand (e.g. Anthropic’s <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">tool search tool</a>, with <code>defer_loading: true</code>)</li>
+<li><strong>client-side selection</strong>: a cheap LLM call first picks the relevant tools (e.g. LangChain’s <a href="https://docs.langchain.com/oss/python/langchain/middleware/built-in"><code>LLMToolSelectorMiddleware</code></a>)</li>
+<li><strong>tools as code</strong>: expose tools as a code API, and let the agent write code calling them (cf. Anthropic’s <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">code execution with MCP</a>)</li>
+</ul>
+</li>
+<li>Same idea as the <em>progressive disclosure</em> of <a href="../skills/#/progressive-disclosure">agentic skills</a>: load into the context only what is <em>relevant</em></li>
+</ul>
+</section><section>
 <h2 id="tools-the-technological-landscape">Tools: the technological landscape</h2>
+<blockquote>
+<p>Recall the <em>Tools</em> row of the <a href="../llmaas/#/api-comparison">API comparison</a> in the LLM-as-a-Service lecture: here, in more detail</p>
+</blockquote>
 <div style="font-size: 70%;">
 <table>
 	<thead>
@@ -318,11 +334,19 @@
 	</thead>
 	<tbody>
 			<tr>
-					<td>OpenAI (Chat Completion)</td>
+					<td>OpenAI (Chat Completions)</td>
 					<td><code>tools=[{type: "function", function: {name, description, parameters}}]</code></td>
 					<td><code>message.tool_calls[i].function.{name, arguments}</code> (arguments as JSON <em>string</em>)</td>
 					<td>message with <code>role="tool"</code>, <code>tool_call_id</code></td>
 					<td><code>tool_choice</code>: <code>auto</code>, <code>none</code>, <code>required</code>, or a given function</td>
+					<td><a href="https://developers.openai.com/api/docs/guides/function-calling">link</a></td>
+			</tr>
+			<tr>
+					<td>OpenAI (Responses)</td>
+					<td><code>tools=[{type: "function", name, description, parameters, strict}]</code> (flat, no <code>function</code> wrapper)</td>
+					<td>output item <code>{type: "function_call", call_id, name, arguments}</code> (JSON <em>string</em>)</td>
+					<td>input item <code>{type: "function_call_output", call_id, output}</code></td>
+					<td><code>tool_choice</code>, as above</td>
 					<td><a href="https://developers.openai.com/api/docs/guides/function-calling">link</a></td>
 			</tr>
 			<tr>
@@ -365,7 +389,14 @@
 <li><strong>Different syntax</strong>, and <em>different reliability</em>: smaller (or older) models may ignore tools, invent tool names, or produce invalid arguments
 <ul>
 <li>always check whether a model supports tools (e.g. in <a href="https://openrouter.ai/models?supported_parameters=tools">OpenRouter’s model list</a>)</li>
+<li><em>strict</em> mode makes arguments <em>always</em> schema-valid, via constrained decoding: OpenAI <code>strict: true</code> (needs <code>additionalProperties: false</code>, all fields <code>required</code>), Anthropic <code>strict: true</code> on the tool, LangChain <code>bind_tools(..., strict=True)</code>; cf. <a href="../prompting/#/structured-output">structured outputs</a>. Valid $\neq$ correct: still validate <em>values</em> in code</li>
 <li>many models can emit <em>several</em> tool calls in one response (<em>parallel</em> tool calls)</li>
+</ul>
+</li>
+<li><em>Client</em> tools (all tools in this lecture) are executed by <strong>you</strong>; <em>server</em> (provider-hosted) tools are executed by the <strong>provider</strong>, and their results come back already in the response
+<ul>
+<li>e.g. OpenAI Responses’ <code>web_search</code>, <code>file_search</code>, <code>code_interpreter</code>, remote <code>mcp</code>; Anthropic’s <code>web_search</code>, <code>web_fetch</code>, code execution; Gemini’s <code>google_search</code>, <code>code_execution</code>, <code>url_context</code></li>
+<li>no code to write, but no control on validation and logging, data leave to the provider, and lock-in</li>
 </ul>
 </li>
 </ul>
@@ -485,7 +516,7 @@
 <h2 id="example-1-an-agent-from-scratch-with-openais-client-pt-3">Example 1: an Agent from Scratch, with OpenAI’s Client (pt. 3)</h2>
 <ol start="5">
 <li>
-<p>The main program is a CLI chat (cf. <a href="../llmaas/">the LLM-as-a-Service lecture</a>), where each user message triggers a ReAct loop (full code <a href="../lab-snippets/snippets/lecture_agents/example1/agent_openai.py">here</a>):</p>
+<p>The main program is a CLI chat (cf. <a href="../llmaas/#/sync-chat">the LLM-as-a-Service lecture</a>), where each user message triggers a ReAct loop (full code <a href="../lab-snippets/snippets/lecture_agents/example1/agent_openai.py">here</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"__main__"</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"system"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">while</span> <span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">:</span>
@@ -508,7 +539,7 @@
 </span></span><span style="display:flex;"><span>You: What time is it in Tokyo?
 </span></span><span style="display:flex;"><span>    [tool] get_current_time({"timezone":"Asia/Tokyo"})
 </span></span><span style="display:flex;"><span>AI: It is currently **Wednesday, October 7, 2026, at 01:00** in Tokyo.
-</span></span></code></pre></div><p>(actual run, with <code>gemma4:e4b</code> via <a href="../llmaas/">Ollama</a>: 3 ReAct steps for the first question, i.e. <code>web_search</code>, then <code>get_current_time</code> and <code>get_weather</code> in parallel, then the answer)</p>
+</span></span></code></pre></div><p>(actual run, with <code>gemma4:e4b</code> via <a href="../llmaas/#/ollama">Ollama</a>: 3 ReAct steps for the first question, i.e. <code>web_search</code>, then <code>get_current_time</code> and <code>get_weather</code> in parallel, then the answer)</p>
 </li>
 <li>
 <p>Things to observe:</p>
@@ -546,11 +577,15 @@
 <p>LangChain’s <a href="https://docs.langchain.com/oss/python/langchain/agents"><code>create_agent</code></a> implements the ReAct loop for you: just give it a chat model, the tools, and the system prompt</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">llm</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ChatOpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># tool definitions are derived from the functions</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># errors raised by tools (e.g. an unknown time zone) go back to the LLM as error messages, instead of crashing the run</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">tool_errors</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ToolErrorMiddleware</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">error</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Error: </span><span style="color:#4e9a06">{</span><span style="color:#000">error</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">isinstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">error</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#c00;font-weight:bold">ValueError</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">middleware</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tool_errors</span><span style="color:#000;font-weight:bold">])</span>  <span style="color:#8f5902;font-style:italic"># tools derived from functions</span>
 </span></span></code></pre></div><ul>
 <li>plain Python functions are <em>converted</em> into tools (docstrings + type hints $\rightarrow$ definitions), or use the <a href="https://docs.langchain.com/oss/python/langchain/tools"><code>@tool</code></a> decorator for more control</li>
 <li>the result is a <em>runnable</em> (actually, a <a href="https://www.langchain.com/langgraph">LangGraph</a> <em>graph</em>): <code>.invoke(...)</code>, <code>.stream(...)</code>, <code>.batch(...)</code> work as usual</li>
 <li>its input and output are a <em>state</em>: a <code>dict</code> whose <code>"messages"</code> are the whole conversation, <em>including</em> tool calls and results</li>
+<li><code>ToolErrorMiddleware</code> feeds tools’ errors (here, <code>ValueError</code>s) back to the LLM: by default, only <em>argument</em> validation errors are fed back, while other exceptions <em>crash</em> the run</li>
 </ul>
 </li>
 <li>
@@ -568,18 +603,26 @@
 </span></span><span style="display:flex;"><span>            <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">((</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"You: "</span><span style="color:#000;font-weight:bold">)))</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#c00;font-weight:bold">EOFError</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#c00;font-weight:bold">KeyboardInterrupt</span><span style="color:#000;font-weight:bold">):</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">break</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">agent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"recursion_limit"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">})</span>  <span style="color:#8f5902;font-style:italic"># runs the loop, up to 20 steps</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">agent</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">invoke</span><span style="color:#000;font-weight:bold">({</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">"recursion_limit"</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">})</span>  <span style="color:#8f5902;font-style:italic"># 20 graph steps ≈ 10 model+tools rounds</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#000">GraphRecursionError</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"AI: step limit reached, sorry"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">continue</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">][</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">):])</span>  <span style="color:#8f5902;font-style:italic"># only the new messages</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">result</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"messages"</span><span style="color:#000;font-weight:bold">]</span>  <span style="color:#8f5902;font-style:italic"># the whole history, including tool calls and results</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"AI: </span><span style="color:#4e9a06">{</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">content</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
 <li><code>("user", text)</code> pairs are shorthands for LangChain messages (here, a <code>HumanMessage</code>); tool calls in <code>AIMessage</code>s are <code>dict</code>s with <code>name</code>, <code>args</code>, <code>id</code></li>
-<li><code>{"recursion_limit": 20}</code> is the run’s <em>config</em> (2nd argument of <code>invoke</code>): it plays the role of <code>max_steps</code></li>
-<li>tool <em>errors</em> are fed back to the LLM, as in our implementation</li>
+<li><code>{"recursion_limit": 20}</code> is the run’s <em>config</em> (2nd argument of <code>invoke</code>): it bounds graph <em>supersteps</em> (≈ 2 per model + tools round, so 20 ≈ 10 steps); exceeding it raises <code>GraphRecursionError</code>
+<ul>
+<li>alternatively, <code>ModelCallLimitMiddleware(run_limit=10)</code> counts actual model calls</li>
+</ul>
+</li>
 </ul>
 </li>
 </ol>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="agent-middleware">
 <h2 id="example-1-bis-the-same-agent-with-langchain-pt-2">Example 1 (bis): the same Agent with LangChain (pt. 2)</h2>
 <ol start="3">
 <li>
@@ -622,12 +665,12 @@
 			<tr>
 					<td>Step limit</td>
 					<td><code>max_steps</code></td>
-					<td><code>recursion_limit</code></td>
+					<td><code>recursion_limit</code> (≈ 2× steps)</td>
 			</tr>
 			<tr>
 					<td>Tool errors</td>
 					<td>up to you (we feed them back)</td>
-					<td>fed back by default</td>
+					<td>only <em>validation</em> errors fed back by default; others via <code>ToolErrorMiddleware</code></td>
 			</tr>
 			<tr>
 					<td>Human approval, summarisation, retries</td>
@@ -693,7 +736,10 @@
 </ul>
 </li>
 <li>
-<p>Recall the <a href="../genai/">MCP picture</a> of the introductory lecture: MCP does not change the ReAct loop, only <em>where</em> tools come from</p>
+<p>Since the <a href="https://modelcontextprotocol.io/specification/2026-07-28/changelog">2026-07-28 spec</a>, the protocol is <em>stateless</em> (no sessions, no <code>initialize</code> handshake); servers may still ask the user for input mid-call (<em>elicitation</em>)</p>
+</li>
+<li>
+<p>Recall the <a href="../genai/#/mcp-concept">MCP picture</a> of the introductory lecture: MCP does not change the ReAct loop, only <em>where</em> tools come from</p>
 </li>
 </ul>
 </section><section>
@@ -858,7 +904,7 @@
 			<tr>
 					<td>Trust</td>
 					<td>you wrote them</td>
-					<td>third-party servers are third-party <em>code</em> (and <em>prompts</em>: tool descriptions enter the context!)</td>
+					<td>third-party servers are third-party <em>code</em> (and <em>prompts</em>: tool descriptions enter the context!): <em>tool poisoning</em> (malicious instructions in descriptions), <em>rug pull</em> (descriptions changing after approval: pin or hash them)</td>
 			</tr>
 	</tbody>
 </table>
@@ -1010,7 +1056,7 @@
 			<tr>
 					<td><a href="https://arcprize.org/arc-agi/3">ARC-AGI-3</a> (2026)</td>
 					<td>explore <em>novel</em> interactive environments, infer goals and dynamics, plan</td>
-					<td>humans 100%, frontier AI &lt; 1% (<a href="https://arcprize.org/media/ARC_AGI_3_Technical_Report.pdf">March 2026</a>)</td>
+					<td>humans 100%, frontier AI &lt; 1% (<a href="https://arxiv.org/abs/2603.24621">March 2026</a>); best verified in Oct 2026: 62.7% (<a href="https://arcprize.org/leaderboard">leaderboard</a>)</td>
 			</tr>
 	</tbody>
 </table>
@@ -1018,7 +1064,8 @@
 <ul>
 <li><strong>Representation</strong> is the bottleneck: agents fail when they cannot <em>build</em>, <em>maintain</em>, <em>verify</em>, and <em>revise</em> the right representation of the task (its state, goals, rules, and the effects of actions)
 <ul>
-<li>e.g. on one ARC-AGI-3 environment, the <em>same</em> model scores 0% alone, and 97% within a <em>hand-crafted harness</em>: the surrounding software matters as much as the model</li>
+<li>e.g. on a variant of the ARC-AGI-3 environment TR87, Claude Opus 4.6 scores 0% with no harness and 97.1% within a <em>hand-crafted</em> harness, yet 0% under both on BP35 (<a href="https://arxiv.org/abs/2603.24621">ARC-AGI-3 report</a>, §4): a hand-crafted harness can make or break a task, but does not <em>generalise</em></li>
+<li>whereas a <em>general-purpose</em> harness (keeping reasoning state, compacting the conversation) lifts GPT-6 Astra from 54.8% to 99.9% on the whole benchmark (<a href="https://arcprize.org/leaderboard">leaderboard</a>, Oct 2026): the surrounding software matters as much as the model</li>
 </ul>
 </li>
 <li><strong>Success</strong> without governance is not trustworthy <em>agency</em>: success rates say nothing about <em>how</em> the goal was reached (policies, side effects, costs)</li>
@@ -1034,7 +1081,7 @@
 <h3 id="admission-committee-assistant-for-phd-applications-evaluation">Admission committee assistant for PhD applications evaluation</h3>
 <ul>
 <li>
-<p>3 candidates, and as many applications, with their <em>passport</em>, <em>transccript of records</em>, and <em>presentation letter</em> (in natural language)</p>
+<p>3 candidates, and as many applications, with their <em>passport</em>, <em>transcript of records</em>, and <em>presentation letter</em> (in natural language)</p>
 </li>
 <li>
 <p>we want to extract structured information from these documents (e.g. name, age, grades, research experience, etc.) to ease evaluation</p>
@@ -1103,25 +1150,21 @@
 </li>
 <li>Hence: do not confuse plan <strong>fluency</strong> with planning <strong>competence</strong></li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="llm-modulo">
 <h2 id="llms-cant-plan-but-can-help-planning-llm-modulo">LLMs can’t plan, but can help planning: LLM-Modulo</h2>
 <img src="./llm-modulo.svg" alt="LLM-Modulo loop on the running example: a goal (shortlist the best candidates for an interview) goes to the LLM, which proposes a plan (score each letter, rank by score, invite the top 2 via send_email); external critics check it: hard critics in code (tools exist, arguments valid, preconditions met), policy critics (e-mails need human approval, grades must be considered), soft critics (LLM-as-a-judge or humans); rejected plans go back to the LLM with a critique, accepted ones are executed by the controller with logging and human approval" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
 <ul>
 <li><strong>LLM-Modulo</strong> (cf. <a href="https://proceedings.mlr.press/v235/kambhampati24a.html">Kambhampati et al. (2024)</a>): the LLM <em>proposes</em>, external <strong>critics</strong> <em>verify</em>, in a <em>generate–test–critique</em> loop</li>
 <li>Better roles for LLMs in planning: <strong>translator</strong> (natural language $\rightarrow$ formal goals and constraints), <strong>critic</strong> (spot missing steps or assumptions), <strong>heuristic source</strong> (suggest promising actions to a planner), <strong>model drafter</strong> (extract candidate actions from manuals and policies), <strong>explainer</strong> (formal plans $\rightarrow$ natural language)</li>
 </ul>
-</section><section>
+</section>
+<section data-noprocess="" data-shortcode-slide="" id="plan-before-acting">
 <h2 id="planning-in-practice-plan-before-acting">Planning in practice: plan before acting</h2>
 <ul>
-<li>Make plans <strong>explicit artefacts</strong>, not just text in the conversation:
-<ul>
-<li>e.g. ask for a <em>structured output</em> (a list of steps, each one with a tool, its arguments, and its preconditions) <em>before</em> executing anything</li>
-<li>then <em>validate</em> it in code: do the tools exist? Are the arguments valid? Is the order admissible?</li>
-</ul>
-</li>
-<li>Mark which actions are <strong>irreversible</strong> (e-mails, decisions, payments), <strong>norm-sensitive</strong> (privacy, consent), or <strong>order-sensitive</strong> (approval before submission): they need <em>checks</em> and possibly <em>humans</em></li>
-<li><em>Log</em> the plan, its validation, and its execution: this enables tracing and accountability, after the fact</li>
-<li>This is the bridge towards <strong>workflows</strong> (a later lecture): when the plan is <em>always the same</em>, write it down <em>once</em>, as code, and let the LLM fill only the steps that need it</li>
+<li>Make plans <strong>explicit artefacts</strong> (e.g. a <em>structured output</em> listing steps, tools, and arguments), and <em>validate</em> them in code <em>before</em> executing anything</li>
+<li>Mark <strong>irreversible</strong> or <strong>norm-sensitive</strong> actions (e-mails, decisions, payments): they need <em>checks</em> and possibly <em>humans</em></li>
+<li>$\rightarrow$ more in the <a href="../workflows/#/plan-and-execute">plan-and-execute</a> pattern of the workflows lecture</li>
 </ul>
 
 </section>
@@ -1170,7 +1213,11 @@
 </table>
 <ul>
 <li><em>Any</em> tool whose results enter the context exposes the agent to <strong>prompt injection</strong></li>
-<li>Cf. <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM applications</a>: prompt injection, sensitive information disclosure, <em>excessive agency</em>, …</li>
+<li>Cf. <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM applications</a>: prompt injection, sensitive information disclosure, <em>excessive agency</em>, …
+<ul>
+<li>and the <a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications</a> (Dec 2025): goal hijack, tool misuse, identity and privilege abuse, supply chain, unexpected code execution, memory and context poisoning, …</li>
+</ul>
+</li>
 </ul>
 </section><section>
 <h2 id="prompt-injection">Prompt injection</h2>
@@ -1216,10 +1263,10 @@
 <li><strong>Human approval</strong> for <em>irreversible</em> or <em>norm-sensitive</em> actions (e.g. recording a decision, sending an e-mail)</li>
 <li><strong>Log and trace</strong> every tool call, with arguments and results: ex-post accountability</li>
 <li><strong>Delimit</strong> untrusted content (e.g. <code>&lt;letter&gt;...&lt;/letter&gt;</code>), and say in the system prompt that it is <em>data</em>: it helps, but it is <em>not</em> a guarantee</li>
-<li>Treat third-party <em>tools</em> and <em>MCP servers</em> like third-party <em>dependencies</em>: pin, review, and trust them explicitly (cf. MCP’s <a href="https://modelcontextprotocol.io/specification/draft/basic/security_best_practices">security best practices</a>)</li>
+<li>Treat third-party <em>tools</em> and <em>MCP servers</em> like third-party <em>dependencies</em>: pin, review, and trust them explicitly (cf. MCP’s <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices">security best practices</a>)</li>
 </ul>
 <blockquote>
-<p>LLMs <strong>propose</strong>, software <strong>verifies</strong>, humans remain <strong>responsible</strong></p>
+<p>Recall: LLMs <strong>propose</strong>, software <strong>verifies</strong> (cf. <a href="../genai/#/language-to-action">introductory lecture</a>), humans remain <strong>responsible</strong></p>
 </blockquote>
 
 </section>
@@ -1399,7 +1446,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">"""</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># get_current_time is re-used from the examples, e.g. to compute ages, or to check whether passports have expired</span>
-</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">committee</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">get_current_time</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">agent</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">create_agent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">committee</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">get_current_time</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">middleware</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tool_errors</span><span style="color:#000;font-weight:bold">])</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">ask</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">agent</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">question</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">tuple</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">]:</span>
@@ -1690,7 +1737,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#000">llm</span><span style="color:#000;font-weight:bold">,</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">tools</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">committee</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">get_current_time</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">decisions</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tools</span><span style="color:#000;font-weight:bold">],</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">system_prompt</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">instructions</span><span style="color:#000;font-weight:bold">,</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#000">middleware</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">approval</span><span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">middleware</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">approval</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tool_errors</span><span style="color:#000;font-weight:bold">],</span>  <span style="color:#8f5902;font-style:italic"># tool_errors: as in Example 1 bis</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#000">checkpointer</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">InMemorySaver</span><span style="color:#000;font-weight:bold">(),</span>  <span style="color:#8f5902;font-style:italic"># interrupted runs are saved, to be resumed after the human's decision</span>
 </span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
@@ -1814,7 +1861,7 @@
 <ul>
 <li>Tool <em>name clashes</em> across servers: how does the gateway handle them (prefixes, renaming)?</li>
 <li>Where does <em>human approval</em> (cf. <a href="#/exercise-decide">Exercise 2</a>) live now: in the host, or in the gateway? What if a host forgets it?</li>
-<li>The fetch server reads <em>untrusted</em> Web content, <code>applications</code> reads <em>private</em> data, and <code>send_email</code> communicates <em>externally</em>: this is a <a href="#/security">lethal trifecta</a>. How do you break it?</li>
+<li>The fetch server reads <em>untrusted</em> Web content, <code>applications</code> reads <em>private</em> data <em>and</em> untrusted letters, and <code>send_email</code> communicates <em>externally</em>: this is a <a href="#/security">lethal trifecta</a>. How do you break it?</li>
 <li>What happens to the agent when one of the servers is <em>down</em>?</li>
 <li>Use the <a href="https://modelcontextprotocol.io/docs/tools/inspector">MCP Inspector</a> against the gateway, before connecting the agent</li>
 </ul>
@@ -1938,7 +1985,7 @@
 </section><section>
 <h2 id="exercise-3--solution-the-gateway-forwards-and-polices-tool-calls">Exercise 3 — Solution: the gateway forwards (and polices) tool calls</h2>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">async</span> <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">call_tool</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">arguments</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">CallToolResult</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># overrides FastMCP's own tools/call handler</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#000">host_session</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">id</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_context</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">session</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">host_session</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">id</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_context</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">session</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># NB: stateless MCP (spec 2026-07-28) has no sessions: key on the caller's identity</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">routes</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#000">result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Unknown tool: </span><span style="color:#4e9a06">{</span><span style="color:#000">name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">fnmatch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">EXFILTRATING</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#000">host_session</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">tainted</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># policy enforced HERE, whatever the host does</span>
@@ -1960,9 +2007,17 @@
 </span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">CallToolResult</span><span style="color:#000;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CallToolResult</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">TextContent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"text"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">)],</span> <span style="color:#000">isError</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
 </span></span></code></pre></div><ul>
-<li><code>get_context().session</code> is the MCP session of the <em>calling</em> host (its <code>id</code> tells hosts apart); <code>session.call_tool(...)</code> sends <code>tools/call</code> to the server behind</li>
+<li><code>get_context().session</code> is the MCP session of the <em>calling</em> host (its <code>id</code> tells hosts apart); <code>session.call_tool(...)</code> sends <code>tools/call</code> to the server behind
+<ul>
+<li>caveat: the <a href="https://modelcontextprotocol.io/specification/2026-07-28/changelog">2026-07-28 spec</a> is <em>stateless</em>, so a stateless SDK would need another key (e.g. the caller’s authenticated identity)</li>
+</ul>
+</li>
 <li>Every call is <strong>logged</strong> (JSON lines), with arguments and results, <em>refused</em> calls included</li>
-<li>The <strong>lethal trifecta</strong> is broken <em>in the gateway</em>: once a session has read Web content, it cannot send e-mails anymore, whatever its host does</li>
+<li>The <strong>lethal trifecta</strong> is broken <em>in the gateway</em> for <strong>Web</strong> content: once a session has read it, it cannot send e-mails anymore, whatever its host does
+<ul>
+<li>letters remain untrusted too: there, the only defence is <em>human approval</em> of <code>send_email</code> (tainting <code>applications_read_letter</code> as well would refuse every invitation after reading a letter)</li>
+</ul>
+</li>
 <li>Errors (unknown tools, servers <em>down</em>) become <em>tool errors</em> (a <code>CallToolResult</code> with a <code>TextContent</code> and <code>isError=True</code>): the agent is told, and may recover</li>
 </ul>
 </section><section>
@@ -2099,7 +2154,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-11
+<p>Compiled on: 2026-10-12
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="../#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -2197,6 +2252,8 @@
   
   
 
+  
+    
   
   
 
