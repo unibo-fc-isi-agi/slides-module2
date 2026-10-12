@@ -16,7 +16,7 @@
 <link href="https://cdn.jsdelivr.net/gh/DanySK/css-blur-animation/blur.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-<script src="https://unibo-fc-isi-agi.github.io/slides-module2/plantuml.js"></script>
+<script src="https://unibo-fc-isi-iag.github.io/slides-module2/plantuml.js"></script>
 
   </head>
   <body>
@@ -120,7 +120,7 @@
 </ul>
 </li>
 <li><a href="https://apice.unibo.it/xwiki/bin/view/Course/Iag2627/">APICe Page of the Course</a></li>
-<li><a href="https://github.com/unibo-fc-isi-agi/lab-snippets">Code of examples and exercises</a></li>
+<li><a href="https://github.com/unibo-fc-isi-iag/lab-snippets">Code of examples and exercises</a></li>
 <li><a href="./">These slides</a></li>
 <li>Support material for the <a href="#/prerequisites">prerequisites</a>:
 <ul>
@@ -135,14 +135,14 @@
 <h2 id="organization-of-module-2">Organization of Module 2</h2>
 <ul>
 <li>Lectures in lab, with immediate <em>hands-on</em></li>
-<li>Examples and exercises in <strong>Python</strong>, all in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository
+<li>Examples and exercises in <strong>Python</strong>, all in the <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a> repository
 <ul>
 <li>each exercise is followed by a (skippable) <em>walkthrough</em> of its solution: try <strong>before</strong> looking!</li>
 </ul>
 </li>
 <li><em>Optional</em> <strong>project work</strong> in any programming language of your choice (cf. <a href="#/exam">exam</a> and <a href="#/rules">rules</a>)
 <ul>
-<li>report must be in English and follow <a href="https://github.com/unibo-fc-isi-agi/template-report">this LaTeX template</a></li>
+<li>report must be in English and follow <a href="https://github.com/unibo-fc-isi-iag/template-report">this LaTeX template</a></li>
 </ul>
 </li>
 </ul>
@@ -259,7 +259,7 @@
 </ul>
 </li>
 <li><em>validate</em> your system (cf. <a href="./validating/">Validating Generative Software</a>), and report on how well it works</li>
-<li>in parallel, or later, write a <em>report</em> about your project following <a href="https://github.com/unibo-fc-isi-agi/template-report">this LaTeX template</a></li>
+<li>in parallel, or later, write a <em>report</em> about your project following <a href="https://github.com/unibo-fc-isi-iag/template-report">this LaTeX template</a></li>
 </ul>
 </li>
 <li>
@@ -340,7 +340,7 @@
 <h2 id="the-code-of-examples-and-exercises-why-a-repository">The code of examples and exercises: why a repository?</h2>
 <ul>
 <li>
-<p>All examples (and exercises) of the course live in a single repository: <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>unibo-fc-isi-agi/lab-snippets</code></a></p>
+<p>All examples (and exercises) of the course live in a single repository: <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>unibo-fc-isi-iag/lab-snippets</code></a></p>
 <ul>
 <li>slides only show <em>excerpts</em>: the repository contains the <em>full</em>, <em>commented</em>, <em>runnable</em> code</li>
 </ul>
@@ -400,7 +400,7 @@
 </ul>
 </li>
 <li>e.g. “Example 1 (bis)” of the <a href="./prompting/">prompting</a> lecture lives in <a href="./lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py"><code>snippets/lecture_prompting/example1bis/</code></a></li>
-<li>the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets/blob/master/README.md">README</a> lists the <em>suggested order</em> of lectures, examples, and exercises (which is <em>not</em> always the order of IDs)</li>
+<li>the <a href="https://github.com/unibo-fc-isi-iag/lab-snippets/blob/master/README.md">README</a> lists the <em>suggested order</em> of lectures, examples, and exercises (which is <em>not</em> always the order of IDs)</li>
 </ul>
 </div>
 </div>
@@ -414,7 +414,7 @@
 </li>
 <li>
 <p>Clone the repository, and install its dependencies <em>once</em>, via <a href="https://python-poetry.org">Poetry</a> (a dependency manager for Python):</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>git clone -b exercises https://github.com/unibo-fc-isi-agi/lab-snippets.git   <span style="color:#8f5902;font-style:italic"># the `exercises` branch!</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>git clone -b exercises https://github.com/unibo-fc-isi-iag/lab-snippets.git   <span style="color:#8f5902;font-style:italic"># the `exercises` branch!</span>
 </span></span><span style="display:flex;"><span><span style="color:#204a87">cd</span> lab-snippets
 </span></span><span style="display:flex;"><span>pip install -r requirements.txt  <span style="color:#8f5902;font-style:italic"># installs Poetry, if missing</span>
 </span></span><span style="display:flex;"><span>poetry install                   <span style="color:#8f5902;font-style:italic"># creates a virtual environment in .venv/, with all dependencies</span>

@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head>
     <meta charset="utf-8">
-<title>[AgI] Retrieval-Augmented Generation</title>
+<title>[IAg] Retrieval-Augmented Generation</title>
 <meta name="description" content="Giving LLM-based agents memory and focus: embeddings, vector stores on SQLite, chunking, retrieval, RAG with LangChain, evaluating and securing RAG">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
 <link href="https://cdn.jsdelivr.net/gh/DanySK/css-blur-animation/blur.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-<script src="https://unibo-fc-isi-agi.github.io/slides-module2/plantuml.js"></script>
+<script src="https://unibo-fc-isi-iag.github.io/slides-module2/plantuml.js"></script>
 
   </head>
   <body>
@@ -896,7 +896,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </ul>
 </section><section>
 <h2 id="examples-2-and-2-bis-project-structure">Examples 2 and 2 (bis): Project Structure</h2>
-<p>Files of these examples, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
+<p>Files of these examples, in the <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a> repository (cf. <a href="../#/lab-snippets">how to set it up, and run snippets</a>):</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── data/
 │   ├── <a href="../lab-snippets/data/letter-mario-rossi.txt">letter-*.txt</a>                       # the candidates' letters
@@ -1382,7 +1382,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </ul>
 </section><section>
 <h2 id="examples-3-4-and-4-bis-project-structure">Examples 3, 4, and 4 (bis): Project Structure</h2>
-<p>Files of these examples, in the <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> repository:</p>
+<p>Files of these examples, in the <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a> repository:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── snippets/
 │   └── lecture_rag/
@@ -1638,7 +1638,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <span class="fragment ">
   <h3 id="to-do-list">TO-DO List</h3>
 <ol>
-<li>the corpus: the PDFs of the slides, one <code>&lt;lecture&gt;_slides.pdf</code> per lecture, attached to each <a href="https://github.com/unibo-fc-isi-agi/slides-module2/releases">release</a> of the slides’ repository
+<li>the corpus: the PDFs of the slides, one <code>&lt;lecture&gt;_slides.pdf</code> per lecture, attached to each <a href="https://github.com/unibo-fc-isi-iag/slides-module2/releases">release</a> of the slides’ repository
 <ul>
 <li>resolve a release (default: the latest) via <a href="https://docs.github.com/en/rest/releases/releases#get-the-latest-release">GitHub’s API</a>, and download its PDFs into a git-ignored <em>cache</em></li>
 </ul>
@@ -1694,7 +1694,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <li>press → to <em>skip</em> the solution, ↓ to see it</li>
 </ul>
 </li>
-<li>The code of the solution is on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a> (while you cloned the <code>exercises</code> branch, with placeholders only)</li>
+<li>The code of the solution is on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a> (while you cloned the <code>exercises</code> branch, with placeholders only)</li>
 </ul>
 </section><section>
 <h2 id="exercise-1--solution-the-release-and-its-digests">Exercise 1 — Solution: the release, and its digests</h2>
@@ -1714,7 +1714,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">Pdf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">asset</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">removesuffix</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"_slides.pdf"</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">info</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"tag_name"</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">asset</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"digest"</span><span style="color:#000;font-weight:bold">])</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">asset</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"assets"</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">asset</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">"name"</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">endswith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"_slides.pdf"</span><span style="color:#000;font-weight:bold">)]</span>
 </span></span></code></pre></div><ul>
-<li><code>REPO</code>: <code>unibo-fc-isi-agi/slides-module2</code>, i.e. the repository of these very slides; <code>Pdf</code> is <em>frozen</em> (immutable, hence hashable)</li>
+<li><code>REPO</code>: <code>unibo-fc-isi-iag/slides-module2</code>, i.e. the repository of these very slides; <code>Pdf</code> is <em>frozen</em> (immutable, hence hashable)</li>
 <li>A digest changes <em>if and only if</em> the file changes: it tells which lectures to re-index, <em>without</em> downloading anything</li>
 <li>No authentication is needed for public repositories (up to 60 requests per hour, per IP)</li>
 <li>On <em>shared</em> networks (labs, CI) that quota runs out quickly: set <code>GITHUB_TOKEN</code> (e.g. <code>export GITHUB_TOKEN=$(gh auth token)</code>) to get 5,000 per hour</li>
@@ -1992,7 +1992,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </ul>
 </section><section>
 <h2 id="exercise-1--solution-project-structure">Exercise 1 — Solution: Project Structure</h2>
-<p>Files of this solution, on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-agi/lab-snippets"><code>lab-snippets</code></a>:</p>
+<p>Files of this solution, on the <code>master</code> branch of <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a>:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
 ├── .rag-cache/                      # downloaded PDFs + SQLite databases (git-ignored)
 ├── snippets/
