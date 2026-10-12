@@ -2097,7 +2097,7 @@
 <p style="font-size: 50%; opacity: 0.8; margin-top: 0.5em;"><b>Note</b>: since 18 June 2026, <i>Gemini CLI</i> is replaced by <a href="https://antigravity.google/">Antigravity CLI</a> for free, Google AI Pro, and Ultra users (enterprise and paid-API users keep Gemini CLI); skills, hooks, subagents, and extensions (as <i>plugins</i>) carry over, without 1:1 parity (cf. <a href="https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/">Google's announcement</a>)</p>
 
 </section>
-</section><section>
+</section>
 <h2 id="whats-next">What’s next?</h2>
 <ul>
 <li>Skills let the <strong>LLM</strong> decide <em>which</em> procedure to follow, and <em>how</em>: flexible, cheap to write, yet not guaranteed to be followed
@@ -2108,6 +2108,125 @@
 <li>What if the procedure must be followed <em>step by step</em>, with <em>state</em>, <em>branches</em>, <em>human approvals</em>, and <em>several</em> agents?</li>
 <li>Next, we’ll see <strong>Workflows and Agent Orchestration</strong>: the <em>code</em> controls the flow again</li>
 </ul>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="check-your-understanding">
+<h1 id="check-your-understanding">Check your understanding</h1>
+<div style="font-size: 75%;">
+<ul>
+<li>
+<p>Answer in your own words, motivating your conclusions and using examples where useful.</p>
+</li>
+<li>
+<p>Questions asking whether something is possible or desirable require more than a yes/no answer.</p>
+</li>
+<li>
+<p>Implementation questions can be answered with an explanation or pseudocode unless executable code is explicitly requested.</p>
+</li>
+<li>
+<p>Labels identify the primary learning target:</p>
+<ul>
+<li><strong>notions</strong> (knowledge), <strong>reasoning</strong> (drawing conclusions), or <strong>know-how</strong> (applying knowledge).</li>
+<li><strong>theoretical</strong> questions are independent of particular technologies; <strong>practical</strong> questions concern their use.</li>
+</ul>
+</li>
+<li>
+<p>Practical answers should identify the technology used, without requiring memorisation of product-specific details (model names, prices, API signatures, versions, limits).</p>
+</li>
+</ul>
+</div>
+</section><section>
+<h2 id="check-your-understanding-15">Check your understanding (1/5)</h2>
+<h3 id="designing-and-using-skills">Designing and using skills</h3>
+<div style="font-size: 80%;">
+<ol>
+<li>
+<p>[<em>notions, theoretical</em>] What is an agentic skill? Explain its relationship to procedural memory, and distinguish it from a system prompt, a tool, an MCP server, and a workflow.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] How does progressive disclosure make a collection of skills usable within a limited context? Compare it with loading every procedure upfront and with retrieving documents through RAG.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you turn a team’s recurring procedure into an Agent Skills package? Explain what belongs in <code>SKILL.md</code>, its description, references, and assets, and how you would state when the skill should not be used.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Which parts of a skill should be natural-language instructions, and which should be executable scripts? Explain how the choice affects reliability, flexibility, context use, and testability.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-25">Check your understanding (2/5)</h2>
+<h3 id="designing-and-using-skills-1">Designing and using skills</h3>
+<div style="font-size: 80%;">
+<ol start="5">
+<li>
+<p>[<em>know-how, theoretical</em>] How would you add skill support to an existing agent? Distinguish discovery, advertising, loading, and execution, and explain which decisions belong to the model and which to its controller.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you use the same skill in a coding-agent harness and in an application built with Deep Agents? What would you check about discovery, file access, script execution, and harness-specific extensions?</p>
+</li>
+<li>
+<p>[<em>reasoning, practical</em>] Does a skill’s <code>allowed-tools</code> declaration or a filesystem backend’s root directory provide a security sandbox? Explain what permissions and execution boundaries must actually be checked.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-35">Check your understanding (3/5)</h2>
+<h3 id="testing-skills">Testing skills</h3>
+<div style="font-size: 80%;">
+<ol start="8">
+<li>
+<p>[<em>notions, theoretical</em>] What can static validation establish about a skill, and what requires running an agent? Distinguish a valid package, correct scripts, correct activation, and useful outcomes.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you test whether an agent selects the right skill? Discuss near misses, overlapping descriptions, explicit requests, and how to improve a description without overfitting the test queries.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you measure whether a skill improves an agent’s work? Describe an evaluation using a skill-testing tool or your own test suite, including the baseline and the evidence you would collect.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-45">Check your understanding (4/5)</h2>
+<h3 id="hooks-and-enforced-behaviour">Hooks and enforced behaviour</h3>
+<div style="font-size: 80%;">
+<ol start="11">
+<li>
+<p>[<em>notions, theoretical</em>] What is a hook in an agent harness? Explain the event–callback contract and how a hook differs from an instruction the model is asked to follow.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you port a hook between two harnesses? Explain what must be checked beyond matching event names, and how you would separate shared policy logic from harness-specific adapters.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] A hook blocks known network tools and shell commands containing <code>curl</code>. Does it prevent an agent from leaking private data? Explain how event coverage, alternative execution paths, and sandboxing affect the answer.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What should happen if a policy hook crashes, times out, or returns an invalid response? Compare failing open with failing closed, and explain why a hook intended to improve reliability could itself prevent progress.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you make a behavioural skill remain available after context compaction and when work is delegated to another agent? Distinguish preserving its instructions from guaranteeing that they are followed.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-55">Check your understanding (5/5)</h2>
+<h3 id="distribution-trust-and-application">Distribution, trust, and application</h3>
+<div style="font-size: 80%;">
+<ol start="16">
+<li>
+<p>[<em>know-how, practical</em>] How would you distribute and maintain a skill for a team? Compare project and personal installation, and explain when a skill folder is sufficient and when a harness-specific plugin is needed.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] What would you review before installing or updating a third-party skill? Discuss risks in instructions, references, scripts, and bundled hooks, and the limits of registry scanning or user confirmation.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you design a skill that reviews a long document and reports issues without modifying it? Explain how you would combine automated checks, selective reading, and judgement, and test both its usefulness and its scope boundaries.</p>
+</li>
+</ol>
+</div>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>

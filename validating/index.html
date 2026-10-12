@@ -1131,6 +1131,116 @@
 </ul>
 </li>
 </ul>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="check-your-understanding">
+<h1 id="check-your-understanding">Check your understanding</h1>
+<div style="font-size: 75%;">
+<ul>
+<li>
+<p>Answer in your own words, motivating your conclusions and using examples where useful.</p>
+</li>
+<li>
+<p>Questions asking whether something is possible or desirable require more than a yes/no answer.</p>
+</li>
+<li>
+<p>Implementation questions can be answered with an explanation or pseudocode unless executable code is explicitly requested.</p>
+</li>
+<li>
+<p>Labels identify the primary learning target:</p>
+<ul>
+<li><strong>notions</strong> (knowledge), <strong>reasoning</strong> (drawing conclusions), or <strong>know-how</strong> (applying knowledge).</li>
+<li><strong>theoretical</strong> questions are independent of particular technologies; <strong>practical</strong> questions concern their use.</li>
+</ul>
+</li>
+<li>
+<p>Practical answers should identify the technology used, without requiring memorisation of product-specific details (model names, prices, API signatures, versions, limits).</p>
+</li>
+</ul>
+</div>
+</section><section>
+<h2 id="check-your-understanding-14">Check your understanding (1/4)</h2>
+<h3 id="designing-evaluations">Designing evaluations</h3>
+<div style="font-size: 80%;">
+<ol>
+<li>
+<p>[<em>notions, theoretical</em>] What makes generative software difficult to test? Describe the ingredients of an evaluation and explain how evaluations relate to ordinary unit tests.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you construct a representative test dataset for a document-processing application? Discuss how to establish expectations when the source is ambiguous, incomplete, or internally contradictory.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] How would you choose between deterministic checks, similarity metrics, an LLM judge, and human assessment? Give examples where a convenient metric would measure the wrong thing.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you check extracted facts without rejecting harmless differences in their representation? Explain when exact matching, normalisation, ranges, or set-based comparisons are appropriate, and how excessive tolerance could hide errors.</p>
+</li>
+<li>
+<p>[<em>notions, theoretical</em>] What are invariants and relational or metamorphic tests? Give examples useful for generative software, and explain what they can establish when no single expected answer is available.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-24">Check your understanding (2/4)</h2>
+<h3 id="evaluating-with-llm-judges">Evaluating with LLM judges</h3>
+<div style="font-size: 80%;">
+<ol start="6">
+<li>
+<p>[<em>know-how, theoretical</em>] How would you design an LLM judge for a quality criterion that is difficult to check with code? Explain what evidence it needs and how its rubric and output should be structured.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What changes when a judge grades one answer rather than compares two, or judges with rather than without a reference answer? Discuss how these choices affect the conclusions you can draw.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you detect and reduce position bias, verbosity bias, and self-preference in an LLM judge? Would using a stronger model or requesting a rationale be enough to trust its verdicts?</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] How would you validate an LLM judge against human assessments? Explain why raw agreement can be misleading and what a chance-corrected measure such as Cohen’s kappa adds.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-34">Check your understanding (3/4)</h2>
+<h3 id="interpreting-evidence">Interpreting evidence</h3>
+<div style="font-size: 80%;">
+<ol start="10">
+<li>
+<p>[<em>reasoning, theoretical</em>] An application passes every case in a small test dataset. What can you conclude about its reliability? Discuss uncertainty and the difference between testing more inputs and repeating the same inputs more times.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you compare two versions of a generative application fairly? Explain why paired results on individual cases can tell you more than comparing two average scores.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What is the difference between accuracy and consistency? How would you establish whether majority voting improves a document extractor rather than merely making it more consistent?</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] When is caching generated outputs useful during evaluation, and when does it invalidate what you are trying to measure? Distinguish reusing a sample across several checks from treating repeated cache hits as independent runs.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-44">Check your understanding (4/4)</h2>
+<h3 id="evaluation-in-a-software-project">Evaluation in a software project</h3>
+<div style="font-size: 80%;">
+<ol start="14">
+<li>
+<p>[<em>reasoning, practical</em>] Compare the test-oriented approach of DeepEval with the experiment-tracking approach of MLflow. What concepts do they share, and when might you use either or both in a project?</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you build an evaluation suite for an application that extracts facts and writes explanations? Using DeepEval or MLflow, describe how you would connect the dataset, system under test, scorers, and report so that failures can be investigated.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] When an evaluation fails, how would you decide whether the application, the expectation, or the scorer is wrong? How would you check that a suite which always passes can actually detect defects?</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you use evaluations to detect regressions in CI? Discuss intermittent failures, acceptance thresholds, API costs and credentials, and the information needed to compare runs over time.</p>
+</li>
+</ol>
+</div>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>

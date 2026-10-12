@@ -2164,6 +2164,144 @@
 <li>What if the agent must answer questions over <em>thousands</em> of documents, which do not fit into the context?</li>
 <li>Next, we’ll see <strong>Retrieval-Augmented Generation</strong> (RAG): giving agents <em>memory</em> and <em>focus</em>, via semantic search</li>
 </ul>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="check-your-understanding">
+<h1 id="check-your-understanding">Check your understanding</h1>
+<div style="font-size: 75%;">
+<ul>
+<li>
+<p>Answer in your own words, motivating your conclusions and using examples where useful.</p>
+</li>
+<li>
+<p>Questions asking whether something is possible or desirable require more than a yes/no answer.</p>
+</li>
+<li>
+<p>Implementation questions can be answered with an explanation or pseudocode unless executable code is explicitly requested.</p>
+</li>
+<li>
+<p>Labels identify the primary learning target:</p>
+<ul>
+<li><strong>notions</strong> (knowledge), <strong>reasoning</strong> (drawing conclusions), or <strong>know-how</strong> (applying knowledge).</li>
+<li><strong>theoretical</strong> questions are independent of particular technologies; <strong>practical</strong> questions concern their use.</li>
+</ul>
+</li>
+<li>
+<p>Practical answers should identify the technology used, without requiring memorisation of product-specific details (model names, prices, API signatures, versions, limits).</p>
+</li>
+</ul>
+</div>
+</section><section>
+<h2 id="check-your-understanding-15">Check your understanding (1/5)</h2>
+<h3 id="agents-and-tools">Agents and tools</h3>
+<div style="font-size: 80%;">
+<ol>
+<li>
+<p>[<em>notions, theoretical</em>] What is an agent, and what changes when its deliberation relies on an LLM? Explain the roles of perception, action, goals, state, and the controller.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] How do intelligence, autonomy, and agency differ? Give examples showing why improving one does not necessarily improve the others.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] When does a task need an agent rather than a single LLM call or a predefined workflow? What costs come with giving the model more control?</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you design a tool that an LLM can use reliably? Explain what its interface should communicate about arguments, results, errors, and side effects.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Does giving an agent more tools always make it more capable? How could you make a large collection of tools available without presenting every definition at every step?</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-25">Check your understanding (2/5)</h2>
+<h3 id="agents-and-tools-1">Agents and tools</h3>
+<div style="font-size: 80%;">
+<ol start="6">
+<li>
+<p>[<em>know-how, theoretical</em>] How would you implement a ReAct controller? Explain how it associates tool results with calls, handles dependencies and failures, and decides when to stop.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] If a tool call conforms to its JSON Schema, is it safe to execute? What checks remain necessary, and where should they happen?</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you build a tool-using agent with LangChain? Explain what the framework provides compared with a loop written using a provider’s SDK, and what policies you still need to implement.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you design tools for an assistant that answers questions across text documents and images? Discuss where extraction and computation should happen, what to return to the agent, and when caching is appropriate.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-35">Check your understanding (3/5)</h2>
+<h3 id="tool-integration-and-mcp">Tool integration and MCP</h3>
+<div style="font-size: 80%;">
+<ol start="10">
+<li>
+<p>[<em>notions, practical</em>] What problem does MCP solve? Explain the roles of hosts, clients, and servers, and distinguish tools, resources, and prompts.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you expose existing Python functions through an MCP server and connect an agent to them? Compare local stdio and remote HTTP connections, including how you would diagnose a connection or tool-call failure.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Compare tools executed inside the agent’s process, tools accessed through a separate server, and tools executed by the model provider. How do these arrangements affect reuse, control, isolation, and failure handling?</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you configure an MCP gateway shared by several applications with different permissions? Explain how you would handle tool names, credentials, access checks, and logging, including when a host fails to enforce its own policies.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Does using a standard tool protocol make third-party tools trustworthy? Discuss the risks of tool descriptions as well as executable code, including changes made after a tool was approved.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-45">Check your understanding (4/5)</h2>
+<h3 id="evaluation-and-planning">Evaluation and planning</h3>
+<div style="font-size: 80%;">
+<ol start="15">
+<li>
+<p>[<em>reasoning, theoretical</em>] Why is checking an agent’s final answer insufficient? Explain what its trajectory can reveal, and when requiring an exact sequence of tool calls would be too restrictive.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you test an agent’s tool selection, arguments, efficiency, and handling of unavailable information? Explain how you would separate agent failures from tool or external-service failures.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What can an agentic benchmark establish about an agent’s capabilities? Discuss the influence of the harness, task representation, repeated-run reliability, and the way the goal was achieved.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What distinguishes an executable plan from a plausible description of steps? Explain how explicit states, preconditions, and effects help assess a proposed plan.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How could you combine an LLM with external planners or validators to solve a planning task? Explain the generate–test–critique approach and the limits of the guarantees it provides.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-55">Check your understanding (5/5)</h2>
+<h3 id="security-and-actions-with-consequences">Security and actions with consequences</h3>
+<div style="font-size: 80%;">
+<ol start="20">
+<li>
+<p>[<em>reasoning, theoretical</em>] How does adding tools change an LLM-based system’s risks? Is an agent with only read-only tools necessarily harmless?</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you protect an agent that reads untrusted documents, accesses private data, and communicates externally? Explain direct and indirect prompt injection, and distinguish prompt-level mitigations from enforced restrictions.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you implement human approval for selected tool calls in an agent framework? Explain what the reviewer must see and how approval, editing, and rejection affect execution.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Why does idempotency matter for tools that change state? Compare recording a decision with sending a notification, and explain what could go wrong after a timeout or retry.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you test that an agent cannot perform an unauthorised action, even if a document tells it the action was already approved? Distinguish testing the agent’s proposals from testing the actual effects and the controls around execution.</p>
+</li>
+</ol>
+</div>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>

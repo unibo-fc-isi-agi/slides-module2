@@ -2022,6 +2022,142 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <li>What about <em>procedural</em> memory: <em>how</em> to do things, written once, and loaded only when needed?</li>
 <li>Next, we’ll see <strong>agentic skills</strong>: reusable, textually-described capabilities, loaded via <em>progressive disclosure</em> (i.e. a form of retrieval!)</li>
 </ul>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="check-your-understanding">
+<h1 id="check-your-understanding">Check your understanding</h1>
+<div style="font-size: 75%;">
+<ul>
+<li>
+<p>Answer in your own words, motivating your conclusions and using examples where useful.</p>
+</li>
+<li>
+<p>Questions asking whether something is possible or desirable require more than a yes/no answer.</p>
+</li>
+<li>
+<p>Implementation questions can be answered with an explanation or pseudocode unless executable code is explicitly requested.</p>
+</li>
+<li>
+<p>Labels identify the primary learning target:</p>
+<ul>
+<li><strong>notions</strong> (knowledge), <strong>reasoning</strong> (drawing conclusions), or <strong>know-how</strong> (applying knowledge).</li>
+<li><strong>theoretical</strong> questions are independent of particular technologies; <strong>practical</strong> questions concern their use.</li>
+</ul>
+</li>
+<li>
+<p>Practical answers should identify the technology used, without requiring memorisation of product-specific details (model names, prices, API signatures, versions, limits).</p>
+</li>
+</ul>
+</div>
+</section><section>
+<h2 id="check-your-understanding-16">Check your understanding (1/6)</h2>
+<h3 id="memory-and-retrieval">Memory and retrieval</h3>
+<div style="font-size: 80%;">
+<ol>
+<li>
+<p>[<em>notions, theoretical</em>] What kinds of memory can an LLM-based agent use? Distinguish knowledge in model weights from working, episodic, semantic, and procedural memory, and explain where retrieval fits.</p>
+</li>
+<li>
+<p>[<em>notions, theoretical</em>] How does retrieval-augmented generation work? Distinguish preparing the knowledge base from answering a question, and explain which components need an LLM.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] When would you use RAG rather than put all the documents in the prompt, use a live-data tool, or fine-tune a model? What evidence would justify the added retrieval infrastructure?</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-26">Check your understanding (2/6)</h2>
+<h3 id="memory-and-retrieval-1">Memory and retrieval</h3>
+<div style="font-size: 80%;">
+<ol start="4">
+<li>
+<p>[<em>notions, theoretical</em>] How do embeddings support semantic search? Compare cosine similarity, dot product, and Euclidean distance, including the role of vector normalisation.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] Does a high embedding similarity mean that a document answers a question correctly? Discuss paraphrases, negation, and the interpretation of scores across different models.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you connect an embedding model to a retrieval system? What would you check about document and query encoding, and what would need to change if you replaced the embedding model?</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-36">Check your understanding (3/6)</h2>
+<h3 id="building-the-index">Building the index</h3>
+<div style="font-size: 80%;">
+<ol start="7">
+<li>
+<p>[<em>reasoning, theoretical</em>] What must a vector store store and support? Compare exact and approximate nearest-neighbour search, and explain whether exact search guarantees that the retrieved documents are relevant.</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you implement vector search with SQLite, with and without a vector extension such as <code>sqlite-vec</code>? Explain what the extension changes and what limitations would remain as the corpus grows.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you choose a chunking strategy for a document collection? Discuss chunk size, overlap, document structure, and ways to preserve the context needed to understand each chunk.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-46">Check your understanding (4/6)</h2>
+<h3 id="building-the-index-1">Building the index</h3>
+<div style="font-size: 80%;">
+<ol start="10">
+<li>
+<p>[<em>know-how, practical</em>] How would you prepare a collection of PDFs for retrieval? Explain how you would detect problems caused by repeated page elements, tables, diagrams, or text-extraction errors before indexing them.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] What metadata should accompany a chunk, and why? Explain how filtering before or after nearest-neighbour search changes the results and the enforcement of access restrictions.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you keep a retrieval index consistent with a changing document collection? Address additions, revisions, deletions, and interrupted updates without rebuilding everything unnecessarily.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-56">Check your understanding (5/6)</h2>
+<h3 id="retrieving-evidence-and-producing-answers">Retrieving evidence and producing answers</h3>
+<div style="font-size: 80%;">
+<ol start="13">
+<li>
+<p>[<em>reasoning, theoretical</em>] When do keyword search and semantic search fail in different ways? Explain how hybrid search combines them and why fusing ranks can be preferable to adding their raw scores.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] A retriever returns several similar passages but misses the evidence needed to answer the question. How would you decide whether to change k, rerank, rewrite the query, or encourage more diverse results?</p>
+</li>
+<li>
+<p>[<em>know-how, practical</em>] How would you build a RAG pipeline with LangChain? Explain the roles of documents, loaders, splitters, embeddings, vector stores, and retrievers, and what you would recheck when replacing a component.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] When is agentic RAG preferable to a fixed retrieval-and-generation pipeline? Discuss questions requiring several searches and the consequences of letting the model decide when and what to retrieve.</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you make a document-based assistant cite its evidence and abstain when evidence is insufficient? Explain what can be checked about a citation mechanically and what requires checking its meaning.</p>
+</li>
+</ol>
+</div>
+</section><section>
+<h2 id="check-your-understanding-66">Check your understanding (6/6)</h2>
+<h3 id="evaluation-and-security">Evaluation and security</h3>
+<div style="font-size: 80%;">
+<ol start="18">
+<li>
+<p>[<em>know-how, theoretical</em>] How would you construct a gold set and compare retrieval strategies? Explain what precision@k, recall@k, and MRR measure, and what aggregate scores might hide.</p>
+</li>
+<li>
+<p>[<em>reasoning, theoretical</em>] How would you distinguish a retrieval failure from a generation failure? Can an answer be faithful to the retrieved material yet irrelevant, incomplete, or false?</p>
+</li>
+<li>
+<p>[<em>know-how, theoretical</em>] How would you protect a shared RAG system against unauthorised disclosure and poisoned documents? Discuss where permissions must be enforced and whether storing embeddings instead of text removes privacy concerns.</p>
+</li>
+<li>
+<p>[<em>reasoning, practical</em>] What additional responsibilities arise when an agent can write persistent memories as well as retrieve documents? Using a memory store or service as an example, explain how you would handle provenance, stale information, deletion, and malicious memories carried into later sessions.</p>
+</li>
+</ol>
+</div>
+
+</section>
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
