@@ -50,9 +50,11 @@ aliases = [
 8. [Workflows and Agent Orchestration](workflows)
     + exercise 1. [e-mail bot](workflows/#/exercise-email-bot) ([solution](workflows/#/exercise-email-bot-solution))
     · exercise 2. [A2A agent](workflows/#/exercise-a2a) ([solution](workflows/#/exercise-a2a-solution))
+    · [check your understanding](workflows/#/check-your-understanding)
 9. [AI Governance 101](governance)
     + exercise 1. [comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution))
     · exercise 2. [decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))
+    · [check your understanding](governance/#/check-your-understanding)
 
 10. \[Appendix] [Free Access to LLMs](free-access)
 

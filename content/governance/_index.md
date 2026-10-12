@@ -1376,4 +1376,106 @@ Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippet
 
 ---
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/5)
+
+### Making and documenting choices
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What is AI governance in an organisation, and which decisions belong to it? Explain why choosing an architecture or model can be a governance decision even before a legal question arises.
+
+2. [_reasoning, theoretical_] How would you compare two plausible designs when one offers better quality and faster delivery, while the other offers more control and easier compliance? Explain how quality, cost, control, compliance, and time-to-market can conflict, and what evidence would justify your choice.
+
+3. [_know-how, practical_] A university wants to process applicants' documents with an LLM. How would you compare a proprietary API, a third-party host of an open model, and an on-premise deployment? Identify who handles the data and operations in each case, and when a hybrid arrangement would help.
+
+4. [_reasoning, practical_] How would you estimate whether paying per request or running your own model is cheaper for a particular workload? State the assumptions you would need, including volume, token use, hardware utilisation, labour, and maintenance, and explain why the cheapest option may still be unsuitable.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/5)
+
+### Rules and responsibilities
+
+{{% small "80%" %}}
+
+5. [_notions, practical_] Which different questions are answered by data-protection law, AI-specific regulation, national law, institutional policy, provider contracts, and model licenses? Explain why satisfying one layer does not settle the others.
+
+6. [_know-how, practical_] Before sending identifiable application documents to an external LLM provider, what would you investigate and document? Discuss purpose and minimisation, the controller–processor relationship, retention and logs, international transfers, impact assessment, and the possibility of significant automated decisions.
+
+7. [_reasoning, practical_] Why can the same model be used in one minimal-risk application and in another application subject to high-risk obligations? Apply this distinction to a system that scores applicants, and explain what changes if its output merely informs a committee rather than automatically rejecting people.
+
+8. [_know-how, practical_] An organisation builds an admission assistant on top of a third-party general-purpose model. How would you identify the model provider, the system provider, the deployer, and affected people? What kinds of duties would you examine for each role, including human oversight, documentation, monitoring, and transparency?
+
+9. [_reasoning, practical_] An AI system seems permissible under a general EU rule, but a national rule or the organisation's policy imposes tighter conditions. How should engineers handle this during design and procurement, and who should help resolve uncertain interpretations?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/5)
+
+### Openness, licensing, and sovereignty
+
+{{% small "80%" %}}
+
+10. [_notions, theoretical_] In what different senses can an AI model be called “open”? Explain what weights, code, training recipe, data or data information, documentation, and licenses each let a user inspect or do, and why downloadable weights alone do not establish reproducibility.
+
+11. [_reasoning, practical_] A model is advertised as “open source.” How would you examine that claim for both practical reuse and auditability? Explain why a normative definition of open-source AI and a regulatory exemption for open general-purpose models may set different thresholds.
+
+12. [_know-how, practical_] A team plans to fine-tune, merge, or distil an open-weights model and sell access to the result. What exactly would you check before proceeding? Include the checkpoint and license version, upstream models, training data, outputs, downstream distribution, and the team's possible regulatory role.
+
+13. [_reasoning, theoretical_] What might an organisation mean by “sovereign AI”? Distinguish where a model was developed, where it runs, and how much of its construction can be audited. How would you assess a local-language or nationally developed model without assuming its origin makes it better, more open, or more suitable for production?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/5)
+
+### Choosing techniques and models
+
+{{% small "80%" %}}
+
+14. [_know-how, theoretical_] A system fails because it lacks current facts, must perform actions, follows a repeatable procedure, and sometimes produces the wrong style. Which of prompting, RAG, tools or agents, skills, workflows, and fine-tuning might address each problem? Explain how you would add complexity only where evidence warrants it.
+
+15. [_know-how, practical_] How would you form a shortlist of models for a real application? Separate hard constraints from qualities you would rank, and explain what model cards, system cards, dataset documentation, provider terms, and your own tests can and cannot establish.
+
+16. [_reasoning, theoretical_] Why might a model that leads a public benchmark or leaderboard perform poorly in your application? Discuss benchmark saturation, contamination, changing test conditions, task mismatch, and the difference between a reported capability and a dependable workflow outcome.
+
+17. [_know-how, practical_] How would you compare several models for scoring applicants' letters? Design a small evaluation that considers a human reference, repeated runs, disagreement, invalid outputs, latency, and cost, and explain how you would choose a model and know when to revisit the choice.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (5/5)
+
+### Human responsibility and oversight
+
+{{% small "80%" %}}
+
+18. [_reasoning, theoretical_] What does it mean to adapt a process or its users to an AI system? Contrast an explicit, contestable change to an admission procedure with a silent change that favours what the model handles well. Who should be able to notice and challenge such adaptations?
+
+19. [_reasoning, theoretical_] Why can placing a human “in the loop” fail to provide meaningful oversight? Explain the responsibility gap, automation bias, artificial salience, and false certainty, and how a nominal approver can end up bearing blame without real control.
+
+20. [_know-how, practical_] Design the committee's review of AI-extracted facts and suggested scores so that members can exercise independent judgement. Explain what evidence they see, when they see the AI's ranking, how uncertainty and overrides are handled, and how you would detect rubber-stamping over time.
+
+21. [_know-how, practical_] What would you put in a governance decision record before deploying an admission assistant? Explain how a colleague could reconstruct the regulatory classification, alternatives, deployment and model choice, evaluation evidence, human responsibilities, monitoring plan, and conditions that trigger reconsideration.
+
+{{% /small %}}
+
+{{% /section %}}
+
+---
+
 {{% import path="reusable/back.md" %}}
