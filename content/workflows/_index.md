@@ -25,7 +25,7 @@ outputs = ["Reveal"]
 9. [Evaluating workflows](#/evaluating-workflows) end-to-end
 10. Exercises on the [running example](#/running-example): [a bot for candidates' e-mails](#/exercise-email-bot), [the bot as an A2A agent](#/exercise-a2a)
 
-> Recall: we assume the reader is familiar with [the spectrum of autonomy](../agents/#/autonomy-spectrum), [tools and agents](../agents/) (incl. [plan before acting](../agents/#/planning)), [RAG](../rag/), and [validating generative software](../validating/)
+> Recall: we assume the reader is familiar with [the spectrum of autonomy](../agents/#/autonomy-spectrum), [tools and agents](../agents/) (incl. [plan before acting](../agents/#/plan-before-acting)), [RAG](../rag/), and [validating generative software](../validating/)
 
 ---
 
@@ -375,7 +375,7 @@ flowchart LR
 {{< image src="./patterns.svg" max-h="62vh" alt="Seven workflow patterns: prompt chaining (LLM 1, a gate in code, LLM 2; a failing check stops the chain), routing (an LLM router picks one of several routes), parallelisation (split, several LLM calls in parallel, merge or vote), orchestrator-workers (an LLM orchestrator decides how many workers, then a synthesizer combines their results), evaluator-optimizer (a generator and a judge in a bounded loop, until accepted or N rounds), human-in-the-loop (draft, then a human approves, edits, or rejects, before acting), plan-and-execute (plan, validate in code, human approval, execution, then re-planning seeing the results); legend: LLM steps, data steps, user-input steps, action steps, conditional edges" >}}
 
 - A _small_ set of building blocks, which _compose_ (cf. Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
-- We already met some of them: [prompt chaining](../prompting/#/prompting-techniques) and [self-consistency](../prompting/#/prompting-techniques) (voting), [human approval](../agents/#/exercise-decide-solution), [LLM-Modulo](../agents/#/planning)
+- We already met some of them: [prompt chaining](../prompting/#/prompting-techniques) and [self-consistency](../prompting/#/prompting-techniques) (voting), [human approval](../agents/#/exercise-decide-solution), [LLM-Modulo](../agents/#/llm-modulo)
 
 ---
 
@@ -478,7 +478,7 @@ flowchart LR
 
 ## Plan-and-execute
 
-> Recall: [plan before acting](../agents/#/planning), and [LLM-Modulo](../agents/#/planning): the LLM _proposes_, external _critics_ verify
+> Recall: [plan before acting](../agents/#/plan-before-acting), and [LLM-Modulo](../agents/#/llm-modulo): the LLM _proposes_, external _critics_ verify
 
 - __Plan-and-execute__ separates _planning_ (one LLM call, producing a whole plan) from _execution_ (steps run by code, or by simpler LLM calls)
     + vs. ReAct: _fewer_ calls to the big model, the plan is _visible before_ any action, and it can be _validated_ and _approved_

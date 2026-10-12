@@ -74,8 +74,7 @@ outputs = ["Reveal"]
     + no need to _formalise_ goals, beliefs, and plans in advance: the LLM handles _vague_ goals, written in natural language
     + yet deliberation becomes _generated text_: plausible, not necessarily _sound_, and hard to _verify_
 
-- _Intelligence_, _autonomy_, and _agency_ are __separable__ dimensions (cf. [Floridi, 2025](https://doi.org/10.1007/s13347-025-00858-9)):
-    + what can the system __do__? Who __controls__ _when_ and _why_ it does it? What __state__ does it actually _change_?
+- Recall: _intelligence_, _autonomy_, and _agency_ are __separable__ dimensions (cf. [Floridi, 2025](https://doi.org/10.1007/s13347-025-00858-9), and the [introductory lecture](../genai/#/language-to-action))
 
 ---
 
@@ -85,6 +84,7 @@ outputs = ["Reveal"]
 
 {{< image src="./autonomy-spectrum.svg" max-h="45vh" alt="The spectrum of autonomy, from the code controlling the flow to the LLM controlling the flow: single LLM call (score one letter), workflow (score all letters, then rank), router (the LLM picks a branch), agent (the LLM picks the next tool in a loop); more autonomy brings more flexibility, but also more cost, latency, unpredictability, risk, and testing effort" >}}
 
+- Recall the [developer's code vs. LLM](../genai/#/genai-uses) distinction of the introductory lecture:
 - __Workflows__: LLMs and tools are orchestrated along _predefined_ code paths (the _code_ controls the flow)
 - __Agents__: the LLM _dynamically_ directs its own process and tool usage (the _LLM_ controls the flow)
     + cf. Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
@@ -167,7 +167,7 @@ function:
         * `Annotated[str, Field(description=...)]` attaches a _description_ (via Pydantic's [`Field`](../prompting/)) to a parameter's _type hint_: it ends up in the JSON Schema
     + `get_weather`'s docstring tells the LLM what the result contains (units included!)
     + `get_current_time` _validates_ its argument, and its error _says how to fix it_: never trust the LLM's arguments
-    + all three tools are _read-only_: calling them has no side effects, so a wrong call costs only time
+    + all three tools are _read-only_ (no side effects on the world), yet `web_search` _sends_ the query to a third party, and brings _untrusted_ text into the context (cf. [security](#/security))
 {{% /col %}}
 {{% /multicol %}}
 
@@ -191,13 +191,27 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 ---
 
+## Too many tools?
+
+- Each tool definition is sent at _each_ request: dozens of tools (e.g. from several MCP servers) mean _thousands_ of tokens, and _worse_ choices
+- Remedies:
+    + __tool search__: only a search tool is loaded upfront, the other definitions are _deferred_ and loaded on demand (e.g. Anthropic's [tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), with `defer_loading: true`)
+    + __client-side selection__: a cheap LLM call first picks the relevant tools (e.g. LangChain's [`LLMToolSelectorMiddleware`](https://docs.langchain.com/oss/python/langchain/middleware/built-in))
+    + __tools as code__: expose tools as a code API, and let the agent write code calling them (cf. Anthropic's [code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp))
+- Same idea as the _progressive disclosure_ of [agentic skills](../skills/#/progressive-disclosure): load into the context only what is _relevant_
+
+---
+
 ## Tools: the technological landscape
+
+> Recall the _Tools_ row of the [API comparison](../llmaas/#/api-comparison) in the LLM-as-a-Service lecture: here, in more detail
 
 {{% small "70%" %}}
 
 | Provider / library | Tool declaration | Tool call (response) | Tool result (next request) | Forcing / disabling tools | Docs |
 |---|---|---|---|---|---|
-| OpenAI (Chat Completion) | `tools=[{type: "function", function: {name, description, parameters}}]` | `message.tool_calls[i].function.{name, arguments}` (arguments as JSON _string_) | message with `role="tool"`, `tool_call_id` | `tool_choice`: `auto`, `none`, `required`, or a given function | [link](https://developers.openai.com/api/docs/guides/function-calling) |
+| OpenAI (Chat Completions) | `tools=[{type: "function", function: {name, description, parameters}}]` | `message.tool_calls[i].function.{name, arguments}` (arguments as JSON _string_) | message with `role="tool"`, `tool_call_id` | `tool_choice`: `auto`, `none`, `required`, or a given function | [link](https://developers.openai.com/api/docs/guides/function-calling) |
+| OpenAI (Responses) | `tools=[{type: "function", name, description, parameters, strict}]` (flat, no `function` wrapper) | output item `{type: "function_call", call_id, name, arguments}` (JSON _string_) | input item `{type: "function_call_output", call_id, output}` | `tool_choice`, as above | [link](https://developers.openai.com/api/docs/guides/function-calling) |
 | Anthropic (Messages) | `tools=[{name, description, input_schema}]` | `tool_use` content block, with `id`, `name`, `input` (a JSON _object_) | `tool_result` content block, in a `user` message | `tool_choice`: `auto`, `any`, `tool`, `none` | [link](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview) |
 | Google Gemini | `tools=[{function_declarations: [{name, description, parameters}]}]` | `functionCall` part | `functionResponse` part | `tool_config.function_calling_config.mode`: `AUTO`, `ANY`, `NONE` | [link](https://ai.google.dev/gemini-api/docs/function-calling) |
 | Ollama (local) | OpenAI-like `tools=[...]` (only for models _trained_ for tools) | `message.tool_calls` | message with `role="tool"` | — | [link](https://docs.ollama.com/capabilities/tool-calling) |
@@ -208,7 +222,11 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 - __Same metamodel__ everywhere: _definitions_ (name + description + JSON Schema) go in, _calls_ (name + arguments + ID) come out, _results_ go back in, referring to the call's ID
 - __Different syntax__, and _different reliability_: smaller (or older) models may ignore tools, invent tool names, or produce invalid arguments
     + always check whether a model supports tools (e.g. in [OpenRouter's model list](https://openrouter.ai/models?supported_parameters=tools))
+    + _strict_ mode makes arguments _always_ schema-valid, via constrained decoding: OpenAI `strict: true` (needs `additionalProperties: false`, all fields `required`), Anthropic `strict: true` on the tool, LangChain `bind_tools(..., strict=True)`; cf. [structured outputs](../prompting/#/structured-output). Valid $\neq$ correct: still validate _values_ in code
     + many models can emit _several_ tool calls in one response (_parallel_ tool calls)
+- _Client_ tools (all tools in this lecture) are executed by __you__; _server_ (provider-hosted) tools are executed by the __provider__, and their results come back already in the response
+    + e.g. OpenAI Responses' `web_search`, `file_search`, `code_interpreter`, remote `mcp`; Anthropic's `web_search`, `web_fetch`, code execution; Gemini's `google_search`, `code_execution`, `url_context`
+    + no code to write, but no control on validation and logging, data leave to the provider, and lock-in
 
 {{% /section %}}
 
@@ -341,19 +359,20 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 1. LangChain's [`create_agent`](https://docs.langchain.com/oss/python/langchain/agents) implements the ReAct loop for you: just give it a chat model, the tools, and the system prompt
 
-    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="16" to="18" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="18" to="23" %}}
 
     - plain Python functions are _converted_ into tools (docstrings + type hints $\rightarrow$ definitions), or use the [`@tool`](https://docs.langchain.com/oss/python/langchain/tools) decorator for more control
     - the result is a _runnable_ (actually, a [LangGraph](https://www.langchain.com/langgraph) _graph_): `.invoke(...)`, `.stream(...)`, `.batch(...)` work as usual
     - its input and output are a _state_: a `dict` whose `"messages"` are the whole conversation, _including_ tool calls and results
+    - `ToolErrorMiddleware` feeds tools' errors (here, `ValueError`s) back to the LLM: by default, only _argument_ validation errors are fed back, while other exceptions _crash_ the run
 
 2. The main program _invokes_ the agent with the whole conversation, and prints the tool calls it made:
 
-    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="21" to="37" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py" from="26" to="46" %}}
 
     - `("user", text)` pairs are shorthands for LangChain messages (here, a `HumanMessage`); tool calls in `AIMessage`s are `dict`s with `name`, `args`, `id`
-    - `{"recursion_limit": 20}` is the run's _config_ (2nd argument of `invoke`): it plays the role of `max_steps`
-    - tool _errors_ are fed back to the LLM, as in our implementation
+    - `{"recursion_limit": 20}` is the run's _config_ (2nd argument of `invoke`): it bounds graph _supersteps_ (≈ 2 per model + tools round, so 20 ≈ 10 steps); exceeding it raises `GraphRecursionError`
+        + alternatively, `ModelCallLimitMiddleware(run_limit=10)` counts actual model calls
 
 ---
 
@@ -380,8 +399,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 |---|---|---|
 | Tool definitions | built by you (e.g. via `TypeAdapter`) | derived from functions, or `@tool` |
 | The loop | ~10 lines, _fully_ under your control | built-in (a LangGraph graph) |
-| Step limit | `max_steps` | `recursion_limit` |
-| Tool errors | up to you (we feed them back) | fed back by default |
+| Step limit | `max_steps` | `recursion_limit` (≈ 2× steps) |
+| Tool errors | up to you (we feed them back) | only _validation_ errors fed back by default; others via `ToolErrorMiddleware` |
 | Human approval, summarisation, retries | up to you | _middleware_ |
 | Streaming, persistence, tracing | up to you | built-in (+ [LangSmith](https://www.langchain.com/langsmith)) |
 | Other providers | only OpenAI-compatible APIs | any provider with a LangChain integration |
@@ -414,6 +433,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 - Messages are [JSON-RPC](https://www.jsonrpc.org/specification), e.g. `tools/list` (discovery), `tools/call` (invocation), over two __transports__:
     + _stdio_: the server is a _local sub-process_ of the host, talking via stdin/stdout
     + _streamable HTTP_: the server is a (possibly remote) _Web service_, possibly requiring authentication (OAuth)
+- Since the [2026-07-28 spec](https://modelcontextprotocol.io/specification/2026-07-28/changelog), the protocol is _stateless_ (no sessions, no `initialize` handshake); servers may still ask the user for input mid-call (_elicitation_)
 
 - Recall the [MCP picture](../genai/#/mcp-concept) of the introductory lecture: MCP does not change the ReAct loop, only _where_ tools come from
 
@@ -469,7 +489,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 3. The __agent__: a LangChain agent whose tools come from the MCP server, via [`langchain-mcp-adapters`](https://docs.langchain.com/oss/python/langchain/mcp):
 
-    {{% code path="static/lab-snippets/snippets/lecture_agents/example2/agent_mcp.py" from="14" to="27" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_agents/example2/agent_mcp.py" from="15" to="28" %}}
 
     - `MultiServerMCPClient` runs one MCP client per server; with _stdio_, it also _launches_ the server as a sub-process
     - `get_tools()` sends `tools/list` to each server, and wraps each MCP tool as a LangChain tool, sending `tools/call` when invoked
@@ -515,7 +535,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | Discovery | at coding time | at _runtime_ (`tools/list`): tools may change without changing the agent |
 | Isolation | none: tools share the agent's memory, files, secrets | process / network boundary: each server gets _only_ its own secrets |
 | Overhead | none | serialisation, process management, (network) latency |
-| Trust | you wrote them | third-party servers are third-party _code_ (and _prompts_: tool descriptions enter the context!) |
+| Trust | you wrote them | third-party servers are third-party _code_ (and _prompts_: tool descriptions enter the context!): _tool poisoning_ (malicious instructions in descriptions), _rug pull_ (descriptions changing after approval: pin or hash them) |
 
 - Use local tools for _application-specific_ logic; use MCP to _share_ tools across applications, or to _consume_ third-party ones
 
@@ -592,12 +612,13 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | [AgentBench](https://arxiv.org/abs/2308.03688) (2023) | pursue goals in 8 environments (OS, databases, games, Web, ...) over many turns | large gap between commercial and open models |
 | [SWE-bench](https://www.swebench.com/) (2023) | fix _real_ GitHub issues, i.e. build a working model of a code base | a few % (now much higher, cf. coding agents) |
 | [$\tau$-bench](https://arxiv.org/abs/2406.12045) (2024) | serve simulated users via tools, following domain _policies_ | pass$^8$ < 25% in retail |
-| [ARC-AGI-3](https://arcprize.org/arc-agi/3) (2026) | explore _novel_ interactive environments, infer goals and dynamics, plan | humans 100%, frontier AI < 1% ([March 2026](https://arcprize.org/media/ARC_AGI_3_Technical_Report.pdf)) |
+| [ARC-AGI-3](https://arcprize.org/arc-agi/3) (2026) | explore _novel_ interactive environments, infer goals and dynamics, plan | humans 100%, frontier AI < 1% ([March 2026](https://arxiv.org/abs/2603.24621)); best verified in Oct 2026: 62.7% ([leaderboard](https://arcprize.org/leaderboard)) |
 
 {{% /small %}}
 
 - __Representation__ is the bottleneck: agents fail when they cannot _build_, _maintain_, _verify_, and _revise_ the right representation of the task (its state, goals, rules, and the effects of actions)
-    + e.g. on one ARC-AGI-3 environment, the _same_ model scores 0% alone, and 97% within a _hand-crafted harness_: the surrounding software matters as much as the model
+    + e.g. on a variant of the ARC-AGI-3 environment TR87, Claude Opus 4.6 scores 0% with no harness and 97.1% within a _hand-crafted_ harness, yet 0% under both on BP35 ([ARC-AGI-3 report](https://arxiv.org/abs/2603.24621), §4): a hand-crafted harness can make or break a task, but does not _generalise_
+    + whereas a _general-purpose_ harness (keeping reasoning state, compacting the conversation) lifts GPT-6 Astra from 54.8% to 99.9% on the whole benchmark ([leaderboard](https://arcprize.org/leaderboard), Oct 2026): the surrounding software matters as much as the model
 - __Success__ without governance is not trustworthy _agency_: success rates say nothing about _how_ the goal was reached (policies, side effects, costs)
 - Benchmarks _saturate_ and leak into training data: they help _choosing_ models (cf. the [governance lecture](../governance/)), but __your own__ evaluations are what tells whether _your_ agent works
 
@@ -631,6 +652,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ---
 
+{{< slide id="llm-modulo" >}}
+
 ## LLMs can't plan, but can help planning: LLM-Modulo
 
 {{< image src="./llm-modulo.svg" max-h="45vh" alt="LLM-Modulo loop on the running example: a goal (shortlist the best candidates for an interview) goes to the LLM, which proposes a plan (score each letter, rank by score, invite the top 2 via send_email); external critics check it: hard critics in code (tools exist, arguments valid, preconditions met), policy critics (e-mails need human approval, grades must be considered), soft critics (LLM-as-a-judge or humans); rejected plans go back to the LLM with a critique, accepted ones are executed by the controller with logging and human approval" >}}
@@ -640,14 +663,13 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ---
 
+{{< slide id="plan-before-acting" >}}
+
 ## Planning in practice: plan before acting
 
-- Make plans __explicit artefacts__, not just text in the conversation:
-    + e.g. ask for a _structured output_ (a list of steps, each one with a tool, its arguments, and its preconditions) _before_ executing anything
-    + then _validate_ it in code: do the tools exist? Are the arguments valid? Is the order admissible?
-- Mark which actions are __irreversible__ (e-mails, decisions, payments), __norm-sensitive__ (privacy, consent), or __order-sensitive__ (approval before submission): they need _checks_ and possibly _humans_
-- _Log_ the plan, its validation, and its execution: this enables tracing and accountability, after the fact
-- This is the bridge towards __workflows__ (a later lecture): when the plan is _always the same_, write it down _once_, as code, and let the LLM fill only the steps that need it
+- Make plans __explicit artefacts__ (e.g. a _structured output_ listing steps, tools, and arguments), and _validate_ them in code _before_ executing anything
+- Mark __irreversible__ or __norm-sensitive__ actions (e-mails, decisions, payments): they need _checks_ and possibly _humans_
+- $\rightarrow$ more in the [plan-and-execute](../workflows/#/plan-and-execute) pattern of the workflows lecture
 
 {{% /section %}}
 
@@ -671,6 +693,7 @@ Without tools, an LLM can only _say_ wrong things; with tools, it can _do_ wrong
 
 - _Any_ tool whose results enter the context exposes the agent to __prompt injection__
 - Cf. [OWASP Top 10 for LLM applications](https://genai.owasp.org/llm-top-10/): prompt injection, sensitive information disclosure, _excessive agency_, ...
+    + and the [OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) (Dec 2025): goal hijack, tool misuse, identity and privilege abuse, supply chain, unexpected code execution, memory and context poisoning, ...
 
 ---
 
@@ -711,9 +734,9 @@ There is no complete defence against prompt injection: design agents _assuming_ 
 - __Human approval__ for _irreversible_ or _norm-sensitive_ actions (e.g. recording a decision, sending an e-mail)
 - __Log and trace__ every tool call, with arguments and results: ex-post accountability
 - __Delimit__ untrusted content (e.g. `<letter>...</letter>`), and say in the system prompt that it is _data_: it helps, but it is _not_ a guarantee
-- Treat third-party _tools_ and _MCP servers_ like third-party _dependencies_: pin, review, and trust them explicitly (cf. MCP's [security best practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
+- Treat third-party _tools_ and _MCP servers_ like third-party _dependencies_: pin, review, and trust them explicitly (cf. MCP's [security best practices](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices))
 
-> LLMs __propose__, software __verifies__, humans remain __responsible__
+> Recall: LLMs __propose__, software __verifies__ (cf. [introductory lecture](../genai/#/language-to-action)), humans remain __responsible__
 
 {{% /section %}}
 
@@ -823,7 +846,7 @@ There is no complete defence against prompt injection: design agents _assuming_ 
 
 > Same agent as in [Example 1 (bis)](#/agent-langchain): the __system prompt__ asks for _grounding_, honesty, and frugality
 
-{{% code path="static/lab-snippets/snippets/lecture_agents/exercise1/agent_committee.py" from="12" to="29" %}}
+{{% code path="static/lab-snippets/snippets/lecture_agents/exercise1/agent_committee.py" from="13" to="30" %}}
 
 - `committee.tools` is the list of the read-only tools above; `get_current_time` is _reused_: ages and expired passports depend on _today_, which the LLM does not know
 - "_Read each document at most once_": tool results stay in the context, re-reading only wastes tokens (and time)
@@ -1078,7 +1101,7 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 
 - Tool _name clashes_ across servers: how does the gateway handle them (prefixes, renaming)?
 - Where does _human approval_ (cf. [Exercise 2](#/exercise-decide)) live now: in the host, or in the gateway? What if a host forgets it?
-- The fetch server reads _untrusted_ Web content, `applications` reads _private_ data, and `send_email` communicates _externally_: this is a [lethal trifecta](#/security). How do you break it?
+- The fetch server reads _untrusted_ Web content, `applications` reads _private_ data _and_ untrusted letters, and `send_email` communicates _externally_: this is a [lethal trifecta](#/security). How do you break it?
 - What happens to the agent when one of the servers is _down_?
 - Use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) against the gateway, before connecting the agent
 
@@ -1159,8 +1182,10 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 {{% code path="static/lab-snippets/snippets/lecture_agents/exercise3/gateway.py" from="65" to="86" %}}
 
 - `get_context().session` is the MCP session of the _calling_ host (its `id` tells hosts apart); `session.call_tool(...)` sends `tools/call` to the server behind
+    + caveat: the [2026-07-28 spec](https://modelcontextprotocol.io/specification/2026-07-28/changelog) is _stateless_, so a stateless SDK would need another key (e.g. the caller's authenticated identity)
 - Every call is __logged__ (JSON lines), with arguments and results, _refused_ calls included
-- The __lethal trifecta__ is broken _in the gateway_: once a session has read Web content, it cannot send e-mails anymore, whatever its host does
+- The __lethal trifecta__ is broken _in the gateway_ for __Web__ content: once a session has read it, it cannot send e-mails anymore, whatever its host does
+    + letters remain untrusted too: there, the only defence is _human approval_ of `send_email` (tainting `applications_read_letter` as well would refuse every invitation after reading a letter)
 - Errors (unknown tools, servers _down_) become _tool errors_ (a `CallToolResult` with a `TextContent` and `isError=True`): the agent is told, and may recover
 
 ---
