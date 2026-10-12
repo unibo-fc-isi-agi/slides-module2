@@ -243,7 +243,7 @@
 </li>
 <li><code>get_weather</code>’s docstring tells the LLM what the result contains (units included!)</li>
 <li><code>get_current_time</code> <em>validates</em> its argument, and its error <em>says how to fix it</em>: never trust the LLM’s arguments</li>
-<li>all three tools are <em>read-only</em> (no side effects on the world), yet <code>web_search</code> <em>sends</em> the query to a third party, and brings <em>untrusted</em> text into the context (cf. <a href="#/security">security</a>)</li>
+<li>all three tools are <em>read-only</em>, yet <code>web_search</code> <em>sends</em> queries to a third party, and brings <em>untrusted</em> text in (cf. <a href="#/security">security</a>)</li>
 </ul>
 </li>
 </ul>
@@ -389,8 +389,17 @@
 <li><strong>Different syntax</strong>, and <em>different reliability</em>: smaller (or older) models may ignore tools, invent tool names, or produce invalid arguments
 <ul>
 <li>always check whether a model supports tools (e.g. in <a href="https://openrouter.ai/models?supported_parameters=tools">OpenRouter’s model list</a>)</li>
-<li><em>strict</em> mode makes arguments <em>always</em> schema-valid, via constrained decoding: OpenAI <code>strict: true</code> (needs <code>additionalProperties: false</code>, all fields <code>required</code>), Anthropic <code>strict: true</code> on the tool, LangChain <code>bind_tools(..., strict=True)</code>; cf. <a href="../prompting/#/structured-output">structured outputs</a>. Valid $\neq$ correct: still validate <em>values</em> in code</li>
 <li>many models can emit <em>several</em> tool calls in one response (<em>parallel</em> tool calls)</li>
+</ul>
+</li>
+</ul>
+</section><section>
+<h2 id="tools-strict-arguments-and-server-side-tools">Tools: strict arguments, and server-side tools</h2>
+<ul>
+<li><em>Strict</em> mode makes arguments <em>always</em> schema-valid, via constrained decoding (cf. <a href="../prompting/#/structured-output">structured outputs</a>):
+<ul>
+<li>OpenAI <code>strict: true</code> (needs <code>additionalProperties: false</code>, all fields <code>required</code>), Anthropic <code>strict: true</code> on the tool, LangChain <code>bind_tools(..., strict=True)</code></li>
+<li>valid $\neq$ correct: still validate <em>values</em> in code</li>
 </ul>
 </li>
 <li><em>Client</em> tools (all tools in this lecture) are executed by <strong>you</strong>; <em>server</em> (provider-hosted) tools are executed by the <strong>provider</strong>, and their results come back already in the response
@@ -588,6 +597,10 @@
 <li><code>ToolErrorMiddleware</code> feeds tools’ errors (here, <code>ValueError</code>s) back to the LLM: by default, only <em>argument</em> validation errors are fed back, while other exceptions <em>crash</em> the run</li>
 </ul>
 </li>
+</ol>
+</section><section>
+<h2 id="example-1-bis-the-same-agent-with-langchain-pt-1-cont">Example 1 (bis): the same Agent with LangChain (pt. 1, cont.)</h2>
+<ol start="2">
 <li>
 <p>The main program <em>invokes</em> the agent with the whole conversation, and prints the tool calls it made:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">print_tool_calls</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># shows which tools the agent called, and how</span>

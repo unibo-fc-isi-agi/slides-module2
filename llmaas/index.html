@@ -182,14 +182,6 @@
 			</tr>
 	</tbody>
 </table>
-<ul>
-<li>Need a model supporting <em>tools</em> or <em>structured output</em>?
-<ul>
-<li>Ollama: look for the <code>tools</code>, <code>thinking</code>, <code>vision</code> badges (e.g. <a href="https://ollama.com/search?c=tools">filter by tools</a>)</li>
-<li>Open Router: filter the models page by <em>supported parameters</em> (e.g. <code>tools</code>, <code>structured_outputs</code>, <code>response_format</code>)</li>
-</ul>
-</li>
-</ul>
 <h3 id="recurring-naming-conventions-worth-decoding">Recurring naming conventions (worth decoding)</h3>
 <ul>
 <li><em>family</em> + <em>version</em>: <code>llama-3.1</code>, <code>qwen3</code>, <code>gemma-4</code></li>
@@ -202,6 +194,12 @@
 <h2 id="model-zoos-pt-3-what-next">Model zoos (pt. 3): what next?</h2>
 <ul>
 <li>Zoos tell you <em>which</em> models exist, and what they <em>claim</em> to be capable of</li>
+<li>Need a model supporting <em>tools</em> or <em>structured output</em>?
+<ul>
+<li>Ollama: look for the <code>tools</code>, <code>thinking</code>, <code>vision</code> badges (e.g. <a href="https://ollama.com/search?c=tools">filter by tools</a>)</li>
+<li>Open Router: filter the models page by <em>supported parameters</em> (e.g. <code>tools</code>, <code>structured_outputs</code>, <code>response_format</code>)</li>
+</ul>
+</li>
 <li><strong>Choosing</strong> the right model for a given task, and <strong>evaluating</strong> it on <em>evidence</em>, are decisions with consequences on quality, cost, control, and compliance
 <ul>
 <li>hence, they are discussed in the <a href="../governance/#/model-selection">AI Governance lecture</a>, along with an exercise on comparing models on the running example</li>
@@ -238,7 +236,7 @@
 <li>
 <p>Ollama may also be used an <a href="https://ollama.com/pricing">on-cloud service</a>, but here we will focus on the on-premise deployment option alone</p>
 <ul>
-<li>three levels of premiumships ($0/month, $20/month, $100/month) with widening rate limitations</li>
+<li>three levels of premiumships (\$0/month, \$20/month, \$100/month) with widening rate limitations</li>
 </ul>
 </li>
 </ul>
@@ -383,10 +381,10 @@
 <p><strong>memory</strong> ≈ (number of params × bits per param / 8) [<em>weights</em>] + <em>KV cache</em> [grows with context length] + <em>overhead</em></p>
 </blockquote>
 <ul>
-<li>the <strong>key-value (KV) cache</strong> stores, for every layer, the attention <em>keys</em> and <em>values</em> computed for each token processed so far (prompt + generated)…
+<li>the <strong>key-value (KV) cache</strong> stores the attention <em>keys</em> and <em>values</em> of every token processed so far…
 <ul>
 <li>… so that they do not need to be recomputed for every new token generated</li>
-<li>its size <em>grows linearly</em> with the <em>context length</em> (∝ layers × context length × KV heads × head size)
+<li>its size <em>grows linearly</em> with the <em>context length</em>
 <ul>
 <li>this is why local runtimes (e.g. Ollama) use a <em>smaller</em> default context window than the model’s maximum</li>
 </ul>
@@ -395,7 +393,7 @@
 </li>
 <li>the <em>overhead</em> covers runtime buffers, activations, and driver context: usually an extra ~10–20%</li>
 </ul>
-<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 24vh; object-fit: contain;">
+<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 20vh; object-fit: contain;">
 </section><section>
 <h2 id="running-models-locally-what-does-it-take-pt-2">Running models locally: what does it take? (pt. 2)</h2>
 <h3 id="rule-of-thumb-for-the-weights-alone">Rule of thumb for the weights alone</h3>
@@ -829,7 +827,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791802197209283736" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791803026590009510" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -851,7 +849,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791802197209283736");
+    handlePlantumlFigureByID("plantuml-figure-1791803026590009510");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes

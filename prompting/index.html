@@ -173,7 +173,7 @@
 			</tr>
 			<tr>
 					<td>Give a <em>role</em> / <em>context</em></td>
-					<td>narrows down the space of plausible answers (personas give little or no <em>accuracy</em> gain on factual tasks, cf. <a href="https://arxiv.org/abs/2311.10054">Zheng et al., 2024</a>: useful mostly for <em>tone</em> and <em>context</em>)</td>
+					<td>narrows down the space of plausible answers (personas add little <em>accuracy</em>, cf. <a href="https://arxiv.org/abs/2311.10054">Zheng et al., 2024</a>)</td>
 					<td>“You are assisting the admission committee of …”</td>
 			</tr>
 			<tr>
@@ -403,12 +403,7 @@
 <li>in <em>Python</em>, most client libraries accept <code>pydantic</code> classes directly, and convert them into JSON Schemas for you</li>
 </ul>
 </li>
-<li>Model without <code>json_schema</code> support? The provider returns an <em>error</em> (e.g. 400), or silently <em>ignores</em> the schema
-<ul>
-<li>in LangChain: <code>with_structured_output(Cls, method="function_calling")</code> (the tool-calling trick) or <code>method="json_mode"</code> (then the schema must be described in the prompt)</li>
-<li>on OpenRouter: filter models by <code>structured_outputs</code> support, or set <code>provider.require_parameters=true</code></li>
-</ul>
-</li>
+<li>No <code>json_schema</code> support? Errors, or schema silently <em>ignored</em>: in LangChain, use <code>method="function_calling"</code> (tool-calling trick) or <code>"json_mode"</code>; on OpenRouter, set <code>provider.require_parameters=true</code></li>
 </ul>
 <blockquote>
 <p>[BEWARE] the <em>format</em> is guaranteed to be correct, the <em>content</em> is not: always <em>validate</em> the values</p>
