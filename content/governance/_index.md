@@ -137,16 +137,16 @@ Let's estimate the yearly cost of the running example, under explicit (and rough
 
 | Option | Price (USD per 1M input / output tokens) | Yearly cost |
 |---|---|---|
-| frontier proprietary model (e.g. [Claude Opus 5.5](https://platform.claude.com/docs/en/about-claude/pricing)) | $4 / $20 | 17.5 × 4 + 2.5 × 20 ≈ __$120__ |
-| small proprietary model (e.g. [Claude Haiku 4.5](https://platform.claude.com/docs/en/about-claude/pricing)) | $1 / $5 | ≈ __$30__ |
-| hosted open model, in the EU (e.g. Mistral Small 4, multimodal, Apache 2.0, on Mistral's [La Plateforme](https://mistral.ai/pricing)) | $0.15 / $0.60 | 17.5 × 0.15 + 2.5 × 0.6 ≈ __$4__ |
-| rented GPU, on demand (e.g. 24 GB GPU on [RunPod](https://www.runpod.io/pricing)) | ~$0.35–0.75 per hour | a few hours per year ≈ __$5__ (+ setup effort) |
+| frontier proprietary model (e.g. [Claude Opus 5.5](https://platform.claude.com/docs/en/about-claude/pricing)) | \\$4 / \\$20 | 17.5 × 4 + 2.5 × 20 ≈ __\\$120__ |
+| small proprietary model (e.g. [Claude Haiku 4.5](https://platform.claude.com/docs/en/about-claude/pricing)) | \\$1 / \\$5 | ≈ __\\$30__ |
+| hosted open model, in the EU (e.g. Mistral Small 4, multimodal, Apache 2.0, on Mistral's [La Plateforme](https://mistral.ai/pricing)) | \\$0.15 / \\$0.60 | 17.5 × 0.15 + 2.5 × 0.6 ≈ __\\$4__ |
+| rented GPU, on demand (e.g. 24 GB GPU on [RunPod](https://www.runpod.io/pricing)) | ~\\$0.35–0.75 per hour | a few hours per year ≈ __\\$5__ (+ setup effort) |
 | on-premise (a 24 GB GPU workstation) | ~€2–2.5k for the GPU alone | __€2.5k+__ upfront, + energy, + maintenance |
 
 (prices as of September 2026: they change every few months, always re-check them)
 
 {{% fragment %}}
-> At _this_ scale, __cost is not the deciding factor__: compliance and control are. Things change at scale: e.g. one 80 GB GPU rented 24/7 costs ~$2k/month, which buys ~100M _output_ tokens of a frontier model per month. The __break-even__ depends on _volume_, _utilization_, and _model size_
+> At _this_ scale, __cost is not the deciding factor__: compliance and control are. Things change at scale: e.g. one 80 GB GPU rented 24/7 costs ~\\$2k/month, which buys ~100M _output_ tokens of a frontier model per month. The __break-even__ depends on _volume_, _utilization_, and _model size_
 {{% /fragment %}}
 
 {{% /section %}}
@@ -275,7 +275,10 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 | __2 Dec 2027__ | high-risk systems of _Annex III_ (e.g. education), postponed from 2 Aug 2026 |
 | 2 Aug 2028 | high-risk systems of _Annex I_ (safety components of regulated products), postponed from 2 Aug 2027 |
 
-### Other relevant points
+---
+
+## EU AI Act: literacy, penalties, standards
+
 
 - __AI literacy__ (Art. 4): providers and deployers must take measures to _support_ the AI literacy of their _staff_ (this course is part of it!)
     + as amended by the Omnibus: previously, they had to _ensure_ a sufficient level of literacy
@@ -478,8 +481,8 @@ Data from the [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai
 | | United States | China | Europe | Italy |
 |---|---|---|---|---|
 | _Notable_ AI models released (Epoch AI, Fig. 1.1.13) | __59__ | 35 | 1 (France); 1 more in the UK | none listed |
-| Private AI investment (Quid, Fig. 4.2.8, 4.2.11) | __$285.9B__ | $12.4B | $20.9B (France $4.4B, Germany $3.9B) | < $1B (not in the top 15) |
-| ... of which _generative_ AI (Fig. 4.2.10) | __$163.6B__ | $1.5B | $3.2B | — |
+| Private AI investment (Quid, Fig. 4.2.8, 4.2.11) | __\\$285.9B__ | \\$12.4B | \\$20.9B (France \\$4.4B, Germany \\$3.9B) | < \\$1B (not in the top 15) |
+| ... of which _generative_ AI (Fig. 4.2.10) | __\\$163.6B__ | \\$1.5B | \\$3.2B | — |
 | Newly funded AI companies (Fig. 4.2.9) | __1,953__ | 161 | e.g. Germany 92, France 84 | 38 |
 | Growth of private AI investment, 2024 $\rightarrow$ 2025 (Fig. 4.2.11) | +160% | +32% | +7% | — |
 
@@ -850,7 +853,6 @@ flowchart LR
     + _latency_ (wall-clock time per request) and _tokens_ used (from `response.usage`), hence _cost_
 4. Summarize the results in a __table__, and motivate your choice
 
-> Why not DeepEval or MLflow (cf. [validating](../validating/#/eval-frameworks))? They score _one_ system at a time; here we compare $N$ models × repetitions, with cost and latency: a plain script is simpler (MLflow would work too: one run per model, in one experiment)
 
 ---
 
@@ -858,7 +860,7 @@ flowchart LR
 
 ### Decision points and hints
 
-- Recall step 5 of [Exercise 2 of the validating lecture](../validating/#/exercise-id-tests): same idea (compare models on _your_ task), there on ID extraction, here on letter scoring, with _costs_ and _latency_
+- Same idea as step 5 of [Exercise 2 of the validating lecture](../validating/#/exercise-id-tests), now with _costs_ and _latency_; a plain script, as [DeepEval or MLflow](../validating/#/eval-frameworks) score _one_ system at a time (MLflow would work too: one run per model)
 - How to automate the runs?
     * e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file
     * reuse the caching mechanism of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching)? (careful: caching would hide the variance!)
@@ -1306,8 +1308,8 @@ Write a short (2–4 pages) __decision record__, answering:
 
 | Option | Quality | Cost per year | Control | Compliance | Time-to-market |
 |---|---|---|---|---|---|
-| A. proprietary API (e.g. Claude Haiku 4.5) | high | ≈ $30 | low: snapshots can be pinned, but are _retired_ by the vendor | DPA + transfer safeguards; data leaves the University | days |
-| B. open-weights model, hosted by an EU provider (e.g. Mistral La Plateforme, Scaleway, OVHcloud) | medium-high | ≈ $1–10 (cf. the [worked example](#/cost-example)) | medium: pinned checkpoint | DPA; data stays in the EU | days |
+| A. proprietary API (e.g. Claude Haiku 4.5) | high | ≈ \\$30 | low: snapshots can be pinned, but are _retired_ by the vendor | DPA + transfer safeguards; data leaves the University | days |
+| B. open-weights model, hosted by an EU provider (e.g. Mistral La Plateforme, Scaleway, OVHcloud) | medium-high | ≈ \\$1–10 (cf. the [worked example](#/cost-example)) | medium: pinned checkpoint | DPA; data stays in the EU | days |
 | C. open-weights model, on-premise (24 GB GPU) | medium | ≈ €2.5k upfront + energy + maintenance | full | data never leaves the University | weeks |
 
 - _break-even_ of C vs. B: __centuries__ (even vs. A: ≈ 80 years) → at this scale, __cost is not the deciding factor__: compliance and control are

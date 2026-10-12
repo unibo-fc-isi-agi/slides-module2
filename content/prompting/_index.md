@@ -77,7 +77,7 @@ outputs = ["Reveal"]
 | Practice | Rationale | Example |
 |---|---|---|
 | Be _clear_ and _specific_ | the model cannot read your mind | "summarise in 3 bullet points, max 15 words each" vs. "summarise" |
-| Give a _role_ / _context_ | narrows down the space of plausible answers (personas give little or no _accuracy_ gain on factual tasks, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054): useful mostly for _tone_ and _context_) | "You are assisting the admission committee of ..." |
+| Give a _role_ / _context_ | narrows down the space of plausible answers (personas add little _accuracy_, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054)) | "You are assisting the admission committee of ..." |
 | Use _delimiters_ | separates instructions from data (and _mitigates_, not prevents, [prompt injection](../agents/#/security)) | `<letter> ... </letter>`, Markdown headings, triple quotes |
 | Say what _to do_, not only what _not to do_ | negative instructions are followed less reliably | "use plain words" vs. "don't use jargon" |
 | Provide _examples_ | showing is more effective than telling | cf. [few-shot prompting](#/prompting-techniques) |
@@ -220,9 +220,7 @@ From _weakest_ to _strongest_ guarantees:
 - __Same concept__ everywhere: a _JSON Schema_ travels along with the request, and the response is (guaranteed to be) an instance of it
 - __Different syntax__: parameter names and nesting differ across providers, and _not all models_ support all options
     + in _Python_, most client libraries accept `pydantic` classes directly, and convert them into JSON Schemas for you
-- Model without `json_schema` support? The provider returns an _error_ (e.g. 400), or silently _ignores_ the schema
-    + in LangChain: `with_structured_output(Cls, method="function_calling")` (the tool-calling trick) or `method="json_mode"` (then the schema must be described in the prompt)
-    + on OpenRouter: filter models by `structured_outputs` support, or set `provider.require_parameters=true`
+- No `json_schema` support? Errors, or schema silently _ignored_: in LangChain, use `method="function_calling"` (tool-calling trick) or `"json_mode"`; on OpenRouter, set `provider.require_parameters=true`
 
 > [BEWARE] the _format_ is guaranteed to be correct, the _content_ is not: always _validate_ the values
 

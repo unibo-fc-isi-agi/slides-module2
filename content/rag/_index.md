@@ -51,7 +51,7 @@ outputs = ["Reveal"]
 
 ## Memory is not "more context"
 
-{{< image src="./memory-types.svg" max-h="40vh" alt="Four kinds of agent memory, after CoALA: working memory (the context window: current goal, conversation, retrieved pieces), episodic memory (past interactions and trajectories), semantic memory (facts and documents about the world, e.g. a corpus of regulations), procedural memory (how to do things: prompts, code, skills); retrieval moves pieces from the long-term memories into working memory" >}}
+{{< image src="./memory-types.svg" max-h="32vh" alt="Four kinds of agent memory, after CoALA: working memory (the context window: current goal, conversation, retrieved pieces), episodic memory (past interactions and trajectories), semantic memory (facts and documents about the world, e.g. a corpus of regulations), procedural memory (how to do things: prompts, code, skills); retrieval moves pieces from the long-term memories into working memory" >}}
 
 - Cf. [CoALA (Sumers et al., 2023)](https://arxiv.org/abs/2309.02427), borrowing from cognitive science:
     + __working__ memory: the _context window_ of the current step
@@ -90,9 +90,7 @@ outputs = ["Reveal"]
 
 {{< slide id="rag-concept" >}}
 
-## RAG: the general concept (recall)
-
-> Recall the [RAG concept](../genai/#/rag-concept) from the introductory lecture
+## RAG: the general concept ([recall](../genai/#/rag-concept))
 
 {{< image src="../genai/rag.svg" max-h="45vh" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" >}}
 

@@ -136,8 +136,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 {{% /fragment %}}
 
 {{% fragment %}}
-> - But also: data _leave your premises_, costs _scale_ with usage, _lock-in_ with the provider, and regulations (GDPR, AI Act) apply
->    + alternatives, e.g. [on-premise](../llmaas/#/ollama) models; trade-offs and [regulation](../governance/#/regulation) in the [governance](../governance/#/deployment-options) lecture
+> - But also: data _leave your premises_, costs _scale_, provider _lock-in_, GDPR and AI Act apply (cf. [on-premise](../llmaas/#/ollama) models, and the [governance](../governance/#/deployment-options) lecture)
 {{% /fragment %}}
 
 {{% /section %}}

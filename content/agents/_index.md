@@ -167,7 +167,7 @@ function:
         * `Annotated[str, Field(description=...)]` attaches a _description_ (via Pydantic's [`Field`](../prompting/)) to a parameter's _type hint_: it ends up in the JSON Schema
     + `get_weather`'s docstring tells the LLM what the result contains (units included!)
     + `get_current_time` _validates_ its argument, and its error _says how to fix it_: never trust the LLM's arguments
-    + all three tools are _read-only_ (no side effects on the world), yet `web_search` _sends_ the query to a third party, and brings _untrusted_ text into the context (cf. [security](#/security))
+    + all three tools are _read-only_, yet `web_search` _sends_ queries to a third party, and brings _untrusted_ text in (cf. [security](#/security))
 {{% /col %}}
 {{% /multicol %}}
 
@@ -222,8 +222,15 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 - __Same metamodel__ everywhere: _definitions_ (name + description + JSON Schema) go in, _calls_ (name + arguments + ID) come out, _results_ go back in, referring to the call's ID
 - __Different syntax__, and _different reliability_: smaller (or older) models may ignore tools, invent tool names, or produce invalid arguments
     + always check whether a model supports tools (e.g. in [OpenRouter's model list](https://openrouter.ai/models?supported_parameters=tools))
-    + _strict_ mode makes arguments _always_ schema-valid, via constrained decoding: OpenAI `strict: true` (needs `additionalProperties: false`, all fields `required`), Anthropic `strict: true` on the tool, LangChain `bind_tools(..., strict=True)`; cf. [structured outputs](../prompting/#/structured-output). Valid $\neq$ correct: still validate _values_ in code
     + many models can emit _several_ tool calls in one response (_parallel_ tool calls)
+
+---
+
+## Tools: strict arguments, and server-side tools
+
+- _Strict_ mode makes arguments _always_ schema-valid, via constrained decoding (cf. [structured outputs](../prompting/#/structured-output)):
+    + OpenAI `strict: true` (needs `additionalProperties: false`, all fields `required`), Anthropic `strict: true` on the tool, LangChain `bind_tools(..., strict=True)`
+    + valid $\neq$ correct: still validate _values_ in code
 - _Client_ tools (all tools in this lecture) are executed by __you__; _server_ (provider-hosted) tools are executed by the __provider__, and their results come back already in the response
     + e.g. OpenAI Responses' `web_search`, `file_search`, `code_interpreter`, remote `mcp`; Anthropic's `web_search`, `web_fetch`, code execution; Gemini's `google_search`, `code_execution`, `url_context`
     + no code to write, but no control on validation and logging, data leave to the provider, and lock-in
@@ -365,6 +372,10 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     - the result is a _runnable_ (actually, a [LangGraph](https://www.langchain.com/langgraph) _graph_): `.invoke(...)`, `.stream(...)`, `.batch(...)` work as usual
     - its input and output are a _state_: a `dict` whose `"messages"` are the whole conversation, _including_ tool calls and results
     - `ToolErrorMiddleware` feeds tools' errors (here, `ValueError`s) back to the LLM: by default, only _argument_ validation errors are fed back, while other exceptions _crash_ the run
+
+---
+
+## Example 1 (bis): the same Agent with LangChain (pt. 1, cont.)
 
 2. The main program _invokes_ the agent with the whole conversation, and prints the tool calls it made:
 

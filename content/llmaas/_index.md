@@ -85,10 +85,6 @@ outputs = ["Reveal"]
 | __Metadata__ | full model card, files, license, community | size, context, capabilities, quantization | price, context, latency/throughput stats, supported parameters |
 | __License__ | per model (shown as a tag) | per model (in the model page) | provider's _terms of service_ apply |
 
-- Need a model supporting _tools_ or _structured output_?
-    + Ollama: look for the `tools`, `thinking`, `vision` badges (e.g. [filter by tools](https://ollama.com/search?c=tools))
-    + Open Router: filter the models page by _supported parameters_ (e.g. `tools`, `structured_outputs`, `response_format`)
-
 ### Recurring naming conventions (worth decoding)
 
 - _family_ + _version_: `llama-3.1`, `qwen3`, `gemma-4`
@@ -102,6 +98,9 @@ outputs = ["Reveal"]
 ## Model zoos (pt. 3): what next?
 
 - Zoos tell you _which_ models exist, and what they _claim_ to be capable of
+- Need a model supporting _tools_ or _structured output_?
+    + Ollama: look for the `tools`, `thinking`, `vision` badges (e.g. [filter by tools](https://ollama.com/search?c=tools))
+    + Open Router: filter the models page by _supported parameters_ (e.g. `tools`, `structured_outputs`, `response_format`)
 - __Choosing__ the right model for a given task, and __evaluating__ it on _evidence_, are decisions with consequences on quality, cost, control, and compliance
     + hence, they are discussed in the [AI Governance lecture](../governance/#/model-selection), along with an exercise on comparing models on the running example
 
@@ -131,7 +130,7 @@ Reference technology: [Ollama](https://ollama.com/)
 - Ollama's API supports both a native __CLI conversational interface__ and a __Web API__ for programmatic access, making it versatile for different use cases and user preferences
 
 - Ollama may also be used an [on-cloud service](https://ollama.com/pricing), but here we will focus on the on-premise deployment option alone
-    + three levels of premiumships ($0/month, $20/month, $100/month) with widening rate limitations
+    + three levels of premiumships (\\$0/month, \\$20/month, \\$100/month) with widening rate limitations
 
 ---
 
@@ -274,13 +273,13 @@ Reference technology: [Ollama](https://ollama.com/)
 
 > __memory__ ≈ (number of params × bits per param / 8) [_weights_] + _KV cache_ [grows with context length] + _overhead_
 
-- the __key-value (KV) cache__ stores, for every layer, the attention _keys_ and _values_ computed for each token processed so far (prompt + generated)...
+- the __key-value (KV) cache__ stores the attention _keys_ and _values_ of every token processed so far...
     + ... so that they do not need to be recomputed for every new token generated
-    + its size _grows linearly_ with the _context length_ (∝ layers × context length × KV heads × head size)
+    + its size _grows linearly_ with the _context length_
         + this is why local runtimes (e.g. Ollama) use a _smaller_ default context window than the model's maximum
 - the _overhead_ covers runtime buffers, activations, and driver context: usually an extra ~10–20%
 
-{{< image src="./memory-footprint.svg" max-h="24vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
+{{< image src="./memory-footprint.svg" max-h="20vh" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" >}}
 
 ---
 
