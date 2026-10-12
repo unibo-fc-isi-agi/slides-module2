@@ -15,7 +15,7 @@ outputs = ["Reveal"]
 ## Outline
 
 1. [Skills](#/skills-concept): reusable procedures, written in natural language, which agents load _when relevant_
-2. [Copilot frameworks](#/copilots): the _harnesses_ where skills were born, and their extension points
+2. [Coding agents](#/copilots): the _harnesses_ where skills were born, and their extension points
 3. [Writing skills](#/writing-skills): the `SKILL.md` format, [progressive disclosure](#/progressive-disclosure), and [a skill for the committee](#/skills-committee)
 4. [Skills in your own agents](#/skills-from-scratch): [from scratch](#/skills-from-scratch), then [with Deep Agents](#/skills-deepagents)
 5. [Testing skills](#/testing-skills): does the skill _trigger_ when it should, and does it _help_?
@@ -25,7 +25,13 @@ outputs = ["Reveal"]
 9. [Security of skills](#/skills-security): third-party skills are third-party _code_
 10. Exercise: [a pre-check skill for theses](#/exercise-thesis-precheck)
 
-> Recall: we assume the reader is familiar with [tools, agents, and MCP](../agents/), with the [CoALA memory types](../rag/#/memory), and with [coding agents](../genai/) (e.g. Claude Code, Codex, OpenClaw)
+> Recall: we assume the reader is familiar with [tools, agents, and MCP](../agents/), with the [CoALA memory types](../rag/#/memory), and with [coding agents](../genai/#/coding-agents) (e.g. Claude Code, Codex, OpenClaw)
+
+---
+
+{{< slide id="running-example" >}}
+
+{{< import path="reusable/running-example.md" >}}
 
 ---
 
@@ -81,7 +87,7 @@ outputs = ["Reveal"]
 {{% /small %}}
 
 - Skills and the others are __complementary__: a skill can tell the agent _which tools_ (or MCP servers) to use, and _how_
-- Rule of thumb (cf. the [governance lecture](../governance/)): _procedures_ that change often, or that domain experts must own $\rightarrow$ skills; _procedures_ that must be reliable and auditable $\rightarrow$ workflows (next lecture)
+- Rule of thumb (cf. the [autonomy spectrum](../agents/#/autonomy-spectrum)): _procedures_ that change often, or that domain experts must own $\rightarrow$ skills; _procedures_ that must be reliable and auditable $\rightarrow$ workflows (next lecture)
 
 {{% /section %}}
 
@@ -91,9 +97,9 @@ outputs = ["Reveal"]
 
 {{< slide id="copilots" >}}
 
-## Where skills come from: copilot frameworks
+## Where skills come from: coding agents (harnesses)
 
-- Recall from the [introductory lecture](../genai/): _coding agents_ such as [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [Cursor](https://cursor.com), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://geminicli.com), and [OpenClaw](https://openclaw.ai)
+- Recall the [_coding agents_](../genai/#/coding-agents) of the introductory lecture, such as [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [Cursor](https://cursor.com), [GitHub Copilot](https://github.com/features/copilot), and [OpenClaw](https://openclaw.ai); others exist, e.g. [Gemini CLI](https://geminicli.com)
     + they are __harnesses__: _controller_ + _LLM_ + _tools_ (shell, file system, Web) + _memory_ + _policies_ (cf. [agents](../agents/))
     + general-purpose by construction: the _same_ harness is used for coding, data analysis, document writing, ...
 
@@ -272,7 +278,7 @@ metadata:
 {{% /small %}}
 
 - Sources: the [spec](https://agentskills.io/specification), and Anthropic's [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
-- Skills are __prompts__: all the [prompt engineering](../prompting/) best practices apply
+- Skills are __prompts__: all the [prompt engineering](../prompting/#/prompt-anatomy) best practices apply
 
 {{% /section %}}
 
@@ -904,7 +910,7 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 
 ## Anatomy of a real skill: `ponytail` (pt. 2)
 
-- Problem: a behavioural skill must be active _all the time_, yet skills are loaded _on demand_ (and may be forgotten after [compaction](../prompting/#/context-management))
+- Problem: a behavioural skill must be active _all the time_, yet skills are loaded _on demand_ (and may be forgotten after [compaction](../prompting/#/chat-compaction))
 - Solution: __hooks__ (cf. [`hooks/claude-codex-hooks.json`](https://github.com/DietrichGebert/ponytail/blob/main/hooks/claude-codex-hooks.json)), shipped in a _plugin_:
     + `SessionStart` (on startup, resume, clear, __compact__): [injects](https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-activate.js) the skill's body, filtered by the current level, as _additional context_
     + `UserPromptSubmit`: [detects](https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-mode-tracker.js) "_/ponytail ultra_" or "_stop ponytail_" in the user's prompt, and updates the level (stored in a _file_)
@@ -962,12 +968,6 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 {{< import path="reusable/antigravity.md" >}}
 
 {{% /section %}}
-
----
-
-{{< slide id="running-example" >}}
-
-{{< import path="reusable/running-example.md" >}}
 
 ---
 

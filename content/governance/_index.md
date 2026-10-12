@@ -98,7 +98,7 @@ Three main __deployment options__, differing in _who_ runs the model, and _where
 3. __On-premise__ (a.k.a. _self-hosted_, _local_): an open-weights model run on _your own_ hardware (e.g. via Ollama, vLLM)
     + data never leaves your premises; you are responsible for hardware, operation, and updates
 
-(cf. [on-premise vs. on-cloud](../llmaas/) in the LLM-as-a-Service lecture)
+(cf. [on-premise vs. on-cloud](../llmaas/#/ollama) in the LLM-as-a-Service lecture)
 
 ---
 
@@ -593,56 +593,16 @@ The compliance unit is __checkpoint + license version + code licenses + data lic
 
 {{< slide id="technique-selection" >}}
 
-## Which technique? The general concept
+## Which technique? Recall
 
-Given a model, there are several ways to make it _behave_ as your task requires, ordered by increasing _effort_:
-
-1. __Prompting__: instructions, examples, and output formats in the prompt (cf. _prompt engineering_ lecture)
-    + changes the model's _behaviour_, at _no_ training cost; limited by what the model already _knows_ and by the _context window_
-2. __Tools__ and __agents__: let the model _act_ (call APIs, query databases, run code) and iterate (cf. _tools and agents_ lecture)
-    + gives access to _live_ data and _actions_; adds complexity, latency, and _security_ concerns
-3. __Retrieval-Augmented Generation__ (RAG): retrieve relevant documents and put them in the prompt ([Lewis et al., 2020](https://arxiv.org/abs/2005.11401); cf. _RAG_ lecture)
-    + gives access to _private_ or _up-to-date_ knowledge; adds an indexing pipeline to maintain
-4. __Skills__ and __workflows__: package instructions, tools, and steps into reusable procedures (cf. _skills_ and _workflows_ lectures)
-    + trade _flexibility_ (skills: the agent decides) for _predictability_ (workflows: the engineer decides), cf. the [autonomy spectrum](../genai/#/genai-uses)
-5. __Fine-tuning__: further _train_ the model on task-specific examples
-    + changes _style_, _format_, and _narrow skills_ reliably; costly, needs data, and ties you to a model (and a license allowing it!)
+- Recall the [technique selection](../rag/#/technique-selection) from the RAG lecture: prompting, tools and agents, RAG, skills and workflows, fine-tuning
+    + each option adds _effort_ to the previous ones, and _complexity_ to the system
+    + choose by asking _what is missing_ (knowledge, actions, a reliable procedure, a style), cf. the [intuitive example](../rag/#/technique-selection-example)
+- From the governance viewpoint, what matters are the __trade-offs__ (next slide): _cost_, _control_, _compliance_, and _time-to-market_
 
 ---
 
-## Which technique? An intuitive example
-
-{{< mermaid >}}
-%%{init: {'flowchart': {'htmlLabels': false}}}%%
-flowchart LR
-    Q{"Is prompting good enough
-    on your validation set?"} -->|yes| P["Stop: use prompting"]
-    Q -->|no| M{"What is missing?"}
-    M -->|"knowledge the model lacks
-    (private / recent documents)"| R["RAG
-    e.g. answer questions
-    about the PhD regulations"]
-    M -->|"ability to act,
-    or live data"| T["Tools / agents
-    e.g. check the candidate's
-    university in a ranking API"]
-    M -->|"a multi-step procedure,
-    followed reliably"| S{"Who decides
-    when to apply it?"}
-    S -->|"the engineer
-    (fixed steps)"| W["Workflow
-    e.g. extract → validate
-    → score → report"]
-    S -->|the agent| K["Skill"]
-    M -->|"a consistent style, format, or
-    narrow skill (+ data, budget, license)"| F["Fine-tuning
-    e.g. evaluations in the
-    committee's house style"]
-{{< /mermaid >}}
-
-(cf. OpenAI's [optimizing LLM accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) guide, and Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
-
----
+{{< slide id="which-technique" >}}
 
 ## Which technique? Trade-offs
 
@@ -658,9 +618,7 @@ flowchart LR
 - These options __combine__: e.g. a workflow whose steps use prompting, RAG, and tools
 - Empirically, RAG tends to outperform fine-tuning at injecting _new knowledge_ ([Ovadia et al., 2023](https://arxiv.org/abs/2312.05934)), while fine-tuning is better at shaping _form_
 
-{{% fragment %}}
-> __Rule of thumb__: start with prompting, measure, and add complexity (tools, RAG, workflows, fine-tuning) only when evaluations show that it is _needed_
-{{% /fragment %}}
+> Recall the [rule of thumb](../rag/#/technique-selection): start with prompting, measure, and add complexity only when evaluations show that it is _needed_
 
 {{% /section %}}
 
@@ -832,14 +790,14 @@ flowchart LR
 
 - How to automate the runs?
     * e.g. a script looping over models × letters × repetitions, writing one row per run in a CSV file
-    * reuse the caching mechanism of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/)? (careful: caching would hide the variance!)
+    * reuse the caching mechanism of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching)? (careful: caching would hide the variance!)
 - How to measure time?
     * e.g. `time.perf_counter()` before and after the request
 - How to compute costs?
     * `score_letter(...)` only returns the parsed `LetterInfo`: adapt it to also return the whole `response` (or its `usage`)
     * multiply `usage.prompt_tokens` and `usage.completion_tokens` by the prices listed in the zoo (Open Router also reports `usage.cost` directly)
 - How to deal with rate limits of free models?
-    * reuse the retry mechanism of [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/)
+    * reuse the retry mechanism of [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/#/exercise-retry)
 - What if models disagree?
     * which one is _right_? you need a __reference__: e.g. score the letters yourself, and compare each model against your scores
 
@@ -898,7 +856,7 @@ flowchart LR
 {{% col %}}
 - same prompt and schema as [Example 1 of the Prompt Engineering lecture](../prompting/#/letter-scoring) (imported, not copied): we compare _models_, not prompts
 - the response carries `usage`, hence _tokens_ and _cost_
-- `with_retries` (from [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/)) copes with _rate limits_ of free models
+- `with_retries` (from [Exercise 2 of the LLM-as-a-Service lecture](../llmaas/#/exercise-retry)) copes with _rate limits_ of free models
 - __no caching__: it would hide the _variance_
 {{% /col %}}
 {{% /multicol %}}
@@ -1134,6 +1092,8 @@ Recall the [running example](../prompting/#/running-example) (PhD admission comm
 
 ---
 
+{{< slide id="countermeasures" >}}
+
 ## Countermeasures: designing for real oversight
 
 | Countermeasure | Against | How, in practice |
@@ -1199,7 +1159,7 @@ Write a short (2–4 pages) __decision record__, answering:
 3. __Model__: which model? Support the choice with the results of [Exercise 1](#/compare-models), and with the model's _documentation_
     + apply the [pre-adoption checklist](#/open-models-checklist) to the __exact checkpoint__: license, multimodal restrictions, derivatives, AI Act role
 4. __Technique__: which parts rely on prompting / structured output / tools / RAG? Why not fine-tuning?
-5. __Human oversight__: what do humans _review_, with which [countermeasures](#/responsibility) to _automation bias_? Who is _accountable_?
+5. __Human oversight__: what do humans _review_, with which [countermeasures](#/countermeasures) to _automation bias_? Who is _accountable_?
 6. __Monitoring__: what is _logged_, and when is the decision _re-assessed_ (e.g. model deprecation, new regulations)?
 
 ---
@@ -1287,7 +1247,7 @@ Write a short (2–4 pages) __decision record__, answering:
 
 ## Exercise 2 — Solution: Human Oversight
 
-> _Decision 5_: what is __reviewed__ by whom, who is __accountable__, and how [automation bias](#/responsibility) is countered
+> _Decision 5_: what is __reviewed__ by whom, who is __accountable__, and how [automation bias](#/countermeasures) is countered
 
 {{% multicol %}}
 {{% col %}}

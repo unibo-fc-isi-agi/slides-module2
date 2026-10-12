@@ -15,7 +15,7 @@ outputs = ["Reveal"]
 ## Outline
 
 1. [Memory and focus](#/memory): what agents should _remember_, and what they should _look at_
-2. [RAG: the general concept](#/rag-concept): indexing, retrieval, and generation
+2. [RAG: the general concept](#/rag-concept): indexing, retrieval, and generation; [which technique](#/technique-selection) to choose, and when
 3. [Embeddings](#/embeddings): texts as vectors, and similarity scores
 4. [Vector stores](#/vector-stores): a store [from scratch](#/vector-store-scratch) on SQLite, then [with `sqlite-vec`](#/vector-store-sqlite-vec)
 5. [Chunking, metadata, retrieval](#/chunking): how to cut documents, and how to find the right pieces, e.g. via [hybrid search](#/hybrid-search)
@@ -107,9 +107,68 @@ outputs = ["Reveal"]
 
 ---
 
+{{< slide id="technique-selection" >}}
+
+## Which technique? The general concept
+
+Given a model, there are several ways to make it _behave_ as your task requires, roughly in the order of this course (and of increasing _effort_):
+
+1. __Prompting__: instructions, examples, and output formats in the prompt (cf. the [prompting](../prompting/) lecture)
+    + changes the model's _behaviour_, at _no_ training cost; limited by what the model already _knows_ and by the _context window_
+2. __Tools__ and __agents__: let the model _act_ (call APIs, query databases, run code) and iterate (cf. the [agents](../agents/) lecture)
+    + gives access to _live_ data and _actions_; adds complexity, latency, and _security_ concerns
+3. __Retrieval-Augmented Generation__ (RAG): retrieve relevant documents and put them in the prompt ([Lewis et al., 2020](https://arxiv.org/abs/2005.11401); this lecture)
+    + gives access to _private_ or _up-to-date_ knowledge; adds an indexing pipeline to maintain
+4. __Skills__ and __workflows__: package instructions, tools, and steps into reusable procedures (cf. the [skills](../skills/) and [workflows](../workflows/) lectures, next)
+    + trade _flexibility_ (skills: the agent decides) for _predictability_ (workflows: the engineer decides), cf. the [autonomy spectrum](../genai/#/genai-uses)
+5. __Fine-tuning__: further _train_ the model on task-specific examples
+    + changes _style_, _format_, and _narrow skills_ reliably; costly, needs data, and ties you to a model (and a license allowing it!)
+
+---
+
+{{< slide id="technique-selection-example" >}}
+
+## Which technique? An intuitive example
+
+{{< mermaid >}}
+%%{init: {'flowchart': {'htmlLabels': false}}}%%
+flowchart LR
+    Q{"Is prompting good enough
+    on your validation set?"} -->|yes| P["Stop: use prompting"]
+    Q -->|no| M{"What is missing?"}
+    M -->|"knowledge the model lacks
+    (private / recent documents)"| R["RAG
+    e.g. answer questions
+    about the PhD regulations"]
+    M -->|"ability to act,
+    or live data"| T["Tools / agents
+    e.g. check the candidate's
+    university in a ranking API"]
+    M -->|"a multi-step procedure,
+    followed reliably"| S{"Who decides
+    when to apply it?"}
+    S -->|"the engineer
+    (fixed steps)"| W["Workflow
+    e.g. extract → validate
+    → score → report"]
+    S -->|the agent| K["Skill"]
+    M -->|"a consistent style, format, or
+    narrow skill (+ data, budget, license)"| F["Fine-tuning
+    e.g. evaluations in the
+    committee's house style"]
+{{< /mermaid >}}
+
+(cf. OpenAI's [optimizing LLM accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) guide, and Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
+
+{{% fragment %}}
+> __Rule of thumb__: start with prompting, measure, and add complexity (tools, RAG, workflows, fine-tuning) only when evaluations show that it is _needed_ (trade-offs in the [governance](../governance/#/which-technique) lecture)
+{{% /fragment %}}
+
+---
+
 ## When to use RAG?
 
-- Recall the [technique selection](../governance/#/technique-selection) of the governance lecture: prompting vs. RAG vs. fine-tuning vs. agents
+- Following the [technique selection](#/technique-selection) above:
     + RAG fits when knowledge is _large_, _private_, _changing_, or must be _cited_
     + fine-tuning shapes _form_ and _behaviour_; RAG injects _knowledge_ ([Ovadia et al., 2023](https://arxiv.org/abs/2312.05934))
 
@@ -162,7 +221,7 @@ outputs = ["Reveal"]
 {{% small "75%" %}}
 | Provider | Endpoint (Python) | Example models | Dimensions | Notes | Docs |
 |---|---|---|---|---|---|
-| OpenAI | `client.embeddings.create(model=..., input=[...])` | `text-embedding-3-small`, `-large` | 1536, 3072 (shortenable) | the _de facto_ standard API | [link](https://platform.openai.com/docs/guides/embeddings) |
+| OpenAI | `client.embeddings.create(model=..., input=[...])` | `text-embedding-3-small`, `-large` | 1536, 3072 (shortenable) | the _de facto_ standard API | [link](https://developers.openai.com/api/docs/guides/embeddings) |
 | Ollama (local) | same, OpenAI-compatible at `/v1/embeddings` | `nomic-embed-text`, `embeddinggemma`, `bge-m3` | 768, 768, 1024 | free, private, runs on a laptop | [link](https://docs.ollama.com/capabilities/embeddings) |
 | Mistral | same shape, own client too | `mistral-embed` | 1024 | free tier | [link](https://docs.mistral.ai/capabilities/embeddings/) |
 | Google Gemini | `client.models.embed_content(...)`, or OpenAI-compatible | `gemini-embedding-001` | 3072 (shortenable) | free tier | [link](https://ai.google.dev/gemini-api/docs/embeddings) |

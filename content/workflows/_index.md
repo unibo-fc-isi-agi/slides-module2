@@ -173,7 +173,7 @@ outputs = ["Reveal"]
 
     {{% code path="static/lab-snippets/snippets/lecture_workflows/admission.py" from="52" to="61" %}}
 
-    - `extract_transcript(candidate)` and `score_letter(candidate)` call the functions of a lecture-wide module ([`committee.py`](../lab-snippets/snippets/lecture_workflows/committee.py)): a _vision_ LLM extracting degree and final grade from the transcript's picture (cf. [multimodal input](../prompting/)), and the [letter scoring](../prompting/) of the prompting lecture
+    - `extract_transcript(candidate)` and `score_letter(candidate)` call the functions of a lecture-wide module ([`committee.py`](../lab-snippets/snippets/lecture_workflows/committee.py)): a _vision_ LLM extracting degree and final grade from the transcript's picture (cf. [multimodal input](../prompting/#/exercise-id-documents)), and the [letter scoring](../prompting/#/letter-scoring) of the prompting lecture
     - `eligible(state)`: the candidates with no `problems`; letters are scored only for them
     - the second check is a __gate__ on the LLM's output: in one of our runs, a small vision model read "105/110" as 105510/110
 
@@ -375,7 +375,7 @@ flowchart LR
 {{< image src="./patterns.svg" max-h="62vh" alt="Seven workflow patterns: prompt chaining (LLM 1, a gate in code, LLM 2; a failing check stops the chain), routing (an LLM router picks one of several routes), parallelisation (split, several LLM calls in parallel, merge or vote), orchestrator-workers (an LLM orchestrator decides how many workers, then a synthesizer combines their results), evaluator-optimizer (a generator and a judge in a bounded loop, until accepted or N rounds), human-in-the-loop (draft, then a human approves, edits, or rejects, before acting), plan-and-execute (plan, validate in code, human approval, execution, then re-planning seeing the results); legend: LLM steps, data steps, user-input steps, action steps, conditional edges" >}}
 
 - A _small_ set of building blocks, which _compose_ (cf. Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents))
-- We already met some of them: [prompt chaining](../prompting/) and [self-consistency](../prompting/) (voting), [human approval](../agents/#/exercise-decide-solution), [LLM-Modulo](../agents/#/planning)
+- We already met some of them: [prompt chaining](../prompting/#/prompting-techniques) and [self-consistency](../prompting/#/prompting-techniques) (voting), [human approval](../agents/#/exercise-decide-solution), [LLM-Modulo](../agents/#/planning)
 
 ---
 
@@ -395,7 +395,7 @@ flowchart LR
 
 {{% /small %}}
 
-- Rule of thumb: start with the _simplest_ pattern that does the job; add loops, orchestrators, and planners only when evaluations show it is _needed_ (cf. the [governance lecture](../governance/))
+- Rule of thumb: start with the _simplest_ pattern that does the job; add loops, orchestrators, and planners only when evaluations show it is _needed_ (cf. the [technique selection](../rag/#/technique-selection) rule of thumb)
 - References: [Self-Refine](https://arxiv.org/abs/2303.17651) (evaluator–optimizer), [Plan-and-Solve](https://arxiv.org/abs/2305.04091), [ReWOO](https://arxiv.org/abs/2305.18323), [LLMCompiler](https://arxiv.org/abs/2312.04511) (plan-and-execute)
 
 ---
@@ -414,7 +414,7 @@ flowchart LR
 
     {{% code path="static/lab-snippets/snippets/lecture_workflows/example2/feedback_letters.py" from="34" to="47" %}}
 
-    - `Verdict` is the judge's structured output: a __checklist__, one boolean per criterion (cf. the [letter-scoring checklist](../prompting/)); the _issues_ and the acceptance are derived by code
+    - `Verdict` is the judge's structured output: a __checklist__, one boolean per criterion (cf. the [letter-scoring checklist](../prompting/#/exercise-checklist)); the _issues_ and the acceptance are derived by code
     - why not a list of `issues`? In our runs, a small judge filled it with "None", "N/A", or "the e-mail passes all criteria": nothing was ever accepted
 
 ---

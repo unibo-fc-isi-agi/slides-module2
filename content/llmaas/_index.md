@@ -772,6 +772,8 @@ Reference technologies: [OpenAI Client Libraries](https://developers.openai.com/
 
 {{% section %}}
 
+{{< slide id="sync-chat" >}}
+
 ## Example 1: Sync CLI Chat (pt. 1)
 
 1. Let's first create the client out of OR's base URL, API key, and target model:
@@ -1125,7 +1127,7 @@ you> Goodbye!
 
 > __Goal__: re-implement [Example 1](../lab-snippets/snippets/lecture_llmaas/example1/repl_chat_openai.py) with a _different_ API and client library, to appreciate _analogies_ and _differences_
 
-- We use the official [`anthropic` Python SDK](https://github.com/anthropics/anthropic-sdk-python) (`pip install anthropic`), which speaks Anthropic's [Messages API](https://docs.anthropic.com/en/api/messages) (`POST /v1/messages`)
+- We use the official [`anthropic` Python SDK](https://github.com/anthropics/anthropic-sdk-python) (`pip install anthropic`), which speaks Anthropic's [Messages API](https://platform.claude.com/docs/en/api/messages) (`POST /v1/messages`)
 - No need for an Anthropic account: [Ollama exposes an Anthropic-compatible API](https://docs.ollama.com/api/anthropic-compatibility) too, so we can run everything __locally__ (and for free)
     + Open Router supports the Messages API as well ([docs](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)): set `ANTHROPIC_BASE_URL=https://openrouter.ai/api` and your OR key
 
@@ -1188,7 +1190,7 @@ you> Goodbye!
 | __Supported by Ollama__ | ✓ | ~ | ~ | × |
 {{% /small %}}
 
-(cf. [OpenAI](https://developers.openai.com/api/reference), [Anthropic](https://docs.anthropic.com/en/api/messages), [Google](https://ai.google.dev/api/generate-content) API references; [Ollama's OpenAI](https://docs.ollama.com/api/openai-compatibility) and [Anthropic](https://docs.ollama.com/api/anthropic-compatibility) compatibility pages)
+(cf. [OpenAI](https://developers.openai.com/api/reference), [Anthropic](https://platform.claude.com/docs/en/api/messages), [Google](https://ai.google.dev/api/generate-content) API references; [Ollama's OpenAI](https://docs.ollama.com/api/openai-compatibility) and [Anthropic](https://docs.ollama.com/api/anthropic-compatibility) compatibility pages)
 
 {{% fragment %}}
 > Same __metamodel__ everywhere (model + instructions + ordered history of role-tagged, possibly multimodal, messages $\rightarrow$ next message + usage), different __syntax__: switching provider means rewriting the _adapter_ layer, not the application logic

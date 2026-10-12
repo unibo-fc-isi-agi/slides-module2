@@ -24,7 +24,13 @@ outputs = ["Reveal"]
 
 > Validating generative software is the topic of the [next lecture](../validating/)
 
-> Recall: we assume the reader is familiar with the [Chat Completion API](../llmaas/#/chat-completion-concept), and with the notion of [prompt templates](../genai/) from previous lectures
+> Recall: we assume the reader is familiar with the [Chat Completion API](../llmaas/#/chat-completion-concept), and with the notion of [prompt templates](../genai/#/prompt-patterns) from previous lectures
+
+---
+
+{{< slide id="running-example" >}}
+
+{{< import path="reusable/running-example.md" >}}
 
 ---
 
@@ -81,12 +87,6 @@ outputs = ["Reveal"]
     + prompts are __not portable__ across models: re-test them whenever you switch model
 
 {{% /section %}}
-
----
-
-{{< slide id="running-example" >}}
-
-{{< import path="reusable/running-example.md" >}}
 
 ---
 
@@ -446,6 +446,8 @@ poetry run python -m snippets -l prompting -e 1 data/letter-mario-rossi.txt   # 
 
 ---
 
+{{< slide id="letter-scoring-langchain" >}}
+
 ## Example 1 (bis): the same Letter Scoring System with LangChain (pt. 1)
 
 1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
@@ -729,6 +731,7 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
     - models generate JSON fields __in order__: the label is produced _after_ (and _conditioned on_) the reasoning
         + putting `reasoning` _after_ `label` would make it a mere _post-hoc justification_
     - tight format constraints may _hinder_ reasoning (cf. [Tam et al. (2024)](https://arxiv.org/abs/2408.02442)): leaving free-text room for reasoning helps
+    - caveat: the default model of these snippets is a [reasoning model](#/reasoning-models), which already "thinks" before answering: explicit CoT is then partly _redundant_ (and costs more tokens); it pays off on _non_-reasoning models
 
 ---
 
@@ -1155,7 +1158,7 @@ poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's I
     + avoid timestamps or random IDs at the beginning of prompts
     + compaction and trimming _change_ the prefix: there's a _trade-off_ between shorter contexts and cache hits
 
-- __Not__ to be confused with the _client-side_ caching of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/):
+- __Not__ to be confused with the _client-side_ caching of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching):
 
 | | Client-side response caching | Provider-side prompt caching |
 |---|---|---|
@@ -1193,7 +1196,7 @@ poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's I
 
 ## Example 4: CLI Chat with Context Compaction (pt. 1)
 
-> __Goal__: a CLI chat (as in [Example 1 of the LLM-as-a-Service lecture](../llmaas/)) which never exceeds a given _token budget_, by _summarising_ older messages
+> __Goal__: a CLI chat (as in [Example 1 of the LLM-as-a-Service lecture](../llmaas/#/sync-chat)) which never exceeds a given _token budget_, by _summarising_ older messages
 
 1. Let's configure the chat model, the _budget_, and how many recent messages to keep _verbatim_:
 

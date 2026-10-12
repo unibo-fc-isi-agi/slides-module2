@@ -23,7 +23,7 @@ outputs = ["Reveal"]
 7. [Security of agentic systems](#/security): risk profiles of tools, prompt injection, mitigations
 8. Exercises on the [running example](#/running-example): [read-only tools to inspect applications](#/exercise-inspect), [tools to take decisions](#/exercise-decide), [MCP gateway](#/exercise-gateway)
 
-> Recall: we assume the reader is familiar with [tool-call messages and `tool_choice`](../llmaas/) in the Chat Completion API, with [structured outputs](../prompting/#/structured-output), and with [validating generative software](../validating/)
+> Recall: we assume the reader is familiar with [tool-call messages and `tool_choice`](../llmaas/#/chat-completion-concept) in the Chat Completion API, with [structured outputs](../prompting/#/structured-output), and with [validating generative software](../validating/)
 
 ---
 
@@ -65,7 +65,7 @@ outputs = ["Reveal"]
 
 ## LLMs are not agents by themselves
 
-- Recall from the [introductory lecture](../genai/): LLMs produce __text__, not _action_
+- Recall from the [introductory lecture](../genai/#/language-to-action): LLMs produce __text__, not _action_
     + they do not perceive nor act on environments _directly_
     + they do not _persistently_ manage goals and state
 - The "agent" is mostly the __surrounding software__: _agent_ $\approx$ _controller_ + _LLM_ + _tools_ + _memory_ + _policies_
@@ -91,7 +91,7 @@ outputs = ["Reveal"]
 
 - Rule of thumb: use the __least autonomy__ that does the job
     + start with a single call; move to workflows when steps are _known_ in advance; move to agents only when they are _not_
-    + _autonomy is a cost_ (risks, testing, governance), not a goal (recall: [customers buy automation](../genai/))
+    + _autonomy is a cost_ (risks, testing, governance), not a goal (recall: [customers buy automation](../genai/#/genai-uses))
     + workflows will be the topic of a later lecture; here we focus on _agents_
 
 {{% /section %}}
@@ -110,7 +110,7 @@ outputs = ["Reveal"]
     3. a __JSON Schema__ of its _parameters_ (names, types, descriptions, constraints)
     4. an __implementation__, which the LLM _never sees_, and _never runs_: it is executed by the _agent_
 
-- Tool definitions are sent along with each request; the LLM may answer with a __tool call__ instead of text (recall [`tool_calls`](../llmaas/))
+- Tool definitions are sent along with each request; the LLM may answer with a __tool call__ instead of text (recall [`tool_calls`](../llmaas/#/chat-completion-concept))
     + a tool call is nothing but a [structured output](../prompting/#/structured-output), matching the tool's _schema_
     + the agent _executes_ it, and sends the _result_ back, as a `tool` message
 
@@ -284,7 +284,7 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
 
 ## Example 1: an Agent from Scratch, with OpenAI's Client (pt. 3)
 
-5. The main program is a CLI chat (cf. [the LLM-as-a-Service lecture](../llmaas/)), where each user message triggers a ReAct loop (full code [here](../lab-snippets/snippets/lecture_agents/example1/agent_openai.py)):
+5. The main program is a CLI chat (cf. [the LLM-as-a-Service lecture](../llmaas/#/sync-chat)), where each user message triggers a ReAct loop (full code [here](../lab-snippets/snippets/lecture_agents/example1/agent_openai.py)):
 
     {{% code path="static/lab-snippets/snippets/lecture_agents/example1/agent_openai.py" from="54" to="61" %}}
 
@@ -307,7 +307,7 @@ The LLM picks tools, and fills their arguments, by reading their _documentation_
     AI: It is currently **Wednesday, October 7, 2026, at 01:00** in Tokyo.
     ```
 
-    (actual run, with `gemma4:e4b` via [Ollama](../llmaas/): 3 ReAct steps for the first question, i.e. `web_search`, then `get_current_time` and `get_weather` in parallel, then the answer)
+    (actual run, with `gemma4:e4b` via [Ollama](../llmaas/#/ollama): 3 ReAct steps for the first question, i.e. `web_search`, then `get_current_time` and `get_weather` in parallel, then the answer)
 
 7. Things to observe:
     - _which_ tools are called, in which _order_, and how many _times_? Does it change across runs?
@@ -415,7 +415,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + _stdio_: the server is a _local sub-process_ of the host, talking via stdin/stdout
     + _streamable HTTP_: the server is a (possibly remote) _Web service_, possibly requiring authentication (OAuth)
 
-- Recall the [MCP picture](../genai/) of the introductory lecture: MCP does not change the ReAct loop, only _where_ tools come from
+- Recall the [MCP picture](../genai/#/mcp-concept) of the introductory lecture: MCP does not change the ReAct loop, only _where_ tools come from
 
 ---
 

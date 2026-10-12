@@ -2,7 +2,7 @@
 
 ### Admission committee assistant for PhD applications evaluation
 
-- 3 candidates, and as many applications, with their _passport_, _transccript of records_, and _presentation letter_ (in natural language)
+- 3 candidates, and as many applications, with their _passport_, _transcript of records_, and _presentation letter_ (in natural language)
 
 - we want to extract structured information from these documents (e.g. name, age, grades, research experience, etc.) to ease evaluation
 

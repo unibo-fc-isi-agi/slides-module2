@@ -230,7 +230,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 - _Audio/video editing_: e.g. [Suno](https://suno.com/), [Runway](https://runwayml.com/)
 - _Inspection of generated material_: e.g. [GPTZero](https://gptzero.me/), [ZeroGPT](https://www.zerogpt.com/)
     + {{% color "red" %}}unreliable{{% /color %}}: OpenAI itself [withdrew](https://techcrunch.com/2023/07/25/openai-scuttles-ai-written-text-detector-over-low-rate-of-accuracy/) its AI-text classifier, due to its low accuracy
-- _Agentic_: e.g. [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [OpenClaw](https://openclaw.ai)
+- _Agentic_ (a.k.a. _coding agents_): e.g. [Claude Code](https://code.claude.com/docs), [Codex](https://github.com/openai/codex), [OpenClaw](https://openclaw.ai)
 
 {{% color "red" %}}Non-exhaustive list!{{% /color %}}
 
@@ -467,7 +467,9 @@ Belgium
 
 ---
 
-## __Agentic__ interfaces: the landscape
+{{< slide id="coding-agents" >}}
+
+## __Agentic__ interfaces (a.k.a. _coding agents_): the landscape
 
 | | Vendor | Front-ends | Models | License |
 |---|---|---|---|---|
@@ -481,6 +483,7 @@ Belgium
 ### Common anatomy
 
 - An LLM + __tools__ (shell, files, Web) + a __loop__ $\Rightarrow$ an _agent_
+    + the software wrapping the LLM (loop, tools, policies) is called the __harness__
 - Project-specific instructions in Markdown files (e.g. `CLAUDE.md`, [`AGENTS.md`](https://agents.md))
 - Extensible via [__MCP__](https://modelcontextprotocol.io) servers, __skills__, and __hooks__
 - __Permission__ modes: from "ask before every action" to "fully autonomous"
@@ -592,6 +595,8 @@ These are themselves __LLM-based agentic software__: the kind of system this mod
 {{% /fragment %}}
 
 ---
+
+{{< slide id="language-to-action" >}}
 
 ## From __language__ to __action__
 
@@ -712,6 +717,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ---
 
+{{< slide id="prompt-patterns" >}}
+
 ## Concept: Prompt Templates
 
 | Technique | Prompt template | Description |
@@ -734,6 +741,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ---
 
+{{< slide id="mcp-concept" >}}
+
 ## Concept: Model-Context Protocol (MCP)
 
 {{< image src="./mcp.svg" width="100%" max-h="60vh" alt="Model-Context Protocol (MCP) concept">}}
@@ -745,6 +754,8 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
     + optionally, a __gateway__ may _aggregate_ several servers behind a single endpoint
 
 ---
+
+{{< slide id="rag-concept" >}}
 
 ## Concept: Retrieval-Augmented Generation (RAG)
 

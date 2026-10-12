@@ -103,7 +103,7 @@ outputs = ["Reveal"]
 
 ## Example 1: Testing the Letter Scoring System with DeepEval (pt. 1)
 
-> __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/langchain) of Example 1 (bis) of the Prompt Engineering lecture, checking _some_ fields of the `LetterInfo` objects it produces
+> __Goal__: set up a _test suite_ for the [LangChain letter-scoring system](../prompting/#/letter-scoring-langchain) of Example 1 (bis) of the Prompt Engineering lecture, checking _some_ fields of the `LetterInfo` objects it produces
 
 1. __First__, design the __test dataset__: _known_ inputs (the letters), each with the results _expected_ from a correct scoring
     + written by _humans_ (the committee), as a _data file_ ([`test_data.yml`](../lab-snippets/snippets/lecture_validating/test_data.yml)) shared among test suites
@@ -168,6 +168,7 @@ outputs = ["Reveal"]
     {{% code path="static/lab-snippets/snippets/lecture_validating/example1/test_letter_scoring.py" from="43" to="62" %}}
 
     - the judge is a _different_ model than the one under test (set `JUDGE_MODEL` to change it), wrapped in `OpenRouterModel`: DeepEval's adapter for OpenRouter (or any OpenAI-compatible API, via `base_url`)
+        * default: `google/gemma-4-31b-it:free`, of a _different family_ than the system under test (avoiding _self-preference_), with comparable _active_ parameters (31B dense vs. 12B active out of 120B), free, and able to see _images_
     - `evaluation_params` selects, among the fields of a test case (`SingleTurnParams.INPUT`, `.ACTUAL_OUTPUT`, `.EXPECTED_OUTPUT`, ...), which parts of the test case the judge can _see_:
         * _reference-based_ judge (`relationship`): compares the actual output with the _expected_ one, written by humans
         * _reference-free_ judge (`groundedness`): compares the actual output with the _input_, no expectation needed
@@ -513,7 +514,7 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 - _Tolerance_: which fields must be exactly right, and which ones may be _flagged_ for human review instead?
 - _Cost_: $N$ samples $\times$ 3 pictures $\times$ $M$ models $\times$ (1 + judge) requests: keep $N$ small while developing, and use `:free` models (cf. [Free Access to LLMs](../free-access/))
 - _Flakiness_: a test that fails 1 time out of 10 is telling you something; consider asserting on _rates_ (e.g. "at least 4 out of 5 runs are correct") rather than on single runs
-- Do __not__ cache LLM responses while measuring consistency (cf. [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/))
+- Do __not__ cache LLM responses while measuring consistency (cf. [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching))
 
 ### How to test it?
 
