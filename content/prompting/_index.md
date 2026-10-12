@@ -75,7 +75,7 @@ outputs = ["Reveal"]
 | Practice | Rationale | Example |
 |---|---|---|
 | Be _clear_ and _specific_ | the model cannot read your mind | "summarise in 3 bullet points, max 15 words each" vs. "summarise" |
-| Give a _role_ / _context_ | narrows down the space of plausible answers | "You are assisting the admission committee of ..." |
+| Give a _role_ / _context_ | narrows down the space of plausible answers (personas give little or no _accuracy_ gain on factual tasks, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054): useful mostly for _tone_ and _context_) | "You are assisting the admission committee of ..." |
 | Use _delimiters_ | separates instructions from data (and mitigates injection) | `<letter> ... </letter>`, Markdown headings, triple quotes |
 | Say what _to do_, not only what _not to do_ | negative instructions are followed less reliably | "use plain words" vs. "don't use jargon" |
 | Provide _examples_ | showing is more effective than telling | cf. [few-shot prompting](#/prompting-techniques) |
@@ -658,7 +658,8 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
 | __Prompt chaining__ | split a complex task into a _sequence_ of simpler prompts, each feeding the next | [Wu et al. (2022)](https://arxiv.org/abs/2110.01691) |
 
 - More techniques exist (e.g. _tree of thoughts_, _ReAct_, _self-refine_): see [The Prompt Report](https://arxiv.org/abs/2406.06608) for a taxonomy
-    + _ReAct_ (reasoning + acting) will be the basis of _agents_, in the next lecture
+    + _ReAct_ (reasoning + acting) will be the basis of [agents](../agents/), two lectures ahead
+- Folk [prompt patterns](../genai/#/prompt-patterns) (role playing, emotion prompting, ...) have _weak_ or _inconsistent_ evidence (cf. [EmotionPrompt, Li et al., 2023](https://arxiv.org/abs/2307.11760) vs. [The Prompt Report](https://arxiv.org/abs/2406.06608)): __measure__, don't trust
 - Techniques __combine__: e.g. few-shot + CoT + self-consistency
 
 ---

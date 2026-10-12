@@ -135,6 +135,11 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 >    + chance
 {{% /fragment %}}
 
+{{% fragment %}}
+> - But also: data _leave your premises_, costs _scale_ with usage, _lock-in_ with the provider, and regulations (GDPR, AI Act) apply
+>    + alternatives, e.g. [on-premise](../llmaas/#/ollama) models; trade-offs and [regulation](../governance/#/regulation) in the [governance](../governance/#/deployment-options) lecture
+{{% /fragment %}}
+
 {{% /section %}}
 
 ---
@@ -183,35 +188,13 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 ---
 
-## Some technological solutions let you _choose_ (pt. 1)
+## Some technological solutions let you _opt out_ of training
 
 {{< image src="./logo-chatgpt.svg" height="2em" >}}
 <br/>
-{{< image src="./chatgpt-settings/no-learn-1.png" width="100%" max-h="50vh" >}}
+{{< image src="./chatgpt-settings/no-learn-4.png" width="100%"  max-h="50vh" alt="ChatGPT settings: the toggle allowing OpenAI to use your conversations to train its models" >}}
 
----
-
-## Some technological solutions let you _choose_ (pt. 2)
-
-{{< image src="./logo-chatgpt.svg" height="2em" >}}
-<br/>
-{{< image src="./chatgpt-settings/no-learn-2.png" width="100%" max-h="50vh" >}}
-
----
-
-## Some technological solutions let you _choose_ (pt. 3)
-
-{{< image src="./logo-chatgpt.svg" height="2em" >}}
-<br/>
-{{< image src="./chatgpt-settings/no-learn-3.png" width="100%" max-h="50vh" >}}
-
----
-
-## Some technological solutions let you _choose_ (pt. 4)
-
-{{< image src="./logo-chatgpt.svg" height="2em" >}}
-<br/>
-{{< image src="./chatgpt-settings/no-learn-4.png" width="100%"  max-h="50vh" >}}
+(cf. [regulation](../governance/#/regulation) in the governance lecture)
 
 {{% /section %}}
 
@@ -582,7 +565,7 @@ These are themselves __LLM-based agentic software__: the kind of system this mod
 | (1) + (2) | the letter-extraction script, written with a _coding assistant_ |
 | (2) + (3) | an agent whose _tools_ are themselves LLM-based _workflows_ (e.g. the [tender example](#/genai-workflow)) |
 | (1) + (3) | an agentic _product_ built with a _coding agent_ |
-| (1) + (2) + (3) | an assistant for a PhD admission committee: _workflows_ to extract data from candidates' documents, an _agent_ to answer the committee's questions, all _coded_ with a coding agent |
+| (1) + (2) + (3) | an assistant for a PhD admission committee (our [running example](../prompting/#/running-example)): _workflows_ to extract data from candidates' documents, an _agent_ to answer the committee's questions, all _coded_ with a coding agent |
 
 {{% fragment %}}
 
@@ -616,9 +599,9 @@ These are themselves __LLM-based agentic software__: the kind of system this mod
 
 ### _Intelligence_ vs. _autonomy_ vs. _agency_ are __separable__ dimensions (cf. [Floridi, 2025](https://doi.org/10.1007/s13347-025-00858-9))
 
-- What can the system __do__? (_agency_)
+- How __well__ does it solve problems? (_intelligence_)
+- What can it __do__, i.e. what __state__ does it actually _change_? (_agency_)
 - Who __controls__ _when_ and _why_ it does it? (_autonomy_)
-- What __state__ does it actually _change_?
 
 {{% /fragment %}}
 
@@ -668,60 +651,85 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 ## Let's explain the nomenclature
 
-- __<u>Pre-trained</u> foundation models__ (PFM): large neural-networks trained on massive datasets to learn general skills (e.g. 'understanding' and generating text, images, code), most commonly accessed _as-a-Service_ via API, as provided by third-party companies
+- __Foundation models__ (FM, always _pre-trained_): large neural-networks trained on massive datasets to learn general skills (e.g. 'understanding' and generating text, images, code), most commonly accessed _as-a-Service_ via API, as provided by third-party companies
     * e.g. GPT (OpenAI), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, Qwen (Alibaba), etc.
     * some are _proprietary_ (usable only via the provider's API), others are _open-weight_ (downloadable and runnable locally, cf. [on-premise deployment](../llmaas/#/ollama) and [open models](../governance/#/open-models))
 
-- __Prompts__: carefully _crafted textual inputs_ that guide some PFM to produce _desired outputs_
+- __Prompts__: carefully _crafted textual inputs_ that guide some FM to produce _desired outputs_
     * prompt __templates__ are prompts with _named placeholders_ to be filled with specific data at runtime
         + e.g. `Write a summary of the following article: {article_text}`
 
-- __Tools__: external _software components_ (e.g. WebAPIs, databases, search engines) that PFMs can _ask_ to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information
+- __Tools__: external _software components_ (e.g. WebAPIs, databases, search engines) that FMs can _ask_ to invoke (the invocation is performed by the surrounding software), to perform specific tasks or retrieve information
     * e.g. a calculator API, a weather API, a database query interface
 
 - __Vector stores__: specialized databases that store and retrieve _high-dimensional vectors_ (embeddings) for the sake of _information retrieval_ via _similarity search_
     * e.g. to support _retrieval-augmented generation_ (RAG)
 
-- __Agents__: software systems that _orchestrate_ the interaction between PFMs and tools, enabling dynamic decision-making and task execution based on the context and user input
-    * e.g. a chatbot that uses a PFM for conversation and invokes a weather API when asked about the weather
-    * e.g. an assistant that uses a PFM to understand user requests and a database to fetch relevant information
+- __Agents__: software systems that _orchestrate_ the interaction between FMs and tools, enabling dynamic decision-making and task execution based on the context and user input
+    * e.g. a chatbot that uses a FM for conversation and invokes a weather API when asked about the weather
+    * e.g. an assistant that uses a FM to understand user requests and a database to fetch relevant information
 
 ---
 
 {{% section %}}
 
-## What does an AI-powered application include?
+## What does an AI-powered application include? (pt. 1)
 
 (i.e. a product exploiting GenAI as per dimensions (2) and (3))
 
 1. FM are commonly <u>not</u> produced in-house, but rather _accessed_ via APIs... yet the choice of __what model(s) to use__ is crucial
     * must be available, configured, and most commonly imply _costs_ (per call, per token, etc.)
     * imply the choice of some __client library__, and the related _programmatic interface_
-        + e.g. [OpenAI Python SDK](https://github.com/openai/openai-python), [Hugging Face Transformers](https://huggingface.co/docs/transformers/index), etc.
+        + e.g. [OpenAI Python SDK](https://github.com/openai/openai-python), [LangChain](https://docs.langchain.com/oss/python/langchain/overview), [Hugging Face `InferenceClient`](https://huggingface.co/docs/huggingface_hub/guides/inference), etc. (or local runtimes, e.g. Ollama, Transformers, cf. [LLM-as-a-Service](../llmaas/#/ollama))
 
-2. A set of __prompt templates__ (text files, or code snippets) that are known to work well for the tasks at hand
+2. A set of __prompt templates__ (text files, or code snippets) that are known to work well for the tasks at hand (cf. [prompting](../prompting/))
     * commonly assessed via semi-automatic _evaluations_ on a _validation set_ of inputs
 
-3. A set of __tools__ that PFMs can _ask_ the application to invoke
+3. A set of __tools__ that FMs can _ask_ the application to invoke
     * these may be plain _functions_ in the application's code...
-    * ... or _software modules_ exposing tools via the [MCP protocol](https://modelcontextprotocol.io/docs/getting-started/intro) (__MCP servers__), somewhat similar to ordinary Web services
+    * ... or _software modules_ exposing tools via [MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (__MCP servers__), somewhat similar to ordinary Web services
 
-4. A set of __agents__, implementing the logic to orchestrate the interaction between PFMs and tools
+4. A set of __agents__, implementing the logic to orchestrate the interaction between FMs and tools
     * these are _software modules_, commonly implemented via libraries such as [LangChain](https://docs.langchain.com/oss/python/langchain/overview) or [LlamaIndex](https://developers.llamaindex.ai/python/framework/)
+
+---
+
+## What does an AI-powered application include? (pt. 2)
 
 5. A set of __vector stores__ (if needed), populated with relevant data, and accessible by the agents
     * these are _software modules_, somewhat similar to ordinary DBMS, offering CRUD operations on data chunks _indexed by_ their _embeddings_
 
-6. LLM-as-a-Judge __evaluations__ to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents
+6. __Evaluations__ (deterministic scorers + LLM-as-a-Judge) to assess the quality of the outputs produced by the system, and to guide the improvement of prompts, tools, and agents
     * e.g. by comparing the output to a _reference_ answer, and by assigning a score based on some _criterion_
+
+7. A set of __workflows__ (if needed): _code-controlled_ flows (state machines) whose steps call FMs, for procedures that must be _reliable_
+
+8. A set of __skills__ (if needed): packaged _instructions_ and _scripts_ that agents load _on demand_
+
+9. __Governance__ decisions: where models run (cloud vs. on-premise), at which _cost_, and under which _regulations_ (e.g. the AI Act)
+
+---
+
+## Roadmap of this module
+
+| Component | Lecture |
+|---|---|
+| FMs, as-a-Service or on-premise; client libraries | [LLM-as-a-Service](../llmaas/) (+ [free access](../free-access/)) |
+| Prompts, prompt templates, structured outputs | [Prompt engineering](../prompting/) |
+| Evaluations | [Validating generative software](../validating/) |
+| Tools, MCP servers, agents | [Tools and agents](../agents/) |
+| Vector stores | [Retrieval-Augmented Generation](../rag/) |
+| Skills | [Agentic skills](../skills/) |
+| Workflows, multi-agent systems | [Workflows](../workflows/) |
+| Model selection, deployment, regulation | [AI governance](../governance/) |
 
 ---
 
 {{< slide id="prompt-patterns" >}}
 
-## Concept: Prompt Templates
+## Concept: Prompt Patterns
 
-| Technique | Prompt template | Description |
+| Technique | Pattern template | Description |
 |---|---|---|
 | Role playing | `You are an expert in {field} known for {key adjective}. Help me {task}.` | telling the AI to act as a famous expert or celebrity |
 | Style unbundling | `Describe the key elements of {expert}'s style/skill in bullet points.` <br> `Do {task} in the following style: {style}.` | describe what you like about a style, rather than copying it directly |
@@ -731,7 +739,16 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 (source: [Lenny's Newsletter](https://www.lennysnewsletter.com/))
 
-- `{placeholders}` are filled with _actual data_ at runtime
+- `{placeholders}` are filled with _actual data_ at runtime $\rightarrow$ prompt _templates_ (cf. [prompting](../prompting/#/langchain))
+
+---
+
+## Concept: Structured Outputs
+
+- Constrain the FM to answer with _data_ (e.g. JSON) matching a given __schema__, rather than free text
+    + the output can be _parsed_ and _validated_ by code, then stored or passed to other components
+    + e.g. extracting name, nationality, and expiry date from a passport's picture
+- (more on this in the [prompting](../prompting/#/structured-output) lecture)
 
 ---
 
@@ -743,9 +760,9 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 {{< slide id="mcp-concept" >}}
 
-## Concept: Model-Context Protocol (MCP)
+## Concept: Model Context Protocol (MCP)
 
-{{< image src="./mcp.svg" width="100%" max-h="60vh" alt="Model-Context Protocol (MCP) concept">}}
+{{< image src="./mcp.svg" width="100%" max-h="60vh" alt="Model Context Protocol (MCP) concept">}}
 
 - MCP $\approx$ _standard_ protocol for LLM-based applications to _discover_ and _call_ __external tools__ (cf. [specification](https://modelcontextprotocol.io/specification))
 - Allows for _decoupling_ between the agent's logic and the implementation of the tools, thus enabling modularity and interoperability
@@ -773,6 +790,25 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 (more on this in the [validating](../validating/#/llm-as-a-judge) lecture)
 
+---
+
+## Concept: Agentic Skills
+
+- _Folders_ of __instructions__ (Markdown) and _scripts_, which an agent loads _on demand_, when relevant to the task
+    + reusable _procedures_, written by domain experts in natural language
+    + only names and descriptions stay in the context, until needed
+- (more on this in the [skills](../skills/#/skills-concept) lecture)
+
+---
+
+## Concept: Workflows
+
+- The _code_ decides the __flow__ (a state machine, a graph of steps), and FMs fill in the _steps_
+    + as opposed to _agents_, where the FM decides what to do next
+    + predictable, testable, auditable; less flexible
+    + e.g. extract $\rightarrow$ validate $\rightarrow$ score $\rightarrow$ report
+- (more on this in the [workflows](../workflows/#/workflows-concept) lecture)
+
 {{% /section %}}
 
 ---
@@ -781,39 +817,39 @@ Combine _prompts_, _tools_, _vector stores_, and _agents_ to constrain and gover
 
 {{< slide id="genai-workflow" >}}
 
-## The GenAI workflow
+## The GenAI project lifecycle
 
-(The workflow of engineering products as per dimensions (2) and (3).
-Similar to the ML workflow in the sense that the goal is to process data, but different in many details: e.g. training is _optional_, and commonly _not_ performed in-house, as pre-trained models are exploited)
+(The lifecycle of engineering products as per dimensions (2) and (3).
+Similar to the ML lifecycle in the sense that the goal is to process data, but different in many details: e.g. training is _optional_, and commonly _not_ performed in-house, as pre-trained FMs are exploited)
 
 {{< image src="./genai-workflow.svg" width="100%" max-h="40vh" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" >}}
 
-* there could be __many iterations__ (e.g. for PFM selection, and prompt tuning)
-* the whole workflow may be __re-started__ upon _data changes_, or _task changes_, or new _PFM availability_
+* there could be __many iterations__ (e.g. for FM selection, and prompt tuning)
+* the whole lifecycle may be __re-started__ upon _data changes_, or _task changes_, or new _FM availability_
 * the __interplay__ between prompts, models, tasks, and data may need to be _monitored_ and _adjusted_ continuously
-* the __data-flow__ between components (agents, PFM, tools, vector stores) may need to be _tracked_ for the sake of _debugging_ and _monitoring_
+* the __data-flow__ between components (agents, FM, tools, vector stores) may need to be _tracked_ for the sake of _debugging_ and _monitoring_
 
 ---
 
-## Peculiar activities in a typical GenAI workflow
+## Peculiar activities in a typical GenAI lifecycle
 
-1. __Foundation model selection__: choose the most suitable pre-trained model(s) based on task requirements, performance, cost, data protection, and availability
+1. __Foundation model selection__: choose the most suitable FM(s) based on task requirements, performance, cost, data protection, and availability
     * implies trying out prompts (even manually) on different models
 
 2. __Prompt engineering__: design, test, and refine prompt templates to elicit the desired responses
     * implies engineering variables, lengths, formats, contents, etc
 
-3. __Evaluations__: establish assertions and metrics to assess PFM responses to prompts (attained by instantiating templates over actual data)
+3. __Evaluations__: establish assertions and metrics to assess FM responses to prompts (attained by instantiating templates over actual data)
     * somewhat similar to _unit tests_ in ordinary software
     * important when automatic, as they allow quick evaluations on prompt/model combinations
 
-4. __Tracking__ the _data-flow_ between components (agents, PFM, tools, vector stores) to monitor _costs_, _latency_, and to _debug_ unexpected behaviors
+4. __Tracking__ the _data-flow_ between components (agents, FM, tools, vector stores) to monitor _costs_, _latency_, and to _debug_ unexpected behaviors
     * also useful for the sake of _auditing_ and _governance_
     * commonly performed via _logging_ and _tracing_ tools, e.g. [LangSmith](https://smith.langchain.com/), or [MLflow](https://mlflow.org/)
 
 ---
 
-## Example of GenAI workflow (pt. 1)
+## Example of GenAI lifecycle (pt. 1)
 
 > Support public officers in managing tenders through a GenAI assistant that understands and compares procurement decisions transparently.
 
@@ -840,7 +876,7 @@ __Select__
 
 ---
 
-## Example of GenAI workflow (pt. 2)
+## Example of GenAI lifecycle (pt. 2)
 
 __Adapt and align__
 

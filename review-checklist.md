@@ -38,33 +38,33 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 
 ## `genai` (intro)
 
-- [ ] Add a roadmap slide mapping "What does an AI-powered application include?" (`:688`) onto lectures; skills, workflows, governance are missing from that list
-    - [ ] Fix: extend the list at `:690-711` with 7. _workflows_ (code-controlled flows/state machines → `../workflows/`), 8. _skills_ (packaged instructions/scripts → `../skills/`), 9. _governance_ (deployment, cost, AI Act → `../governance/`); then add a 2-col table slide "Roadmap" (component | lecture link) right after it, covering llmaas, prompting, validating, agents, rag, skills, workflows, governance
-- [ ] Concept slides miss structured outputs, skills, workflows/state machines
-    - [ ] Fix: after `## Concept: Prompt Templates` (`:715`) add 3 short concept slides, each 3–4 bullets + forward link: "Structured Outputs" (JSON schema-constrained answers → `../prompting/#/structured-output`), "Workflows" (code decides the flow, LLM fills steps → `../workflows/#/workflows-concept`), "Agentic Skills" (folders of instructions+scripts loaded on demand → `../skills/#/skills-concept`)
-    - [ ] @gciatto: text-only slides, or draw small SVG diagrams like the other `Concept:` slides? Recommend text-only now, diagrams later
-- [ ] Name and link the running example (row at `:582`) → `../prompting/#/running-example`
-- [ ] Add a governance teaser (cloud vs. local, cost, AI Act) e.g. near as-a-Service slides (`:115`)
-    - [ ] Fix: append to the cost slide (`:118-128`) a fragment "But: data leaves your premises, costs scale with usage, provider lock-in, and the AI Act/GDPR apply → alternatives: [on-premise](../llmaas/#/ollama), trade-offs in [governance](../governance/#/deployment-options), [regulation](../governance/#/regulation)"
-- [ ] "The GenAI workflow" (`:773`) = engineering lifecycle, clashes with "workflow" = code-controlled flow (`:545`, `:851`, `workflows`): rename slide "GenAI project lifecycle" (keep anchor `genai-workflow`, linked from `llmaas:62`)
-    - [ ] Fix: also rename "workflow" → "lifecycle" in `:775` text, `:780-781` bullets, `:786` "Peculiar activities in a typical GenAI lifecycle", `:805` "Example of GenAI lifecycle (pt. N)" (all parts), and link text in `llmaas:62` ("GenAI lifecycle"); `:580` link text "tender example" stays; keep `:851` "Workflow + Agent" (correct usage)
-- [ ] FM vs. PFM mixed (`:31` vs `:666`, `:692`, `:700`)
-    - [ ] Fix: define once at `:666` "Pre-trained foundation models (PFM, or simply FM)", then use "FM" everywhere (`:670`, `:674`, `:680-682`, `:692`, `:700`, `:704`, `:780-783`, `:795`, `:799`); "pre-trained" is redundant since all FMs are pre-trained
-- [ ] Floridi slide (`:612`): heading names intelligence/autonomy/agency, bullets don't map intelligence
-    - [ ] Fix: make bullets map 1:1 — "How __well__ does it solve problems? (_intelligence_)", "What can it __do__ / what state does it change? (_agency_)", "Who __controls__ when and why? (_autonomy_)"; merge the third bullet ("What state…") into agency
-- [ ] Prompt Templates table (`:717`, Lenny's) = prompt _patterns_, whereas `prompting` uses "template" = LangChain placeholders; reconcile wording
-    - [ ] Fix: retitle `:715` "Concept: Prompt Patterns", column header "Pattern template"; keep the closing `{placeholders}` bullet and add "→ prompt _templates_ (cf. [prompting](../prompting/#/langchain))"; `:671` definition of templates is already consistent
-- [ ] `prompting` never assesses genai's patterns (emotion prompting, style unbundling, synthetic bootstrap); role prompting endorsed without caveat (`prompting:72`; cf. Zheng et al., "Is 'A Helpful Assistant' the Best Role…?")
-    - [ ] Fix: in `prompting:72` Rationale add "(personas give little/no accuracy gain on factual tasks, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054); useful mostly for tone/context)"; below the `prompting:649` techniques table add a bullet: "Folk patterns (role playing, emotion prompting, …, cf. [genai](../genai/#/...)) have weak/inconsistent evidence (cf. [EmotionPrompt, Li et al. 2023](https://arxiv.org/abs/2307.11760) vs. [The Prompt Report](https://arxiv.org/abs/2406.06608)): measure, don't trust"
-    - [ ] Fix: add `{{< slide id="prompt-patterns" >}}` to genai `:715` so the link above resolves
-- [ ] `:710` evaluation = "LLM-as-a-Judge" only: say "deterministic scorers + LLM-as-a-Judge" (as in `validating:75`)
-- [ ] "Model-Context Protocol" (`:737`) → "Model Context Protocol"; "MCP protocol" (`:702`) redundant
-    - [ ] Fix: also the image alt at `:739`; `:702` → "via [MCP](…)"
-- [ ] Hugging Face Transformers listed as client library for as-a-Service models (`:695`): it's for local inference
-    - [ ] Fix: replace with [LangChain](https://docs.langchain.com/oss/python/langchain/overview) or [Hugging Face `huggingface_hub` InferenceClient](https://huggingface.co/docs/huggingface_hub/guides/inference) (actual aaS client); optionally add "(or local runtimes, e.g. Ollama, Transformers, cf. [llmaas](../llmaas/#/ollama))"
-- [ ] Four ChatGPT "don't train on my data" screenshots (`:186-214`): move to `governance` (`:204`) or shrink to one
-    - [ ] Fix: screenshots are also outdated (ChatGPT 4o) and in Italian UI on a UNIBO workspace account; keep only `no-learn-4.png` (the toggle) in one slide titled "Some solutions let you _opt out_ of training", add "(cf. [governance](../governance/#/regulation))", delete the other 3 slides and PNGs
-    - [ ] @gciatto wants to keep only one screenshot, no need to update
+- [x] Add a roadmap slide mapping "What does an AI-powered application include?" (`:688`) onto lectures; skills, workflows, governance are missing from that list
+    - [x] Fix: extend the list at `:690-711` with 7. _workflows_ (code-controlled flows/state machines → `../workflows/`), 8. _skills_ (packaged instructions/scripts → `../skills/`), 9. _governance_ (deployment, cost, AI Act → `../governance/`); then add a 2-col table slide "Roadmap" (component | lecture link) right after it, covering llmaas, prompting, validating, agents, rag, skills, workflows, governance — list split in two slides (pt. 1–2)
+- [x] Concept slides miss structured outputs, skills, workflows/state machines
+    - [x] Fix: after `## Concept: Prompt Templates` (`:715`) add 3 short concept slides, each 3–4 bullets + forward link: "Structured Outputs" (JSON schema-constrained answers → `../prompting/#/structured-output`), "Workflows" (code decides the flow, LLM fills steps → `../workflows/#/workflows-concept`), "Agentic Skills" (folders of instructions+scripts loaded on demand → `../skills/#/skills-concept`)
+    - [x] @gciatto: text-only slides, or draw small SVG diagrams like the other `Concept:` slides? Recommend text-only now, diagrams later — text-only
+- [x] Name and link the running example (row at `:582`) → `../prompting/#/running-example`
+- [x] Add a governance teaser (cloud vs. local, cost, AI Act) e.g. near as-a-Service slides (`:115`) — appended as a fragment to the as-a-Service cost slide
+    - [x] Fix: append to the cost slide (`:118-128`) a fragment "But: data leaves your premises, costs scale with usage, provider lock-in, and the AI Act/GDPR apply → alternatives: [on-premise](../llmaas/#/ollama), trade-offs in [governance](../governance/#/deployment-options), [regulation](../governance/#/regulation)"
+- [x] "The GenAI workflow" (`:773`) = engineering lifecycle, clashes with "workflow" = code-controlled flow (`:545`, `:851`, `workflows`): rename slide "GenAI project lifecycle" (keep anchor `genai-workflow`, linked from `llmaas:62`)
+    - [x] Fix: also rename "workflow" → "lifecycle" in `:775` text, `:780-781` bullets, `:786` "Peculiar activities in a typical GenAI lifecycle", `:805` "Example of GenAI lifecycle (pt. N)" (all parts), and link text in `llmaas:62` ("GenAI lifecycle"); `:580` link text "tender example" stays; keep `:851` "Workflow + Agent" (correct usage)
+- [x] FM vs. PFM mixed (`:31` vs `:666`, `:692`, `:700`)
+    - [x] Fix: define once at `:666` "Pre-trained foundation models (PFM, or simply FM)", then use "FM" everywhere (`:670`, `:674`, `:680-682`, `:692`, `:700`, `:704`, `:780-783`, `:795`, `:799`); "pre-trained" is redundant since all FMs are pre-trained
+- [x] Floridi slide (`:612`): heading names intelligence/autonomy/agency, bullets don't map intelligence
+    - [x] Fix: make bullets map 1:1 — "How __well__ does it solve problems? (_intelligence_)", "What can it __do__ / what state does it change? (_agency_)", "Who __controls__ when and why? (_autonomy_)"; merge the third bullet ("What state…") into agency
+- [x] Prompt Templates table (`:717`, Lenny's) = prompt _patterns_, whereas `prompting` uses "template" = LangChain placeholders; reconcile wording
+    - [x] Fix: retitle `:715` "Concept: Prompt Patterns", column header "Pattern template"; keep the closing `{placeholders}` bullet and add "→ prompt _templates_ (cf. [prompting](../prompting/#/langchain))"; `:671` definition of templates is already consistent
+- [x] `prompting` never assesses genai's patterns (emotion prompting, style unbundling, synthetic bootstrap); role prompting endorsed without caveat (`prompting:72`; cf. Zheng et al., "Is 'A Helpful Assistant' the Best Role…?")
+    - [x] Fix: in `prompting:72` Rationale add "(personas give little/no accuracy gain on factual tasks, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054); useful mostly for tone/context)"; below the `prompting:649` techniques table add a bullet: "Folk patterns (role playing, emotion prompting, …, cf. [genai](../genai/#/...)) have weak/inconsistent evidence (cf. [EmotionPrompt, Li et al. 2023](https://arxiv.org/abs/2307.11760) vs. [The Prompt Report](https://arxiv.org/abs/2406.06608)): measure, don't trust"
+    - [x] Fix: add `{{< slide id="prompt-patterns" >}}` to genai `:715` so the link above resolves
+- [x] `:710` evaluation = "LLM-as-a-Judge" only: say "deterministic scorers + LLM-as-a-Judge" (as in `validating:75`)
+- [x] "Model-Context Protocol" (`:737`) → "Model Context Protocol"; "MCP protocol" (`:702`) redundant
+    - [x] Fix: also the image alt at `:739`; `:702` → "via [MCP](…)"
+- [x] Hugging Face Transformers listed as client library for as-a-Service models (`:695`): it's for local inference
+    - [x] Fix: replace with [LangChain](https://docs.langchain.com/oss/python/langchain/overview) or [Hugging Face `huggingface_hub` InferenceClient](https://huggingface.co/docs/huggingface_hub/guides/inference) (actual aaS client); optionally add "(or local runtimes, e.g. Ollama, Transformers, cf. [llmaas](../llmaas/#/ollama))"
+- [x] Four ChatGPT "don't train on my data" screenshots (`:186-214`): move to `governance` (`:204`) or shrink to one
+    - [x] Fix: screenshots are also outdated (ChatGPT 4o) and in Italian UI on a UNIBO workspace account; keep only `no-learn-4.png` (the toggle) in one slide titled "Some solutions let you _opt out_ of training", add "(cf. [governance](../governance/#/regulation))", delete the other 3 slides and PNGs — kept pt. 4 only (no retake), deleted the other 3 PNGs
+    - [x] @gciatto wants to keep only one screenshot, no need to update
 ## `llmaas`
 
 ### Errors
@@ -154,7 +154,7 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 ## `prompting`
 
 ### Errors
-- [ ] "ReAct … agents, in the next lecture" (`:659`): next is `validating` ✓
+- [x] "ReAct … agents, in the next lecture" (`:659`): next is `validating` ✓
 - [ ] Example 4 "never exceeds the token budget" (`:1196`, alt `:1142`): checked after sending ✓ (`chat_with_compaction.py:51`); `keep_last` alone may exceed it; with `CONTEXT_BUDGET=300` (`:1232`) compacts every turn
     - [ ] Fix: in `chat_with_compaction.py` move the budget check (`:51-53`) *before* `llm.invoke(context())` (after appending the user msg); reword `:1196` to "keeps the context _within_ a token budget (best effort: the last `keep_last` messages are never dropped)"; drop `CONTEXT_BUDGET=300` at `:1232` (default 1000 matches the svg's "compaction every ~3 turns"); re-check `from`/`to` at `:1206`, `:1218`, `:1222`.
 - [ ] `User`/`Post` example (`:166-190`, `:221`) uses defaults → not strict-mode compatible; real classes use `Optional` without defaults, unexplained

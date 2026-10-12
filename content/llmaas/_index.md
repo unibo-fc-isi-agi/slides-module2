@@ -59,7 +59,7 @@ outputs = ["Reveal"]
     + _technical metadata_: size, _context window_, supported _modalities_ (text, image, audio), support for _tools_ / _structured output_ / _reasoning_
     + _economic_ and _legal_ metadata: price per token (for on-cloud zoos), __license__ (for downloadable models)
 
-- Zoos are the _entry point_ for __model selection__, which is a recurring activity in GenAI engineering (cf. [GenAI workflow](../genai/#/genai-workflow))
+- Zoos are the _entry point_ for __model selection__, which is a recurring activity in GenAI engineering (cf. [GenAI lifecycle](../genai/#/genai-workflow))
 
 <!-- {{< image src="./todo-model-card.png" max-h="45vh" alt="TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) 'Files and versions' tab with GGUF/safetensors files; 5) description + intended uses; 6) evaluation table; 7) 'Use this model' button with code snippets." >}} -->
 
