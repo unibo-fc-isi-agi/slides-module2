@@ -60,12 +60,27 @@ outputs = ["Reveal"]
     + __procedural__ memory: _how_ to do things (prompts, code, _skills_: cf. the next lecture)
 
 - __RAG__ is (mostly) a _read-only_ __semantic__ memory, queried to build the _working_ memory
+    + this lecture: _semantic_ memory only; _procedural_ $\rightarrow$ [skills](../skills/); _episodic_ (and writable) memory $\rightarrow$ [next slide](#/long-term-memory)
 
 - Memory needs _governance_, as any other data:
     + __provenance__: where does each piece come from? Can answers _cite_ it?
     + __staleness__: when was it written? Is it still valid?
     + __forgetting__: can a piece be _deleted_ (e.g. upon a GDPR erasure request), including its derived data?
     + __privacy__ and __access control__: who may retrieve _what_?
+
+---
+
+{{< slide id="long-term-memory" >}}
+
+## Writable long-term memory: the technological landscape
+
+- Agents may also _write_ memories (facts about the user, past decisions, lessons learned), to be retrieved in _later_ sessions
+    + LangGraph's [`Store`](https://docs.langchain.com/oss/python/langgraph/persistence#memory-store): namespaced key–value documents, with semantic search
+    + [Mem0](https://github.com/mem0ai/mem0): a memory layer extracting, updating, and retrieving facts from conversations
+    + [Letta](https://www.letta.com/) (ex-MemGPT, cf. [Packer et al., 2023](https://arxiv.org/abs/2310.08560)): the agent _manages_ its own memory tiers via tools
+- Same mechanics as RAG (embeddings, retrieval), plus the _write_ path, which raises the stakes:
+    + __memory poisoning__: whatever is written once (e.g. from a malicious letter) steers _all_ later sessions (cf. [AgentPoison, Chen et al., 2024](https://arxiv.org/abs/2407.12784))
+    + governance (provenance, forgetting, access control) applies _a fortiori_
 
 {{% /section %}}
 
@@ -75,7 +90,9 @@ outputs = ["Reveal"]
 
 {{< slide id="rag-concept" >}}
 
-## RAG: the general concept
+## RAG: the general concept (recall)
+
+> Recall the [RAG concept](../genai/#/rag-concept) from the introductory lecture
 
 {{< image src="../genai/rag.svg" max-h="45vh" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" >}}
 
@@ -84,9 +101,7 @@ outputs = ["Reveal"]
     2. __retrieval__ (online, per question): _embed_ the question $\rightarrow$ find the _top-k_ most _similar_ chunks
     3. __generation__: _augment_ the prompt with the retrieved chunks $\rightarrow$ the LLM _answers_, possibly _citing_ them
 
-- Retrieval is a _search_ problem, solved by _code_: the LLM only sees its _results_
-    + RAG reduces _hallucinations_ on knowledge-intensive tasks, and makes answers _verifiable_ (via citations)
-    + yet it does not _eliminate_ them: the LLM may still ignore, misread, or over-generalise the retrieved chunks
+- Retrieval is a _search_ problem, solved by _code_: the LLM only sees its _results_; RAG _reduces_ hallucinations (and makes answers _verifiable_), but does not _eliminate_ them
 
 ---
 
@@ -232,6 +247,7 @@ flowchart LR
 
 - Same _metamodel_ everywhere: a _batch_ of texts in, a _batch_ of vectors out (plus token usage, for billing)
 - Differences: some models want _prefixes_ or _task types_ telling queries from documents (e.g. Cohere's `input_type`, Nomic's `search_query:`); some allow _shortening_ vectors ([Matryoshka embeddings](https://arxiv.org/abs/2205.13147))
+- Embeddings are __not__ anonymised: text can be largely _reconstructed_ from them ([Vec2Text, Morris et al., 2023](https://arxiv.org/abs/2310.06816): 92% of 32-token inputs recovered exactly); a _remote_ embedding API (or a SaaS store) means the _corpus_ leaves your premises: treat vectors as the documents they encode
 - How to choose a model: the [MTEB](https://arxiv.org/abs/2210.07316) _retrieval_ leaderboard, the _languages_ of your corpus, its _domain_, and a small evaluation on _your_ data (cf. [evaluating RAG](#/evaluating-rag))
 
 ---
@@ -493,7 +509,9 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
     3. __structural__: follow the document's _own_ units: articles of a regulation, sections of a paper, _slides_ of a deck, functions in code
     4. __semantic__: split where the embeddings of consecutive sentences _diverge_
 
-- __Enrich__ chunks with context: prepend the document's title and section to each chunk, before embedding it (cf. Anthropic's [contextual retrieval](https://www.anthropic.com/news/contextual-retrieval))
+- __Enrich__ chunks with context:
+    + prepend the document's title and section to each chunk, before embedding it (cheap, deterministic)
+    + or, as in Anthropic's [contextual retrieval](https://www.anthropic.com/news/contextual-retrieval), have an _LLM_ write a short (50–100 tokens) context situating each chunk in its document, prepended before embedding _and_ BM25 indexing (−35% to −49% failed retrievals in their tests; costly: one LLM call per chunk, mitigated by prompt caching)
 
 > Rule of thumb: prefer _structural_ chunking whenever documents _have_ a structure; otherwise, recursive splitting with some overlap
 
@@ -502,7 +520,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 ## Metadata
 
 - Each chunk carries __metadata__ besides its text and embedding, e.g.:
-    + _provenance_: source document, page, section, URL $\rightarrow$ __citations__ in answers
+    + _provenance_: source document, page, section, URL $\rightarrow$ __citations__ in answers (cf. [memory governance](#/memory))
     + _time_: when it was written or indexed, version, validity $\rightarrow$ handling __staleness__
     + _ownership_ and _permissions_: who may see it $\rightarrow$ __access control__
     + _domain_ attributes: e.g. which candidate a letter refers to
@@ -774,6 +792,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
     2. __generation__: the chunks are there, but the answer _ignores_, _misreads_, or _goes beyond_ them
 
 - __Retrieval metrics__, on a _gold set_ of questions, each labelled (by humans) with its _relevant_ chunks:
+    + larger gold sets can be _synthesised_ by an LLM from the corpus (e.g. [Ragas](https://docs.ragas.io/), DeepEval's [`Synthesizer`](https://deepeval.com/docs/synthesizer-introduction)), then _reviewed_ by humans: generated questions tend to reuse the chunk's own words, inflating recall
     + __recall@k__: the fraction of relevant chunks found among the top $k$
     + __precision@k__: the fraction of the top $k$ chunks which are relevant
     + __MRR__ (mean reciprocal rank): the average of $1 / \text{rank}$ of the _first_ relevant chunk
@@ -848,7 +867,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 - __Answer relevancy__: does the answer address the question? __Contextual recall__: does the context contain the _expected_ answer?
 - `judge`, `assert_test`, `LLMTestCase`: as in the [validating lecture](../validating/#/test-deepeval); `api_key`, `base_url`, `retrieve`, `generate`: imported from Example 4
 - A _deterministic_ check first (`answerable`), then the judge: cheap checks before costly ones
-- Run via `poetry run python -m snippets -l rag -e 5` (pick `test_generation.py`), with `JUDGE_MODEL` set
+- Run via `poetry run python -m snippets -l rag -e 5` (pick `test_generation.py`), optionally with `JUDGE_MODEL` set
     + with slow (e.g. local) judges, raise DeepEval's timeout: `DEEPEVAL_PER_ATTEMPT_TIMEOUT_SECONDS_OVERRIDE=1200` (a local `gemma4:e4b` took ~7 minutes per question, as judge)
 
 {{% /section %}}
@@ -872,7 +891,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
     + if all users share one index, a user may get chunks of documents they are not allowed to read
 
 - Mitigations:
-    + __provenance__: index only _trusted_ sources, record the source of each chunk, show _citations_ to users
+    + index only _trusted_ sources (and recall [memory governance](#/memory): provenance, citations)
     + __access control at retrieval time__: filter by the user's permissions (as _metadata_), in _code_, before the LLM sees anything
     + __delimit__ retrieved chunks as _data_ (e.g. `<document id="...">...</document>`), and say so in the system prompt: it helps, with no guarantee
     + keep RAG __read-only__, and avoid the [lethal trifecta](../agents/#/security): an agent reading untrusted chunks should not also _act_ externally
@@ -980,6 +999,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 - `PdfReader(path).pages` (from `pypdf`): the pages of the PDF; `extract_text()`: their text, in reading order
 - Near-empty pages are skipped; the _title_ is the first line, the rest is whitespace-collapsed text
 - Extraction is _lossy_: bold words and links may get lost (e.g. "_About Ollama (cf. )_"), some titles are wrong: __always look at your chunks__ (run `slides.py`)
+- Better: _layout-aware_ parsers ([Docling](https://github.com/docling-project/docling), [Unstructured](https://github.com/Unstructured-IO/unstructured)) keep titles, tables, and links; or skip text extraction, and embed page _images_ ([ColPali, Faysse et al., 2024](https://arxiv.org/abs/2407.01449))
 
 ---
 
@@ -1011,7 +1031,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 {{% code path="static/lab-snippets/snippets/lecture_rag/exercise1/index.py" from="65" to="70" %}}
 
-- 271 slides of 8 lectures indexed in ~50 s, then "_up to date after 0.5 s_"; lectures no longer released are _forgotten_ (cf. [memory governance](#/memory))
+- 271 slides of 8 lectures (release `2026.10.08`, the one `gold.yml` is pinned to) indexed in ~50 s, then "_up to date after 0.5 s_"; lectures no longer released are _forgotten_ (cf. [memory governance](#/memory))
 - The `lecture` filter is applied __during__ the KNN search (_pre-filtering_): $k$ results anyway
 
 ---
