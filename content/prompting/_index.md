@@ -1200,6 +1200,8 @@ poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's I
 
 {{% /section %}}
 
+---
+
 {{% section %}}
 
 {{< slide id="check-your-understanding" >}}

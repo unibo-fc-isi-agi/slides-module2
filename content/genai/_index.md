@@ -904,6 +904,8 @@ __Application integration__
 
 {{% /section %}}
 
+---
+
 {{% section %}}
 
 {{< slide id="check-your-understanding" >}}
