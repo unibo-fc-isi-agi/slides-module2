@@ -1148,13 +1148,13 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 - What if the procedure must be followed _step by step_, with _state_, _branches_, _human approvals_, and _several_ agents?
 - Next, we'll see __Workflows and Agent Orchestration__: the _code_ controls the flow again
 
+---
+
 {{% section %}}
 
 {{< slide id="check-your-understanding" >}}
 
 {{% import path="reusable/check-your-understanding.md" %}}
-
----
 
 ## Check your understanding (1/5)
 
