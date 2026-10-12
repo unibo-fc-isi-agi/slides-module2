@@ -611,7 +611,7 @@ The compliance unit is __checkpoint + license version + code licenses + data lic
 | __Prompting__ | good, if the model knows enough | low (but long prompts cost tokens at each request) | high: prompts are versioned text | easy to audit | fastest |
 | __Tools / agents__ | high for tasks needing actions or live data | medium (more requests per task) | medium: behaviour is less predictable | needs _least privilege_ and logging | medium |
 | __RAG__ | high for knowledge-intensive tasks | medium (indexing + longer prompts) | high: knowledge base is inspectable and updatable | data stays in _your_ store; access control needed | medium |
-| __Skills__ | high, if the agent picks the right skill | low–medium | medium: the agent decides when to apply them | depends on the tools the skill allows | fast (write a document) |
+| [__Skills__](../skills/#/skills-vs-others) | high, if the agent picks the right skill | low–medium | medium: the agent decides when to apply them | depends on the tools the skill allows | fast (write a document) |
 | __Workflows__ | high and _consistent_ | medium | highest: steps are fixed by the engineer | easy to audit step by step | slow (more code) |
 | __Fine-tuning__ | highest for _narrow_ tasks, if data suffice | high (data, training, re-training at each model update) | low–medium: behaviour baked into weights | training data must be lawful; license must allow it | slowest |
 

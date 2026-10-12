@@ -279,37 +279,37 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
     - [x] Fix: append "(release `2026.10.08`, the one `gold.yml` is pinned to)" at `:955`; if the default `--tag latest` now yields different counts, rerun `index.py --tag 2026.10.08` to confirm 271/8 — pinned tag stated; not re-run
 ## `skills`
 
-- [ ] "MCP server: schemas of all tools, always" (`:77`, `:107`): outdated (deferred loading)
-    - [ ] Fix: `:77` cell → "schemas of all its tools, at each step (unless the harness _defers_ them, e.g. Claude Code's tool search: names only, schema fetched on demand)"; `:107` "Loaded" → "always (names; schemas on demand with tool search, default in Claude Code)". Source: https://code.claude.com/docs/en/mcp ("Scale with MCP tool search").
-- [ ] "~100 vs ~30" lines (`:512`): Deep Agents version is 56 ✓
-    - [ ] Fix: `agent_skills.py` is 112 lines, `agent_deepagents.py` 56: change the row to "~110 | ~55" (or "~2× fewer"), avoiding a misleading 3× ratio.
-- [ ] Triggering cases "in agentskills.io format" (`:1094`): `triggers`/`should_trigger` is skill-creator format
-    - [ ] Fix: confirmed (agentskills.io defines only `skill_name` + `evals[]` with prompt/expected_output/files/assertions). Reword `:1094`: "…`evals/evals.json` (outcome cases in the [agentskills.io](…) format; triggering cases, under `triggers`, in the style of Anthropic's [`skill-creator`](https://github.com/anthropics/skills/tree/main/skills/skill-creator))".
-- [ ] Hook "no writes outside `output/`, whatever the LLM says" (`:787`): bypassable via `Bash`
-    - [ ] Fix: `privacy_guard.py` only checks `Write/Edit/MultiEdit/NotebookEdit`; `Bash` with `echo > /x`, `cp`, `python -c` passes (and the network regex misses e.g. `python -c "urllib…"`). Weaken `:787` Goal to "…blocks the agent's _file-writing_ tools outside `output/` and the obvious network routes" and add a bullet on the Example 4 slides: "a deny-list over shell commands is _best effort_: for real confinement, deny `Bash` or use a sandbox (cf. [agents security](../agents/#/security))".
-    - [ ] @gciatto: decide whether to also harden the snippet (lab-snippets `example4/privacy_guard.py`: deny `Bash` altogether, or allow-list commands) — recommend keeping the code simple and stating the limit on the slide (teaches "a guard is only as good as its coverage").
-- [ ] Hook command uses `$CLAUDE_PROJECT_DIR/snippets/...` (`:848`): requires project root = lab-snippets clone, say so
+- [x] "MCP server: schemas of all tools, always" (`:77`, `:107`): outdated (deferred loading)
+    - [x] Fix: `:77` cell → "schemas of all its tools, at each step (unless the harness _defers_ them, e.g. Claude Code's tool search: names only, schema fetched on demand)"; `:107` "Loaded" → "always (names; schemas on demand with tool search, default in Claude Code)". Source: https://code.claude.com/docs/en/mcp ("Scale with MCP tool search").
+- [x] "~100 vs ~30" lines (`:512`): Deep Agents version is 56 ✓
+    - [x] Fix: `agent_skills.py` is 112 lines, `agent_deepagents.py` 56: change the row to "~110 | ~55" (or "~2× fewer"), avoiding a misleading 3× ratio.
+- [x] Triggering cases "in agentskills.io format" (`:1094`): `triggers`/`should_trigger` is skill-creator format
+    - [x] Fix: confirmed (agentskills.io defines only `skill_name` + `evals[]` with prompt/expected_output/files/assertions). Reword `:1094`: "…`evals/evals.json` (outcome cases in the [agentskills.io](…) format; triggering cases, under `triggers`, in the style of Anthropic's [`skill-creator`](https://github.com/anthropics/skills/tree/main/skills/skill-creator))".
+- [x] Hook "no writes outside `output/`, whatever the LLM says" (`:787`): bypassable via `Bash`
+    - [x] Fix: `privacy_guard.py` only checks `Write/Edit/MultiEdit/NotebookEdit`; `Bash` with `echo > /x`, `cp`, `python -c` passes (and the network regex misses e.g. `python -c "urllib…"`). Weaken `:787` Goal to "…blocks the agent's _file-writing_ tools outside `output/` and the obvious network routes" and add a bullet on the Example 4 slides: "a deny-list over shell commands is _best effort_: for real confinement, deny `Bash` or use a sandbox (cf. [agents security](../agents/#/security))".
+    - [x] @gciatto: decide whether to also harden the snippet (lab-snippets `example4/privacy_guard.py`: deny `Bash` altogether, or allow-list commands) — recommend keeping the code simple and stating the limit on the slide (teaches "a guard is only as good as its coverage"). — kept the code simple, limit stated on the slide
+- [x] Hook command uses `$CLAUDE_PROJECT_DIR/snippets/...` (`:848`): requires project root = lab-snippets clone, say so
 - [x] "Recall from intro: … Gemini CLI" (`:96`): `genai` never mentions it; Gemini CLI as full column in tables (`:243`, `:678`, `:719`, `:872`) though superseded
     - [x] Fix: `genai:233,477` list Claude Code, Codex, OpenClaw, Cursor, Copilot only; at `:96` drop "Recall from" for the extra ones ("e.g. … (cf. [introductory lecture](../genai/))") or add Gemini CLI/Antigravity CLI to the `genai:474-477` table.
     - [x] @gciatto: Gemini CLI columns/rows — (a) keep as is + the existing `antigravity.md` note, (b) rename to "Gemini CLI / Antigravity CLI" after checking Antigravity's docs for skills/hooks, (c) drop Gemini from tables. Recommend (a) for now (Gemini CLI still exists for enterprise/API users; it is the only one with `BeforeModel`, cited at `:733`, `:746`), revisit next A.Y. — kept (a)
-- [ ] Copilot naming drifts (`:242`, `:677`, `:696`)
-    - [ ] Fix: use "GitHub Copilot" at first mention (`:96`), then "Copilot CLI" vs. "Copilot (VS Code)" explicitly where they differ: `:242` "Copilot (CLI, VS Code)", `:677` "Copilot CLI" (the linked docs are CLI/coding-agent hooks), `:765`/`:750-755` already say "Copilot CLI" where it matters.
+- [x] Copilot naming drifts (`:242`, `:677`, `:696`)
+    - [x] Fix: use "GitHub Copilot" at first mention (`:96`), then "Copilot CLI" vs. "Copilot (VS Code)" explicitly where they differ: `:242` "Copilot (CLI, VS Code)", `:677` "Copilot CLI" (the linked docs are CLI/coding-agent hooks), `:765`/`:750-755` already say "Copilot CLI" where it matters.
 - [x] Rule of thumb "cf. governance" (`:84`): recall `agents#autonomy-spectrum` / `genai#genai-uses` instead
     - [x] Fix: replace "(cf. the [governance lecture](../governance/))" with "(cf. the [autonomy spectrum](../agents/#/autonomy-spectrum))"; optionally add "trade-offs summarised in [governance](../governance/#/…)" once that slide has an anchor (see item on `governance:647-655`).
-- [ ] Hooks tables (`:668-686`, `:692-756`, `:775`): same metamodel said 2–3×, merge; per-harness event lists → appendix
-    - [ ] @gciatto: structure — (a) keep landscape table (`:668`) + one "similarities/differences" slide, move "events per harness pt. 1–2" (`:692-736`) into a skippable vertical sub-deck or to the end of the lecture as appendix; (b) delete pt. 1–2 and link docs. Recommend (a); then keep "Same metamodel" only once (`:683`) and cut the repeat at `:775`.
-- [ ] "One core, many adapters" twice (`:762-777`, `:912-913`)
-    - [ ] Fix: keep the full explanation at `:767-770`; at `:912-913` shorten to "a concrete instance of [one core, many adapters](#/…)" (add a `{{< slide id="hooks-agnostic" >}}` anchor to the "Harness-agnostic hooks" slide and link it, instead of `#/hooks`).
-- [ ] Skills-vs-alternatives table (`:72-79`) and `governance:647-655` don't link each other
-    - [ ] Fix: add `{{< slide id="which-technique" >}}` to governance's "Which technique? Trade-offs" slide; add a bullet under `skills:84` "→ business-level trade-offs (cost, compliance, time-to-market) in [governance](../governance/#/which-technique)"; in governance, link the Skills row to `../skills/#/<anchor of :68 slide>` (add an anchor there, e.g. `skills-vs-others`).
-- [ ] Subagents used (`:109`, `:468`, `:702`, `:911`) before `workflows` introduces multi-agent: add pointer/definition
-    - [ ] Fix: in the `:109` row ("Subagents") add a one-liner: "an agent the main agent calls _like a tool_, with a fresh context, returning only its result (more in [multi-agent systems](../workflows/#/multi-agent))"; later mentions need no change.
-- [ ] Hole: recall LangChain middleware (`agents:368-371`) as library-level hooks; qualify "no way to redact" (`:660`, `:746`)
-    - [ ] Fix: on "Hooks are callbacks" add: "libraries have hooks too: LangChain [middleware](../agents/#/…) (before/after model or tool call, incl. PII redaction)"; qualify `:660`/`:746`: "…no way to redact the prompt _in that harness_ (libraries like LangChain/Deep Agents allow it via `before_model` middleware)". Needs an anchor on `agents` "Example 1 (bis) pt. 2" slide.
-- [ ] Hole: Deep Agents `write_todos` missing (`:468`)
-    - [ ] Fix: `:468` → "…a _planning_ tool (`write_todos`), a _virtual file system_ (…), _subagents_ (`task`), …" (built-in tools per https://docs.langchain.com/oss/python/deepagents/overview).
-- [ ] Verify: `mcp_tool` handler, `onFailure: "block"` (`:674`, `:755`); Codex hooks URL (`:675`, `:696`); `metadata.include_tools` (`:245`)
-    - [ ] Fix: verified 2026-10-12 — Claude Code handler types `command|http|mcp_tool|prompt|agent` ✓, `onFailure: "block"` ✓ (v2.1.295+, `command`/`http` only: add "for command/http hooks"); Codex `command`, `mcp_tool` ✓; Deep Agents `metadata.include_tools` ✓ (space-separated string). Codex URL `learn.chatgpt.com/docs/hooks` resolves, but use canonical `https://developers.openai.com/codex/hooks` (consistent with `:240` skills link).
+- [x] Hooks tables (`:668-686`, `:692-756`, `:775`): same metamodel said 2–3×, merge; per-harness event lists → appendix
+    - [x] @gciatto: structure — (a) keep landscape table (`:668`) + one "similarities/differences" slide, move "events per harness pt. 1–2" (`:692-736`) into a skippable vertical sub-deck or to the end of the lecture as appendix; (b) delete pt. 1–2 and link docs. Recommend (a); then keep "Same metamodel" only once (`:683`) and cut the repeat at `:775`. — (a), as an appendix at the end of the lecture (`#/hook-events-appendix`); the 'cut the repeat at :775' part found nothing to cut
+- [x] "One core, many adapters" twice (`:762-777`, `:912-913`)
+    - [x] Fix: keep the full explanation at `:767-770`; at `:912-913` shorten to "a concrete instance of [one core, many adapters](#/…)" (add a `{{< slide id="hooks-agnostic" >}}` anchor to the "Harness-agnostic hooks" slide and link it, instead of `#/hooks`).
+- [x] Skills-vs-alternatives table (`:72-79`) and `governance:647-655` don't link each other
+    - [x] Fix: add `{{< slide id="which-technique" >}}` to governance's "Which technique? Trade-offs" slide; add a bullet under `skills:84` "→ business-level trade-offs (cost, compliance, time-to-market) in [governance](../governance/#/which-technique)"; in governance, link the Skills row to `../skills/#/<anchor of :68 slide>` (add an anchor there, e.g. `skills-vs-others`).
+- [x] Subagents used (`:109`, `:468`, `:702`, `:911`) before `workflows` introduces multi-agent: add pointer/definition
+    - [x] Fix: in the `:109` row ("Subagents") add a one-liner: "an agent the main agent calls _like a tool_, with a fresh context, returning only its result (more in [multi-agent systems](../workflows/#/multi-agent))"; later mentions need no change.
+- [x] Hole: recall LangChain middleware (`agents:368-371`) as library-level hooks; qualify "no way to redact" (`:660`, `:746`)
+    - [x] Fix: on "Hooks are callbacks" add: "libraries have hooks too: LangChain [middleware](../agents/#/…) (before/after model or tool call, incl. PII redaction)"; qualify `:660`/`:746`: "…no way to redact the prompt _in that harness_ (libraries like LangChain/Deep Agents allow it via `before_model` middleware)". Needs an anchor on `agents` "Example 1 (bis) pt. 2" slide.
+- [x] Hole: Deep Agents `write_todos` missing (`:468`)
+    - [x] Fix: `:468` → "…a _planning_ tool (`write_todos`), a _virtual file system_ (…), _subagents_ (`task`), …" (built-in tools per https://docs.langchain.com/oss/python/deepagents/overview).
+- [x] Verify: `mcp_tool` handler, `onFailure: "block"` (`:674`, `:755`); Codex hooks URL (`:675`, `:696`); `metadata.include_tools` (`:245`)
+    - [x] Fix: verified 2026-10-12 — Claude Code handler types `command|http|mcp_tool|prompt|agent` ✓, `onFailure: "block"` ✓ (v2.1.295+, `command`/`http` only: add "for command/http hooks"); Codex `command`, `mcp_tool` ✓; Deep Agents `metadata.include_tools` ✓ (space-separated string). Codex URL `learn.chatgpt.com/docs/hooks` resolves, but use canonical `https://developers.openai.com/codex/hooks` (consistent with `:240` skills link).
 ## `workflows`
 
 - [ ] `gemma4:12b` (`:556`, `:566`): likely nonexistent tag

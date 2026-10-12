@@ -376,6 +376,8 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ---
 
+{{< slide id="agent-middleware" >}}
+
 ## Example 1 (bis): the same Agent with LangChain (pt. 2)
 
 3. Let's try it (full code [here](../lab-snippets/snippets/lecture_agents/example1bis/agent_langchain.py)):

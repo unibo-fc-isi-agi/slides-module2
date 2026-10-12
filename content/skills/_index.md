@@ -71,6 +71,8 @@ outputs = ["Reveal"]
 
 ---
 
+{{< slide id="skills-vs-others" >}}
+
 ## Skills vs. prompts, tools, MCP servers, and workflows
 
 {{% small "80%" %}}
@@ -80,7 +82,7 @@ outputs = ["Reveal"]
 | _What it is_ | instructions, always in context | a function the LLM can ask to call | tools (and resources, prompts) behind a protocol | a folder of instructions + scripts + resources | code orchestrating LLM calls and tools |
 | _Written in_ | natural language | code + docstring | code | __natural language__ (+ code) | code |
 | _Who decides to use it_ | nobody (always on) | the LLM | the LLM | __the LLM__ (or the user, explicitly) | the engineer |
-| _Context cost_ | full, at each step | schema, at each step | schemas of all its tools, at each step | __description only__, until activated | only what each step needs |
+| _Context cost_ | full, at each step | schema, at each step | schemas of all its tools, at each step (unless the harness _defers_ them, e.g. Claude Code's tool search: names only, schemas fetched on demand) | __description only__, until activated | only what each step needs |
 | _Who can write it_ | anyone | developers | developers | __domain experts__ (+ developers for scripts) | developers |
 | _Predictability_ | medium | high (the code) | high (the code) | low–medium | high |
 
@@ -88,6 +90,7 @@ outputs = ["Reveal"]
 
 - Skills and the others are __complementary__: a skill can tell the agent _which tools_ (or MCP servers) to use, and _how_
 - Rule of thumb (cf. the [autonomy spectrum](../agents/#/autonomy-spectrum)): _procedures_ that change often, or that domain experts must own $\rightarrow$ skills; _procedures_ that must be reliable and auditable $\rightarrow$ workflows (next lecture)
+    + business-level trade-offs (cost, compliance, time-to-market) in the [governance lecture](../governance/#/which-technique)
 
 {{% /section %}}
 
@@ -110,9 +113,9 @@ outputs = ["Reveal"]
 | Extension point | What it adds | Example in Claude Code | Loaded |
 |---|---|---|---|
 | _Instruction files_ | project conventions, always in context | `AGENTS.md`, `CLAUDE.md` | always |
-| _MCP servers_ | tools (cf. [MCP](../agents/#/mcp)) | `.mcp.json` | always (their schemas) |
+| _MCP servers_ | tools (cf. [MCP](../agents/#/mcp)) | `.mcp.json` | always (names; schemas on demand with [tool search](https://code.claude.com/docs/en/mcp), the default in Claude Code) |
 | __Skills__ | procedures, scripts, resources | `.claude/skills/<name>/SKILL.md` | __on demand__ |
-| _Subagents_ | specialised agents, with their own context | `.claude/agents/<name>.md` | on demand |
+| _Subagents_ | specialised agents, with their own context: the main agent calls them _like a tool_, with a fresh context, and gets back only their result (more in [multi-agent systems](../workflows/#/multi-agent)) | `.claude/agents/<name>.md` | on demand |
 | _Hooks_ | deterministic code at lifecycle events | `hooks` in `.claude/settings.json` | always (they run _outside_ the LLM) |
 | _Plugins_ | a _bundle_ of all of the above, to share | `.claude-plugin/plugin.json` | upon installation |
 
@@ -245,7 +248,7 @@ metadata:
 | Claude Code | `.claude/skills/` | `~/.claude/skills/` | automatic, or `/skill-name` | `disable-model-invocation`, `allowed-tools`, `context: fork`, `hooks`, `` !`cmd` `` (dynamic context) | [link](https://code.claude.com/docs/en/skills) |
 | Codex | `.agents/skills/` | `~/.agents/skills/` | automatic, or `$skill-name` | `agents/openai.yaml` (UI, invocation policy, dependencies) | [link](https://developers.openai.com/codex/skills) |
 | Cursor | `.agents/skills/`, `.cursor/skills/` (+ `.claude/skills/`) | `~/.agents/skills/`, `~/.cursor/skills/` | automatic, or `/skill-name` | `paths` (globs), `disable-model-invocation` | [link](https://cursor.com/docs/context/skills) |
-| Copilot / VS Code | `.github/skills/`, `.agents/skills/`, `.claude/skills/` | `~/.copilot/skills/`, `~/.agents/skills/` | automatic, or `/skill-name` | `user-invocable`, `disable-model-invocation` | [link](https://code.visualstudio.com/docs/copilot/customization/agent-skills) |
+| Copilot (CLI, VS Code) | `.github/skills/`, `.agents/skills/`, `.claude/skills/` | `~/.copilot/skills/`, `~/.agents/skills/` | automatic, or `/skill-name` | `user-invocable`, `disable-model-invocation` | [link](https://code.visualstudio.com/docs/copilot/customization/agent-skills) |
 | Gemini CLI | `.gemini/skills/`, `.agents/skills/` | `~/.gemini/skills/`, `~/.agents/skills/` | `activate_skill` tool, __confirmed by the user__ | `gemini skills install` | [link](https://geminicli.com/docs/cli/skills/) |
 | OpenClaw | `<workspace>/skills/`, `<workspace>/.agents/skills/` | `~/.agents/skills/`, `~/.openclaw/skills/` | automatic, or `/skill-name`, `$skill-name` | `metadata.openclaw` (requirements, installers), `command-dispatch` | [link](https://docs.openclaw.ai/tools/skills) |
 | Deep Agents (library) | any folder, via `skills=[...]` | — | automatic | `metadata.include_tools` | [link](https://docs.langchain.com/oss/python/deepagents/skills) |
@@ -471,7 +474,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 ## Example 2 (bis): Skills with Deep Agents (pt. 1)
 
 - [Deep Agents](https://docs.langchain.com/oss/python/deepagents/overview) (`deepagents`): LangChain's library for _harness-like_ agents, built on [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview)
-    + an agent with a _virtual file system_ (`ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`), _subagents_ (`task`), and optionally a _shell_ (`execute`)
+    + an agent with a _planning_ tool (`write_todos`), a _virtual file system_ (`ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`), _subagents_ (`task`), and optionally a _shell_ (`execute`)
     + _backends_ decide where files live: in memory (`StateBackend`), on disk (`FilesystemBackend`), on disk + shell (`LocalShellBackend`), in a sandbox, ...
     + __skills__ are supported natively: `create_deep_agent(..., skills=["/path/to/skills/"])`
 
@@ -515,7 +518,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | Loading | a _dedicated_ `load_skill(name)` tool | the _generic_ `read_file(path)` tool |
 | Resources | `read_skill_file(name, path)`, confined to the skill's folder | `read_file`, confined to the backend's root (`virtual_mode=True`) |
 | Scripts | `run_skill_script(name, script, args)`, approved by the user | `execute(command)`, any shell command, approved via `interrupt_on` |
-| Lines of code | ~100 | ~30 |
+| Lines of code | ~110 | ~55 |
 
 {{% /small %}}
 
@@ -663,9 +666,11 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + the handler's __answer__ is its _return value_ (e.g. `allow` / `deny` / modified arguments / extra context)
 
 - So, in hook engineering, the set of __events__ (names + payloads + answers) _is_ the __interface__ between your code and the harness
-    + you can only act _where_ the harness emits an event: no `BeforeModel`-like event $\rightarrow$ no way to redact the prompt before it reaches the LLM
+    + you can only act _where_ the harness emits an event: no `BeforeModel`-like event $\rightarrow$ no way to redact the prompt before it reaches the LLM, _in that harness_ (libraries like LangChain or Deep Agents allow it, via `before_model` middleware)
     + the _granularity_ of events bounds what you can enforce: a `beforeShellExecution` sees shell commands only, a `PreToolUse` sees _every_ tool (incl. MCP ones)
     + events are a _contract_: renaming one, or changing its payload, silently breaks every hook relying on it (the hook just stops being called)
+
+- Libraries have hooks too: LangChain's [middleware](../agents/#/agent-middleware) (before/after each model or tool call, incl. PII redaction)
 
 - Rule of thumb: before writing a hook, look up the harness' __event list__, and check that the event you need _exists_, and fires on _all_ the paths you want to cover
 
@@ -678,9 +683,9 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | Harness | Events (examples) | Configuration | Handler types | Protocol | Docs |
 |---|---|---|---|---|---|
 | Claude Code | `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `SubagentStart`, `PreCompact`, ... (33) | `hooks` in `.claude/settings.json`, plugins' `hooks/hooks.json`, __skills' front matter__ | `command`, `http`, `mcp_tool`, `prompt`, `agent` | JSON on stdin; exit code 2 = _block_; JSON on stdout (`permissionDecision`, `additionalContext`, ...) | [link](https://code.claude.com/docs/en/hooks) |
-| Codex | `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `PreCompact`, ... | `.codex/hooks.json` or `config.toml`; to be _trusted_ via `/hooks` | `command`, `mcp_tool` | as Claude Code's (`permissionDecision`: `allow`, `deny`) | [link](https://learn.chatgpt.com/docs/hooks) |
+| Codex | `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `PreCompact`, ... | `.codex/hooks.json` or `config.toml`; to be _trusted_ via `/hooks` | `command`, `mcp_tool` | as Claude Code's (`permissionDecision`: `allow`, `deny`) | [link](https://developers.openai.com/codex/hooks) |
 | Cursor | `sessionStart`, `beforeShellExecution`, `beforeReadFile`, `preToolUse`, `afterFileEdit`, `stop`, ... | `.cursor/hooks.json` | `command`, `prompt` | JSON on stdin/stdout (`permission`, `agent_message`, ...); exit code 2 = _deny_ | [link](https://cursor.com/docs/agent/hooks) |
-| Copilot | `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`, ... | `.github/hooks/*.json` | `command`, `http`, `prompt` | JSON (`permissionDecision`, `modifiedArgs`, ...) | [link](https://docs.github.com/en/copilot/reference/hooks-configuration) |
+| Copilot CLI | `sessionStart`, `userPromptSubmitted`, `preToolUse`, `postToolUse`, `agentStop`, ... | `.github/hooks/*.json` | `command`, `http`, `prompt` | JSON (`permissionDecision`, `modifiedArgs`, ...) | [link](https://docs.github.com/en/copilot/reference/hooks-configuration) |
 | Gemini CLI | `SessionStart`, `BeforeAgent`, `BeforeModel`, `BeforeTool`, `AfterTool`, `PreCompress`, ... | `hooks` in `.gemini/settings.json` | `command` | JSON (`decision`, `reason`, ...); exit code 2 = _block_ | [link](https://geminicli.com/docs/hooks/) |
 | OpenClaw | `before_tool_call`, `before_prompt_build`, `message_received`, `session_end`, ... | _plugins_ (TypeScript, `api.on(...)`), internal hooks (`HOOK.md` + handler) | in-process functions | return `{block, blockReason}`, `params`, `requireApproval` | [link](https://docs.openclaw.ai/plugins/hooks) |
 
@@ -695,61 +700,15 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ---
 
-## Hook events per harness (pt. 1)
-
-{{% small "60%" %}}
-
-| Phase | [Claude Code](https://code.claude.com/docs/en/hooks) (__33__) | [Codex](https://learn.chatgpt.com/docs/hooks) (__12__) | [Copilot CLI](https://docs.github.com/en/copilot/reference/hooks-reference) (__14__) |
-|---|---|---|---|
-| Session | `SessionStart`, `Setup`, `SessionEnd` | `SessionStart`, `SessionEnd` | `sessionStart`, `sessionEnd` |
-| User prompt | `UserPromptSubmit`, `UserPromptExpansion` | `UserPromptSubmit` | `userPromptSubmitted`, `userPromptTransformed` |
-| Model call | `PreModelSwitch`, `PostModelSwitch` (on model _switch_ only) | — | — |
-| Tool call | `PreToolUse`, `PermissionRequest`, `PermissionDenied`, `PostToolUse`, `PostToolUseFailure`, `PostToolBatch` | `PreToolUse`, `PermissionRequest`, `PostToolUse` | `preToolUse`, `permissionRequest`, `postToolUse`, `postToolUseFailure` |
-| Subagents, tasks | `SubagentStart`, `SubagentStop`, `TaskCreated`, `TaskCompleted`, `TeammateIdle` | `SubagentStart`, `SubagentStop` | `subagentStart`, `subagentStop` |
-| Context | `PreCompact`, `PostCompact`, `InstructionsLoaded` | `PreCompact`, `PostCompact` | `preCompact` |
-| Stop | `Stop`, `StopFailure` | `Stop`, `Interrupt` | `agentStop` |
-| Other | `Notification`, `MessageDisplay`, `ConfigChange`, `CwdChanged`, `DirectoryAdded`, `FileChanged`, `WorktreeCreate`, `WorktreeRemove`, `Elicitation`, `ElicitationResult` | — | `notification`, `errorOccurred` |
-
-{{% /small %}}
-
-- Copilot accepts _PascalCase aliases_ too (`PreToolUse`, ...), for compatibility with Claude Code's files
-- Copilot in __VS Code__ (_Local_ agent, preview) exposes only __8__ events (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`), and [ignores matchers](https://code.visualstudio.com/docs/copilot/customization/hooks) in Claude Code's files
-- Lists as of October 2026, from each harness's docs: they change often, so check them again before relying on them
-
----
-
-## Hook events per harness (pt. 2)
-
-{{% small "60%" %}}
-
-| Phase | [Cursor](https://cursor.com/docs/agent/hooks) (__21__) | [Gemini CLI](https://geminicli.com/docs/hooks/reference/) (__11__) | [OpenClaw](https://docs.openclaw.ai/plugins/hooks/reference) (__40__ plugin hooks) |
-|---|---|---|---|
-| Session | `sessionStart`, `sessionEnd`, `workspaceOpen` | `SessionStart`, `SessionEnd` | `session_start`, `session_end`, `before_reset` |
-| User prompt | `beforeSubmitPrompt` | `BeforeAgent` | 8 _message_ hooks (`message_received`, `inbound_claim`, `before_dispatch`, `message_sending`, ...): prompts come from _chat channels_ |
-| Model call | `afterAgentResponse`, `afterAgentThought` (observe only) | `BeforeModel`, `AfterModel`, `BeforeToolSelection` | `before_model_resolve`, `before_prompt_build`, `before_agent_run`, `llm_input`, `llm_output`, ... (12) |
-| Tool call | `preToolUse`, `postToolUse`, `postToolUseFailure`, `beforeShellExecution`, `afterShellExecution`, `beforeMCPExecution`, `afterMCPExecution`, `beforeReadFile`, `afterFileEdit` | `BeforeTool`, `AfterTool` | `before_tool_call`, `after_tool_call`, `resolve_exec_env`, `tool_result_persist`, `before_message_write` |
-| Subagents | `subagentStart`, `subagentStop` | — | `subagent_spawned`, `subagent_ended`, `subagent_progress`, `subagent_delivery_target` |
-| Context | `preCompact` | `PreCompress` | `before_compaction`, `after_compaction` |
-| Stop | `stop` | `AfterAgent` | (`before_agent_finalize`, `agent_end`, among the model ones) |
-| Other | `beforeTabFileRead`, `afterTabFileEdit` (Tab completion) | `Notification` | `gateway_start`, `gateway_stop`, `cron_reconciled`, `cron_changed`, `before_install`, `skill_changed` |
-
-{{% /small %}}
-
-- OpenClaw also has 15 _internal_ hook events (`HOOK.md` + handler, e.g. `command:new`, `session:compact:before`, `message:received`), mostly _observe-only_
-- Gemini CLI is the only one letting a hook _rewrite_ (or _replace_) the LLM request: `BeforeModel` may return a synthetic response, without calling the model
-- Cursor has _tool-specific_ events (shell, MCP, file read) besides the generic `preToolUse`
-
-{{< import path="reusable/antigravity.md" >}}
-
----
-
 ## Hook events: similarities and differences
+
+- Full event lists per harness: cf. the [appendix](#/hook-events-appendix)
 
 - __Common core__, in all six harnesses (under different names): _session start/end_, _user prompt_, _before/after tool call_, _compaction_, _stop_; and _subagents_ in all but Gemini CLI
     + the core is enough for most _guardrails_ (before tool call) and _context injection_ (session start, user prompt)
 
 - __Different coverage__ beyond the core
-    + only Gemini CLI and OpenClaw expose the _model call_: elsewhere, there is no place to _redact_ what is sent to the LLM
+    + only Gemini CLI and OpenClaw expose the _model call_: in the other harnesses, there is no place to _redact_ what is sent to the LLM
     + Claude Code exposes many _housekeeping_ events (configuration, worktrees, files, MCP elicitations); OpenClaw, _chat channels_ and _gateway_ events
 
 - __Same name, different semantics__
@@ -758,12 +717,14 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + a _stop_ hook can force the agent to continue: at most 8 times in a row in Copilot, at most 5 (`loop_limit`, by default) in Cursor, with no stated cap in Claude Code (beware of loops)
 
 - __Failures__: most hooks _fail open_ (a crashing hook lets the action through) by default
-    + _fail-closed_ is opt-in (`onFailure: "block"` in Claude Code, `failClosed: true` in Cursor), or limited to a few events (Copilot's `preToolUse`, OpenClaw's `before_tool_call`, `before_agent_run`, `before_install`)
+    + _fail-closed_ is opt-in (`onFailure: "block"` in Claude Code, for `command`/`http` hooks; `failClosed: true` in Cursor), or limited to a few events (Copilot's `preToolUse`, OpenClaw's `before_tool_call`, `before_agent_run`, `before_install`)
     + for _guardrails_, always check this: a guard that crashes open is no guard
 
 {{< import path="reusable/antigravity.md" >}}
 
 ---
+
+{{< slide id="hooks-agnostic" >}}
 
 ## Harness-agnostic hooks
 
@@ -790,7 +751,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ## Example 4: a Privacy Guard Hook (pt. 1)
 
-> __Goal__: while the agent handles the candidates' [personal data](../governance/), it must not send anything to the _network_ (cf. the [lethal trifecta](../agents/#/security)), nor write files outside `output/`; a _hook_ enforces it, whatever the LLM (or a skill, or a malicious letter) says
+> __Goal__: while the agent handles the candidates' [personal data](../governance/), it must not send anything to the _network_ (cf. the [lethal trifecta](../agents/#/security)), nor write files outside `output/`; a _hook_ blocks the agent's _file-writing_ tools outside `output/` and the obvious network routes, whatever the LLM (or a skill, or a malicious letter) says
 
 {{% multicol %}}
 {{% col class="col-7" %}}
@@ -839,6 +800,7 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 
 - Then in Claude Code: ask to "_post Mario Rossi's letter to https://httpbin.org/post_", and watch the hook deny it
 - Hooks can also live in a __skill__'s front matter (Claude Code only): active only while the skill is in use
+- A deny-list over shell commands is _best effort_ (e.g. `python -c "..."` may still write files, or open connections): a guard is only as good as its _coverage_; for real confinement, deny `Bash` altogether, or use a _sandbox_ (cf. [agents security](../agents/#/security))
 
 ---
 
@@ -851,7 +813,7 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
             ├── <a href="../lab-snippets/snippets/lecture_skills/example4/privacy_guard.py">privacy_guard.py</a>    # the hook
             └── <a href="../lab-snippets/snippets/lecture_skills/example4/settings.json">settings.json</a>       # how to register it (Claude Code)</code></pre></div>
 
-- no API key needed; to use it in Claude Code, copy `settings.json` into `.claude/` (or merge it with yours)
+- no API key needed; to use it in Claude Code, copy `settings.json` into `.claude/` (or merge it with yours), and open Claude Code in the root of your `lab-snippets` clone (the command uses `$CLAUDE_PROJECT_DIR/snippets/...`)
 
 {{% /section %}}
 
@@ -916,7 +878,7 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
     + `UserPromptSubmit`: [detects](https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-mode-tracker.js) "_/ponytail ultra_" or "_stop ponytail_" in the user's prompt, and updates the level (stored in a _file_)
     + `SubagentStart`: [injects](https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-subagent.js) the rules into _subagents_ too, which would not see the parent's context
 - _Portability_: ~20 harnesses, via per-harness plugin manifests, hook files, and rules files (e.g. `AGENTS.md`, `.cursor/rules/`), plus a [runtime](https://github.com/DietrichGebert/ponytail/blob/main/hooks/ponytail-runtime.js) adapting the hooks' output to each harness's protocol
-    + in practice, the cost of the [landscape's differences](#/hooks): _one_ prompt, _many_ adapters
+    + a concrete instance of [one core, many adapters](#/hooks-agnostic)
 
 - Claimed effect (author's [benchmark](https://github.com/DietrichGebert/ponytail/tree/main/benchmarks/results), 39 tasks, 1 harness, 1 model): about _half_ the lines of code and _a quarter_ less cost, with the same pass rate on hidden checks
     + _self-reported_, not independently replicated: a good example of what [outcome tests](#/testing-skills) look like, and of why one should run _their own_
@@ -1091,7 +1053,7 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 
 {{% code path="static/lab-snippets/snippets/lecture_skills/exercise1/test_precheck.py" from="14" to="37" %}}
 
-- Triggering cases come from the skill's own [`evals/evals.json`](../lab-snippets/snippets/lecture_skills/exercise1/thesis-precheck/evals/evals.json) (in the format of [agentskills.io](https://agentskills.io/skill-creation/evaluating-skills)): the tests travel _with_ the skill
+- Triggering cases come from the skill's own [`evals/evals.json`](../lab-snippets/snippets/lecture_skills/exercise1/thesis-precheck/evals/evals.json) (outcome cases in the [agentskills.io](https://agentskills.io/skill-creation/evaluating-skills) format; triggering cases, under `triggers`, in the style of Anthropic's [`skill-creator`](https://github.com/anthropics/skills/tree/main/skills/skill-creator)): the tests travel _with_ the skill
 - The outcome test asserts on a _known_ defect of the thesis (page 314); to go further, compare reports with and without the skill, via an [LLM-as-a-Judge](../validating/#/llm-as-a-judge)
 
 ---
@@ -1114,6 +1076,66 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 
 - run with `poetry run python -m snippets -l skills -x 1 [path/to/thesis.pdf]` (then pick `precheck.py`), with the same environment variables as [Example 2](#/skills-from-scratch)
 - the same skill folder works in [OpenClaw](#/skills-openclaw), Claude Code, Codex, ... (where the harness's own tools read the sections)
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="hook-events-appendix" >}}
+
+# Appendix: hook events per harness
+
+(as of October 2026; skip it unless you need the details)
+
+---
+
+## Hook events per harness (pt. 1)
+
+{{% small "60%" %}}
+
+| Phase | [Claude Code](https://code.claude.com/docs/en/hooks) (__33__) | [Codex](https://developers.openai.com/codex/hooks) (__12__) | [Copilot CLI](https://docs.github.com/en/copilot/reference/hooks-reference) (__14__) |
+|---|---|---|---|
+| Session | `SessionStart`, `Setup`, `SessionEnd` | `SessionStart`, `SessionEnd` | `sessionStart`, `sessionEnd` |
+| User prompt | `UserPromptSubmit`, `UserPromptExpansion` | `UserPromptSubmit` | `userPromptSubmitted`, `userPromptTransformed` |
+| Model call | `PreModelSwitch`, `PostModelSwitch` (on model _switch_ only) | — | — |
+| Tool call | `PreToolUse`, `PermissionRequest`, `PermissionDenied`, `PostToolUse`, `PostToolUseFailure`, `PostToolBatch` | `PreToolUse`, `PermissionRequest`, `PostToolUse` | `preToolUse`, `permissionRequest`, `postToolUse`, `postToolUseFailure` |
+| Subagents, tasks | `SubagentStart`, `SubagentStop`, `TaskCreated`, `TaskCompleted`, `TeammateIdle` | `SubagentStart`, `SubagentStop` | `subagentStart`, `subagentStop` |
+| Context | `PreCompact`, `PostCompact`, `InstructionsLoaded` | `PreCompact`, `PostCompact` | `preCompact` |
+| Stop | `Stop`, `StopFailure` | `Stop`, `Interrupt` | `agentStop` |
+| Other | `Notification`, `MessageDisplay`, `ConfigChange`, `CwdChanged`, `DirectoryAdded`, `FileChanged`, `WorktreeCreate`, `WorktreeRemove`, `Elicitation`, `ElicitationResult` | — | `notification`, `errorOccurred` |
+
+{{% /small %}}
+
+- Copilot accepts _PascalCase aliases_ too (`PreToolUse`, ...), for compatibility with Claude Code's files
+- Copilot in __VS Code__ (_Local_ agent, preview) exposes only __8__ events (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`), and [ignores matchers](https://code.visualstudio.com/docs/copilot/customization/hooks) in Claude Code's files
+- Lists as of October 2026, from each harness's docs: they change often, so check them again before relying on them
+
+---
+
+## Hook events per harness (pt. 2)
+
+{{% small "60%" %}}
+
+| Phase | [Cursor](https://cursor.com/docs/agent/hooks) (__21__) | [Gemini CLI](https://geminicli.com/docs/hooks/reference/) (__11__) | [OpenClaw](https://docs.openclaw.ai/plugins/hooks/reference) (__40__ plugin hooks) |
+|---|---|---|---|
+| Session | `sessionStart`, `sessionEnd`, `workspaceOpen` | `SessionStart`, `SessionEnd` | `session_start`, `session_end`, `before_reset` |
+| User prompt | `beforeSubmitPrompt` | `BeforeAgent` | 8 _message_ hooks (`message_received`, `inbound_claim`, `before_dispatch`, `message_sending`, ...): prompts come from _chat channels_ |
+| Model call | `afterAgentResponse`, `afterAgentThought` (observe only) | `BeforeModel`, `AfterModel`, `BeforeToolSelection` | `before_model_resolve`, `before_prompt_build`, `before_agent_run`, `llm_input`, `llm_output`, ... (12) |
+| Tool call | `preToolUse`, `postToolUse`, `postToolUseFailure`, `beforeShellExecution`, `afterShellExecution`, `beforeMCPExecution`, `afterMCPExecution`, `beforeReadFile`, `afterFileEdit` | `BeforeTool`, `AfterTool` | `before_tool_call`, `after_tool_call`, `resolve_exec_env`, `tool_result_persist`, `before_message_write` |
+| Subagents | `subagentStart`, `subagentStop` | — | `subagent_spawned`, `subagent_ended`, `subagent_progress`, `subagent_delivery_target` |
+| Context | `preCompact` | `PreCompress` | `before_compaction`, `after_compaction` |
+| Stop | `stop` | `AfterAgent` | (`before_agent_finalize`, `agent_end`, among the model ones) |
+| Other | `beforeTabFileRead`, `afterTabFileEdit` (Tab completion) | `Notification` | `gateway_start`, `gateway_stop`, `cron_reconciled`, `cron_changed`, `before_install`, `skill_changed` |
+
+{{% /small %}}
+
+- OpenClaw also has 15 _internal_ hook events (`HOOK.md` + handler, e.g. `command:new`, `session:compact:before`, `message:received`), mostly _observe-only_
+- Gemini CLI is the only one letting a hook _rewrite_ (or _replace_) the LLM request: `BeforeModel` may return a synthetic response, without calling the model
+- Cursor has _tool-specific_ events (shell, MCP, file read) besides the generic `preToolUse`
+
+{{< import path="reusable/antigravity.md" >}}
 
 {{% /section %}}
 
