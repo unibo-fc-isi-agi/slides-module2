@@ -18,29 +18,45 @@ aliases = [
 
 ## Table of Contents
 
-0. [About the course](./) (this page): [useful links](#/links) · [prerequisites](#/prerequisites) · [exam](#/exam) · [project work rules](#/rules)
+{{% small %}}
+
+0. [About the course](./) (this page):
+    + [useful links](#/links) · [prerequisites](#/prerequisites) · [exam](#/exam) · [project work rules](#/rules)
 1. [Generative AI 101](genai)
+    + [check your understanding](genai/#/check-your-understanding)
 2. [LLM-as-a-Service](llmaas)
-    + _exercises_: 1. [caching](llmaas/#/exercise-caching) ([solution](llmaas/#/exercise-caching-solution)) · 2. [retry & backoff](llmaas/#/exercise-retry) ([solution](llmaas/#/exercise-retry-solution))
+    + exercise 1. [caching](llmaas/#/exercise-caching) ([solution](llmaas/#/exercise-caching-solution))
+    · exercise 2. [retry & backoff](llmaas/#/exercise-retry) ([solution](llmaas/#/exercise-retry-solution))
+    · [check your understanding](llmaas/#/check-your-understanding)
 3. [Prompt Engineering & Structured Outputs](prompting)
-    + _exercises_: 1. [checklist scoring](prompting/#/exercise-checklist) ([solution](prompting/#/exercise-checklist-solution)) · 2. [ID documents](prompting/#/exercise-id-documents) ([solution](prompting/#/exercise-id-documents-solution))
+    + exercise 1. [checklist scoring](prompting/#/exercise-checklist) ([solution](prompting/#/exercise-checklist-solution))
+    · exercise 2. [ID documents](prompting/#/exercise-id-documents) ([solution](prompting/#/exercise-id-documents-solution))
+    · [check your understanding](prompting/#/check-your-understanding)
 4. [Validating Generative Software](validating)
-    + _exercises_: 1. [all fields](validating/#/exercise-all-fields) ([solution](validating/#/exercise-all-fields-solution)) · 2. [ID extraction tests](validating/#/exercise-id-tests) ([solution](validating/#/exercise-id-tests-solution))
+    + exercise 1. [all fields](validating/#/exercise-all-fields) ([solution](validating/#/exercise-all-fields-solution))
+    · exercise 2. [ID extraction tests](validating/#/exercise-id-tests) ([solution](validating/#/exercise-id-tests-solution))
+    · [check your understanding](validating/#/check-your-understanding)
 5. [Tools and Agents](agents)
-    + _exercises_: 1. [inspection tools](agents/#/exercise-inspect) ([solution](agents/#/exercise-inspect-solution)) · 2. [decision tools](agents/#/exercise-decide) ([solution](agents/#/exercise-decide-solution)) · 3. [MCP gateway](agents/#/exercise-gateway) ([solution](agents/#/exercise-gateway-solution))
+    + exercise 1. [inspection tools](agents/#/exercise-inspect) ([solution](agents/#/exercise-inspect-solution))
+    · exercise 2. [decision tools](agents/#/exercise-decide) ([solution](agents/#/exercise-decide-solution))
+    · exercise 3. [MCP gateway](agents/#/exercise-gateway) ([solution](agents/#/exercise-gateway-solution))
+    · [check your understanding](agents/#/check-your-understanding)
 6. [Retrieval-Augmented Generation (RAG)](rag)
-    + _exercises_: 1. [Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))
+    + exercise 1. [Q/A about the slides](rag/#/exercise-slides-qa) ([solution](rag/#/exercise-slides-qa-solution))
+    · [check your understanding](rag/#/check-your-understanding)
 7. [Agentic Skills](skills)
-    + _exercises_: 1. [thesis pre-check](skills/#/exercise-thesis-precheck) ([solution](skills/#/exercise-thesis-precheck-solution))
+    + exercise 1. [thesis pre-check](skills/#/exercise-thesis-precheck) ([solution](skills/#/exercise-thesis-precheck-solution))
+    · [check your understanding](skills/#/check-your-understanding)
 8. [Workflows and Agent Orchestration](workflows)
-    + _exercises_: 1. [e-mail bot](workflows/#/exercise-email-bot) ([solution](workflows/#/exercise-email-bot-solution)) · 2. [A2A agent](workflows/#/exercise-a2a) ([solution](workflows/#/exercise-a2a-solution))
+    + exercise 1. [e-mail bot](workflows/#/exercise-email-bot) ([solution](workflows/#/exercise-email-bot-solution))
+    · exercise 2. [A2A agent](workflows/#/exercise-a2a) ([solution](workflows/#/exercise-a2a-solution))
 9. [AI Governance 101](governance)
-    + _exercises_: 1. [comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution)) · 2. [decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))
+    + exercise 1. [comparing models](governance/#/compare-models) ([solution](governance/#/compare-models-solution))
+    · exercise 2. [decision record](governance/#/decision-record) ([solution](governance/#/decision-record-solution))
 
-__Appendices__
+10. \[Appendix] [Free Access to LLMs](free-access)
 
-- [Free Access to LLMs](free-access)
-- [Code of examples and exercises](#/lab-snippets): why, where, and how to run them
+{{% /small %}}
 
 ---
 

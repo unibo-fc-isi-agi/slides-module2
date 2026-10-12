@@ -1275,4 +1275,112 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 
 ---
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/5)
+
+### Agents and tools
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What is an agent, and what changes when its deliberation relies on an LLM? Explain the roles of perception, action, goals, state, and the controller.
+
+2. [_reasoning, theoretical_] How do intelligence, autonomy, and agency differ? Give examples showing why improving one does not necessarily improve the others.
+
+3. [_reasoning, theoretical_] When does a task need an agent rather than a single LLM call or a predefined workflow? What costs come with giving the model more control?
+
+4. [_know-how, theoretical_] How would you design a tool that an LLM can use reliably? Explain what its interface should communicate about arguments, results, errors, and side effects.
+
+5. [_reasoning, theoretical_] Does giving an agent more tools always make it more capable? How could you make a large collection of tools available without presenting every definition at every step?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/5)
+
+### Agents and tools
+
+{{% small "80%" %}}
+
+6. [_know-how, theoretical_] How would you implement a ReAct controller? Explain how it associates tool results with calls, handles dependencies and failures, and decides when to stop.
+
+7. [_reasoning, theoretical_] If a tool call conforms to its JSON Schema, is it safe to execute? What checks remain necessary, and where should they happen?
+
+8. [_know-how, practical_] How would you build a tool-using agent with LangChain? Explain what the framework provides compared with a loop written using a provider's SDK, and what policies you still need to implement.
+
+9. [_know-how, theoretical_] How would you design tools for an assistant that answers questions across text documents and images? Discuss where extraction and computation should happen, what to return to the agent, and when caching is appropriate.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/5)
+
+### Tool integration and MCP
+
+{{% small "80%" %}}
+
+10. [_notions, practical_] What problem does MCP solve? Explain the roles of hosts, clients, and servers, and distinguish tools, resources, and prompts.
+
+11. [_know-how, practical_] How would you expose existing Python functions through an MCP server and connect an agent to them? Compare local stdio and remote HTTP connections, including how you would diagnose a connection or tool-call failure.
+
+12. [_reasoning, theoretical_] Compare tools executed inside the agent's process, tools accessed through a separate server, and tools executed by the model provider. How do these arrangements affect reuse, control, isolation, and failure handling?
+
+13. [_know-how, practical_] How would you configure an MCP gateway shared by several applications with different permissions? Explain how you would handle tool names, credentials, access checks, and logging, including when a host fails to enforce its own policies.
+
+14. [_reasoning, theoretical_] Does using a standard tool protocol make third-party tools trustworthy? Discuss the risks of tool descriptions as well as executable code, including changes made after a tool was approved.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/5)
+
+### Evaluation and planning
+
+{{% small "80%" %}}
+
+15. [_reasoning, theoretical_] Why is checking an agent's final answer insufficient? Explain what its trajectory can reveal, and when requiring an exact sequence of tool calls would be too restrictive.
+
+16. [_know-how, practical_] How would you test an agent's tool selection, arguments, efficiency, and handling of unavailable information? Explain how you would separate agent failures from tool or external-service failures.
+
+17. [_reasoning, theoretical_] What can an agentic benchmark establish about an agent's capabilities? Discuss the influence of the harness, task representation, repeated-run reliability, and the way the goal was achieved.
+
+18. [_reasoning, theoretical_] What distinguishes an executable plan from a plausible description of steps? Explain how explicit states, preconditions, and effects help assess a proposed plan.
+
+19. [_know-how, theoretical_] How could you combine an LLM with external planners or validators to solve a planning task? Explain the generate–test–critique approach and the limits of the guarantees it provides.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (5/5)
+
+### Security and actions with consequences
+
+{{% small "80%" %}}
+
+20. [_reasoning, theoretical_] How does adding tools change an LLM-based system's risks? Is an agent with only read-only tools necessarily harmless?
+
+21. [_know-how, theoretical_] How would you protect an agent that reads untrusted documents, accesses private data, and communicates externally? Explain direct and indirect prompt injection, and distinguish prompt-level mitigations from enforced restrictions.
+
+22. [_know-how, practical_] How would you implement human approval for selected tool calls in an agent framework? Explain what the reviewer must see and how approval, editing, and rejection affect execution.
+
+23. [_reasoning, theoretical_] Why does idempotency matter for tools that change state? Compare recording a decision with sending a notification, and explain what could go wrong after a timeout or retry.
+
+24. [_know-how, theoretical_] How would you test that an agent cannot perform an unauthorised action, even if a document tells it the action was already approved? Distinguish testing the agent's proposals from testing the actual effects and the controls around execution.
+
+{{% /small %}}
+
+{{% /section %}}
+
+---
+
 {{% import path="reusable/back.md" %}}

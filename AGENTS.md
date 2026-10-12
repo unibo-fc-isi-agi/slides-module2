@@ -54,6 +54,7 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
 - `front.md` — title slide of the course (course name, A.Y., teacher); used by `content/_index.md`
 - `footer.md` — course/A.Y./teacher block placed under a lecture's `# Title` on its first slide
 - `back.md` — closing "Lecture is Over" slide with print link and back-to-ToC link
+- `check-your-understanding.md` — intro slide of the per-lecture question deck (how to answer, meaning of labels)
 - `running-example.md` — the **running example** (PhD admission committee assistant: 3 candidates
   with passport, transcript, letter, stored in `static/lab-snippets/data/`); import it with `{{< import ... >}}`
   (`<`, not `%`) since it contains HTML
@@ -131,6 +132,8 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
 - Diagrams: mermaid code fences (inlined by CI), or `{{< plantuml >}}`; `.graphml` sources exported to `.svg`/`.png`.
 - Slides are in **English**; `goldmark` runs in unsafe mode, so raw HTML is allowed.
 - Printable version: append `?print-pdf` to a presentation URL.
+- Each lecture ends (right before `back.md`) with a "Check your understanding" vertical deck (anchor `check-your-understanding`)
+  mirroring its `questions.md` (one slide per ≤5 questions of a section): keep the two in sync when editing either.
 
 ## Course-wide values
 

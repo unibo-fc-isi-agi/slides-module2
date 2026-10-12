@@ -904,6 +904,78 @@ __Application integration__
 
 {{% /section %}}
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/4)
+
+### Foundations
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What is generative AI? How are foundation models, large language models, and multimodal models related?
+
+2. [_notions, theoretical_] How does an LLM generate text? What roles do tokens, context, and temperature play?
+
+3. [_reasoning, theoretical_] How does the training of a foundation model affect what it can and cannot do? Why might it perform poorly on recent or uncommon information?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/4)
+
+### Foundations
+
+{{% small "80%" %}}
+
+4. [_reasoning, theoretical_] If a chatbot remembers what you told it, has it learned something? Discuss the possible meanings of “learning” in this case.
+
+5. [_reasoning, theoretical_] Why can an LLM produce a convincing but incorrect answer? Would making its output deterministic solve the problem?
+
+6. [_reasoning, theoretical_] What are the benefits and limitations of combining language-based reasoning with symbolic computation? How does this relate to the distinction between intuitive and deliberate thinking?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/4)
+
+### Generative AI and software
+
+{{% small "80%" %}}
+
+7. [_know-how, practical_] What kinds of interfaces to generative AI systems are available? Choose examples of existing applications and explain what tasks you would use them for.
+
+8. [_reasoning, practical_] What is the difference between a language model and an application built around it? Using an application you know, discuss which capabilities require more than text generation.
+
+9. [_reasoning, theoretical_] How can generative AI be used in software engineering? Distinguish its use in developing a product from its use within the product.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/4)
+
+### Generative AI and software
+
+{{% small "80%" %}}
+
+10. [_know-how, theoretical_] Give an example of a task for which generative AI is useful and another for which ordinary software is preferable. What makes the difference?
+
+11. [_reasoning, theoretical_] Can an AI-text detector establish whether a student wrote an assignment? What would make its result convincing or unconvincing evidence?
+
+12. [_notions, theoretical_] What activities does engineering a generative AI application involve? How does its lifecycle differ from that of ordinary software and of classic machine-learning projects?
+
+{{% /small %}}
+
+{{% /section %}}
+
 ---
 
 {{% import path="reusable/back.md" %}}

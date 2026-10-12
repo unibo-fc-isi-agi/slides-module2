@@ -663,4 +663,88 @@ VISION_MODEL=<model 2> poetry run python -m snippets -l validating -x 2 -v -s   
 
 ---
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/4)
+
+### Designing evaluations
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What makes generative software difficult to test? Describe the ingredients of an evaluation and explain how evaluations relate to ordinary unit tests.
+
+2. [_know-how, theoretical_] How would you construct a representative test dataset for a document-processing application? Discuss how to establish expectations when the source is ambiguous, incomplete, or internally contradictory.
+
+3. [_reasoning, theoretical_] How would you choose between deterministic checks, similarity metrics, an LLM judge, and human assessment? Give examples where a convenient metric would measure the wrong thing.
+
+4. [_know-how, theoretical_] How would you check extracted facts without rejecting harmless differences in their representation? Explain when exact matching, normalisation, ranges, or set-based comparisons are appropriate, and how excessive tolerance could hide errors.
+
+5. [_notions, theoretical_] What are invariants and relational or metamorphic tests? Give examples useful for generative software, and explain what they can establish when no single expected answer is available.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/4)
+
+### Evaluating with LLM judges
+
+{{% small "80%" %}}
+
+6. [_know-how, theoretical_] How would you design an LLM judge for a quality criterion that is difficult to check with code? Explain what evidence it needs and how its rubric and output should be structured.
+
+7. [_reasoning, theoretical_] What changes when a judge grades one answer rather than compares two, or judges with rather than without a reference answer? Discuss how these choices affect the conclusions you can draw.
+
+8. [_know-how, theoretical_] How would you detect and reduce position bias, verbosity bias, and self-preference in an LLM judge? Would using a stronger model or requesting a rationale be enough to trust its verdicts?
+
+9. [_reasoning, theoretical_] How would you validate an LLM judge against human assessments? Explain why raw agreement can be misleading and what a chance-corrected measure such as Cohen's kappa adds.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/4)
+
+### Interpreting evidence
+
+{{% small "80%" %}}
+
+10. [_reasoning, theoretical_] An application passes every case in a small test dataset. What can you conclude about its reliability? Discuss uncertainty and the difference between testing more inputs and repeating the same inputs more times.
+
+11. [_know-how, theoretical_] How would you compare two versions of a generative application fairly? Explain why paired results on individual cases can tell you more than comparing two average scores.
+
+12. [_reasoning, theoretical_] What is the difference between accuracy and consistency? How would you establish whether majority voting improves a document extractor rather than merely making it more consistent?
+
+13. [_reasoning, theoretical_] When is caching generated outputs useful during evaluation, and when does it invalidate what you are trying to measure? Distinguish reusing a sample across several checks from treating repeated cache hits as independent runs.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/4)
+
+### Evaluation in a software project
+
+{{% small "80%" %}}
+
+14. [_reasoning, practical_] Compare the test-oriented approach of DeepEval with the experiment-tracking approach of MLflow. What concepts do they share, and when might you use either or both in a project?
+
+15. [_know-how, practical_] How would you build an evaluation suite for an application that extracts facts and writes explanations? Using DeepEval or MLflow, describe how you would connect the dataset, system under test, scorers, and report so that failures can be investigated.
+
+16. [_know-how, theoretical_] When an evaluation fails, how would you decide whether the application, the expectation, or the scorer is wrong? How would you check that a suite which always passes can actually detect defects?
+
+17. [_know-how, practical_] How would you use evaluations to detect regressions in CI? Discuss intermittent failures, acceptance thresholds, API costs and credentials, and the information needed to compare runs over time.
+
+{{% /small %}}
+
+{{% /section %}}
+
+---
+
 {{% import path="reusable/back.md" %}}

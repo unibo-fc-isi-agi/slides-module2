@@ -1151,4 +1151,116 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 
 ---
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/6)
+
+### Memory and retrieval
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What kinds of memory can an LLM-based agent use? Distinguish knowledge in model weights from working, episodic, semantic, and procedural memory, and explain where retrieval fits.
+
+2. [_notions, theoretical_] How does retrieval-augmented generation work? Distinguish preparing the knowledge base from answering a question, and explain which components need an LLM.
+
+3. [_reasoning, theoretical_] When would you use RAG rather than put all the documents in the prompt, use a live-data tool, or fine-tune a model? What evidence would justify the added retrieval infrastructure?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/6)
+
+### Memory and retrieval
+
+{{% small "80%" %}}
+
+4. [_notions, theoretical_] How do embeddings support semantic search? Compare cosine similarity, dot product, and Euclidean distance, including the role of vector normalisation.
+
+5. [_reasoning, theoretical_] Does a high embedding similarity mean that a document answers a question correctly? Discuss paraphrases, negation, and the interpretation of scores across different models.
+
+6. [_know-how, practical_] How would you connect an embedding model to a retrieval system? What would you check about document and query encoding, and what would need to change if you replaced the embedding model?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/6)
+
+### Building the index
+
+{{% small "80%" %}}
+
+7. [_reasoning, theoretical_] What must a vector store store and support? Compare exact and approximate nearest-neighbour search, and explain whether exact search guarantees that the retrieved documents are relevant.
+
+8. [_know-how, practical_] How would you implement vector search with SQLite, with and without a vector extension such as `sqlite-vec`? Explain what the extension changes and what limitations would remain as the corpus grows.
+
+9. [_know-how, theoretical_] How would you choose a chunking strategy for a document collection? Discuss chunk size, overlap, document structure, and ways to preserve the context needed to understand each chunk.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/6)
+
+### Building the index
+
+{{% small "80%" %}}
+
+10. [_know-how, practical_] How would you prepare a collection of PDFs for retrieval? Explain how you would detect problems caused by repeated page elements, tables, diagrams, or text-extraction errors before indexing them.
+
+11. [_reasoning, theoretical_] What metadata should accompany a chunk, and why? Explain how filtering before or after nearest-neighbour search changes the results and the enforcement of access restrictions.
+
+12. [_know-how, theoretical_] How would you keep a retrieval index consistent with a changing document collection? Address additions, revisions, deletions, and interrupted updates without rebuilding everything unnecessarily.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (5/6)
+
+### Retrieving evidence and producing answers
+
+{{% small "80%" %}}
+
+13. [_reasoning, theoretical_] When do keyword search and semantic search fail in different ways? Explain how hybrid search combines them and why fusing ranks can be preferable to adding their raw scores.
+
+14. [_know-how, theoretical_] A retriever returns several similar passages but misses the evidence needed to answer the question. How would you decide whether to change k, rerank, rewrite the query, or encourage more diverse results?
+
+15. [_know-how, practical_] How would you build a RAG pipeline with LangChain? Explain the roles of documents, loaders, splitters, embeddings, vector stores, and retrievers, and what you would recheck when replacing a component.
+
+16. [_reasoning, theoretical_] When is agentic RAG preferable to a fixed retrieval-and-generation pipeline? Discuss questions requiring several searches and the consequences of letting the model decide when and what to retrieve.
+
+17. [_know-how, theoretical_] How would you make a document-based assistant cite its evidence and abstain when evidence is insufficient? Explain what can be checked about a citation mechanically and what requires checking its meaning.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (6/6)
+
+### Evaluation and security
+
+{{% small "80%" %}}
+
+18. [_know-how, theoretical_] How would you construct a gold set and compare retrieval strategies? Explain what precision@k, recall@k, and MRR measure, and what aggregate scores might hide.
+
+19. [_reasoning, theoretical_] How would you distinguish a retrieval failure from a generation failure? Can an answer be faithful to the retrieved material yet irrelevant, incomplete, or false?
+
+20. [_know-how, theoretical_] How would you protect a shared RAG system against unauthorised disclosure and poisoned documents? Discuss where permissions must be enforced and whether storing embeddings instead of text removes privacy concerns.
+
+21. [_reasoning, practical_] What additional responsibilities arise when an agent can write persistent memories as well as retrieve documents? Using a memory store or service as an example, explain how you would handle provenance, stale information, deletion, and malicious memories carried into later sessions.
+
+{{% /small %}}
+
+{{% /section %}}
+
+---
+
 {{% import path="reusable/back.md" %}}

@@ -1148,6 +1148,100 @@ echo '{"hook_event_name": "PreToolUse", "tool_name": "Bash", "tool_input": {"com
 - What if the procedure must be followed _step by step_, with _state_, _branches_, _human approvals_, and _several_ agents?
 - Next, we'll see __Workflows and Agent Orchestration__: the _code_ controls the flow again
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/5)
+
+### Designing and using skills
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] What is an agentic skill? Explain its relationship to procedural memory, and distinguish it from a system prompt, a tool, an MCP server, and a workflow.
+
+2. [_reasoning, theoretical_] How does progressive disclosure make a collection of skills usable within a limited context? Compare it with loading every procedure upfront and with retrieving documents through RAG.
+
+3. [_know-how, practical_] How would you turn a team's recurring procedure into an Agent Skills package? Explain what belongs in `SKILL.md`, its description, references, and assets, and how you would state when the skill should not be used.
+
+4. [_reasoning, theoretical_] Which parts of a skill should be natural-language instructions, and which should be executable scripts? Explain how the choice affects reliability, flexibility, context use, and testability.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/5)
+
+### Designing and using skills
+
+{{% small "80%" %}}
+
+5. [_know-how, theoretical_] How would you add skill support to an existing agent? Distinguish discovery, advertising, loading, and execution, and explain which decisions belong to the model and which to its controller.
+
+6. [_know-how, practical_] How would you use the same skill in a coding-agent harness and in an application built with Deep Agents? What would you check about discovery, file access, script execution, and harness-specific extensions?
+
+7. [_reasoning, practical_] Does a skill's `allowed-tools` declaration or a filesystem backend's root directory provide a security sandbox? Explain what permissions and execution boundaries must actually be checked.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/5)
+
+### Testing skills
+
+{{% small "80%" %}}
+
+8. [_notions, theoretical_] What can static validation establish about a skill, and what requires running an agent? Distinguish a valid package, correct scripts, correct activation, and useful outcomes.
+
+9. [_know-how, theoretical_] How would you test whether an agent selects the right skill? Discuss near misses, overlapping descriptions, explicit requests, and how to improve a description without overfitting the test queries.
+
+10. [_know-how, practical_] How would you measure whether a skill improves an agent's work? Describe an evaluation using a skill-testing tool or your own test suite, including the baseline and the evidence you would collect.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/5)
+
+### Hooks and enforced behaviour
+
+{{% small "80%" %}}
+
+11. [_notions, theoretical_] What is a hook in an agent harness? Explain the event–callback contract and how a hook differs from an instruction the model is asked to follow.
+
+12. [_know-how, practical_] How would you port a hook between two harnesses? Explain what must be checked beyond matching event names, and how you would separate shared policy logic from harness-specific adapters.
+
+13. [_reasoning, theoretical_] A hook blocks known network tools and shell commands containing `curl`. Does it prevent an agent from leaking private data? Explain how event coverage, alternative execution paths, and sandboxing affect the answer.
+
+14. [_reasoning, theoretical_] What should happen if a policy hook crashes, times out, or returns an invalid response? Compare failing open with failing closed, and explain why a hook intended to improve reliability could itself prevent progress.
+
+15. [_know-how, theoretical_] How would you make a behavioural skill remain available after context compaction and when work is delegated to another agent? Distinguish preserving its instructions from guaranteeing that they are followed.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (5/5)
+
+### Distribution, trust, and application
+
+{{% small "80%" %}}
+
+16. [_know-how, practical_] How would you distribute and maintain a skill for a team? Compare project and personal installation, and explain when a skill folder is sufficient and when a harness-specific plugin is needed.
+
+17. [_know-how, theoretical_] What would you review before installing or updating a third-party skill? Discuss risks in instructions, references, scripts, and bundled hooks, and the limits of registry scanning or user confirmation.
+
+18. [_know-how, theoretical_] How would you design a skill that reviews a long document and reports issues without modifying it? Explain how you would combine automated checks, selective reading, and judgement, and test both its usefulness and its scope boundaries.
+
+{{% /small %}}
+
+{{% /section %}}
+
 ---
 
 {{% import path="reusable/back.md" %}}

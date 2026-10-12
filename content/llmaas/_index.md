@@ -1464,4 +1464,116 @@ Files of this solution, in the [`lab-snippets`]({{< github-url repo="lab-snippet
 
 ---
 
+{{% section %}}
+
+{{< slide id="check-your-understanding" >}}
+
+{{% import path="reusable/check-your-understanding.md" %}}
+
+---
+
+## Check your understanding (1/6)
+
+### Models and deployment
+
+{{% small "80%" %}}
+
+1. [_notions, theoretical_] How does an application access an LLM as a service? Distinguish the model, inference runtime, service provider, Web API, and client library. What changes when inference runs locally?
+
+2. [_know-how, practical_] How would you use a model zoo (catalogue) to find a model that your application can run or access? What can you learn from its name, variants, and model card, and what would you still need to verify?
+
+3. [_notions, theoretical_] What is model quantization? Explain its purpose and trade-offs. Is choosing the smallest available representation always a good idea?
+
+{{% /small %}}
+
+---
+
+## Check your understanding (2/6)
+
+### Models and deployment
+
+{{% small "80%" %}}
+
+4. [_know-how, theoretical_] How would you estimate whether a model can run on a given machine? Explain why its download size or number of active parameters alone may be misleading, and how the length of a conversation affects the estimate.
+
+5. [_know-how, practical_] How would you make a model available locally through Ollama and connect an application to it? If generation were unexpectedly slow, how would you investigate?
+
+6. [_reasoning, practical_] What does an aggregator such as OpenRouter add to direct access to a provider? Distinguish routing among models from routing among providers, and discuss what changes when you supply your own provider credentials.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (3/6)
+
+### Requests, responses, and portability
+
+{{% small "80%" %}}
+
+7. [_know-how, practical_] How would you configure an LLM client so that it can connect to different services without editing its source code? What precautions are needed when handling API keys?
+
+8. [_know-how, theoretical_] How would you estimate and monitor the cost of a conversation with a hosted LLM? Why might the visible length of its answers be a poor estimate of the bill?
+
+9. [_notions, theoretical_] How can a stateless API support a conversation? Explain the role of message history and message roles, and contrast this with an API that stores conversation state on the server.
+
+10. [_know-how, practical_] How would you control the generation of an LLM response through request parameters? Discuss controls over sampling, repetition, and termination, and explain how you would check which controls a service supports.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (4/6)
+
+### Requests, responses, and portability
+
+{{% small "80%" %}}
+
+11. [_reasoning, theoretical_] A request succeeds, but the returned text is empty or appears incomplete. Does this necessarily indicate a failure? What information besides the text would help you interpret the response?
+
+12. [_reasoning, practical_] A service advertises an OpenAI-compatible API. Is changing the client's base URL, key, and model enough to migrate an application to it? Explain what compatibility does and does not guarantee.
+
+13. [_notions, practical_] Compare two LLM APIs with different request and response structures. What concepts do they share, and what must an application translate between them?
+
+14. [_know-how, theoretical_] How would you implement a command-line chat over a stateless completion API? Distinguish continuing a conversation, retrying a failed request, and asking for an alternative to a successful answer.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (5/6)
+
+### Responsiveness and reliability
+
+{{% small "80%" %}}
+
+15. [_reasoning, theoretical_] What is the difference between asynchronous requests and streamed responses? Can either be used without the other, and what does each improve?
+
+16. [_know-how, practical_] How would you consume a streamed LLM response in a client application? Explain how you would keep the display and conversation history consistent if the stream ended unexpectedly.
+
+17. [_know-how, theoretical_] How would you design a persistent cache of LLM responses? What makes two requests equivalent for caching, and how could you avoid returning an answer from the wrong conversation or service?
+
+18. [_reasoning, theoretical_] What are the benefits and limitations of caching when experimenting with LLMs? Discuss its effect on reproducibility, generating alternative answers, and observing changes to the model.
+
+{{% /small %}}
+
+---
+
+## Check your understanding (6/6)
+
+### Responsiveness and reliability
+
+{{% small "80%" %}}
+
+19. [_know-how, practical_] How would you decide whether to retry a failed API request? Give examples of failures that call for waiting and failures that call for changing the request or configuration.
+
+20. [_reasoning, theoretical_] Why use bounded retries with exponential backoff and jitter? What could go wrong if both the application and its client library independently retry requests?
+
+21. [_know-how, theoretical_] How would you test caching and retry behaviour without spending API credits or waiting through real delays? What cases would distinguish a correct implementation from one that only works on successful requests?
+
+{{% /small %}}
+
+{{% /section %}}
+
+---
+
 {{% import path="reusable/back.md" %}}
