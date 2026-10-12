@@ -18,6 +18,7 @@ aliases = [
 
 ## Table of Contents
 
+0. [About the course](./) (this page): [useful links](#/links) · [prerequisites](#/prerequisites) · [exam](#/exam) · [project work rules](#/rules)
 1. [Generative AI 101](genai)
 2. [LLM-as-a-Service](llmaas)
     + _exercises_: 1. [caching](llmaas/#/exercise-caching) ([solution](llmaas/#/exercise-caching-solution)) · 2. [retry & backoff](llmaas/#/exercise-retry) ([solution](llmaas/#/exercise-retry-solution))
@@ -75,6 +76,155 @@ __Appendices__
 - [APICe Page of the Course]({{< apice_url >}})
 - [Code of examples and exercises]({{< github-url repo="lab-snippets" >}})
 - [These slides](./)
+- Support material for the [prerequisites](#/prerequisites):
+    + [Python Programming 101](https://matteomagnini.github.io/distributed-systems-python-101/#/)
+    + [Git basics](https://unibo-dtm-se.github.io/course-slides/dvcs-basics/#/)
+    + [Shell basics](https://unibo-dtm-se.github.io/course-slides/preliminaries/#/)
+    + [Free Access to LLMs](./free-access/) (how to get an API key, or run models locally)
+
+---
+
+## Organization of Module 2
+
+- Lectures in lab, with immediate _hands-on_
+- Examples and exercises in __Python__, all in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository
+    * each exercise is followed by a (skippable) _walkthrough_ of its solution: try __before__ looking!
+- _Optional_ __project work__ in any programming language of your choice (cf. [exam](#/exam) and [rules](#/rules))
+    * report must be in English and follow [this LaTeX template]({{% final_report_template %}})
+
+---
+
+## Time—table
+
+* cf. the [official timetable]({{< institutional_page_url >}}/orariolezioni)
+
+Changes will be published on the {{< forum_news >}}
+
+---
+
+{{< slide id="exam" >}}
+
+## Exam
+
+> Detailed rules: [Exam page on APICe]({{% apice_url %}}?mode=data&data=course$&display=Exam)
+
+- __Written test__ (_mandatory_, max __27/30__): closed-book, open-ended questions, in person on campus, on the university's computers
+    + assesses the _theoretical_ knowledge (of both modules)
+    + a [list of potential questions]({{< vle_url >}}) is available, and updated throughout the course
+- __Project work__ (_optional_, max __6/30__): assesses the _practical_ knowledge
+    + it should cover, or follow from, a _specific topic_ of the course
+    + _theoretical_, _technological_, or _methodological_ (e.g. an analysis, a technology, a methodology)
+- __Final score__ = written test + project, _capped_ at 30/30
+    + after passing the written test (18/30 or higher), _tell the teachers_ whether you:
+        1. _accept_ the result, skipping the project (exam finalised), or
+        2. _continue_ with the project (finalisation postponed)
+
+---
+
+{{< slide id="rules" >}}
+
+## Workflow for the project work (pt. 1)
+
+> Detailed rules: [Exam page on APICe]({{% apice_url %}}?mode=data&data=course$&display=Exam)
+
+1. **Propose** your project idea on the {{< forum_projects >}}
+    + individual, or 1-3 students per _group_
+        - groups must be _declared on [Virtuale]({{< vle_url >}})_ before starting, and stay _unchanged_ until the end
+    + open a discussion thread named `[Surname1, Surname2, ...] Project Proposal: <your project name>`
+    + please indicate:
+        1. names and __email-addresses__ of the members of the group;
+        2. the project _vision_, i.e. what you want to realise, eliciting the _functionalities_ of the envisioned system;
+        3. a _motivation_ of why/how the project is letting you _explore_ the __topics of the course__ (e.g. structured outputs, tools, RAG, skills, orchestration, validation);
+        4. _which technologies_ (programming languages, libraries, LLM providers and _models_) you intend to use and _why_;
+        5. which _deliverable(s)_ you intend to produce (application, library, presentation, etc), __aside from the final report__;
+        6. some strict _temporal constraint_, if any (e.g., someone in the group is going to graduate soon)
+
+2. Any _subsequent communication_ on the project should be done on the __same thread__
+    + use the thread as a _backlog_ of any official communication concerning the administration of your project work
+    + if you want to talk _privately_ about your project work, _mention the URL_ of your project's thread in your email
+
+3. __Wait__ for the teachers to _approve_ your proposal
+    + the topic is _negotiated_, to ensure its focus on _Intelligent Agents_, and its feasibility in a reasonable time
+    + most likely, we'll try to estimate the effort and ask for changes if too much or too little
+    + we'll also check for overlaps with other groups
+
+---
+
+## Workflow for the project work (pt. 2)
+
+4. Create a __GitHub repository__ where to develop your project and post the URL onto your project's thread
+    + make all the _members_ of the group collaborators on the repository
+    + give _full admin_ rights to the teachers:
+        - Username: [`gciatto`](https://github.com/gciatto)
+
+5. __Work__ on your project:
+    + _commit_ and _push_ your changes often
+        - only the `master` or `main` branch will be considered for the evaluation
+    + __never__ commit API keys (read them from environment variables, as in [`lab-snippets`](#/lab-snippets-setup))
+    + make the project _runnable by the teachers_: document how to install and run it, and which LLM provider/model it needs
+        - prefer _free_ providers or _local_ models (cf. [Free Access to LLMs](./free-access/)), or let the model be configurable
+    + _validate_ your system (cf. [Validating Generative Software](./validating/)), and report on how well it works
+    + in parallel, or later, write a _report_ about your project following [this LaTeX template]({{% final_report_template %}})
+
+6. Once done, post a _message_ on your _project's thread_ to signal the end of the work
+    + we'll _clone_ your repository and evaluate the code
+
+7. __Edits__ may be requested by the teachers, to either the code or the report (or both)
+
+8. Once the teachers are satisfied, you'll be requested to __present__ your work to the teachers
+    + all members of the group present _together_
+    + about half an hour: _presentation_ + _discussion_
+    + both the _software_ and the _report_ are evaluated
+
+---
+
+## Goals
+
+- Teach you how to __design__, __develop__, and __validate__ _LLM-based_ agentic software, in practice...
+- ... via a _running example_ (namely, an assistant for a [PhD admission committee](./prompting/#/running-example))
+- Give you a _reference_ for developing your final __project work__
+
+---
+
+## Topics
+
+- Generative AI and __LLMs__, consumed _as a service_ (APIs, costs, caching, retries)
+- __Prompt engineering__ and _structured outputs_
+- __Validating__ generative software (testing non-deterministic systems)
+- __Tools__ and __agents__ (function calling, MCP)
+- __Retrieval-Augmented Generation__ (RAG)
+- Agentic __skills__
+- __Workflows__ and agent _orchestration_ (A2A)
+- AI __governance__ (regulation, model choice, costs)
+
+---
+
+{{< slide id="prerequisites" >}}
+
+## Prerequisites
+
+- Basic knowledge of __Python__ (see [Python Programming 101](https://matteomagnini.github.io/distributed-systems-python-101/#/) if missing)
+    + including _type hints_, _virtual environments_, and (ideally) `async`/`await`
+- Basic knowledge of __Git__ (see [these slides](https://unibo-dtm-se.github.io/course-slides/dvcs-basics/#/) if missing)
+- Basic knowledge of the __Linux shell__ (see [these slides](https://unibo-dtm-se.github.io/course-slides/preliminaries/#/) if missing)
+- Basic understanding of __HTTP__ APIs and __JSON__
+- Basic notions of _machine learning_ and _neural networks_ (recalled in [Generative AI 101](./genai/))
+
+---
+
+## Software Requirements
+
+### Required
+
+* A working internet connection
+* A working [Python](https://www.python.org/downloads/) 3.11+ installation, and [Git](https://git-scm.com/downloads)
+* An __API key__ for some LLM provider, or a _local_ LLM runtime (cf. [Free Access to LLMs](./free-access/))
+
+### Recommended
+
+* _Visual Studio Code_ OR PyCharm
+* A decent Unix terminal
+    * prefer _Git Bash_ on Windows
 
 ---
 
