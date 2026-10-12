@@ -35,7 +35,7 @@ _(Appendix)_
 5. __Local open weights__: the API bill is zero, but you pay in _hardware_ and _electricity_
 
 {{% fragment %}}
-> Rule of thumb: __grant → student credits → free tier → local model → trials__
+> Rule of thumb: __grant → student credits → local model → free tier → trials__
 {{% /fragment %}}
 
 ---
@@ -64,7 +64,7 @@ No application: just sign up, get a key, and stay within the quota
 | [Mistral](https://mistral.ai/pricing/) (Free plan) | __$10/month__ of API credits | Direct access to Mistral models |
 | [Groq](https://console.groq.com/docs/rate-limits) | e.g. `gpt-oss-120b`: 30 req/min, 1,000 req/day, 200k tokens/day | Fast open models |
 | [OpenRouter](https://openrouter.ai/docs/api_reference/limits) `:free` models | 20 req/min, __50 req/day__ | One key, many open models |
-| [Cohere](https://docs.cohere.com/docs/rate-limits) (trial key) | 1,000 calls/month, also via an [OpenAI-compatible endpoint](https://docs.cohere.com/docs/compatibility-api) | Evaluation, embeddings, rerankers |
+| [Cohere](https://docs.cohere.com/docs/rate-limits) (trial key) | 1,000 calls/month (despite the name: no expiry, non-commercial use only), also via an [OpenAI-compatible endpoint](https://docs.cohere.com/docs/compatibility-api) | Evaluation, embeddings, rerankers |
 
 ---
 
@@ -83,7 +83,9 @@ poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello
     + `ollama`, `vllm`: open models served _locally_ (on your machine, see [below](#/local)), hence no key
 - Arguments: `PROVIDER` (required), then optionally `MODEL` and `PROMPT` (without them, the script just lists the models)
 - Full script [here](../lab-snippets/snippets/lecture_free_access/example1/free_providers.py) (cf. [how to run snippets](../#/lab-snippets-run)); model IDs are _listed live_, not hard-coded, since they __go stale quickly__
-- The same trick works with the [LLM-as-a-Service](../llmaas) scripts: just set `OPENAI_BASE_URL` and `OPENAI_API_KEY`
+- The same trick works with the [LLM-as-a-Service](../llmaas) scripts: just set `OPENAI_BASE_URL`, `OPENAI_API_KEY`, __and__ `OPENAI_MODEL` (the default, `nvidia/nemotron-3-super-120b-a12b:free`, exists only on OpenRouter: pick an ID from the listing above), e.g.
+    + Ollama: `OPENAI_BASE_URL=http://localhost:11434/v1 OPENAI_API_KEY=unused OPENAI_MODEL=gpt-oss:20b`
+    + Groq: `OPENAI_BASE_URL=https://api.groq.com/openai/v1 OPENAI_API_KEY=... OPENAI_MODEL=openai/gpt-oss-20b`
 
 ---
 
@@ -154,7 +156,7 @@ poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello
     + others: [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Mistral Small 4](https://mistral.ai/news/mistral-small-4/), [DeepSeek-R1 distills](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B) (check each license!)
 - Serve them via [Ollama](https://ollama.com) (easy) or [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html) (fast, multi-user): both expose an _OpenAI-compatible_ API
     + i.e. `poetry run python -m snippets -l free-access -e 1 ollama` works out of the box
-- __Quantization__ (4-bit) cuts memory by ~4×, usually with small quality loss, but __re-evaluate on your task__
+- __Quantization__ (4-bit) cuts memory by ~3× w.r.t. 16-bit (`Q4_K_M` ≈ 4.9 bits per weight, cf. the table in [LLM-as-a-Service](../llmaas/#/local-requirements)), usually with small quality loss, but __re-evaluate on your task__
     + see the [LLM-as-a-Service](../llmaas) lecture for requirements, quantization, and model zoos
 - Pinned weights (exact revision + quantization + engine version) are also the best option for __reproducibility__
 

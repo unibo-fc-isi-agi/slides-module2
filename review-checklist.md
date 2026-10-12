@@ -141,16 +141,16 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
     - [x] Fix: add one slide before `#/exercise-retry` (or into "About Chat Completion API" pt. 4): status codes 400/401/402/429/5xx, `Retry-After` header, `openai.RateLimitError`/`APIStatusError`, SDK `max_retries`, `usage` + OR `usage.cost` — new slide `#/api-errors` before Exercise 2
 ## `free-access`
 
-- [ ] Env-var advice (`:86`) omits `OPENAI_MODEL` (default is OR-only)
-    - [ ] Fix: reword `:86` to "...just set `OPENAI_BASE_URL`, `OPENAI_API_KEY`, __and__ `OPENAI_MODEL` (the default, `nvidia/nemotron-3-super-120b-a12b:free`, exists only on OpenRouter; pick an ID from the listing above)"
-- [ ] `free_providers.py` uses per-provider env vars vs `OPENAI_*` everywhere else: add table provider → `OPENAI_BASE_URL` + suggested `OPENAI_MODEL` (incl. Ollama `http://localhost:11434/v1`)
-    - [ ] Fix: base URLs are already in the excerpt (`free_providers.py:12-21`); add one sub-bullet under `:86` with a worked example, e.g. `OPENAI_BASE_URL=http://localhost:11434/v1 OPENAI_API_KEY=unused OPENAI_MODEL=gpt-oss:20b` (Ollama) and `OPENAI_BASE_URL=https://api.groq.com/openai/v1 OPENAI_MODEL=openai/gpt-oss-20b` (Groq)
-    - [ ] @gciatto: (a) that one-bullet example (recommended: smallest, no stale model table); (b) full provider→URL+model table slide (model IDs go stale); (c) also make `free_providers.py` print the matching `export OPENAI_*=...` lines after listing models (lab-snippets `master` + merge into `exercises`; recheck `from="12" to="21"`)
-- [ ] "4-bit cuts memory ~4×" (`:157`) vs `llmaas:289` (~3.3×)
-    - [ ] Fix: `:157` → "cuts memory by ~3× w.r.t. 16-bit (`Q4_K_M` ≈ 4.9 bits/weight, cf. the table in [LLM-as-a-Service](../llmaas))": 16/4.9 ≈ 3.3, consistent with llmaas table (7B: 14 → 4.3 GB)
-- [ ] Rule of thumb ranks local below free tiers (`:38`) while `:49`, `:51`, `:149` recommend local; Cohere _trial_ listed as free tier (`:67`) right after saying trials aren't
-    - [ ] Fix (Cohere): not a contradiction in substance: Cohere "trial" keys don't expire, they're a recurring 1,000 calls/month, non-commercial quota; add "(despite the name: no expiry, non-commercial use only)" to the `:67` row
-    - [ ] @gciatto: rule of thumb at `:38`: (a) state its criterion, "cheapest route _for API-scale volume_: ...", leaving local after free tiers; (b) move local before free tiers (matches `:49`/`:51`/`:149` and "only _durable_ free API"); (c) drop the ranking, keep only the "Which route" table. Recommended: (b) "grant → student credits → local model → free tier → trials"
+- [x] Env-var advice (`:86`) omits `OPENAI_MODEL` (default is OR-only)
+    - [x] Fix: reword `:86` to "...just set `OPENAI_BASE_URL`, `OPENAI_API_KEY`, __and__ `OPENAI_MODEL` (the default, `nvidia/nemotron-3-super-120b-a12b:free`, exists only on OpenRouter; pick an ID from the listing above)"
+- [x] `free_providers.py` uses per-provider env vars vs `OPENAI_*` everywhere else: add table provider → `OPENAI_BASE_URL` + suggested `OPENAI_MODEL` (incl. Ollama `http://localhost:11434/v1`)
+    - [x] Fix: base URLs are already in the excerpt (`free_providers.py:12-21`); add one sub-bullet under `:86` with a worked example, e.g. `OPENAI_BASE_URL=http://localhost:11434/v1 OPENAI_API_KEY=unused OPENAI_MODEL=gpt-oss:20b` (Ollama) and `OPENAI_BASE_URL=https://api.groq.com/openai/v1 OPENAI_MODEL=openai/gpt-oss-20b` (Groq)
+    - [x] @gciatto: (a) that one-bullet example (recommended: smallest, no stale model table); (b) full provider→URL+model table slide (model IDs go stale); (c) also make `free_providers.py` print the matching `export OPENAI_*=...` lines after listing models (lab-snippets `master` + merge into `exercises`; recheck `from="12" to="21"`) — (a)
+- [x] "4-bit cuts memory ~4×" (`:157`) vs `llmaas:289` (~3.3×)
+    - [x] Fix: `:157` → "cuts memory by ~3× w.r.t. 16-bit (`Q4_K_M` ≈ 4.9 bits/weight, cf. the table in [LLM-as-a-Service](../llmaas))": 16/4.9 ≈ 3.3, consistent with llmaas table (7B: 14 → 4.3 GB)
+- [x] Rule of thumb ranks local below free tiers (`:38`) while `:49`, `:51`, `:149` recommend local; Cohere _trial_ listed as free tier (`:67`) right after saying trials aren't
+    - [x] Fix (Cohere): not a contradiction in substance: Cohere "trial" keys don't expire, they're a recurring 1,000 calls/month, non-commercial quota; add "(despite the name: no expiry, non-commercial use only)" to the `:67` row
+    - [x] @gciatto: rule of thumb at `:38`: (a) state its criterion, "cheapest route _for API-scale volume_: ...", leaving local after free tiers; (b) move local before free tiers (matches `:49`/`:51`/`:149` and "only _durable_ free API"); (c) drop the ranking, keep only the "Which route" table. Recommended: (b) "grant → student credits → local model → free tier → trials" — (b)
 ## `prompting`
 
 ### Errors
