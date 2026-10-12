@@ -1,0 +1,1211 @@
+AI System	Release Date	ARC-AGI-1	ARC-AGI-2	ARC-AGI-3
+GPT-6.1 Sol (Max)
+
+2026-09-29
+
+96.5%, $0.095/task
+
+94.2%, $0.254/task
+
+52.7%, $7.6K (Standard) · 96.2%, $3.8K (Provider Adapter)
+GPT-6.1 Sol (XHigh)
+
+2026-09-29
+
+98.5%, $0.074/task
+
+91.7%, $0.178/task
+
+39.9%, $9.1K (Standard) · 96.4%, $4.4K (Provider Adapter)
+GPT-6.1 Sol (High)
+
+2026-09-29
+
+98.5%, $0.059/task
+
+91.7%, $0.135/task
+
+26.7%, $9.8K (Standard) · 95.0%, $5.4K (Provider Adapter)
+GPT-6.1 Sol (Medium)
+
+2026-09-29
+
+95.5%, $0.050/task
+
+86.7%, $0.100/task
+
+10.6%, $7.4K (Standard) · 91.0%, $5.8K (Provider Adapter)
+GPT-6.1 Sol (Low)
+
+2026-09-29
+
+93.5%, $0.047/task
+
+76.7%, $0.086/task
+
+3.9%, $7.1K (Standard) · 82.8%, $6.6K (Provider Adapter)
+GPT-6 Sol (Max)
+
+2026-09-22
+
+95.5%, $0.141/task
+
+89.6%, $0.439/task
+
+4.6%, $5.6K (Standard) · 23.0%, $8.7K (Provider Adapter)
+GPT-6 Sol (XHigh)
+
+2026-09-22
+
+92.7%, $0.102/task
+
+78.1%, $0.277/task
+
+1.8%, $5.1K (Standard) · 9.5%, $6.9K (Provider Adapter)
+GPT-6 Sol (High)
+
+2026-09-22
+
+91.0%, $0.083/task
+
+68.9%, $0.203/task
+
+0.9%, $5.1K (Standard) · 5.9%, $5.9K (Provider Adapter)
+GPT-6 Sol (Medium)
+
+2026-09-22
+
+83.7%, $0.067/task
+
+57.8%, $0.148/task
+
+0.4%, $4.9K (Standard) · 4.9%, $5.9K (Provider Adapter)
+GPT-6 Sol (Low)
+
+2026-09-22
+
+72.2%, $0.053/task
+
+31.5%, $0.101/task
+
+0.1%, $4.8K (Standard) · 1.8%, $4.7K (Provider Adapter)
+GPT-6 Sol (None)
+
+2026-09-22
+
+29.3%, $0.043/task
+
+1.7%, $0.074/task
+
+0.3%, $4.7K (Standard) · 1.2%, $4.2K (Provider Adapter)
+GPT-6 Luna (Max)
+
+2026-09-22
+
+86.7%, $0.018/task
+
+59.3%, $0.062/task
+
+0.1%, $262.24 (Standard) · 0.6%, $237.14 (Provider Adapter)
+GPT-6 Luna (XHigh)
+
+2026-09-22
+
+73.0%, $0.012/task
+
+41.9%, $0.032/task
+
+0.2%, $262.68 (Standard) · 0.5%, $223.17 (Provider Adapter)
+GPT-6 Luna (High)
+
+2026-09-22
+
+70.3%, $0.009/task
+
+31.4%, $0.023/task
+
+0.2%, $255.98 (Standard) · 0.4%, $223.90 (Provider Adapter)
+GPT-6 Luna (Medium)
+
+2026-09-22
+
+61.0%, $0.006/task
+
+18.1%, $0.012/task
+
+0.2%, $241.28 (Standard) · 0.3%, $213.72 (Provider Adapter)
+GPT-6 Luna (Low)
+
+2026-09-22
+
+37.7%, $0.003/task
+
+4.6%, $0.005/task
+
+0.0%, $228.83 (Standard) · 0.2%, $214.29 (Provider Adapter)
+GPT-6 Luna (None)
+
+2026-09-22
+
+8.8%, $0.002/task
+
+0.0%, $0.004/task
+
+0.0%, $229.77 (Standard) · 0.0%, $205.03 (Provider Adapter)
+Claude Opus 5.5 (Max)
+
+2026-09-22
+
+97.5%, $0.641/task
+
+91.7%, $1.85/task
+
+N/A
+Claude Opus 5.5 (XHigh)
+
+2026-09-22
+
+97.5%, $0.223/task
+
+92.5%, $0.671/task
+
+N/A
+Claude Opus 5.5 (High)
+
+2026-09-22
+
+98.5%, $0.158/task
+
+93.3%, $0.408/task
+
+N/A
+Claude Opus 5.5 (Medium)
+
+2026-09-22
+
+97.5%, $0.152/task
+
+87.5%, $0.337/task
+
+N/A
+Claude Opus 5.5 (Low)
+
+2026-09-22
+
+88.5%, $0.120/task
+
+70.1%, $0.241/task
+
+N/A
+Grok 4.7 (XHigh)
+
+2026-09-21
+
+89.5%, $0.778/task
+
+61.4%, $2.01/task
+
+1.8%, $2.7K (Standard) · 7.0%, $4.6K (Provider Adapter)
+Grok 4.7 (High)
+
+2026-09-21
+
+90.2%, $0.642/task
+
+58.3%, $1.55/task
+
+1.7%, $3.7K (Standard) · 10.0%, $4.8K (Provider Adapter)
+Grok 4.7 (Medium)
+
+2026-09-21
+
+90.0%, $0.521/task
+
+58.8%, $1.48/task
+
+1.7%, $3.8K (Standard) · 8.4%, $5.1K (Provider Adapter)
+Grok 4.7 (Low)
+
+2026-09-21
+
+63.3%, $0.100/task
+
+16.7%, $0.174/task
+
+0.2%, $4.8K (Standard) · 0.8%, $5.8K (Provider Adapter)
+DeepSeek V4.1 Flash (Max)
+
+2026-09-10
+
+94.5%, $0.066/task
+
+72.9%, $0.129/task
+
+N/A
+DeepSeek V4.1 Flash (High)
+
+2026-09-10
+
+88.5%, $0.063/task
+
+67.5%, $0.133/task
+
+N/A
+DeepSeek V4.1 Flash (Low)
+
+2026-09-10
+
+90.5%, $0.048/task
+
+60.6%, $0.119/task
+
+N/A
+DeepSeek V4.1 Flash (None)
+
+2026-09-10
+
+7.8%, $0.006/task
+
+1.3%, $0.010/task
+
+N/A
+GPT-6 Astra (Max)
+
+2026-09-02
+
+97.5%, $0.433/task
+
+95.0%, $1.12/task
+
+62.7%, $26.1K (Standard) · 98.6%, $17.3K (Provider Adapter)
+GPT-6 Astra (XHigh)
+
+2026-09-02
+
+98.5%, $0.347/task
+
+93.3%, $0.829/task
+
+59.3%, $37.3K (Standard) · 98.4%, $18.1K (Provider Adapter)
+GPT-6 Astra (High)
+
+2026-09-02
+
+98.5%, $0.284/task
+
+92.1%, $0.668/task
+
+54.8%, $40.7K (Standard) · 99.9%, $18.8K (Provider Adapter)
+GPT-6 Astra (Medium)
+
+2026-09-02
+
+97.5%, $0.240/task
+
+92.1%, $0.480/task
+
+38.6%, $48.1K (Standard) · 98.4%, $19.3K (Provider Adapter)
+GPT-6 Astra (Low)
+
+2026-09-02
+
+96.5%, $0.227/task
+
+85.4%, $0.416/task
+
+17.5%, $38.2K (Standard) · 98.0%, $21.3K (Provider Adapter)
+GPT-6 Astra (None)
+
+2026-09-02
+
+86.0%, $0.214/task
+
+59.6%, $0.370/task
+
+35.2%, $49.8K (Standard) · 96.7%, $23.5K (Provider Adapter)
+Gemini 3.8 Flash (High)
+
+2026-09-02
+
+98.5%, $0.206/task
+
+89.2%, $0.400/task
+
+10.4%, $4.4K (Standard) · 35.0%, $4.5K (Provider Adapter)
+Gemini 3.8 Flash (Medium)
+
+2026-09-02
+
+97.5%, $0.108/task
+
+82.9%, $0.248/task
+
+4.0%, $2.7K (Standard) · 24.2%, $3.8K (Provider Adapter)
+Gemini 3.8 Flash (Low)
+
+2026-09-02
+
+90.5%, $0.067/task
+
+77.5%, $0.154/task
+
+6.0%, $2.7K (Standard) · 15.1%, $3.2K (Provider Adapter)
+Claude Fable 5.1 (Max)
+
+2026-09-01
+
+97.5%, $1.40/task
+
+90.0%, $4.49/task
+
+N/A
+Claude Fable 5.1 (XHigh)
+
+2026-09-01
+
+96.5%, $0.958/task
+
+90.0%, $3.12/task
+
+N/A
+Claude Fable 5.1 (High)
+
+2026-09-01
+
+96.0%, $0.517/task
+
+88.8%, $1.67/task
+
+N/A
+Claude Fable 5.1 (Medium)
+
+2026-09-01
+
+94.5%, $0.443/task
+
+86.3%, $1.22/task
+
+N/A
+Claude Fable 5.1 (Low)
+
+2026-09-01
+
+90.0%, $0.366/task
+
+78.3%, $0.952/task
+
+N/A
+GLM-5.3-Flash (Max)
+
+2026-08-26
+
+91.0%, $0.043/task
+
+65.8%, $0.093/task
+
+N/A
+GLM-5.3-Flash (High)
+
+2026-08-26
+
+71.8%, $0.028/task
+
+50.1%, $0.077/task
+
+N/A
+GLM-5.3-Flash (Low)
+
+2026-08-26
+
+47.0%, $0.020/task
+
+27.9%, $0.058/task
+
+N/A
+Dots3-Note Preview (Max)
+
+2026-08-14
+
+N/A
+
+76.8%, $0.077/task
+
+N/A
+Qwen3.8-27B (XHigh)
+
+2026-08-14
+
+87.5%, $0.215/task
+
+42.4%, $0.447/task
+
+N/A
+Qwen3.8-27B (Medium)
+
+2026-08-14
+
+68.7%, $0.131/task
+
+13.2%, $0.286/task
+
+N/A
+Qwen3.8-27B (Low)
+
+2026-08-14
+
+69.2%, $0.120/task
+
+22.8%, $0.238/task
+
+N/A
+Qwen3.8-27B (None)
+
+2026-08-14
+
+34.0%, $0.041/task
+
+1.5%, $0.059/task
+
+N/A
+Gemini 3.7 Flash (High)
+
+2026-08-13
+
+95.5%, $0.120/task
+
+84.6%, $0.249/task
+
+N/A
+Gemini 3.7 Flash (Medium)
+
+2026-08-13
+
+91.2%, $0.061/task
+
+63.7%, $0.116/task
+
+N/A
+Gemini 3.7 Flash (Low)
+
+2026-08-13
+
+85.2%, $0.042/task
+
+52.9%, $0.079/task
+
+N/A
+DeepSeek V4 Pro 0813 (Max)
+
+2026-08-13
+
+90.0%, $0.296/task
+
+61.3%, $0.598/task
+
+N/A
+DeepSeek V4 Pro 0813 (High)
+
+2026-08-13
+
+87.2%, $0.307/task
+
+59.7%, $0.597/task
+
+N/A
+DeepSeek V4 Pro 0813 (Low)
+
+2026-08-13
+
+90.5%, $0.178/task
+
+56.3%, $0.370/task
+
+N/A
+DeepSeek V4 Pro 0813 (None)
+
+2026-08-13
+
+13.0%, $0.023/task
+
+0.8%, $0.040/task
+
+N/A
+Grok 4.6 (XHigh)
+
+2026-08-11
+
+87.0%, $0.348/task
+
+67.1%, $0.757/task
+
+2.1%, $5.6K (Standard)
+Grok 4.6 (High)
+
+2026-08-11
+
+87.0%, $0.327/task
+
+65.1%, $0.734/task
+
+N/A
+Grok 4.6 (Medium)
+
+2026-08-11
+
+87.5%, $0.301/task
+
+61.3%, $0.659/task
+
+N/A
+Grok 4.6 (Low)
+
+2026-08-11
+
+74.8%, $0.103/task
+
+27.6%, $0.212/task
+
+N/A
+DeepSeek V4 Flash 0731 (Max)
+
+2026-07-31
+
+89.0%, $0.021/task
+
+61.4%, $0.042/task
+
+N/A
+DeepSeek V4 Flash 0731 (High)
+
+2026-07-31
+
+87.0%, $0.021/task
+
+56.0%, $0.045/task
+
+N/A
+DeepSeek V4 Flash 0731 (Low)
+
+2026-07-31
+
+84.0%, $0.012/task
+
+46.0%, $0.021/task
+
+N/A
+DeepSeek V4 Flash 0731 (None)
+
+2026-07-31
+
+11.8%, $0.002/task
+
+2.1%, $0.004/task
+
+N/A
+Inkling Small (XHigh)
+
+2026-07-30
+
+84.0%, $0.115/task
+
+40.1%, $0.233/task
+
+N/A
+Inkling Small (High)
+
+2026-07-30
+
+78.0%, $0.067/task
+
+33.1%, $0.133/task
+
+N/A
+Inkling Small (Medium)
+
+2026-07-30
+
+67.0%, $0.035/task
+
+13.6%, $0.064/task
+
+N/A
+Inkling Small (Low)
+
+2026-07-30
+
+52.5%, $0.026/task
+
+4.9%, $0.056/task
+
+N/A
+Inkling Small (Minimal)
+
+2026-07-30
+
+48.5%, $0.024/task
+
+4.0%, $0.053/task
+
+N/A
+Inkling Small (None)
+
+2026-07-30
+
+5.5%, $0.006/task
+
+0.0%, $0.011/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (Max)
+
+2026-07-30
+
+90.7%, $0.065/task
+
+59.6%, $0.177/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (XHigh)
+
+2026-07-30
+
+85.0%, $0.046/task
+
+43.5%, $0.130/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (High)
+
+2026-07-30
+
+78.0%, $0.028/task
+
+33.3%, $0.063/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (Medium)
+
+2026-07-30
+
+54.0%, $0.012/task
+
+7.4%, $0.022/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (Low)
+
+2026-07-30
+
+39.5%, $0.008/task
+
+3.6%, $0.014/task
+
+N/A
+GPT-5.6 Luna 2026-07-30 (None)
+
+2026-07-30
+
+3.3%, $0.005/task
+
+0.8%, $0.008/task
+
+N/A
+Claude Opus 5 (High)
+
+2026-07-24
+
+97.5%, $0.470/task
+
+88.3%, $1.45/task
+
+30.2%, $20.7K (Standard)
+Claude Opus 5 (Max)
+
+2026-07-24
+
+97.5%, $0.700/task
+
+90.4%, $2.06/task
+
+N/A
+Gemini 3.5 Flash-Lite (High)
+
+2026-07-21
+
+53.5%, $0.093/task
+
+10.3%, $0.139/task
+
+N/A
+Gemini 3.5 Flash-Lite (Medium)
+
+2026-07-21
+
+32.3%, $0.033/task
+
+5.3%, $0.044/task
+
+N/A
+Gemini 3.5 Flash-Lite (Low)
+
+2026-07-21
+
+17.0%, $0.011/task
+
+1.5%, $0.017/task
+
+N/A
+Gemini 3.5 Flash-Lite (Minimal)
+
+2026-07-21
+
+7.5%, $0.008/task
+
+0.8%, $0.014/task
+
+N/A
+Gemini 3.6 Flash (High)
+
+2026-07-21
+
+91.2%, $0.336/task
+
+60.4%, $0.606/task
+
+N/A
+Gemini 3.6 Flash (Medium)
+
+2026-07-21
+
+83.2%, $0.247/task
+
+50.4%, $0.456/task
+
+N/A
+Gemini 3.6 Flash (Low)
+
+2026-07-21
+
+76.5%, $0.121/task
+
+30.4%, $0.223/task
+
+N/A
+Gemini 3.6 Flash (Minimal)
+
+2026-07-21
+
+34.5%, $0.041/task
+
+2.6%, $0.071/task
+
+N/A
+Grok 4.5 (High)
+
+2026-07-16
+
+85.7%, $0.330/task
+
+52.6%, $0.780/task
+
+0.3%, $6.9K (Standard)
+Grok 4.5 (Medium)
+
+2026-07-16
+
+87.2%, $0.310/task
+
+52.6%, $0.750/task
+
+0.3%, $8.5K (Standard)
+Grok 4.5 (Low)
+
+2026-07-16
+
+79.2%, $0.180/task
+
+33.1%, $0.400/task
+
+0.3%, $8.7K (Standard)
+Kimi K3 (Max)
+
+2026-07-16
+
+94.5%, $0.770/task
+
+60.4%, $1.59/task
+
+N/A
+Kimi K3 (High)
+
+2026-07-16
+
+86.7%, $0.480/task
+
+55.0%, $0.947/task
+
+N/A
+Kimi K3 (Low)
+
+2026-07-16
+
+65.7%, $0.181/task
+
+12.4%, $0.254/task
+
+N/A
+Inkling
+
+2026-07-15
+
+79.5%, $0.300/task
+
+36.5%, $0.642/task
+
+N/A
+GPT-5.6 Sol (Low)
+
+2026-07-09
+
+74.5%, $0.170/task
+
+42.5%, $0.320/task
+
+0.3%, $12.8K (Standard)
+GPT-5.6 Sol (Medium)
+
+2026-07-09
+
+92.5%, $0.220/task
+
+67.1%, $0.470/task
+
+1.1%, $13.0K (Standard)
+GPT-5.6 Sol (High)
+
+2026-07-09
+
+97.0%, $0.300/task
+
+85.4%, $0.740/task
+
+2.1%, $15.2K (Standard)
+GPT-5.6 Sol (XHigh)
+
+2026-07-09
+
+97.5%, $0.400/task
+
+90.0%, $1.04/task
+
+7.0%, $19.2K (Standard)
+GPT-5.6 Sol (Max)
+
+2026-07-09
+
+96.5%, $0.540/task
+
+92.5%, $1.44/task
+
+7.8%, $25.1K (Standard)
+GPT-5.6 Terra (Low)
+
+2026-07-09
+
+60.2%, $0.090/task
+
+18.8%, $0.170/task
+
+0.0%, $5.1K (Standard)
+GPT-5.6 Terra (Medium)
+
+2026-07-09
+
+77.0%, $0.130/task
+
+37.5%, $0.270/task
+
+0.1%, $5.9K (Standard)
+GPT-5.6 Terra (High)
+
+2026-07-09
+
+92.0%, $0.190/task
+
+67.1%, $0.550/task
+
+0.5%, $5.9K (Standard)
+GPT-5.6 Terra (XHigh)
+
+2026-07-09
+
+94.0%, $0.260/task
+
+74.2%, $0.690/task
+
+0.7%, $6.8K (Standard)
+GPT-5.6 Terra (Max)
+
+2026-07-09
+
+96.5%, $0.550/task
+
+83.9%, $1.09/task
+
+0.8%, $7.9K (Standard)
+GPT-5.6 Luna (Low)
+
+2026-07-09
+
+34.2%, $0.040/task
+
+5.1%, $0.070/task
+
+0.2%, $2.3K (Standard)
+GPT-5.6 Luna (Medium)
+
+2026-07-09
+
+56.5%, $0.060/task
+
+7.4%, $0.110/task
+
+0.2%, $2.4K (Standard)
+GPT-5.6 Luna (High)
+
+2026-07-09
+
+76.5%, $0.130/task
+
+29.3%, $0.290/task
+
+0.1%, $2.5K (Standard)
+GPT-5.6 Luna (XHigh)
+
+2026-07-09
+
+87.7%, $0.210/task
+
+47.6%, $0.540/task
+
+0.0%, $2.8K (Standard)
+GPT-5.6 Luna (Max)
+
+2026-07-09
+
+88.0%, $0.320/task
+
+59.5%, $0.670/task
+
+0.2%, $3.2K (Standard)
+GLM-5.2	2026-06-13	77.0%, $0.192/task	22.8%, $0.250/task	N/A
+Claude Fable 5 (Max)
+
+2026-06-09
+
+98.5%, $2.11/task
+
+89.2%, $5.45/task
+
+N/A
+Claude Fable 5 (XHigh)
+
+2026-06-09
+
+98.5%, $1.02/task
+
+88.3%, $3.00/task
+
+N/A
+Claude Fable 5 (High)
+
+2026-06-09
+
+95.5%, $0.767/task
+
+87.5%, $2.44/task
+
+N/A
+Claude Fable 5 (Medium)
+
+2026-06-09
+
+92.5%, $0.664/task
+
+82.5%, $1.93/task
+
+N/A
+Claude Fable 5 (Low)
+
+2026-06-09
+
+90.5%, $0.508/task
+
+76.8%, $1.45/task
+
+N/A
+Claude Opus 4.8 (Low)	2026-06-01	88.0%, $0.671/task	62.2%, $1.68/task	N/A
+Claude Opus 4.8 (Medium)	2026-06-01	91.5%, $0.911/task	71.7%, $2.39/task	N/A
+Claude Opus 4.8 (High)	2026-06-01	92.0%, $1.04/task	72.1%, $2.74/task	1.5%, $10.0K (Standard)
+Claude Opus 4.8 (Max)	2026-06-01	92.5%, $2.33/task	N/A	N/A
+Gemini 3.5 Flash (Minimal)	2026-05-19	48.8%, $0.065/task	8.9%, $0.107/task	N/A
+Gemini 3.5 Flash (High)	2026-05-19	92.5%, $0.428/task	72.1%, $0.850/task	N/A
+GPT-5.5 Pro (High)	2026-04-23	96.5%, $4.53/task	84.6%, $10.51/task	N/A
+GPT-5.5 Pro (XHigh)	2026-04-23	95.0%, $4.52/task	84.2%, $10.76/task	N/A
+GPT-5.5 (High)	2026-04-23	N/A	N/A	0.4%, $10.0K (Standard)
+GPT-5.5 (Low)	2026-04-22	76.2%, $0.200/task	33.3%, $0.350/task	N/A
+GPT-5.5 (Medium)	2026-04-22	92.2%, $0.390/task	70.4%, $0.860/task	N/A
+GPT-5.5 (High)	2026-04-22	94.5%, $0.560/task	83.3%, $1.45/task	N/A
+GPT-5.5 (XHigh)	2026-04-22	95.0%, $0.730/task	85.0%, $1.87/task	N/A
+Claude 4.7 (Low)	2026-04-16	91.0%, $0.760/task	62.1%, $2.38/task	N/A
+Claude 4.7 (Medium)	2026-04-16	91.0%, $1.04/task	67.5%, $2.96/task	N/A
+Claude 4.7 (High)	2026-04-16	93.5%, $1.41/task	68.3%, $3.17/task	N/A
+Claude 4.7 (Max)	2026-04-16	92.0%, $2.58/task	75.8%, $7.43/task	N/A
+Opus 4.7 (High)	2026-04-16	N/A	N/A	0.2%, $10.0K (Standard)
+GPT-5.4 Mini (XHigh)	2026-03-17	63.7%, $0.510/task	18.9%, $0.750/task	N/A
+GPT-5.4 Mini (High)	2026-03-17	58.0%, $0.270/task	13.2%, $0.560/task	N/A
+GPT-5.4 Mini (Medium)	2026-03-17	40.8%, $0.160/task	4.4%, $0.330/task	N/A
+GPT-5.4 Mini (Low)	2026-03-17	13.0%, $0.040/task	1.1%, $0.060/task	N/A
+GPT-5.4 Nano (XHigh)	2026-03-17	51.5%, $0.130/task	5.7%, $0.160/task	N/A
+GPT-5.4 Nano (High)	2026-03-17	38.2%, $0.070/task	3.6%, $0.130/task	N/A
+GPT-5.4 Nano (Medium)	2026-03-17	33.0%, $0.040/task	1.9%, $0.060/task	N/A
+GPT-5.4 Nano (Low)	2026-03-17	18.3%, $0.010/task	1.5%, $0.010/task	N/A
+Grok 4.20 (Reasoning)	2026-03-09	89.5%, $0.350/task	65.1%, $0.920/task	N/A
+Grok 4.20 (Beta Reasoning)	2026-03-05	N/A	N/A	0.1%, $3.8K (Standard)
+GPT-5.4 (High)	2026-03-05	N/A	N/A	0.2%, $5.2K (Standard)
+Gemini 3.1 Pro (Preview)	2026-03-05	N/A	N/A	0.4%, $2.2K (Standard)
+GPT-5.4 (Low)	2026-03-04	68.2%, $0.150/task	29.2%, $0.270/task	N/A
+GPT-5.4 (Medium)	2026-03-04	86.2%, $0.250/task	55.4%, $0.680/task	N/A
+GPT-5.4 (High)	2026-03-04	92.7%, $0.370/task	67.5%, $1.02/task	N/A
+GPT-5.4 (XHigh)	2026-03-04	93.7%, $0.620/task	74.0%, $1.52/task	N/A
+GPT-5.4 Pro (XHigh)	2026-03-04	94.5%, $7.21/task	83.3%, $16.41/task	N/A
+GLM-5	2026-02-20	44.7%, $0.170/task	4.9%, $0.270/task	N/A
+Gemini 3.1 Pro (Preview)	2026-02-19	98.0%, $0.522/task	77.1%, $0.962/task	N/A
+Claude Sonnet 4.6 (Max)	2026-02-17	86.0%, $1.45/task	58.3%, $2.72/task	N/A
+Claude Sonnet 4.6 (High)	2026-02-17	86.5%, $1.19/task	60.4%, $2.70/task	N/A
+Gemini 3 Deep Think (Preview) ²	2026-02-12	87.5%, $44.26/task	45.1%, $77.16/task	N/A
+Gemini 3 Deep Think (2/26)	2026-02-12	96.0%, $7.17/task	84.6%, $13.62/task	N/A
+Minimax M2.5	2026-02-12	63.7%, $0.070/task	4.9%, $0.170/task	N/A
+Claude Opus 4.6 (120K, Low)	2026-02-05	86.0%, $0.648/task	64.6%, $2.25/task	N/A
+Claude Opus 4.6 (120K, Medium)	2026-02-05	92.0%, $0.965/task	66.3%, $2.72/task	N/A
+Claude Opus 4.6 (120K, High)	2026-02-05	94.0%, $1.39/task	69.2%, $3.47/task	N/A
+Claude Opus 4.6 (120K, Max)	2026-02-05	93.0%, $1.88/task	68.8%, $3.64/task	N/A
+GPT-5.2 (Refine.)	2026-02-03	94.5%, $11.40/task	72.9%, $38.99/task	N/A
+Kimi K2.5	2026-01-27	65.3%, $0.150/task	11.8%, $0.280/task	N/A
+Gemini 3 Flash Preview (Minimal)	2025-12-17	21.5%, $0.012/task	3.3%, $0.021/task	N/A
+Gemini 3 Flash Preview (Low)	2025-12-17	29.0%, $0.016/task	1.3%, $0.025/task	N/A
+Gemini 3 Flash Preview (Medium)	2025-12-17	57.7%, $0.061/task	12.8%, $0.082/task	N/A
+Gemini 3 Flash Preview (High)	2025-12-17	84.7%, $0.174/task	33.6%, $0.231/task	N/A
+Anthropic Opus 4.6 (Max)	2025-12-17	N/A	N/A	0.5%, $8.9K (Standard)
+GPT-5.2	2025-12-11	12.3%, $0.047/task	0.8%, $0.082/task	N/A
+GPT-5.2 (Low)	2025-12-11	55.7%, $0.166/task	9.7%, $0.264/task	N/A
+GPT-5.2 (Medium)	2025-12-11	72.7%, $0.345/task	26.7%, $0.759/task	N/A
+GPT-5.2 (High)	2025-12-11	78.7%, $0.520/task	43.3%, $1.39/task	N/A
+GPT-5.2 (XHigh)	2025-12-11	86.2%, $0.960/task	52.9%, $1.90/task	N/A
+GPT-5.2 Pro (Medium)	2025-12-11	81.2%, $3.98/task	38.5%, $8.99/task	N/A
+GPT-5.2 Pro (High)	2025-12-11	85.7%, $5.87/task	54.2%, $15.72/task	N/A
+GPT-5.2 Pro (XHigh)	2025-12-11	90.5%, $11.65/task	N/A	N/A
+Gemini 3 Pro (Refine.)	2025-12-04	N/A	54.0%, $30.57/task	N/A
+Deepseek V3.2	2025-12-01	57.0%, $0.080/task	4.0%, $0.120/task	N/A
+Opus 4.5 (Thinking, None)	2025-11-24	40.0%, $0.130/task	7.8%, $0.220/task	N/A
+Opus 4.5 (Thinking, 1K)	2025-11-24	35.2%, $0.150/task	9.4%, $0.230/task	N/A
+Opus 4.5 (Thinking, 8K)	2025-11-24	58.7%, $0.380/task	13.9%, $0.480/task	N/A
+Opus 4.5 (Thinking, 16K)	2025-11-24	72.0%, $0.620/task	22.8%, $0.790/task	N/A
+Opus 4.5 (Thinking, 32K)	2025-11-24	75.8%, $0.950/task	30.6%, $1.29/task	N/A
+Opus 4.5 (Thinking, 64K)	2025-11-24	80.0%, $1.47/task	37.6%, $2.40/task	N/A
+Gemini 3 Pro	2025-11-18	75.0%, $0.493/task	31.1%, $0.811/task	N/A
+GPT-5.1 (Thinking, None)	2025-11-13	5.8%, $0.034/task	0.4%, $0.058/task	N/A
+GPT-5.1 (Thinking, Low)	2025-11-13	33.2%, $0.100/task	1.9%, $0.129/task	N/A
+GPT-5.1 (Thinking, Medium)	2025-11-13	57.7%, $0.315/task	6.5%, $0.421/task	N/A
+GPT-5.1 (Thinking, High)	2025-11-13	72.8%, $0.674/task	17.6%, $1.17/task	N/A
+Grok 4 (Fast Reasoning)	2025-10-21	48.5%, $0.031/task	5.3%, $0.061/task	N/A
+Tiny Recursion Model (TRM)	2025-10-07	40.0%, $1.76/task	6.3%, $2.10/task	N/A
+GPT-5 Pro	2025-10-06	70.2%, $4.78/task	18.3%, $7.14/task	N/A
+Claude Haiku 4.5	2025-10-01	14.3%, $0.026/task	1.3%, $0.043/task	N/A
+Claude Haiku 4.5 (Thinking 1K)	2025-10-01	16.8%, $0.031/task	1.3%, $0.047/task	N/A
+Claude Haiku 4.5 (Thinking 8K)	2025-10-01	25.5%, $0.069/task	1.7%, $0.091/task	N/A
+Claude Haiku 4.5 (Thinking 16K)	2025-10-01	37.3%, $0.104/task	2.8%, $0.139/task	N/A
+Claude Haiku 4.5 (Thinking 32K)	2025-10-01	47.7%, $0.256/task	4.0%, $0.377/task	N/A
+Claude Sonnet 4.5	2025-09-29	25.5%, $0.081/task	3.8%, $0.130/task	N/A
+Claude Sonnet 4.5 (Thinking 1K)	2025-09-29	31.0%, $0.093/task	5.8%, $0.142/task	N/A
+Claude Sonnet 4.5 (Thinking 8K)	2025-09-29	46.5%, $0.178/task	6.9%, $0.235/task	N/A
+Claude Sonnet 4.5 (Thinking 16K)	2025-09-29	48.3%, $0.268/task	6.9%, $0.350/task	N/A
+Claude Sonnet 4.5 (Thinking 32K)	2025-09-29	63.7%, $0.519/task	13.6%, $0.759/task	N/A
+GPT-5 (High)	2025-08-07	65.7%, $0.509/task	9.9%, $0.730/task	N/A
+GPT-5 (Medium)	2025-08-07	56.2%, $0.330/task	7.5%, $0.449/task	N/A
+GPT-5 (Low)	2025-08-07	44.0%, $0.153/task	1.9%, $0.190/task	N/A
+GPT-5 (Minimal)	2025-08-07	6.0%, $0.034/task	0.0%, $0.056/task	N/A
+GPT-5 Mini (High)	2025-08-07	54.3%, $0.116/task	4.4%, $0.198/task	N/A
+GPT-5 Mini (Medium)	2025-08-07	37.3%, $0.040/task	4.0%, $0.063/task	N/A
+GPT-5 Mini (Low)	2025-08-07	26.3%, $0.013/task	0.8%, $0.019/task	N/A
+GPT-5 Mini (Minimal)	2025-08-07	5.3%, $0.006/task	1.7%, $0.009/task	N/A
+GPT-5 Nano (High)	2025-08-07	16.7%, $0.029/task	2.6%, $0.029/task	N/A
+GPT-5 Nano (Medium)	2025-08-07	20.7%, $0.012/task	0.9%, $0.014/task	N/A
+GPT-5 Nano (Low)	2025-08-07	4.0%, $0.003/task	0.0%, $0.003/task	N/A
+GPT-5 Nano (Minimal)	2025-08-07	1.5%, $0.002/task	0.0%, $0.003/task	N/A
+Hierarchical Reasoning Model (HRM)	2025-08-07	32.0%, $1.48/task	2.0%, $1.68/task	N/A
+Grok 4 (Refine.)	2025-08-07	79.6%, $8.42/task	29.4%, $30.40/task	N/A
+Grok 4 (Refine.)	2025-08-07	77.1%, $2.56/task	26.0%, $3.97/task	N/A
+Qwen3-235b-a22b Instruct (25/07)	2025-07-25	11.0%, $0.003/task	1.3%, $0.004/task	N/A
+Grok 4 (Thinking)	2025-07-09	66.7%, $1.01/task	16.0%, $2.17/task	N/A
+Gemini 2.5 Pro (Thinking 1K)	2025-06-17	16.0%, $0.057/task	0.0%, $0.088/task	N/A
+Gemini 2.5 Pro (Thinking 8K)	2025-06-17	29.5%, $0.295/task	2.9%, $0.444/task	N/A
+Gemini 2.5 Pro (Thinking 16K)	2025-06-17	41.0%, $0.484/task	4.0%, $0.715/task	N/A
+Gemini 2.5 Pro (Thinking 32K)	2025-06-17	37.0%, $0.512/task	4.9%, $0.757/task	N/A
+o3-Pro (Low)	2025-06-10	44.3%, $1.64/task	2.1%, $2.23/task	N/A
+o3-Pro (Medium)	2025-06-10	57.0%, $3.18/task	1.9%, $4.74/task	N/A
+o3-Pro (High)	2025-06-10	59.3%, $4.16/task	4.9%, $7.55/task	N/A
+Magistral Small	2025-06-10	5.0%, $0.040/task	0.0%, $0.049/task	N/A
+Magistral Medium	2025-06-10	5.9%, $0.102/task	0.0%, $0.108/task	N/A
+Magistral Medium (Thinking)	2025-06-10	6.1%, $0.099/task	0.0%, $0.123/task	N/A
+Deepseek R1 (05/28)	2025-05-28	21.2%, $0.046/task	1.1%, $0.053/task	N/A
+Codex Mini (Latest)	2025-05-23	27.3%, $0.160/task	1.3%, $0.230/task	N/A
+Gemini 2.5 Flash (Preview)	2025-05-20	33.3%, $0.037/task	1.7%, $0.057/task	N/A
+Gemini 2.5 Flash (Preview) (Thinking 1K)	2025-05-20	16.0%, $0.036/task	2.2%, $0.030/task	N/A
+Gemini 2.5 Flash (Preview) (Thinking 8K)	2025-05-20	25.8%, $0.134/task	2.1%, $0.199/task	N/A
+Gemini 2.5 Flash (Preview) (Thinking 16K)	2025-05-20	33.3%, $0.213/task	2.0%, $0.317/task	N/A
+Gemini 2.5 Flash (Preview) (Thinking 24K)	2025-05-20	32.3%, $0.197/task	2.5%, $0.319/task	N/A
+Claude Sonnet 4	2025-05-14	23.8%, $0.081/task	1.3%, $0.127/task	N/A
+Claude Sonnet 4 (Thinking 1K)	2025-05-14	28.0%, $0.094/task	0.9%, $0.142/task	N/A
+Claude Sonnet 4 (Thinking 8K)	2025-05-14	29.0%, $0.195/task	2.1%, $0.265/task	N/A
+Claude Sonnet 4 (Thinking 16K)	2025-05-14	40.0%, $0.366/task	5.9%, $0.486/task	N/A
+Claude Opus 4 (Thinking 16K)	2025-05-14	35.7%, $1.25/task	8.6%, $1.93/task	N/A
+Claude Opus 4 (Thinking 8K)	2025-05-14	30.7%, $0.741/task	4.5%, $1.16/task	N/A
+Claude Opus 4 (Thinking 1K)	2025-05-14	27.0%, $0.502/task	0.0%, $0.750/task	N/A
+Claude Opus 4	2025-05-14	22.5%, $0.404/task	1.3%, $0.639/task	N/A
+o3 (Low)	2025-04-16	41.5%, $0.176/task	2.0%, $0.234/task	N/A
+o3 (Medium)	2025-04-16	53.8%, $0.288/task	3.0%, $0.479/task	N/A
+o3 (High)	2025-04-16	60.8%, $0.500/task	6.5%, $0.834/task	N/A
+o4-mini (Low)	2025-04-16	21.3%, $0.041/task	1.7%, $0.050/task	N/A
+o4-mini (Medium)	2025-04-16	41.8%, $0.150/task	2.4%, $0.231/task	N/A
+o4-mini (High)	2025-04-16	58.7%, $0.406/task	6.1%, $0.856/task	N/A
+GPT-4.1-Nano	2025-04-14	0.0%, $0.002/task	0.0%, $0.004/task	N/A
+GPT-4.1-Mini	2025-04-14	3.5%, $0.008/task	0.0%, $0.014/task	N/A
+GPT-4.1	2025-04-14	5.5%, $0.039/task	0.4%, $0.069/task	N/A
+Llama 4 Maverick	2025-04-05	4.4%, $0.008/task	0.0%, $0.012/task	N/A
+Llama 4 Scout	2025-04-05	0.5%, $0.004/task	0.0%, $0.006/task	N/A
+GPT-4.5	2025-02-27	10.3%, $0.290/task	0.8%, $2.10/task	N/A
+Claude 3.7	2025-02-24	13.6%, $0.058/task	0.0%, $0.120/task	N/A
+Claude 3.7 (16K)	2025-02-24	28.6%, $0.330/task	0.7%, $0.510/task	N/A
+Claude 3.7 (1K)	2025-02-24	11.6%, $0.070/task	0.4%, $0.140/task	N/A
+Claude 3.7 (8K)	2025-02-24	21.2%, $0.210/task	0.9%, $0.360/task	N/A
+Grok 3	2025-02-19	5.5%, $0.093/task	0.0%, $0.142/task	N/A
+Grok 3 Mini (Low)	2025-02-19	16.5%, $0.010/task	0.4%, $0.013/task	N/A
+Gemini 2.5 Pro (Preview)	2025-02-19	33.0%, $0.569/task	3.8%, $0.813/task	N/A
+Gemini 2.5 Pro (Preview, Thinking 1K)	2025-02-19	31.3%, $0.587/task	3.4%, $0.804/task	N/A
+Gemini 1.5 Pro	2025-02-15	N/A	0.8%, $0.040/task	N/A
+Gemini 2.0 Flash	2025-02-02	N/A	1.3%, $0.004/task	N/A
+o3-mini (Low)	2025-01-31	14.5%, $0.052/task	0.0%, $0.062/task	N/A
+o3-mini (Medium)	2025-01-31	22.3%, $0.191/task	2.1%, $0.284/task	N/A
+o3-mini (High)	2025-01-31	34.5%, $0.399/task	3.0%, $0.547/task	N/A
+Deepseek R1	2025-01-22	15.8%, $0.060/task	1.3%, $0.080/task	N/A
+o3 (Preview, Low) ¹	2024-12-20	75.7%, $200.00/task	4.0%, $200.00/task	N/A
+GPT-4o	2024-11-20	4.5%, $0.050/task	0.0%, $0.080/task	N/A
+ARChitects	2024-11-03	56.0%, $0.200/task	2.5%, $0.200/task	N/A
+NVARC	2024-11-03	N/A	27.6%, $0.200/task	N/A
+o1-mini	2024-09-12	14.0%, $0.135/task	0.8%, $0.191/task	N/A
+GPT-4o-mini	2024-07-18	N/A	0.0%, $0.010/task	N/A
+Icecuber	2023-11-03	17.0%, $0.200/task	1.6%, $0.130/task	N/A
+Human Panel	N/A	98.0%, $17.00/task	100.0%, $17.00/task	N/A
+Avg. Mturker	N/A	77.0%, $3.00/task	N/A	N/A
+Stem Grad	N/A	98.0%, $10.00/task	N/A	N/A

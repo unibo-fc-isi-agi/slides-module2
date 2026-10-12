@@ -725,6 +725,25 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 
 ---
 
+## Frontier benchmarks: METR's time horizons (cont.)
+
+{{% multicol %}}
+{{% col %}}
+{{< image src="./tasks-length-completed-by-agents.png" max-h="45vh" alt="Original METR chart (Kwa et al., 2025): length of tasks AI agents complete autonomously with 50% success, 2019-2025, on 169 software engineering, cybersecurity, reasoning and ML tasks; an exponential fit (doubling time 212 days, R² 0.98) beats linear and hyperbolic fits" >}}
+
+- The original fit: doubling every __212 days__ (2019–2025)
+{{% /col %}}
+{{% col %}}
+{{< image src="./methodological-details.png" max-h="45vh" alt="METR's method for Claude Mythos Preview (early): each task of the Time Horizon 1.1 suite plotted by human time-to-complete and estimated success rate; a logistic fit crosses 50% at about 17 hours; measurements above 16 hours are unreliable with the current task suite" >}}
+
+- How a horizon is computed: success rate vs. human task length, then a _logistic_ fit, read at 50%
+{{% /col %}}
+{{% /multicol %}}
+
+<small>Source: [METR, time horizons](https://metr.org/time-horizons), retrieved October 2026</small>
+
+---
+
 {{< slide id="arc-agi-3-leaderboard" >}}
 
 ## Frontier benchmarks: the ARC-AGI-3 leaderboard
