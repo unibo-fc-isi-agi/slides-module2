@@ -155,40 +155,40 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 
 ### Errors
 - [x] "ReAct … agents, in the next lecture" (`:659`): next is `validating` ✓
-- [ ] Example 4 "never exceeds the token budget" (`:1196`, alt `:1142`): checked after sending ✓ (`chat_with_compaction.py:51`); `keep_last` alone may exceed it; with `CONTEXT_BUDGET=300` (`:1232`) compacts every turn
-    - [ ] Fix: in `chat_with_compaction.py` move the budget check (`:51-53`) *before* `llm.invoke(context())` (after appending the user msg); reword `:1196` to "keeps the context _within_ a token budget (best effort: the last `keep_last` messages are never dropped)"; drop `CONTEXT_BUDGET=300` at `:1232` (default 1000 matches the svg's "compaction every ~3 turns"); re-check `from`/`to` at `:1206`, `:1218`, `:1222`.
-- [ ] `User`/`Post` example (`:166-190`, `:221`) uses defaults → not strict-mode compatible; real classes use `Optional` without defaults, unexplained
-    - [ ] Fix: partly false positive: the `openai` SDK (`.parse`, also used by LangChain's `with_structured_output`) rewrites the schema making _every_ field `required` and dropping `default: null`, so `User`/`Post` works; still, add 1 bullet under the real classes (Example 1 pt. 2): "strict mode wants every field `required`: optional info is `Optional[...]` _without_ default (= must be present, may be `null`)", and note the YAML at `:221` is pre-rewrite.
-- [ ] Token counting "offline via tiktoken" only (`:1175`): mention server-side counting endpoint
-    - [ ] Fix: OpenAI cell → "`POST /v1/responses/input_tokens` (`client.responses.input_tokens.count(...)`), or offline via `tiktoken` (text only)", link [token counting guide](https://developers.openai.com/api/docs/guides/token-counting).
-- [ ] Docs links: structured output (`:283`) → `with_structured_output` page; "runnables and LCEL" (`:683`) → v1 overview without LCEL
-    - [ ] Fix: `:283` → `https://docs.langchain.com/oss/python/langchain/models#structured-output` (current link is about `create_agent(response_format=...)`); `:683` → `https://reference.langchain.com/python/langchain-core/runnables/` (verify both anchors resolve before committing).
-- [ ] Typo "commettee" in prompts (`letter_scoring_openai.py:21`, `letter_scoring_langchain.py:22`, shown at `:315`, `:459`)
+- [x] Example 4 "never exceeds the token budget" (`:1196`, alt `:1142`): checked after sending ✓ (`chat_with_compaction.py:51`); `keep_last` alone may exceed it; with `CONTEXT_BUDGET=300` (`:1232`) compacts every turn
+    - [x] Fix: in `chat_with_compaction.py` move the budget check (`:51-53`) *before* `llm.invoke(context())` (after appending the user msg); reword `:1196` to "keeps the context _within_ a token budget (best effort: the last `keep_last` messages are never dropped)"; drop `CONTEXT_BUDGET=300` at `:1232` (default 1000 matches the svg's "compaction every ~3 turns"); re-check `from`/`to` at `:1206`, `:1218`, `:1222`.
+- [x] `User`/`Post` example (`:166-190`, `:221`) uses defaults → not strict-mode compatible; real classes use `Optional` without defaults, unexplained
+    - [x] Fix: partly false positive: the `openai` SDK (`.parse`, also used by LangChain's `with_structured_output`) rewrites the schema making _every_ field `required` and dropping `default: null`, so `User`/`Post` works; still, add 1 bullet under the real classes (Example 1 pt. 2): "strict mode wants every field `required`: optional info is `Optional[...]` _without_ default (= must be present, may be `null`)", and note the YAML at `:221` is pre-rewrite. — strict-mode note added on the (shrunk) User schema slide
+- [x] Token counting "offline via tiktoken" only (`:1175`): mention server-side counting endpoint
+    - [x] Fix: OpenAI cell → "`POST /v1/responses/input_tokens` (`client.responses.input_tokens.count(...)`), or offline via `tiktoken` (text only)", link [token counting guide](https://developers.openai.com/api/docs/guides/token-counting).
+- [x] Docs links: structured output (`:283`) → `with_structured_output` page; "runnables and LCEL" (`:683`) → v1 overview without LCEL
+    - [x] Fix: `:283` → `https://docs.langchain.com/oss/python/langchain/models#structured-output` (current link is about `create_agent(response_format=...)`); `:683` → `https://reference.langchain.com/python/langchain-core/runnables/` (verify both anchors resolve before committing).
+- [x] Typo "commettee" in prompts (`letter_scoring_openai.py:21`, `letter_scoring_langchain.py:22`, shown at `:315`, `:459`)
 
 ### Inconsistencies / redundancies / placement
-- [ ] Outline (`:23`) order ≠ deck order (exercises interleaved; running example missing)
-    - [ ] Fix: rewrite outline as deck order: anatomy → [running example](#/running-example) → structured outputs (Ex 1, 1bis, [Exercise 1](#/exercise-checklist)) → techniques (Ex 2) → reasoning (Ex 3) → [Exercise 2](#/exercise-id-documents) → context mgmt (Ex 4); drop item 6. Redo after deciding the context-mgmt move below.
-- [ ] "What's next" overlaps `validating:640-644` (agents announcement): drop from prompting
-- [ ] Three overlapping views of format specification (`:95-129`, `:99`, `:254-269`): merge
-    - [ ] @gciatto: (a) keep svg TL;DR + collapse "How to represent" items 1-3 into one line (NL / example / schema), keeping 4-5 as lead-in to Pydantic; (b) also delete the svg. Recommend (a): "represent" vs "enforce" (`:254`) are orthogonal, keep both.
-- [ ] Generic `User`/`Post` Pydantic (`:135-246`, 3 slides) then repeated on real classes: cut to one slide
-    - [ ] Fix: keep pt. 2 code (with `Field(description=...)`), drop pt. 1 and the YAML-schema slide (or shrink the YAML to the `User` part only); `Field(...)`/default explanation stays.
-- [ ] `example1bis/letter_scoring_langchain.py:30-74` duplicates Example 1 classes instead of importing (drift risk)
-    - [ ] Fix: replace `:20-74` with `from snippets.lecture_prompting.example1.letter_scoring_openai import general_instructions, scoring_instructions, ApplicantInfo, AuthorInfo, LetterInfo` (as `governance/exercise1/compare_models.py` already does; re-export keeps `exercise1` import working); use `general_instructions` in the template (fixes typo once); re-check ranges at `:453`, `:459`, `:472` and `validating` refs.
-- [ ] Context management (`:1113-1259`) at the end, after exercises: move after reasoning models (or concept + caching to `llmaas`)
-    - [ ] @gciatto: (a) move the whole context-mgmt column + Ex 4 right after Ex 3 (before Exercise 2), so the deck ends on an exercise; (b) move concept + caching to `llmaas`, keep Ex 4 here; (c) leave as is. Recommend (a): cut-and-paste only, no cross-lecture link churn.
-- [ ] Example 4 appends summary into system message (`chat_with_compaction.py:27`) → breaks prompt cache: make it explicit; prompt hard-coded
-    - [ ] Fix: put the summary in a separate message after the fixed `SystemMessage(instructions)` (e.g. `SystemMessage(f"Summary of the earlier conversation:\n{summary}")` or a user msg), so the instructions prefix stays cacheable; add a sub-bullet at `:1204` saying so; read `instructions` from `SYSTEM_PROMPT` env var (default unchanged) so the ">1024 tokens" caching experiment at `:1238` is doable.
+- [x] Outline (`:23`) order ≠ deck order (exercises interleaved; running example missing)
+    - [x] Fix: rewrite outline as deck order: anatomy → [running example](#/running-example) → structured outputs (Ex 1, 1bis, [Exercise 1](#/exercise-checklist)) → techniques (Ex 2) → reasoning (Ex 3) → [Exercise 2](#/exercise-id-documents) → context mgmt (Ex 4); drop item 6. Redo after deciding the context-mgmt move below.
+- [x] "What's next" overlaps `validating:640-644` (agents announcement): drop from prompting
+- [x] Three overlapping views of format specification (`:95-129`, `:99`, `:254-269`): merge
+    - [x] @gciatto: (a) keep svg TL;DR + collapse "How to represent" items 1-3 into one line (NL / example / schema), keeping 4-5 as lead-in to Pydantic; (b) also delete the svg. Recommend (a): "represent" vs "enforce" (`:254`) are orthogonal, keep both. — (a)
+- [x] Generic `User`/`Post` Pydantic (`:135-246`, 3 slides) then repeated on real classes: cut to one slide
+    - [x] Fix: keep pt. 2 code (with `Field(description=...)`), drop pt. 1 and the YAML-schema slide (or shrink the YAML to the `User` part only); `Field(...)`/default explanation stays. — kept one code slide + a User-only schema slide
+- [x] `example1bis/letter_scoring_langchain.py:30-74` duplicates Example 1 classes instead of importing (drift risk)
+    - [x] Fix: replace `:20-74` with `from snippets.lecture_prompting.example1.letter_scoring_openai import general_instructions, scoring_instructions, ApplicantInfo, AuthorInfo, LetterInfo` (as `governance/exercise1/compare_models.py` already does; re-export keeps `exercise1` import working); use `general_instructions` in the template (fixes typo once); re-check ranges at `:453`, `:459`, `:472` and `validating` refs.
+- [x] Context management (`:1113-1259`) at the end, after exercises: move after reasoning models (or concept + caching to `llmaas`)
+    - [x] @gciatto: (a) move the whole context-mgmt column + Ex 4 right after Ex 3 (before Exercise 2), so the deck ends on an exercise; (b) move concept + caching to `llmaas`, keep Ex 4 here; (c) leave as is. Recommend (a): cut-and-paste only, no cross-lecture link churn. — (a)
+- [x] Example 4 appends summary into system message (`chat_with_compaction.py:27`) → breaks prompt cache: make it explicit; prompt hard-coded
+    - [x] Fix: put the summary in a separate message after the fixed `SystemMessage(instructions)` (e.g. `SystemMessage(f"Summary of the earlier conversation:\n{summary}")` or a user msg), so the instructions prefix stays cacheable; add a sub-bullet at `:1204` saying so; read `instructions` from `SYSTEM_PROMPT` env var (default unchanged) so the ">1024 tokens" caching experiment at `:1238` is doable.
 
 ### Holes
-- [ ] What happens when a model lacks `json_schema` support; fallback `method="function_calling"` / `"json_mode"`
-    - [ ] Fix: bullet on enforcement pt. 2 (`:283` area): "model without `json_schema`? → provider returns 400 or ignores it; in LangChain `with_structured_output(Cls, method="function_calling")` (tool trick) or `method="json_mode"` (schema must then be in the prompt); on OpenRouter filter models by `structured_outputs` support / `provider.require_parameters=true`".
-- [ ] Prompt injection (`:73`): forward link to `../agents/#/security`
-- [ ] Prompts as artifacts: versioning, files, prompt registries (genai:697 promises "text files")
-    - [ ] Fix: one slide after best-practices landscape (`:85`): prompts as code: files (`.md`/Jinja) in git, loaded via `ChatPromptTemplate.from_template(Path(...).read_text())`, versioned + tested (→ `validating`); registries: [LangSmith Prompt Hub](https://docs.smith.langchain.com/prompt_engineering), [Langfuse prompt mgmt](https://langfuse.com/docs/prompt-management), [MLflow Prompt Registry](https://mlflow.org/docs/latest/genai/prompt-registry/).
-    - [ ] @gciatto: also refactor lab-snippets to load prompts from `prompts/*.md` files? Recommend no (slide-only): keeps snippets readable as single files.
-- [ ] Caching: Anthropic cache writes cost extra; OpenAI discount varies (`:1149`, `:1176`)
-    - [ ] Fix: `:1176` already says writes cost extra; fix `:1149` → "cached input tokens cost 10–50% of the price (OpenAI 50–90% off depending on model; Anthropic reads 0.1x but _writes_ 1.25x (5 min) / 2x (1 h) TTL)"; check current pricing pages before committing.
+- [x] What happens when a model lacks `json_schema` support; fallback `method="function_calling"` / `"json_mode"`
+    - [x] Fix: bullet on enforcement pt. 2 (`:283` area): "model without `json_schema`? → provider returns 400 or ignores it; in LangChain `with_structured_output(Cls, method="function_calling")` (tool trick) or `method="json_mode"` (schema must then be in the prompt); on OpenRouter filter models by `structured_outputs` support / `provider.require_parameters=true`".
+- [x] Prompt injection (`:73`): forward link to `../agents/#/security`
+- [x] Prompts as artifacts: versioning, files, prompt registries (genai:697 promises "text files")
+    - [x] Fix: one slide after best-practices landscape (`:85`): prompts as code: files (`.md`/Jinja) in git, loaded via `ChatPromptTemplate.from_template(Path(...).read_text())`, versioned + tested (→ `validating`); registries: [LangSmith Prompt Hub](https://docs.smith.langchain.com/prompt_engineering), [Langfuse prompt mgmt](https://langfuse.com/docs/prompt-management), [MLflow Prompt Registry](https://mlflow.org/docs/latest/genai/prompt-registry/).
+    - [x] @gciatto: also refactor lab-snippets to load prompts from `prompts/*.md` files? Recommend no (slide-only): keeps snippets readable as single files. — no (slide-only)
+- [x] Caching: Anthropic cache writes cost extra; OpenAI discount varies (`:1149`, `:1176`)
+    - [x] Fix: `:1176` already says writes cost extra; fix `:1149` → "cached input tokens cost 10–50% of the price (OpenAI 50–90% off depending on model; Anthropic reads 0.1x but _writes_ 1.25x (5 min) / 2x (1 h) TTL)"; check current pricing pages before committing. — OpenAI worded as 'depends on the model, up to 90%'
 ## `validating`
 
 - [ ] Missing image `todo-mlflow-ui.png` (`:303`) ✓

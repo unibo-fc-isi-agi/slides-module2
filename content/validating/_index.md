@@ -374,7 +374,7 @@ outputs = ["Reveal"]
 
 ## Exercise 1: Complete the Test Suite of the Letter Scoring System — Solution
 
-> ⚠️ __Spoiler alert__: the _walkthrough_ of a possible solution starts below
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 1](#/exercise-all-fields) is about to start
 
 - do __not__ proceed until you have _attempted_ [the exercise](#/exercise-all-fields) on your own
 - press → to _skip_ the walkthrough, ↓ to _see_ it
@@ -533,7 +533,7 @@ poetry run python -m snippets -l validating -x 1 -v   # runs pytest on the compl
 
 ## Exercise 2: Testing Infrastructure for ID Document Extraction — Solution
 
-> ⚠️ __Spoiler alert__: the _walkthrough_ of a possible solution starts below
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 2](#/exercise-id-tests) is about to start
 
 - do __not__ proceed until you have _attempted_ [the exercise](#/exercise-id-tests) on your own
 - press → to _skip_ the walkthrough, ↓ to _see_ it

@@ -14,13 +14,15 @@ outputs = ["Reveal"]
 
 ## Outline
 
+0. [Running example](#/running-example): the PhD admission committee's assistant
 1. [Anatomy of a prompt](#/prompt-anatomy): what a prompt is made of, and some general best practices
 2. [Structured outputs](#/structured-output): how to get _machine-readable_ responses out of LLMs
-    + first with OpenAI's client library, then with [LangChain](https://www.langchain.com/), which we'll keep using from then on
+    + first [with OpenAI's client library](#/letter-scoring), then [with LangChain](#/letter-scoring-langchain), which we'll keep using from then on
+    + Exercise 1: [checklist scoring](#/exercise-checklist)
 3. [Prompting techniques](#/prompting-techniques): zero-shot, few-shot, chain-of-thought, self-consistency, prompt chaining
 4. [Reasoning models](#/reasoning-models): models which "think" before answering, and how to control how much they think
 5. [Context management](#/context-management): context windows, token budgets, compaction, prompt caching
-6. Exercises on the running example: [checklist scoring](#/exercise-checklist), [ID documents extraction](#/exercise-id-documents)
+6. Exercise 2: [ID documents extraction](#/exercise-id-documents)
 
 > Validating generative software is the topic of the [next lecture](../validating/)
 
@@ -76,7 +78,7 @@ outputs = ["Reveal"]
 |---|---|---|
 | Be _clear_ and _specific_ | the model cannot read your mind | "summarise in 3 bullet points, max 15 words each" vs. "summarise" |
 | Give a _role_ / _context_ | narrows down the space of plausible answers (personas give little or no _accuracy_ gain on factual tasks, cf. [Zheng et al., 2024](https://arxiv.org/abs/2311.10054): useful mostly for _tone_ and _context_) | "You are assisting the admission committee of ..." |
-| Use _delimiters_ | separates instructions from data (and mitigates injection) | `<letter> ... </letter>`, Markdown headings, triple quotes |
+| Use _delimiters_ | separates instructions from data (and _mitigates_, not prevents, [prompt injection](../agents/#/security)) | `<letter> ... </letter>`, Markdown headings, triple quotes |
 | Say what _to do_, not only what _not to do_ | negative instructions are followed less reliably | "use plain words" vs. "don't use jargon" |
 | Provide _examples_ | showing is more effective than telling | cf. [few-shot prompting](#/prompting-techniques) |
 | Specify the _output format_ | downstream code needs to parse the response | cf. [structured outputs](#/structured-output) |
@@ -85,6 +87,18 @@ outputs = ["Reveal"]
 
 - Guides also contain _model-specific_ advice (e.g. Claude likes XML tags, reasoning models need _less_ step-by-step guidance)
     + prompts are __not portable__ across models: re-test them whenever you switch model
+
+---
+
+## Prompts are _artifacts_ too
+
+- In a product, prompts deserve the same care as _code_:
+    + stored in __files__ (e.g. Markdown, or [Jinja](https://jinja.palletsprojects.com/) templates) under _version control_, rather than scattered across the code
+    + loaded at runtime, e.g. `ChatPromptTemplate.from_template(Path("prompts/scoring.md").read_text())`
+    + __tested__ at each change, like code (cf. [validating generative software](../validating/))
+- __Prompt registries__ add versioning, labels (e.g. `production`), and links to evaluations and traces:
+    + e.g. [LangSmith Prompt Hub](https://docs.langchain.com/langsmith/prompt-context-hub), [Langfuse prompt management](https://langfuse.com/docs/prompt-management/overview), [MLflow Prompt Registry](https://mlflow.org/docs/latest/genai/prompt-registry/)
+- (in the snippets of this course, prompts stay _inline_, so that each file can be read on its own)
 
 {{% /section %}}
 
@@ -102,68 +116,21 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
 
 ## How to represent target structured format to the model?
 
-1. __Natural language description__: describe the target format in natural language
-    - e.g. "the output should be a JSON object with the following fields: name (string), age (integer), email (string), etc."
+1. In the prompt: as a _natural language_ description ("a JSON object with fields name, age, email"), as an _example_ (`{"name": "John Doe", "age": 30, "email": "john.doe@example.com"}`), or as a _formal schema_ (e.g. [JSON Schema](https://json-schema.org/)), possibly combined
 
-2. __Example-based description__: provide one or more examples of the target format,
-    - e.g. "the output should look like this: `{ "name": "John Doe", "age": 30, "email": "john.doe@example.com" }`
+2. In _strongly-typed_ programming languages (e.g. Java), client libraries may _reverse-engineer_ the schema from the _type definitions_ in the code, using __reflection__, or leverage serialization libraries such as [Jackson](https://github.com/FasterXML/jackson)
 
-3. __Schema-based description__: provide a formal schema (e.g. JSON Schema) describing the target format, e.g. "the output should match the following JSON Schema (written in YAML for better readability):
-
-    ```yaml
-    type: object
-    properties:
-      name:
-        type: string
-      age:
-        type: integer
-      email:
-        type: string
-    required: [name, age, email]
-    additionalProperties: false
-    ```
-
-4. In _strongly-typed_ programming languages (e.g. Java), client libraries may _reverse-engineer_ the schema from the _type definitions_ in the code, using __reflection__, or leverage serialization libraries such as [Jackson](https://github.com/FasterXML/jackson)
-
-5. In _Python_, one can use [libraries like `pydantic`](https://docs.pydantic.dev/) to define _data models_ with validation logic, and then __generate__ JSON Schemas from them
+3. In _Python_, one can use [libraries like `pydantic`](https://docs.pydantic.dev/) to define _data models_ with validation logic, and then __generate__ JSON Schemas from them
     + this is so common, that LLM-aaS Client Libraries (there including `openai`) often have built-in support for `pydantic` models
 
 ---
 
 {{% section %}}
 
-## Pydantic classes with documentation strings (pt. 1)
+## Pydantic classes with documentation strings
 
-1. Core idea behind `pydantic` is to define _data models_ as __Python classes__ extending `pydantic.BaseModel`
-    + with type __annotations__ for the _fields_, also borrowing types from the Python standard library (e.g. `datetime`, `Optional`, etc.)
-
-    ```python
-    from typing import Optional
-    from pydantic import BaseModel
-    from datetime import datetime
-
-    class User(BaseModel):
-        name: str
-        age: int
-        email: Optional[str] = None
-
-    class Post(BaseModel):
-        title: str
-        content: str
-        author: User
-        timestamp: datetime
-    ```
-
-    + one may also have nested data models, _optional_ fields, _default_ values, etc.
-    + `pydantic` data model $\approx$ data classes with default _validation_ and _serialization_ logic
-        - automatically implemented constructurs accepting arguments named after the field, with _type_ checking and validation (e.g. `User(name="John Doe", age=30)`)
-        - methods to serialize the model to JSON (e.g. `user.model_dump_json()`) and to generate JSON Schema (e.g. `User.model_json_schema()`)
-
----
-
-## Pydantic classes with documentation strings (pt. 2)
-
-2. To make the data model understandable to the LLM, one _should_ add __documentation strings__ to the fields, which will be included in the generated JSON Schema as `description` fields—also good for setting _default values_ or default _factories_
+- `pydantic` _data models_ are __Python classes__ extending `pydantic.BaseModel`, with type __annotations__ for the _fields_ (also from the standard library, e.g. `datetime`, `Optional`), possibly _nested_
+- To make the data model understandable to the LLM, one _should_ add __documentation strings__ (docstrings and `Field(description=...)`), which end up in the generated JSON Schema as `description` fields
 
     ```python
     from typing import Optional
@@ -184,66 +151,34 @@ __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON
         content: str = Field(..., description="The content of the post")
         author: User = Field(..., description="The author of the  post")
         created_at: datetime = Field(default_factory=datetime.now, description="The date and time when the post was created")
-
     ```
 
     + `Field(...)`: the `...` (_Ellipsis_) as first argument marks the field as __required__, while `default=` or `default_factory=` (a function computing the default) make it _optional_
+    + `pydantic` data model $\approx$ data classes with _validation_ and _serialization_ logic: e.g. `User(name="John Doe", age=30)` (type-checked constructor), `user.model_dump_json()`, `User.model_json_schema()`
 
 ---
 
-{{< slide class="print-compact" >}}
+## Pydantic classes with documentation strings (cont.)
 
-## Pydantic classes with documentation strings (pt. 2, cont.)
+For instance, `User.model_json_schema()` produces the following JSON Schema (formatted in YAML for better readability):
 
-3. For instance, the class definitions above would produce the following JSON Schema (formatted in YAML for better readability):
+```yaml
+title: User
+type: object
+description: Anagraphical and contact information about a user.
+properties:
+  name: {title: Name, type: string, description: The user's full name}
+  age: {title: Age, type: integer, description: The user's age in years}
+  email:
+    anyOf: [{type: string}, {type: 'null'}]
+    default: null
+    title: Email
+    description: The user's email address
+required: [name, age]
+```
 
-    ```yaml
-    title: Post
-    type: object
-    description: A blog post created by a user.
-    properties:
-      title:
-        description: The title of the post
-        title: Title
-        type: string
-      content:
-        description: The content of the post
-        title: Content
-        type: string
-      author:
-        "$ref": "#/$defs/User"
-        description: The author of the  post
-      created_at:
-        description: The date and time when the post was created
-        format: date-time
-        title: Created At
-        type: string
-    required: [title, content, author]
-    "$defs":
-      User:
-        description: Anagraphical and contact information about a user.
-        properties:
-          name:
-            description: The user's full name
-            title: Name
-            type: string
-          age:
-            description: The user's age in years
-            title: Age
-            type: integer
-          email:
-            anyOf:
-            - type: string
-            - type: 'null'
-            default:
-            description: The user's email address
-            title: Email
-        required:
-        - name
-        - age
-        title: User
-        type: object
-    ```
+- OpenAI's _strict_ mode wants __every__ field to be `required` (and no defaults): client libraries (e.g. `openai`'s `.parse(...)`) _rewrite_ the schema accordingly before sending it
+    + hence, optional information is best modelled as `Optional[...]` _without_ default, i.e. the field must be present, but may be `null` (as in Example 1, below)
 
 {{% /section %}}
 
@@ -280,11 +215,14 @@ From _weakest_ to _strongest_ guarantees:
 | Anthropic (Messages) | `output_config={"format": {"type": "json_schema", "schema": ...}}`, or _strict tool use_ | [link](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) |
 | Google Gemini | JSON mime type + JSON Schema in the request configuration | [link](https://ai.google.dev/gemini-api/docs/structured-output) |
 | Ollama (local) | `format=<JSON Schema>` in the request | [link](https://docs.ollama.com/capabilities/structured-outputs) |
-| LangChain (any of the above) | `llm.with_structured_output(PydanticClass)` | [link](https://docs.langchain.com/oss/python/langchain/structured-output) |
+| LangChain (any of the above) | `llm.with_structured_output(PydanticClass)` | [link](https://docs.langchain.com/oss/python/langchain/models#structured-output) |
 
 - __Same concept__ everywhere: a _JSON Schema_ travels along with the request, and the response is (guaranteed to be) an instance of it
 - __Different syntax__: parameter names and nesting differ across providers, and _not all models_ support all options
     + in _Python_, most client libraries accept `pydantic` classes directly, and convert them into JSON Schemas for you
+- Model without `json_schema` support? The provider returns an _error_ (e.g. 400), or silently _ignores_ the schema
+    + in LangChain: `with_structured_output(Cls, method="function_calling")` (the tool-calling trick) or `method="json_mode"` (then the schema must be described in the prompt)
+    + on OpenRouter: filter models by `structured_outputs` support, or set `provider.require_parameters=true`
 
 > [BEWARE] the _format_ is guaranteed to be correct, the _content_ is not: always _validate_ the values
 
@@ -450,20 +388,20 @@ poetry run python -m snippets -l prompting -e 1 data/letter-mario-rossi.txt   # 
 
 ## Example 1 (bis): the same Letter Scoring System with LangChain (pt. 1)
 
-1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it (notice that the _same_ environment variables are used):
+1. Let's import LangChain's chat model for OpenAI-compatible APIs, and initialize it, _reusing_ the configuration, the instructions, and the `pydantic` classes of Example 1 (i.e. the same environment variables):
 
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="8" to="16" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="8" to="14" %}}
 
     - `ChatOpenAI` (package `langchain_openai`) wraps the `openai` client: same `base_url` and `api_key`, but the `model` is set _once_, at construction time
 
 2. Let's define the prompt as a __template__, with a _named placeholder_ (`{letter_text}`) for the input data:
 
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="20" to="28" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="17" to="21" %}}
 
     - `ChatPromptTemplate.from_messages` accepts a list of `(role, template)` pairs
     - `prompt.invoke({"letter_text": "..."})` would produce the _list of messages_ to be sent to the model
 
-3. `pydantic` classes and scoring instructions are _exactly the same_ as in the OpenAI version (full code [here](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py))
+3. `pydantic` classes and scoring instructions are _imported_ from the OpenAI version, as they do not depend on the client library (full code [here](../lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py))
 
 ---
 
@@ -471,7 +409,7 @@ poetry run python -m snippets -l prompting -e 1 data/letter-mario-rossi.txt   # 
 
 4. The scoring logic is a __chain__: _prompt template_ $\rightarrow$ _chat model_ constrained to produce `LetterInfo` instances:
 
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="78" to="81" %}}
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example1bis/letter_scoring_langchain.py" from="24" to="28" %}}
 
     notice that:
 
@@ -548,7 +486,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
     + the hallucination margin is reduced, as the model is not asked to directly produce a score, but rather to fill in the boolean fields based on the content of the letter, which is an easier task
 {{% /fragment %}}
 
-> __Solution__: a walkthrough follows in the next (vertical) column ([here](#/exercise-checklist-solution)) — try on your own first!
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
 
 ---
 
@@ -558,7 +496,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ## Exercise 1: Improving Letter Scoring with (even more) Structured Output — Solution
 
-> __Spoiler alert__: the _walkthrough_ of the solution is about to start!
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 1](#/exercise-checklist) is about to start
 
 - Do __not__ proceed until you have _attempted_ [the exercise](#/exercise-checklist) on your own
     + press → to _skip_ the walkthrough, ↓ to _see_ it
@@ -683,7 +621,7 @@ poetry run python -m snippets -l prompting -x 1 mario-rossi    # or a path, e.g.
 | Self-consistency | $N$ requests (e.g. via `asyncio`), then vote | `chain.batch([input] * N)`, then vote |
 | Prompt chaining | call the model, parse, build next prompt, call again | compose runnables with `\|` (e.g. `prompt1 \| llm \| parser \| prompt2 \| llm`) |
 
-- Docs: [prompt templates](https://reference.langchain.com/python/langchain-core/prompts/), [runnables and LCEL](https://docs.langchain.com/oss/python/langchain/overview)
+- Docs: [prompt templates](https://reference.langchain.com/python/langchain-core/prompts/), [runnables](https://reference.langchain.com/python/langchain-core/runnables/)
 - Other frameworks follow the same ideas (e.g. [DSPy](https://dspy.ai/) goes further, and _optimises_ prompts and examples automatically)
 
 {{% /section %}}
@@ -912,6 +850,158 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 {{% section %}}
 
+{{< slide id="context-management" >}}
+
+## Context management: the general concept
+
+- The __context window__ is the _maximum number of tokens_ a model can process in a _single_ request: _input_ (all messages) + _output_ (including reasoning tokens)
+    + from a few thousands (small local models) to millions (some frontier models) of tokens, cf. [model zoos](../llmaas/#/model-zoos)
+    + exceeding it leads to _errors_, or to _silent truncation_, depending on the provider
+
+- Recall: the Chat Completion API is __stateless__, so the _client_ re-sends the _whole history_ at each turn
+    + hence, the input grows at _each turn_, and so do _cost_ and _latency_
+    + the _cumulative_ cost of a conversation grows __quadratically__ with the number of turns
+
+- Even _within_ the window, _more_ context is not necessarily _better_:
+    + information in the _middle_ of long contexts is used less effectively (cf. [Liu et al. (2024)](https://arxiv.org/abs/2307.03172))
+    + performance degrades as input length grows, even on simple tasks (cf. ["context rot"](https://research.trychroma.com/context-rot))
+
+- __Context management__ (a.k.a. _context engineering_, cf. [Anthropic](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)) is the practice of deciding _what_ enters the context, _when_, and _in which order_:
+    1. __budgeting__: _count_ tokens, and reserve room for the output
+    2. __trimming__: drop the _oldest_ (or least relevant) messages
+    3. __summarisation__ (a.k.a. _compaction_): replace older messages with a _summary_ of them
+    4. __retrieval__: load only the _relevant_ pieces of information, when needed (cf. RAG, in a later lecture)
+    5. __prompt caching__: make the _repeated_ part of the context _cheaper_ and _faster_ to process
+
+---
+
+## Context management: an intuitive example
+
+{{< image src="./context-growth.svg" max-h="80vh" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" >}}
+
+---
+
+## Prompt caching: the general concept
+
+- __Prompt caching__: the provider _stores_ the internal state of the model (the _KV cache_) for a _prefix_ of the prompt, and _reuses_ it when a later request starts with _exactly the same_ prefix
+    + cached input tokens are billed at a _fraction_ of the price (OpenAI: discount depends on the model, up to 90%; Anthropic: reads at 0.1×, but cache _writes_ cost 1.25× with 5-minute TTL, 2× with 1-hour TTL), and processed _faster_
+    + only the _prefix_ is cached: _any_ change invalidates the cache from that point on
+    + caches _expire_ after some minutes of inactivity
+
+- Consequences for prompt design:
+    + put the __stable__ parts _first_ (system instructions, examples, documents), and the __variable__ parts _last_ (user input)
+    + avoid timestamps or random IDs at the beginning of prompts
+    + compaction and trimming _change_ the prefix: there's a _trade-off_ between shorter contexts and cache hits
+
+- __Not__ to be confused with the _client-side_ caching of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching):
+
+| | Client-side response caching | Provider-side prompt caching |
+|---|---|---|
+| What is cached | the _whole response_, for an _identical_ request | the model's state for a _prefix_ of the prompt |
+| Is the model called? | no | yes, the response is always _generated_ anew |
+| Saves | 100% of cost and latency | part of input cost, and time-to-first-token |
+| Changes the output? | yes: same output every time (no sampling variability) | no |
+
+---
+
+## Context management: the technological landscape
+
+{{% small %}}
+
+| Provider | Token counting | Prompt caching | Server-side compaction | Docs |
+|---|---|---|---|---|
+| OpenAI | `POST /v1/responses/input_tokens` (`client.responses.input_tokens.count(...)`), or offline via [`tiktoken`](https://github.com/openai/tiktoken) (text only), cf. [guide](https://developers.openai.com/api/docs/guides/token-counting) | _automatic_ for long prompts; optional `prompt_cache_key` | `context_management` in the Responses API, or `/responses/compact` | [caching](https://developers.openai.com/api/docs/guides/prompt-caching), [compaction](https://developers.openai.com/api/docs/guides/compaction) |
+| Anthropic | `/v1/messages/count_tokens` endpoint | `cache_control`: automatic (top-level) or explicit breakpoints; cache _writes_ cost extra | beta: on demand, or at a token threshold; plus _context editing_ | [caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [compaction](https://platform.claude.com/docs/en/build-with-claude/compaction) |
+| Google Gemini | `count_tokens` method | _implicit_ (automatic), or _explicit_ caches created in advance | — | [caching](https://ai.google.dev/gemini-api/docs/caching), [tokens](https://ai.google.dev/gemini-api/docs/tokens) |
+| OpenRouter | reported in `usage` | forwarded to the underlying provider | — | [caching](https://openrouter.ai/docs/features/prompt-caching) |
+| LangChain | `count_tokens_approximately(...)`, <br>`llm.get_num_tokens_from_messages(...)` <br> (model-specific) | reported in `usage_metadata["input_token_details"]["cache_read"]` | `trim_messages(...)`, summarisation middleware for agents | [short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory) |
+
+{{% /small %}}
+
+- __Same concepts__ everywhere; _different_ syntax, _thresholds_ (e.g. minimum cacheable length), _prices_, and _retention times_
+- Server-side compaction is convenient, but _opaque_ (e.g. OpenAI's compacted items are _encrypted_) and _provider-specific_: client-side compaction is _portable_
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
+{{< slide id="chat-compaction" >}}
+
+## Example 4: CLI Chat with Context Compaction (pt. 1)
+
+> __Goal__: a CLI chat (as in [Example 1 of the LLM-as-a-Service lecture](../llmaas/#/sync-chat)) which keeps the context _within_ a given _token budget_, by _summarising_ older messages (best effort: the last `keep_last` messages are never dropped)
+
+1. Let's configure the chat model, the _budget_, and how many recent messages to keep _verbatim_:
+
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="12" to="22" %}}
+
+    - the _state_ of the conversation is a (running) `summary`, plus the recent `history`
+        + `BaseMessage`: LangChain's common superclass of `SystemMessage`, `HumanMessage`, and `AIMessage`
+    - the budget comes from the `CONTEXT_BUDGET` environment variable (in tokens), the instructions from `SYSTEM_PROMPT` (optional)
+
+2. The _context_ sent at each request is: system instructions + summary (if any) + recent history:
+
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="25" to="31" %}}
+
+    - the summary goes in a _separate_ message, _after_ the fixed instructions: the instructions stay a stable _prefix_, which the provider can [cache](#/context-management)
+
+---
+
+## Example 4: CLI Chat with Context Compaction (pt. 2)
+
+3. __Compaction__ is itself an LLM call, asking to summarise the _older_ messages (and the previous summary):
+
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="34" to="40" %}}
+
+4. The main loop compacts the context whenever its (approximate) size exceeds the budget, _before_ sending it, and prints _token usage_ at each turn:
+
+    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="43" to="56" %}}
+
+    - `count_tokens_approximately` is _provider-agnostic_ (it assumes $\approx$ 4 characters per token): good enough for _budgeting_, not for _billing_
+    - `usage_metadata` reports the _actual_ counts, including _cached_ input tokens (if the provider supports caching)
+
+---
+
+## Example 4: CLI Chat with Context Compaction (pt. 3)
+
+5. Let's try it (full code [here](../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py)):
+
+    ```bash
+    poetry run python -m snippets -l prompting -e 4
+    ```
+
+6. Things to observe:
+    - tell the model your name, chat for a while, then ask for your name again: is it _remembered_ after compaction?
+    - how do input tokens evolve over turns, before and after compaction?
+    - with a _long_ system prompt (e.g. > 1024 tokens, via `SYSTEM_PROMPT`) and a provider supporting caching, how many input tokens are _cached_? What happens to them right after a compaction?
+
+7. Possible improvements (left to the reader):
+    - compact in the _background_, while the user is typing
+    - _trim_ instead of summarising, via LangChain's [`trim_messages`](https://docs.langchain.com/oss/python/langchain/short-term-memory), and compare the two strategies
+
+---
+
+## Example 4: Project Structure
+
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── snippets/
+│   └── lecture_prompting/
+│       └── example4/
+│           └── <a href="../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py">chat_with_compaction.py</a>  # the CLI chat
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                       # dependencies of all snippets</code></pre></div>
+
+- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `CONTEXT_BUDGET`), cf. [Free Access to LLMs](../free-access/)
+
+{{% /section %}}
+
+---
+
+{{% section %}}
+
 {{< slide id="exercise-id-documents" >}}
 
 ## Exercise 2: Extract Structured Information from Pictures (pt. 1)
@@ -1005,7 +1095,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 | Size limits | up to 512 MB total payload per request; up to 1500 image inputs per request |
 | Other requirements | no watermarks or logos; no NSFW content; clear enough for a human to understand |
 
-> __Solution__: a walkthrough follows in the next (vertical) column ([here](#/exercise-id-documents-solution)) — try on your own first!
+> __Solution__: a walkthrough follows in the next (vertical) column — try on your own first!
 
 {{% /section %}}
 
@@ -1017,7 +1107,7 @@ Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets
 
 ## Exercise 2: Extract Structured Information from Pictures — Solution
 
-> __Spoiler alert__: the _walkthrough_ of the solution is about to start!
+> ⚠️ __Spoiler alert__: the _walkthrough_ of the solution of [Exercise 2](#/exercise-id-documents) is about to start
 
 - Do __not__ proceed until you have _attempted_ [the exercise](#/exercise-id-documents) on your own
     + press → to _skip_ the walkthrough, ↓ to _see_ it
@@ -1111,165 +1201,6 @@ poetry run python -m snippets -l prompting -x 2 mario-rossi 5    # candidate's I
 - Step 6: try all three passports (e.g. Mohammed Ali's is _multilingual_): which fields get flagged? Does it change with more samples?
 
 {{% /section %}}
-
----
-
-{{% section %}}
-
-{{< slide id="context-management" >}}
-
-## Context management: the general concept
-
-- The __context window__ is the _maximum number of tokens_ a model can process in a _single_ request: _input_ (all messages) + _output_ (including reasoning tokens)
-    + from a few thousands (small local models) to millions (some frontier models) of tokens, cf. [model zoos](../llmaas/#/model-zoos)
-    + exceeding it leads to _errors_, or to _silent truncation_, depending on the provider
-
-- Recall: the Chat Completion API is __stateless__, so the _client_ re-sends the _whole history_ at each turn
-    + hence, the input grows at _each turn_, and so do _cost_ and _latency_
-    + the _cumulative_ cost of a conversation grows __quadratically__ with the number of turns
-
-- Even _within_ the window, _more_ context is not necessarily _better_:
-    + information in the _middle_ of long contexts is used less effectively (cf. [Liu et al. (2024)](https://arxiv.org/abs/2307.03172))
-    + performance degrades as input length grows, even on simple tasks (cf. ["context rot"](https://research.trychroma.com/context-rot))
-
-- __Context management__ (a.k.a. _context engineering_, cf. [Anthropic](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)) is the practice of deciding _what_ enters the context, _when_, and _in which order_:
-    1. __budgeting__: _count_ tokens, and reserve room for the output
-    2. __trimming__: drop the _oldest_ (or least relevant) messages
-    3. __summarisation__ (a.k.a. _compaction_): replace older messages with a _summary_ of them
-    4. __retrieval__: load only the _relevant_ pieces of information, when needed (cf. RAG, in a later lecture)
-    5. __prompt caching__: make the _repeated_ part of the context _cheaper_ and _faster_ to process
-
----
-
-## Context management: an intuitive example
-
-{{< image src="./context-growth.svg" max-h="80vh" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" >}}
-
----
-
-## Prompt caching: the general concept
-
-- __Prompt caching__: the provider _stores_ the internal state of the model (the _KV cache_) for a _prefix_ of the prompt, and _reuses_ it when a later request starts with _exactly the same_ prefix
-    + cached input tokens are billed at a _fraction_ of the price (commonly $\approx$ 10%), and processed _faster_
-    + only the _prefix_ is cached: _any_ change invalidates the cache from that point on
-    + caches _expire_ after some minutes of inactivity
-
-- Consequences for prompt design:
-    + put the __stable__ parts _first_ (system instructions, examples, documents), and the __variable__ parts _last_ (user input)
-    + avoid timestamps or random IDs at the beginning of prompts
-    + compaction and trimming _change_ the prefix: there's a _trade-off_ between shorter contexts and cache hits
-
-- __Not__ to be confused with the _client-side_ caching of [Exercise 1 of the LLM-as-a-Service lecture](../llmaas/#/exercise-caching):
-
-| | Client-side response caching | Provider-side prompt caching |
-|---|---|---|
-| What is cached | the _whole response_, for an _identical_ request | the model's state for a _prefix_ of the prompt |
-| Is the model called? | no | yes, the response is always _generated_ anew |
-| Saves | 100% of cost and latency | part of input cost, and time-to-first-token |
-| Changes the output? | yes: same output every time (no sampling variability) | no |
-
----
-
-## Context management: the technological landscape
-
-{{% small %}}
-
-| Provider | Token counting | Prompt caching | Server-side compaction | Docs |
-|---|---|---|---|---|
-| OpenAI | offline, via [`tiktoken`](https://github.com/openai/tiktoken) | _automatic_ for long prompts; optional `prompt_cache_key` | `context_management` in the Responses API, or `/responses/compact` | [caching](https://developers.openai.com/api/docs/guides/prompt-caching), [compaction](https://developers.openai.com/api/docs/guides/compaction) |
-| Anthropic | `/v1/messages/count_tokens` endpoint | `cache_control`: automatic (top-level) or explicit breakpoints; cache _writes_ cost extra | beta: on demand, or at a token threshold; plus _context editing_ | [caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [compaction](https://platform.claude.com/docs/en/build-with-claude/compaction) |
-| Google Gemini | `count_tokens` method | _implicit_ (automatic), or _explicit_ caches created in advance | — | [caching](https://ai.google.dev/gemini-api/docs/caching), [tokens](https://ai.google.dev/gemini-api/docs/tokens) |
-| OpenRouter | reported in `usage` | forwarded to the underlying provider | — | [caching](https://openrouter.ai/docs/features/prompt-caching) |
-| LangChain | `count_tokens_approximately(...)`, <br>`llm.get_num_tokens_from_messages(...)` <br> (model-specific) | reported in `usage_metadata["input_token_details"]["cache_read"]` | `trim_messages(...)`, summarisation middleware for agents | [short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory) |
-
-{{% /small %}}
-
-- __Same concepts__ everywhere; _different_ syntax, _thresholds_ (e.g. minimum cacheable length), _prices_, and _retention times_
-- Server-side compaction is convenient, but _opaque_ (e.g. OpenAI's compacted items are _encrypted_) and _provider-specific_: client-side compaction is _portable_
-
-{{% /section %}}
-
----
-
-{{% section %}}
-
-{{< slide id="chat-compaction" >}}
-
-## Example 4: CLI Chat with Context Compaction (pt. 1)
-
-> __Goal__: a CLI chat (as in [Example 1 of the LLM-as-a-Service lecture](../llmaas/#/sync-chat)) which never exceeds a given _token budget_, by _summarising_ older messages
-
-1. Let's configure the chat model, the _budget_, and how many recent messages to keep _verbatim_:
-
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="12" to="22" %}}
-
-    - the _state_ of the conversation is a (running) `summary`, plus the recent `history`
-        + `BaseMessage`: LangChain's common superclass of `SystemMessage`, `HumanMessage`, and `AIMessage`
-    - the budget comes from the `CONTEXT_BUDGET` environment variable (in tokens)
-
-2. The _context_ sent at each request is: system instructions + summary (if any) + recent history:
-
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="25" to="28" %}}
-
----
-
-## Example 4: CLI Chat with Context Compaction (pt. 2)
-
-3. __Compaction__ is itself an LLM call, asking to summarise the _older_ messages (and the previous summary):
-
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="31" to="37" %}}
-
-4. The main loop compacts the context whenever its (approximate) size exceeds the budget, and prints _token usage_ at each turn:
-
-    {{% code path="static/lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py" from="40" to="53" %}}
-
-    - `count_tokens_approximately` is _provider-agnostic_ (it assumes $\approx$ 4 characters per token): good enough for _budgeting_, not for _billing_
-    - `usage_metadata` reports the _actual_ counts, including _cached_ input tokens (if the provider supports caching)
-
----
-
-## Example 4: CLI Chat with Context Compaction (pt. 3)
-
-5. Let's try it (full code [here](../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py)):
-
-    ```bash
-    CONTEXT_BUDGET=300 poetry run python -m snippets -l prompting -e 4
-    ```
-
-6. Things to observe:
-    - tell the model your name, chat for a while, then ask for your name again: is it _remembered_ after compaction?
-    - how do input tokens evolve over turns, before and after compaction?
-    - with a _long_ system prompt (e.g. > 1024 tokens) and a provider supporting caching, how many input tokens are _cached_? What happens to them right after a compaction?
-
-7. Possible improvements (left to the reader):
-    - compact in the _background_, while the user is typing
-    - _trim_ instead of summarising, via LangChain's [`trim_messages`](https://docs.langchain.com/oss/python/langchain/short-term-memory), and compare the two strategies
-
----
-
-## Example 4: Project Structure
-
-Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository (cf. [how to set it up, and run snippets](../#/lab-snippets)):
-
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
-├── snippets/
-│   └── lecture_prompting/
-│       └── example4/
-│           └── <a href="../lab-snippets/snippets/lecture_prompting/example4/chat_with_compaction.py">chat_with_compaction.py</a>  # the CLI chat
-└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                       # dependencies of all snippets</code></pre></div>
-
-- set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `CONTEXT_BUDGET`), cf. [Free Access to LLMs](../free-access/)
-
-{{% /section %}}
-
----
-
-## What's next?
-
-- How do we know whether a prompt (or a model) is _good enough_, and whether a change made it _better_ or _worse_?
-- Next, we'll see how to __validate__ generative software: test datasets, scorers, LLM-as-a-Judge (cf. [Validating Generative Software](../validating/))
-- Then, we'll let the LLM __act__: calling _tools_ (functions), i.e. building __agents__
-    + structured output is the _enabling_ technology: a tool call is nothing but a structured output, matching the tool's _signature_
 
 ---
 
