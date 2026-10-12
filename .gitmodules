@@ -6,4 +6,4 @@
 	url = https://github.com/cric96/reveal-hugo.git
 [submodule "static/lab-snippets"]
 	path = static/lab-snippets
-	url = https://github.com/unibo-fc-isi-agi/lab-snippets.git
+	url = https://github.com/unibo-fc-isi-iag/lab-snippets.git

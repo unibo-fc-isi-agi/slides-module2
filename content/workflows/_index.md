@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Workflows and Agent Orchestration"
+title = "[IAg] Workflows and Agent Orchestration"
 description = "When the code controls the flow: workflows as state machines, state and durable execution, patterns, intermediate representations, multi-agent systems and A2A, streaming and observability, end-to-end evaluation"
 outputs = ["Reveal"]
 

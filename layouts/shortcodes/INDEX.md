@@ -33,7 +33,7 @@ Use `%` delimiters when the inner content is Markdown, `<` when it is HTML or no
 | `load` | `path`, `from`, `to` | Like `import`, restricted to a line range |
 | `code` | `path` (from repo root), `from`, `to`, `language` (inferred from extension), `highlight` (default `true`) | Inlines a line range of a local file as a fenced code block; use with `%` |
 | `github` | `owner`, `repo`, `branch`, `path`, `from`, `to`, `language` | Fetches a file from GitHub at build time and highlights a line range |
-| `github-url` | `owner` (default `unibo-fc-isi-agi`), `repo` (default `slides-module2`), `branch`, `path` | URL of a repo, or of a file in it |
+| `github-url` | `owner` (default `unibo-fc-isi-iag`), `repo` (default `slides-module2`), `branch`, `path` | URL of a repo, or of a file in it |
 | `markdown` | inner | Renders inner content as-is (forces Markdown processing) |
 
 ## Layout

@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Retrieval-Augmented Generation"
+title = "[IAg] Retrieval-Augmented Generation"
 description = "Giving LLM-based agents memory and focus: embeddings, vector stores on SQLite, chunking, retrieval, RAG with LangChain, evaluating and securing RAG"
 outputs = ["Reveal"]
 
@@ -911,7 +911,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 {{% fragment %}}
 ### TO-DO List
-1. the corpus: the PDFs of the slides, one `<lecture>_slides.pdf` per lecture, attached to each [release](https://github.com/unibo-fc-isi-agi/slides-module2/releases) of the slides' repository
+1. the corpus: the PDFs of the slides, one `<lecture>_slides.pdf` per lecture, attached to each [release](https://github.com/unibo-fc-isi-iag/slides-module2/releases) of the slides' repository
     + resolve a release (default: the latest) via [GitHub's API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release), and download its PDFs into a git-ignored _cache_
 2. load the PDFs _page by page_ (e.g. via [`pypdf`](https://pypdf.readthedocs.io/)): one page = one slide = one __chunk__
     + metadata: lecture, page, title, and a _link_ to the page (`...pdf#page=N`)
@@ -968,7 +968,7 @@ Files of these examples, in the [`lab-snippets`]({{< github-url repo="lab-snippe
 
 {{% code path="static/lab-snippets/snippets/lecture_rag/exercise1/slides.py" from="45" to="51" %}}
 
-- `REPO`: `unibo-fc-isi-agi/slides-module2`, i.e. the repository of these very slides; `Pdf` is _frozen_ (immutable, hence hashable)
+- `REPO`: `unibo-fc-isi-iag/slides-module2`, i.e. the repository of these very slides; `Pdf` is _frozen_ (immutable, hence hashable)
 - A digest changes _if and only if_ the file changes: it tells which lectures to re-index, _without_ downloading anything
 - No authentication is needed for public repositories (up to 60 requests per hour, per IP)
 - On _shared_ networks (labs, CI) that quota runs out quickly: set `GITHUB_TOKEN` (e.g. `export GITHUB_TOKEN=$(gh auth token)`) to get 5,000 per hour

@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Validating Generative Software"
+title = "[IAg] Validating Generative Software"
 description = "How to evaluate LLM-based software: test datasets, deterministic scorers, LLM-as-a-Judge, with DeepEval and MLflow"
 outputs = ["Reveal"]
 

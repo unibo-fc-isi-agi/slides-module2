@@ -234,7 +234,7 @@ Changes will be published on the {{< forum_news >}}
 
 ## The code of examples and exercises: why a repository?
 
-- All examples (and exercises) of the course live in a single repository: [`unibo-fc-isi-agi/lab-snippets`]({{< github-url repo="lab-snippets" >}})
+- All examples (and exercises) of the course live in a single repository: [`unibo-fc-isi-iag/lab-snippets`]({{< github-url repo="lab-snippets" >}})
     + slides only show _excerpts_: the repository contains the _full_, _commented_, _runnable_ code
 
 - Why _one_ repository, rather than copy-pasting code from the slides?
@@ -296,7 +296,7 @@ lab-snippets/
 2. Clone the repository, and install its dependencies _once_, via [Poetry](https://python-poetry.org) (a dependency manager for Python):
 
     ```bash
-    git clone -b exercises https://github.com/unibo-fc-isi-agi/lab-snippets.git   # the `exercises` branch!
+    git clone -b exercises https://github.com/unibo-fc-isi-iag/lab-snippets.git   # the `exercises` branch!
     cd lab-snippets
     pip install -r requirements.txt  # installs Poetry, if missing
     poetry install                   # creates a virtual environment in .venv/, with all dependencies

@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Free Access to LLMs (Appendix)"
+title = "[IAg] Free Access to LLMs (Appendix)"
 description = "Practical reference: free tiers, credits, grants, and local alternatives for students and researchers"
 outputs = ["Reveal"]
 

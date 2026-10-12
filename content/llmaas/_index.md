@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] LLM-as-a-Service"
+title = "[IAg] LLM-as-a-Service"
 description = "Background about using LLMs via Service Providers"
 outputs = ["Reveal"]
 

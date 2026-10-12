@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] AI Governance 101"
+title = "[IAg] AI Governance 101"
 description = "Trade-offs, regulation, and technology selection for LLM-based software"
 outputs = ["Reveal"]
 

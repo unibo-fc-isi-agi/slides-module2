@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Agentic Skills"
+title = "[IAg] Agentic Skills"
 description = "Reusable procedures for agents: the Agent Skills format, progressive disclosure, skills in your own agents, testing skills, hooks, publishing, and security"
 outputs = ["Reveal"]
 

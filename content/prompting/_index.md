@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Prompt Engineering & Structured Outputs"
+title = "[IAg] Prompt Engineering & Structured Outputs"
 description = "How to design prompts, apply prompting techniques, and get machine-readable outputs from LLMs"
 outputs = ["Reveal"]
 

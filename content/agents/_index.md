@@ -1,6 +1,6 @@
 +++
 
-title = "[AgI] Tools and Agents"
+title = "[IAg] Tools and Agents"
 description = "How LLMs act through tools: the agentic metaphor, function calling, the ReAct loop, MCP, evaluating and securing agents"
 outputs = ["Reveal"]
 

@@ -4,7 +4,7 @@ Guidance for AI agents (and humans) working on this repository.
 
 ## What this is
 
-Slides for **Module 2** of the course *Intelligent Agents* ("Agenti Intelligenti", **AgI**),
+Slides for **Module 2** of the course *Intelligent Agents* (**IAg**; formerly "Agenti Intelligenti", AgI),
 Master's degree in Computer Science and Engineering, University of Bologna
 (mandatory for the *Artificial Intelligence* curriculum). Teacher: Giovanni Ciatto.
 
@@ -14,7 +14,7 @@ workflows/orchestration, AI governance.
 
 Technically: a [Hugo](https://gohugo.io/) site rendered as [reveal.js](https://revealjs.com/)
 presentations via the [reveal-hugo](https://github.com/cric96/reveal-hugo) theme,
-published to GitHub Pages at <https://unibo-fc-isi-agi.github.io/slides-module2>.
+published to GitHub Pages at <https://unibo-fc-isi-iag.github.io/slides-module2>.
 
 ## Running locally
 
@@ -41,10 +41,10 @@ Alternative: `docker compose up` (runs `shared-slides/serve.sh` in a container).
 | `reusable/` | Markdown snippets imported into slides (see below) |
 | `sources/<lecture>/` | Source material behind some slides (saved web pages, legal texts, unused charts): kept for reference, __not__ published |
 | `static/` | Resources shared across lectures, served at the site root |
-| `static/lab-snippets/` | Git submodule: <https://github.com/unibo-fc-isi-agi/lab-snippets>, the **code of all examples and exercises** (see below); edit it there, not here |
+| `static/lab-snippets/` | Git submodule: <https://github.com/unibo-fc-isi-iag/lab-snippets>, the **code of all examples and exercises** (see below); edit it there, not here |
 | `themes/reveal-hugo/` | Theme (git submodule, do not edit) |
 | `shared-slides/` | Build/serve/PDF scripts shared across courses (git submodule, do not edit) |
-| `agi-contents-map.md` | **Desired ToC** of the whole module (topics + exercises per lecture), with coverage tracked as checkboxes (`[x]` + lecture dir) |
+| `iag-contents-map.md` | **Desired ToC** of the whole module (topics + exercises per lecture), with coverage tracked as checkboxes (`[x]` + lecture dir) |
 | `.github/workflows/build-and-deploy.yml` | CI: preprocess, `hugo`, inline mermaid, deploy to `gh-pages`, build PDFs as release assets |
 
 ### Reusable snippets (`reusable/`)
@@ -65,7 +65,7 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
    ```toml
    +++
 
-   title = "[AgI] <Lecture Title>"
+   title = "[IAg] <Lecture Title>"
    description = "<one-line description>"
    outputs = ["Reveal"]
 
@@ -89,7 +89,7 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
    {{% import path="reusable/back.md" %}}
    ```
 
-3. Add the lecture to the ToC in `content/_index.md` (`{{< slide id="toc" >}}` slide), and tick the items it covers in `agi-contents-map.md`.
+3. Add the lecture to the ToC in `content/_index.md` (`{{< slide id="toc" >}}` slide), and tick the items it covers in `iag-contents-map.md`.
 
 ### Slide conventions
 
@@ -100,7 +100,7 @@ Imported with `{{% import path="reusable/<file>.md" %}}` (path is relative to th
   (`section`, `fragment`, `slide` come from the reveal-hugo theme.)
 - Images: `{{< image src="./pic.png" max-h="60vh" alt="..." >}}`, files stored next to `_index.md`.
 - Code: __all__ runnable code (examples, exercise placeholders, running-example data) lives in the
-  [`lab-snippets`](https://github.com/unibo-fc-isi-agi/lab-snippets) repository, mounted as the submodule `static/lab-snippets/`
+  [`lab-snippets`](https://github.com/unibo-fc-isi-iag/lab-snippets) repository, mounted as the submodule `static/lab-snippets/`
   (Poetry project; see its README for layout, runner, and the suggested order of lectures/exercises):
     + `snippets/lecture_<NAME>/example<ID>/<file>.py` per example (`NAME` = lecture dir, `-` → `_`; `ID` as in the slides, e.g. `1`, `1bis`),
       `snippets/lecture_<NAME>/exercise<ID>/` placeholders per exercise, `snippets/lecture_<NAME>/*.py` lecture-wide utilities,
