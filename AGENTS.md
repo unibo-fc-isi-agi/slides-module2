@@ -39,6 +39,7 @@ Alternative: `docker compose up` (runs `shared-slides/serve.sh` in a container).
 | `layouts/partials/reveal-hugo/{head,body}.html` | Extra CSS/JS injected in every presentation (Bootstrap, FontAwesome, MathJax, QR codes, PlantUML, print-mode tweaks) |
 | `assets/custom-theme.scss` | Main stylesheet, compiled by Hugo extended |
 | `reusable/` | Markdown snippets imported into slides (see below) |
+| `sources/<lecture>/` | Source material behind some slides (saved web pages, legal texts, unused charts): kept for reference, __not__ published |
 | `static/` | Resources shared across lectures, served at the site root |
 | `static/lab-snippets/` | Git submodule: <https://github.com/unibo-fc-isi-agi/lab-snippets>, the **code of all examples and exercises** (see below); edit it there, not here |
 | `themes/reveal-hugo/` | Theme (git submodule, do not edit) |
