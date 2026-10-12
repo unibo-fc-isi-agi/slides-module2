@@ -153,7 +153,7 @@ poetry run python -m snippets -l free-access -e 1 groq openai/gpt-oss-20b "Hello
 - Open-weight models + an inference server = an API that __nobody can revoke__ or re-price
     + [`gpt-oss-20b`](https://openai.com/index/introducing-gpt-oss/) (Apache 2.0): about __16 GB__ of memory, a good laptop / workstation baseline
     + `gpt-oss-120b`: about __80 GB__, one large GPU
-    + others: [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Mistral Small 4](https://mistral.ai/news/mistral-small-4/), [DeepSeek-R1 distills](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B) (check each license!)
+    + others: [Gemma 4](https://ai.google.dev/gemma/docs/core/model_card_4), [Mistral Small 4](https://mistral.ai/news/mistral-small-4/), [DeepSeek-R1 distills](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B) (check each license, cf. the [checklist](../governance/#/open-models-checklist) in the governance lecture)
 - Serve them via [Ollama](https://ollama.com) (easy) or [vLLM](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html) (fast, multi-user): both expose an _OpenAI-compatible_ API
     + i.e. `poetry run python -m snippets -l free-access -e 1 ollama` works out of the box
 - __Quantization__ (4-bit) cuts memory by ~3× w.r.t. 16-bit (`Q4_K_M` ≈ 4.9 bits per weight, cf. the table in [LLM-as-a-Service](../llmaas/#/local-requirements)), usually with small quality loss, but __re-evaluate on your task__

@@ -119,10 +119,14 @@ Three main __deployment options__, differing in _who_ runs the model, and _where
 | __Privacy__ | data processed by provider (contracts, retention, jurisdiction matter) | same concerns, possibly with an EU provider | data stays in-house |
 | __Lock-in__ | high (proprietary features, prices) | low | low (but lock-in on hardware skills) |
 | __Time-to-market__ | minutes | hours | days to weeks (procurement, setup) |
+| __Footprint__ | energy per token hidden in the price | as for cloud APIs | power use _measurable_ (and billed to you) |
 
+- Energy matters: e.g. generative tasks cost orders of magnitude more energy than task-specific models ([Luccioni et al., 2024](https://arxiv.org/abs/2311.16863)); GPAI providers must document energy consumption (AI Act Art. 53, Annex XI)
 - _Hybrid_ solutions are common: e.g. _on-premise_ for sensitive data, _cloud_ for the rest; or a _gateway_ routing requests according to data sensitivity
 
 ---
+
+{{< slide id="cost-example" >}}
 
 ## Deployment options: a worked cost example
 
@@ -135,7 +139,7 @@ Let's estimate the yearly cost of the running example, under explicit (and rough
 |---|---|---|
 | frontier proprietary model (e.g. [Claude Opus 5.5](https://platform.claude.com/docs/en/about-claude/pricing)) | $4 / $20 | 17.5 × 4 + 2.5 × 20 ≈ __$120__ |
 | small proprietary model (e.g. [Claude Haiku 4.5](https://platform.claude.com/docs/en/about-claude/pricing)) | $1 / $5 | ≈ __$30__ |
-| hosted open model (e.g. [`openai/gpt-oss-120b` on Open Router](https://openrouter.ai/openai/gpt-oss-120b)) | $0.04 / $0.17 | ≈ __$1__ |
+| hosted open model, in the EU (e.g. Mistral Small 4, multimodal, Apache 2.0, on Mistral's [La Plateforme](https://mistral.ai/pricing)) | $0.15 / $0.60 | 17.5 × 0.15 + 2.5 × 0.6 ≈ __$4__ |
 | rented GPU, on demand (e.g. 24 GB GPU on [RunPod](https://www.runpod.io/pricing)) | ~$0.35–0.75 per hour | a few hours per year ≈ __$5__ (+ setup effort) |
 | on-premise (a 24 GB GPU workstation) | ~€2–2.5k for the GPU alone | __€2.5k+__ upfront, + energy, + maintenance |
 
@@ -181,6 +185,7 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
     + a __Data Processing Agreement__ (DPA, [Art. 28](https://gdpr-info.eu/art-28-gdpr/)) with the provider is _mandatory_
 - __Principles__ ([Art. 5](https://gdpr-info.eu/art-5-gdpr/)): lawfulness, purpose limitation, __data minimisation__ (send the LLM only what it needs!), accuracy, storage limitation, security
     + _privacy by design and by default_ ([Art. 25](https://gdpr-info.eu/art-25-gdpr/)): e.g. strip or pseudonymize personal data before sending prompts
+    + _storage limitation_ vs. logging: logs kept ≥ 6 months (AI Act Art. 26(6)) contain personal data, so GDPR still applies: define a _retention period_ (e.g. the appeal window + 6 months), then delete or pseudonymise
 - __International transfers__ ([Chapter V](https://gdpr-info.eu/chapter-5/)): data leaving the EU need an _adequacy decision_ (e.g. the [EU–US Data Privacy Framework](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/eu-us-data-transfers_en), upheld by the General Court in 2025, appeal pending) or other safeguards (e.g. standard contractual clauses)
 - __Data Protection Impact Assessment__ (DPIA, [Art. 35](https://gdpr-info.eu/art-35-gdpr/)): required for high-risk processing, e.g. new technologies used to _evaluate_ or _score_ people
 - __Automated decisions__ ([Art. 22](https://gdpr-info.eu/art-22-gdpr/)): people have the right __not__ to be subject to decisions based _solely_ on automated processing, with legal or similarly significant effects
@@ -224,12 +229,12 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
     + e.g. chatbots must disclose they are AI; synthetic content must be _marked_; deepfakes must be _labelled_
 - __Minimal risk__ $\rightarrow$ no specific obligations
     + e.g. spam filters, AI in video games
-- Orthogonally: __general-purpose AI (GPAI) models__, with obligations for their _providers_ ([Art. 53](https://artificialintelligenceact.eu/article/53/), [Art. 55](https://artificialintelligenceact.eu/article/55/))
+- Orthogonally: __general-purpose AI (GPAI) models__, with obligations for their _providers_ ([Art. 53](https://artificialintelligenceact.eu/article/53/); systemic risk: [Art. 51](https://artificialintelligenceact.eu/article/51/), [Art. 55](https://artificialintelligenceact.eu/article/55/))
 
 {{% /col %}}
 {{% col %}}
 
-{{< image src="./todo-ai-act-pyramid.png" max-h="60vh" alt="TODO picture: the classic AI Act risk pyramid with four levels (top to bottom): 'Unacceptable — prohibited' (red), 'High — conformity & obligations' (orange), 'Transparency — disclosure' (yellow), 'Minimal — no obligations' (green), with 2 example icons per level. A pin labelled 'our PhD admission assistant (Annex III, 3(a))' placed on the high-risk level. A separate side box labelled 'GPAI models (e.g. GPT, Claude, Gemini, Llama)' with an arrow 'used inside' pointing to the systems in the pyramid." >}}
+{{< image src="./ai-act-pyramid.png" max-h="60vh" alt="The AI Act risk pyramid, top to bottom: unacceptable risk (prohibited), high risk (regulated), limited risk (transparency), minimal risk (unregulated)" >}}
 
 {{% /col %}}
 {{% /multicol %}}
@@ -250,7 +255,7 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 
 - Beware: a deployer __becomes a provider__ if it _substantially modifies_ a system, or puts its _own name_ on it (Art. 25)
     + e.g. a University building its own admission assistant on top of an LLM API is the _provider_ __and__ the _deployer_ of that system
-- __GPAI model providers__ (e.g. OpenAI, Mistral) must provide technical documentation to downstream providers, a _copyright policy_, and a public _summary of training data_ (Art. 53); models with _systemic risk_ (> 10<sup>25</sup> FLOPs of training) also need evaluations, adversarial testing, incident reporting (Art. 55)
+- __GPAI model providers__ (e.g. OpenAI, Mistral) must provide technical documentation to downstream providers, a _copyright policy_, and a public _summary of training data_ (Art. 53); models with _systemic risk_ (presumed above 10<sup>25</sup> FLOPs of training, Art. 51(2)) also need evaluations, adversarial testing, incident reporting (Art. 55)
     + _open-source_ GPAI models are exempted from the documentation duties only, and only if they do not pose systemic risk (Art. 53(2), details [later](#/open-models-ai-act))
     + a voluntary [GPAI Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai) (July 2025) details how to comply
 
@@ -265,15 +270,18 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 | 1 Aug 2024 | entry into force |
 | 2 Feb 2025 | prohibitions (Art. 5), AI literacy (Art. 4) |
 | 2 Aug 2025 | GPAI model obligations, governance structures |
-| 2 Aug 2026 | general application, including transparency (Art. 50; until 2 Dec 2026 for systems already on the market) |
+| 2 Aug 2026 | general application, including transparency (Art. 50) |
+| 2 Dec 2026 | new prohibitions (Art. 5(1)(ba)–(bb)): AI generating non-consensual intimate imagery ("nudifiers") or child sexual abuse material; end of the grace period for the Art. 50(2) _marking_ duty, for generative systems already on the market before 2 Aug 2026 |
 | __2 Dec 2027__ | high-risk systems of _Annex III_ (e.g. education), postponed from 2 Aug 2026 |
 | 2 Aug 2028 | high-risk systems of _Annex I_ (safety components of regulated products), postponed from 2 Aug 2027 |
 
 ### Other relevant points
 
-- __AI literacy__ (Art. 4): providers and deployers must support the AI literacy of their _staff_ (this course is part of it!)
+- __AI literacy__ (Art. 4): providers and deployers must take measures to _support_ the AI literacy of their _staff_ (this course is part of it!)
+    + as amended by the Omnibus: previously, they had to _ensure_ a sufficient level of literacy
 - __Penalties__ (Art. 99): up to €35M or 7% of worldwide turnover for prohibited practices; up to €15M or 3% for most other violations
 - __Transparency__: a [Code of Practice on AI-generated content](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content) details marking and labelling
+- __Standards__: conformity in practice goes through _harmonised standards_ (CEN-CENELEC JTC 21, still being drafted: one reason for the Omnibus delay); AI management systems: [ISO/IEC 42001:2023](https://www.iso.org/standard/42001); outside the EU: [NIST AI RMF 1.0](https://www.nist.gov/itl/ai-risk-management-framework) (2023), plus its GenAI profile (NIST AI 600-1, 2024)
 
 ---
 
@@ -287,6 +295,8 @@ plus _contracts_ (e.g. providers' terms of service, data processing agreements) 
 - _minors_: under 14s need parental consent to use AI (Art. 4)
 - _copyright_: only _human_ works are protected (AI-assisted ones are, if they result from the author's intellectual effort); rules on text and data mining (Art. 25)
 - new _crime_: unlawful dissemination of AI-generated _deepfakes_ (Art. 26)
+- _health_: AI supports, the physician decides (Art. 7); _work_: employers must _inform_ workers about AI use (Art. 11)
+- _delegated decrees_ (Art. 24): approved in final reading on 4 Aug 2026; the one on police use and liability is [D.Lgs. 160/2026](https://www.normattiva.it/) (GU 15 Sep 2026), the one on authorities, training, and work was expected in Oct 2026
 
 ### University of Bologna: [GenAI policy for teaching and research](https://www.unibo.it/it/allegati/policy-per-un-uso-etico-e-responsabile-dell2019intelligenza-artificiale-generativa-nelle-attivita-di-didattica-e-ricerca/@@download/file/Policy-Generative-AI.pdf)
 
@@ -415,6 +425,8 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 - __Training data__ has its _own_ license: e.g. OLMo 3 is Apache 2.0, but its dataset [Dolma 3](https://huggingface.co/datasets/allenai/dolma3_mix-6T) is ODC-By (attribution required), and its sources may carry further terms
 - __Outputs__: "the vendor claims no rights on outputs" $\neq$ "outputs are free of restrictions"
     + e.g. using Llama _outputs_ to train a distributed model triggers Llama's _naming_ requirement
+    + proprietary vendors offer _copyright indemnities_ for outputs (e.g. Microsoft's Copilot Copyright Commitment, Google's generative AI indemnification, OpenAI's Copyright Shield, Anthropic's commercial terms), usually for paid or enterprise tiers only, and with conditions; open-weights licenses give none
+    + in Italy, only _human_ works are protected (L. 132/2025, Art. 25: cf. [below](#/regulation))
 
 ---
 
@@ -428,7 +440,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 | (b) information for downstream providers | required | __exempt__ |
 | (c) policy to comply with EU _copyright_ law (incl. text-and-data-mining opt-outs) | required | __still required__ |
 | (d) public _summary of training content_ (AI Office template) | required | __still required__ |
-| systemic-risk obligations ([Art. 55](https://artificialintelligenceact.eu/article/55/)) | if > 10<sup>25</sup> FLOPs | __no exemption__ |
+| systemic-risk obligations ([Art. 55](https://artificialintelligenceact.eu/article/55/)) | if > 10<sup>25</sup> FLOPs (presumption of [Art. 51(2)](https://artificialintelligenceact.eu/article/51/)) | __no exemption__ |
 
 - To qualify, the model must be released under a license allowing _access, use, modification, and distribution_, with weights, architecture, and usage information _public_
     + this is much __weaker__ than OSAID: no training data or training code needed
@@ -459,17 +471,34 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 
 ---
 
+## The gap, in numbers
+
+Data from the [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report) (2025 figures):
+
+| | United States | China | Europe | Italy |
+|---|---|---|---|---|
+| _Notable_ AI models released (Epoch AI, Fig. 1.1.13) | __59__ | 35 | 1 (France); 1 more in the UK | none listed |
+| Private AI investment (Quid, Fig. 4.2.8, 4.2.11) | __$285.9B__ | $12.4B | $20.9B (France $4.4B, Germany $3.9B) | < $1B (not in the top 15) |
+| ... of which _generative_ AI (Fig. 4.2.10) | __$163.6B__ | $1.5B | $3.2B | — |
+| Newly funded AI companies (Fig. 4.2.9) | __1,953__ | 161 | e.g. Germany 92, France 84 | 38 |
+| Growth of private AI investment, 2024 $\rightarrow$ 2025 (Fig. 4.2.11) | +160% | +32% | +7% | — |
+
+- The gap is not closing: it is _widening_, at least for private investment
+- Caveats: private investment understates _state_ funding (notably China's, and EU/national programmes such as EuroHPC AI Factories); counts by affiliation may double-count multinational teams
+
+---
+
 ## Italian initiatives
 
 | Model | Who | What | License | Status (Sep. 2026) |
 |---|---|---|---|---|
-| [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | Sapienza NLP, within the [FAIR](https://fondazione-fair.it/) PNRR project; trained on CINECA's Leonardo | up to __7B__, from scratch; 1.14T Italian + 1.14T English + 200B code tokens | Apache 2.0, open data | 7B presented in Nov. 2024; still the flagship, research-grade |
+| [Minerva](https://huggingface.co/sapienzanlp/Minerva-7B-base-v1.0) | Sapienza NLP, within the [FAIR](https://fondazione-fair.it/) PNRR project; trained on CINECA's Leonardo | 350M, 1B, 3B, and __7B__, from scratch; 1.14T Italian + 1.14T English + 200B code tokens | Apache 2.0, open data | 7B presented in Nov. 2024; still the flagship, research-grade |
 | [LLaMAntino / ANITA](https://huggingface.co/swap-uniba/LLaMAntino-3-ANITA-8B-Inst-DPO-ITA) | Univ. of Bari | _fine-tunes_ of Llama, Mistral, gpt-oss for Italian (not trained from scratch) | inherited; [ANITA-NEXT](https://huggingface.co/m-polignano/ANITA-NEXT-24B-Magistral-2506-ITA)'s metadata says Apache 2.0, its card says "research only" | active research project; license hygiene is weak |
 | [Velvet](https://huggingface.co/Almawave/Velvet-14B) | Almawave (private); trained on Leonardo | 2B and 14B, 6 languages (~23% Italian for the 14B) | Apache 2.0 | released Jan.–Feb. 2025, static since |
 | [Italia](https://huggingface.co/sapienzanlp/modello-italia-9b) → [Domyn Small](https://huggingface.co/domyn/Domyn-Small-v1.0) | iGenius (private), renamed Domyn in June 2025 | Italia 9B (2024), then 10B; Domyn Small 10B (May 2026), 50+ languages | Italia 9B: MIT; Italia 10B: _custom, non-open_; Domyn Small: MIT | company focus moved to _proprietary_ large models |
 
 - A "__national__" model says nothing about its _openness_: compare Minerva (Apache, open data) with Italia 10B (restrictive license)
-- All Italian models are in the __2–24B__ range: one or two orders of magnitude below frontier models
+- Italian models trained _from scratch_ range from 0.35B (Minerva) to 14B (Velvet); larger ones (e.g. ANITA-NEXT 24B) are _fine-tunes_ of foreign models: one or two orders of magnitude below the frontier
 
 ---
 
@@ -516,7 +545,7 @@ A model release is a __bundle__ of separately _openable_ artifacts: downloading 
 
 1. __Data__: too little high-quality text in less-resourced languages (the very reason for LLMs4EU and for synthetic data)
 2. __Compute__: every project depends on a public supercomputer allocation (Leonardo, MareNostrum 5, JUWELS, Alps); an "open" model is not _reproducible_ by anyone who lacks one
-3. __Scale and timing__: models of 2–24B parameters, released _months to years_ after comparable global open models; flagships "planned" or "pending"
+3. __Scale and timing__: models trained from scratch up to 14B parameters, released _months to years_ after comparable global open models; flagships "planned" or "pending"
 4. __Maintenance__: projects have _finite_ funding (e.g. OpenGPT-X ended in 2025): who fixes, updates, and re-evaluates the models afterwards?
 5. __Adoption__: public-administration use is mostly _aspirational_ in the sources, not a demonstrated large-scale deployment
 
@@ -648,9 +677,7 @@ The compliance unit is __checkpoint + license version + code licenses + data lic
 
 ## Model documentation: model cards, system cards, datasheets
 
-- __Model cards__ ([Mitchell et al., 2019](https://arxiv.org/abs/1810.03993)): short documents accompanying a model, reporting
-    + _intended uses_ and _out-of-scope_ uses, _training data_ (summary), _evaluation_ results (also _disaggregated_ by groups), _ethical considerations_, _limitations_
-    + nowadays standard on model zoos (e.g. [Hugging Face's model card guide](https://huggingface.co/docs/hub/model-cards))
+- __Model cards__: recall them from the [model zoos](../llmaas/#/model-zoos) of the LLM-as-a-Service lecture ([Mitchell et al., 2019](https://arxiv.org/abs/1810.03993); [Hugging Face's guide](https://huggingface.co/docs/hub/model-cards)); here, what matters is what they say about _governance_ (below)
 - __Datasheets for datasets__ ([Gebru et al., 2021](https://arxiv.org/abs/1803.09010)): the same idea, for training data (motivation, composition, collection, recommended uses)
 - __System cards__: longer reports published by frontier providers for each model release, focusing on _safety_ evaluations, red-teaming, and mitigations
     + e.g. [OpenAI's](https://openai.com/index/gpt-oss-model-card/) and [Anthropic's](https://www.anthropic.com/system-cards) system cards
@@ -669,11 +696,11 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 {{% col class="col-8" %}}
 - __ARC-AGI__ ([Chollet, 2019](https://arxiv.org/abs/1911.01547)): intelligence as _skill-acquisition efficiency_, measured on visual puzzles that are easy for humans, and require _abstracting_ rules from a few examples
     + [ARC-AGI-2](https://arxiv.org/abs/2505.11831) (2025) raised the difficulty; the [ARC Prize 2025](https://arcprize.org/blog/arc-prize-2025-results-analysis) grand prize went _unclaimed_
-    + [ARC-AGI-3](https://arcprize.org/blog/arc-agi-3-launch) (March 2026) is _interactive_: agents must explore game-like environments; at launch, humans solved all of them, frontier models almost none
+    + [ARC-AGI-3](https://arcprize.org/blog/arc-agi-3-launch) (March 2026) is _interactive_: cf. the [agentic benchmarks](../agents/#/agentic-benchmarks) of the agents lecture, and the [leaderboard](#/arc-agi-3-leaderboard) below
 - __Humanity's Last Exam__ ([Phan et al., 2025](https://arxiv.org/abs/2501.14249)): 2,500 expert-written questions across disciplines, designed to be _un-googleable_
     + best models went from single digits (early 2025) to ~60% (cf. [Artificial Analysis](https://artificialanalysis.ai/evaluations/humanitys-last-exam), September 2026)
 - __METR's time horizon__ ([Kwa et al., 2025](https://arxiv.org/abs/2503.14499)): the _length_ of tasks (in human-expert time) that an agent completes with 50% success
-    + it has been _doubling_ every ~7 months (cf. [live measurements](https://metr.org/time-horizons))
+    + _doubling_ every ~7 months over 2019–2025 (212 days, in the original paper), and faster since 2023: ~4 months (129 days, METR's Time Horizon 1.1 fit, cf. [live measurements](https://metr.org/time-horizons))
 - __Aggregated views__: the [Stanford AI Index 2026](https://hai.stanford.edu/ai-index/2026-ai-index-report) describes a _jagged frontier_: models winning maths olympiad gold medals, yet failing at reading analog clocks
 {{% /col %}}
 {{% col class="col-4" %}}
@@ -684,6 +711,30 @@ As models _saturate_ classic benchmarks, new ones try to measure what models __c
 {{% /multicol %}}
 
 > __Engineering take-away__: frontier benchmarks tell you where the _state of the art_ is, not whether a model is good for __your__ task
+
+---
+
+## Frontier benchmarks: METR's time horizons
+
+{{< image src="./task-completion-time-horizon.png" max-h="50vh" alt="METR: length of software tasks (in human time) that LLMs complete 50% of the time, by release date, log scale: from seconds (GPT-2, 2019) to about 1 hour (o1, late 2024), several hours (Claude Opus 4.6, early 2026), and about 16 hours (Claude Mythos Preview, early, April 2026), along an exponential trend; measurements above 16 hours are unreliable with the current task suite" >}}
+
+- E.g. the 50% time horizon of Claude Mythos Preview (April 2026) is ~17 hours, at the limit of what METR's task suite can measure
+- Caveats: _software_ tasks only, 50% success (the 80% horizon is much shorter), wide confidence intervals
+
+<small>Source: [METR, time horizons](https://metr.org/time-horizons), retrieved October 2026</small>
+
+---
+
+{{< slide id="arc-agi-3-leaderboard" >}}
+
+## Frontier benchmarks: the ARC-AGI-3 leaderboard
+
+{{< image src="./arc-agi-3-leaderboard.png" max-h="50vh" alt="ARC-AGI-3 verified leaderboard, score versus cost per run (log scale): the best models with the standard harness reach about 63% (GPT-6 Astra, Max) at tens of thousands of dollars; Claude Opus 5 (High) about 30%; with the Provider Adapter harness, GPT-6 Astra and GPT-6.1 Sol reach 90–100%; most other models stay below 10%" >}}
+
+- From < 1% at launch (March 2026) to 62.7% with the _standard_ harness, and ~99% with a _general-purpose_ harness (keeping reasoning state, compacting the conversation), in 6 months
+    + at a cost of thousands to tens of thousands of dollars per full run; humans solve all environments
+
+<small>Source: [ARC Prize leaderboard](https://arcprize.org/leaderboard), retrieved October 2026</small>
 
 ---
 
@@ -752,10 +803,8 @@ flowchart LR
 
 ### 2. __Task-specific__ evaluation (the one that really matters)
 
-- build a small _validation set_ of realistic inputs for __your__ task (with expected outputs, when possible)
-- run each shortlisted model on it, and _score_ outputs: exact match, schema validity, custom checks, or _LLM-as-a-Judge_
+- run each shortlisted model on _your_ test dataset, with _your_ scorers, as in the [validating lecture](../validating/#/validation) (deterministic scorers first, [LLM-as-a-Judge](../validating/#/llm-as-a-judge) where code can't help)
 - measure _latency_ and _cost_ too (both reported in the API responses' metadata, e.g. `usage`)
-- (systematic infrastructure for this will be discussed in the _prompt engineering_ lecture)
 
 ---
 
@@ -781,6 +830,8 @@ flowchart LR
     + the number of _failures_ (e.g. invalid JSON, validation errors)
     + _latency_ (wall-clock time per request) and _tokens_ used (from `response.usage`), hence _cost_
 4. Summarize the results in a __table__, and motivate your choice
+
+> Why not DeepEval or MLflow (cf. [validating](../validating/#/eval-frameworks))? They score _one_ system at a time; here we compare $N$ models × repetitions, with cost and latency: a plain script is simpler (MLflow would work too: one run per model, in one experiment)
 
 ---
 
@@ -1155,7 +1206,7 @@ Recall the [running example](../prompting/#/running-example) (PhD admission comm
 
 Write a short (2–4 pages) __decision record__, answering:
 
-1. __Regulatory classification__: is the system _high-risk_ under the EU AI Act? Which _obligations_ follow for the University (as _deployer_)? Which GDPR _obligations_ apply to candidates' documents?
+1. __Regulatory classification__: is the system _high-risk_ under the EU AI Act? Which _obligations_ follow for the University (as _provider_ and/or _deployer_? cf. Art. 25)? Which GDPR _obligations_ apply to candidates' documents?
 2. __Deployment__: cloud API, hosted open model, or on-premise? Support the choice with a _cost estimate_ (number of applications per year × tokens per application × price, vs. hardware) and _privacy_ considerations
 3. __Model__: which model? Support the choice with the results of [Exercise 1](#/compare-models), and with the model's _documentation_
     + apply the [pre-adoption checklist](#/open-models-checklist) to the __exact checkpoint__: license, multimodal restrictions, derivatives, AI Act role
@@ -1212,7 +1263,7 @@ Write a short (2–4 pages) __decision record__, answering:
 {{% col %}}
 #### EU AI Act
 
-- _high-risk_: "access or admission" to education (Art. 6(2), Annex III 3(a)); the "preparatory task" derogation (Art. 6(3)) is __not__ claimed: scoring _materially influences_ the outcome
+- _high-risk_: "access or admission" to education (Art. 6(2), Annex III 3(a)); the "preparatory task" derogation (Art. 6(3)) is __not__ claimed: scoring _materially influences_ the outcome; and anyway, scoring candidates is _profiling_, which Art. 6(3) (last subparagraph) makes always high-risk
 - University = __provider__ (it builds the system on a general-purpose model): risk management, logging, oversight by design, conformity assessment, registration (Art. 9–17, 43, 49)
 - University = __deployer__ (and public body): trained oversight, logs ≥ 6 months, FRIA (Art. 26–27); candidates' right to explanation (Art. 86)
 - applies from 2 Dec 2027, but we comply __from the first use__
@@ -1236,12 +1287,12 @@ Write a short (2–4 pages) __decision record__, answering:
 
 | Option | Quality | Cost per year | Control | Compliance | Time-to-market |
 |---|---|---|---|---|---|
-| A. proprietary API (e.g. Claude Haiku 4.5) | high | ≈ $30 | low: model may change or be deprecated | DPA + transfer safeguards; data leaves the University | days |
-| B. open-weights model, hosted by an EU provider | medium-high | ≈ $1–10 | medium: pinned checkpoint | DPA; data stays in the EU | days |
+| A. proprietary API (e.g. Claude Haiku 4.5) | high | ≈ $30 | low: snapshots can be pinned, but are _retired_ by the vendor | DPA + transfer safeguards; data leaves the University | days |
+| B. open-weights model, hosted by an EU provider (e.g. Mistral La Plateforme, Scaleway, OVHcloud) | medium-high | ≈ $1–10 (cf. the [worked example](#/cost-example)) | medium: pinned checkpoint | DPA; data stays in the EU | days |
 | C. open-weights model, on-premise (24 GB GPU) | medium | ≈ €2.5k upfront + energy + maintenance | full | data never leaves the University | weeks |
 
 - _break-even_ of C vs. B: __centuries__ (even vs. A: ≈ 80 years) → at this scale, __cost is not the deciding factor__: compliance and control are
-- __Decision__: __B__ for the pilot, with _the same model_ runnable on-premise (C) should the DPO object; A discarded, as uncontrolled model changes would invalidate our tests
+- __Decision__: __B__ for the pilot, with _the same model_ runnable on-premise (C) should the DPO object; A discarded: pinned snapshots (cf. `gpt-4o-2024-08-06` in [LLM-as-a-Service](../llmaas/#/model-zoos)) are _retired_ on the vendor's schedule, forcing re-validation; and data would leave the University
 - _Decision 3_ (model): a __decision rule__ applied to Exercise 1's table (no failures, lowest error, sd ≤ 0.5, then latency and cost), whose cells are left as _[Ex. 1]_ __placeholders__, to be filled from __your__ run
 
 ---

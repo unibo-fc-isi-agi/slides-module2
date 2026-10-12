@@ -236,8 +236,8 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 - [x] `:401-416` MCP concept repeats `genai:737-744`: keep N+M, JSON-RPC, transports
 - [x] `:198-204` duplicates `llmaas:1185` tools row
     - [x] Fix: keep the agents table (the detailed one); add above it "> Recall the _Tools_ row of the [API comparison](../llmaas/#/...)", and leave `llmaas:1185` as is (one-line teaser forward-linking `../agents/#/tools-examples`)
-- [ ] `:584-602` benchmarks overlap `governance:706-728`: one home
-    - [ ] @gciatto decide: (a) agents keeps the _agentic_ table (GAIA, WebArena, SWE-bench, τ-bench, ARC-AGI-3), governance keeps only general/saturation + one-line link `../agents/#/agentic-benchmarks` for ARC-AGI-3; (b) move all to governance. Recommend (a): drop ARC-AGI-3 bullet at `governance:714` in favour of the link
+- [x] `:584-602` benchmarks overlap `governance:706-728`: one home
+    - [x] @gciatto decide: (a) agents keeps the _agentic_ table (GAIA, WebArena, SWE-bench, τ-bench, ARC-AGI-3), governance keeps only general/saturation + one-line link `../agents/#/agentic-benchmarks` for ARC-AGI-3; (b) move all to governance. Recommend (a): drop ARC-AGI-3 bullet at `governance:714` in favour of the link — (a), plus a leaderboard slide in governance using your picture
 - [x] `:716` repeats `genai:625` "LLMs propose, software verifies": mark as recall
 - [x] `:643-650` plan before acting overlaps `workflows:477ff`; planning section (`:616-650`) placement
     - [x] @gciatto decide: keep the planning section in agents (workflows `:28` and `:483` already recall `../agents/#/planning`), but shrink `:643-650` to 2 bullets (explicit plan artefact + irreversible steps) ending "→ [plan-and-execute](../workflows/#/plan-and-execute)"; alternatively move `:643-650` wholesale into workflows. Recommend shrink. Either way, add `{{< slide id="plan-before-acting" >}}` and point workflows `:483` to it (now `#/planning` hits "Can LLM agents plan?") — shrunk, anchors `plan-before-acting` and `llm-modulo` added, workflows links retargeted
@@ -343,59 +343,59 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
 ## `governance`
 
 ### Errors / outdated
-- [ ] Missing image `todo-ai-act-pyramid.png` (`:232`) ✓
-    - [ ] @gciatto added picture in content/governance/ai-act-pyramid.png, please update the slide to point to it
-- [ ] "will be discussed in the prompt engineering lecture" (`:800`) → `validating`, past tense ✓
-- [ ] Cost example uses text-only `gpt-oss-120b` (`:138`, `:1279`) for multimodal task (`:402`); Open Router not an EU provider (`:1279`)
-    - [ ] Fix: in `:138` swap to a multimodal open model consistent with `:402` and Ex. 1 defaults, e.g. `google/gemma-4-26b-a4b-it` (Apache 2.0) or Mistral Small 4 on Mistral's own API (EU, Apache). In `:1279` and `decision-record.md` §2 (lab-snippets master, then merge into `exercises`), name an EU host (e.g. Mistral La Plateforme, Scaleway or OVHcloud AI Endpoints) and drop Open Router.
-    - [ ] @gciatto: pick the model+host pair (rec.: Mistral Small 4 on La Plateforme, since one EU vendor covers both) and re-check its Sept/Oct 2026 price; recompute "≈ $1" / "$1–10".
-- [ ] Timeline misses Omnibus new Art. 5 prohibitions from 2 Dec 2026 (`:261-270`)
-    - [ ] Fix: add row `| 2 Dec 2026 | new prohibitions (Art. 5(1)(ba)-(bb)): AI generating non-consensual intimate imagery / CSAM ("nudifiers"); end of Art. 50(2) marking grace period |`; merge it with the existing Art. 50 note (see next item).
-- [ ] Art. 50 transitional period (`:268`): check OJ text of Reg. 2026/1744
-    - [ ] Fix: per commentary (cypheron.cz, nicfab.eu), Art. 50 applies from 2 Aug 2026; only the Art. 50(2) _marking_ duty has until 2 Dec 2026 for systems placed on the market before 2 Aug 2026. Reword `:268` to "(Art. 50(2) marking: until 2 Dec 2026 for generative systems already on the market)".
-    - [ ] @gciatto downloaded the html of the OJ text (Reg. 2026/1744) in content/governance/OJ_L_202601744_EN_TXT.html, so you can inspect it
-- [ ] Art. 4 AI literacy amended by Omnibus (`:274`): say so
-    - [ ] Fix: `:274` already uses the new wording ("support"); append "(as amended by the Omnibus: previously, they had to _ensure_ a sufficient level of literacy)". Only one secondary source reports the change: check the OJ text.
-- [ ] 10²⁵ FLOPs presumption is Art. 51(2), not Art. 55 (`:253`, `:431`)
-- [ ] METR "doubling every ~7 months" (`:718`): re-check (~4 months recently)
-    - [ ] Fix: "doubling every ~7 months over 2019–2025, and faster (~4 months) since 2023/2024 (cf. live measurements)". Kwa et al. give 212 days; METR's updated post-2023 fits give ~130 days (TH 1.1).
-    - [ ] @gciatto added picture screenshots and html from <https://metr.org/time-horizons> in content/governance (see new git files)
-- [ ] "All Italian models 2–24B" (`:472`): Minerva 350M/1B/3B; 24B is a Magistral fine-tune
-    - [ ] Fix: "Italian models trained from scratch range from 0.35B (Minerva) to 14B (Velvet); larger ones (e.g. ANITA-NEXT 24B) are _fine-tunes_ of foreign models: one or two orders of magnitude below the frontier". Also fix "2–24B" in `:519` (recurring issues) and "up to 7B" in the Minerva row (`:466`).
-- [ ] "Medium 3.5 Modified MIT" (`:386`): verify
-    - [ ] Fix: none needed. Mistral-Medium-3.5-128B (Apr 2026) is open-weights under a "modified MIT" license on HF, per several sources. Optionally link its HF LICENSE file to match the other rows.
+- [x] Missing image `todo-ai-act-pyramid.png` (`:232`) ✓
+    - [x] @gciatto added picture in content/governance/ai-act-pyramid.png, please update the slide to point to it — done
+- [x] "will be discussed in the prompt engineering lecture" (`:800`) → `validating`, past tense ✓
+- [x] Cost example uses text-only `gpt-oss-120b` (`:138`, `:1279`) for multimodal task (`:402`); Open Router not an EU provider (`:1279`)
+    - [x] Fix: in `:138` swap to a multimodal open model consistent with `:402` and Ex. 1 defaults, e.g. `google/gemma-4-26b-a4b-it` (Apache 2.0) or Mistral Small 4 on Mistral's own API (EU, Apache). In `:1279` and `decision-record.md` §2 (lab-snippets master, then merge into `exercises`), name an EU host (e.g. Mistral La Plateforme, Scaleway or OVHcloud AI Endpoints) and drop Open Router.
+    - [x] @gciatto: pick the model+host pair (rec.: Mistral Small 4 on La Plateforme, since one EU vendor covers both) and re-check its Sept/Oct 2026 price; recompute "≈ $1" / "$1–10". — Mistral Small 4 on La Plateforme, /bin/zsh.15//bin/zsh.60 (Sept 2026, from price aggregators citing Mistral's page: re-check mistral.ai/pricing) ≈ /year; the '–10' range still holds
+- [x] Timeline misses Omnibus new Art. 5 prohibitions from 2 Dec 2026 (`:261-270`)
+    - [x] Fix: add row `| 2 Dec 2026 | new prohibitions (Art. 5(1)(ba)-(bb)): AI generating non-consensual intimate imagery / CSAM ("nudifiers"); end of Art. 50(2) marking grace period |`; merge it with the existing Art. 50 note (see next item).
+- [x] Art. 50 transitional period (`:268`): check OJ text of Reg. 2026/1744
+    - [x] Fix: per commentary (cypheron.cz, nicfab.eu), Art. 50 applies from 2 Aug 2026; only the Art. 50(2) _marking_ duty has until 2 Dec 2026 for systems placed on the market before 2 Aug 2026. Reword `:268` to "(Art. 50(2) marking: until 2 Dec 2026 for generative systems already on the market)".
+    - [x] @gciatto downloaded the html of the OJ text (Reg. 2026/1744) in content/governance/OJ_L_202601744_EN_TXT.html, so you can inspect it — checked: Art. 50(2) marking grace period until 2 Dec 2026 confirmed
+- [x] Art. 4 AI literacy amended by Omnibus (`:274`): say so
+    - [x] Fix: `:274` already uses the new wording ("support"); append "(as amended by the Omnibus: previously, they had to _ensure_ a sufficient level of literacy)". Only one secondary source reports the change: check the OJ text. — checked in the OJ text: confirmed ('take measures to support'; 'previously ensure')
+- [x] 10²⁵ FLOPs presumption is Art. 51(2), not Art. 55 (`:253`, `:431`)
+- [x] METR "doubling every ~7 months" (`:718`): re-check (~4 months recently)
+    - [x] Fix: "doubling every ~7 months over 2019–2025, and faster (~4 months) since 2023/2024 (cf. live measurements)". Kwa et al. give 212 days; METR's updated post-2023 fits give ~130 days (TH 1.1).
+    - [x] @gciatto added picture screenshots and html from <https://metr.org/time-horizons> in content/governance (see new git files) — done: 212 days (paper) vs ~129 days since 2023 (TH 1.1, from your saved page); added a slide with task-completion-time-horizon.png
+- [x] "All Italian models 2–24B" (`:472`): Minerva 350M/1B/3B; 24B is a Magistral fine-tune
+    - [x] Fix: "Italian models trained from scratch range from 0.35B (Minerva) to 14B (Velvet); larger ones (e.g. ANITA-NEXT 24B) are _fine-tunes_ of foreign models: one or two orders of magnitude below the frontier". Also fix "2–24B" in `:519` (recurring issues) and "up to 7B" in the Minerva row (`:466`).
+- [x] "Medium 3.5 Modified MIT" (`:386`): verify
+    - [x] Fix: none needed. Mistral-Medium-3.5-128B (Apr 2026) is open-weights under a "modified MIT" license on HF, per several sources. Optionally link its HF LICENSE file to match the other rows.
 
 ### Inconsistencies / redundancies
-- [ ] Ex. 2 Q1 frames University as deployer only (`:1197`) vs provider and deployer (`:1248`, `:252`)
-    - [ ] Fix: in `:1197` replace "(as _deployer_)" with "(as _provider_ and/or _deployer_? cf. Art. 25)". The solution (`:1251`, decision-record.md §1) already answers both.
-- [ ] Option A discarded for model changes (`:1283`): real issue is retirement (`:118`), snapshots exist
-    - [ ] Fix: in `:1283` and decision-record.md §2, change the rationale to "Option A is discarded: pinned snapshots (cf. llmaas, `gpt-4o-2024-08-06`) are _retired_ on the vendor's schedule, forcing re-validation; data also leave the University". In `:1278` change Control to "low: snapshots can be pinned, but are retired by the vendor".
+- [x] Ex. 2 Q1 frames University as deployer only (`:1197`) vs provider and deployer (`:1248`, `:252`)
+    - [x] Fix: in `:1197` replace "(as _deployer_)" with "(as _provider_ and/or _deployer_? cf. Art. 25)". The solution (`:1251`, decision-record.md §1) already answers both.
+- [x] Option A discarded for model changes (`:1283`): real issue is retirement (`:118`), snapshots exist
+    - [x] Fix: in `:1283` and decision-record.md §2, change the rationale to "Option A is discarded: pinned snapshots (cf. llmaas, `gpt-4o-2024-08-06`) are _retired_ on the vendor's schedule, forcing re-validation; data also leave the University". In `:1278` change Control to "low: snapshots can be pinned, but are retired by the vendor".
 - [x] "Ordered by increasing effort" (`:598-608`) vs table (`:652-653`)
     - [x] Fix: the table rates Skills "fast" and Tools "medium", contradicting the list's order. Drop "ordered by increasing _effort_" and say "roughly in the order of this course". Or reorder: Prompting, Skills, RAG, Tools/agents, Workflows, Fine-tuning.
     - [x] @gciatto: choose wording change (rec.: it keeps the course order) — done while moving the slide to `rag`
-- [ ] Ex. 1 rebuilds evaluation by hand instead of reusing DeepEval/MLflow (`:800`)
-    - [ ] @gciatto: decide (a) keep plain `compare_models.py` and add one slide line justifying it ("frameworks score one system; here we compare N models × repetitions, with cost/latency"), or (b) port it to MLflow (one run per model in one experiment, reusing `lecture_validating/example1bis` scorers). Rec.: (a), cheaper; mention MLflow as the alternative.
-- [ ] `:780-800` re-explains `validating:28-75`
-    - [ ] Fix: shrink part 2 ("task-specific evaluation") to 2 bullets linking `../validating/#/` (general concept, LLM-as-a-Judge). Keep the benchmarks/leaderboards part, which `validating` does not cover.
-- [ ] Model cards (`:693-695`) repeat `llmaas:58`
-    - [ ] Fix: replace the model-card definition bullets with "(cf. [model cards](../llmaas/#/...))". Keep datasheets, system cards, the SVG, and the "what to look for" bullet. Add a slide id in llmaas if none exists.
-- [ ] Walkthroughs restate body (`:127-146`, `:1154-1177` vs `:1274-1309`); Ovadia et al. cited twice (`:659`, `rag:114`); free-access local-model notes overlap licensing (`:392-417`)
-    - [ ] Fix: in solution `:1274-1290` replace the restated cost numbers with "costs as in the [worked example](#/...)" plus only the decision. Ovadia: keep both (different lectures), fine. Free-access: replace the duplicated licence notes in the appendix with a link to `../governance/#/...` (licenses slide).
+- [x] Ex. 1 rebuilds evaluation by hand instead of reusing DeepEval/MLflow (`:800`)
+    - [x] @gciatto: decide (a) keep plain `compare_models.py` and add one slide line justifying it ("frameworks score one system; here we compare N models × repetitions, with cost/latency"), or (b) port it to MLflow (one run per model in one experiment, reusing `lecture_validating/example1bis` scorers). Rec.: (a), cheaper; mention MLflow as the alternative.
+- [x] `:780-800` re-explains `validating:28-75`
+    - [x] Fix: shrink part 2 ("task-specific evaluation") to 2 bullets linking `../validating/#/` (general concept, LLM-as-a-Judge). Keep the benchmarks/leaderboards part, which `validating` does not cover.
+- [x] Model cards (`:693-695`) repeat `llmaas:58`
+    - [x] Fix: replace the model-card definition bullets with "(cf. [model cards](../llmaas/#/...))". Keep datasheets, system cards, the SVG, and the "what to look for" bullet. Add a slide id in llmaas if none exists.
+- [x] Walkthroughs restate body (`:127-146`, `:1154-1177` vs `:1274-1309`); Ovadia et al. cited twice (`:659`, `rag:114`); free-access local-model notes overlap licensing (`:392-417`)
+    - [x] Fix: in solution `:1274-1290` replace the restated cost numbers with "costs as in the [worked example](#/...)" plus only the decision. Ovadia: keep both (different lectures), fine. Free-access: replace the duplicated licence notes in the appendix with a link to `../governance/#/...` (licenses slide).
 
 ### Holes
-- [ ] Sovereignty (`:444-525`): hard evidence of EU/Italy lag (AI Index model counts by origin, private investment, compute share, leaderboard ranks with date)
-    - [ ] Fix: add one slide "The gap, in numbers", before "Italian initiatives". Use AI Index 2026 ch. 1 (notable models by country: US ≫ China ≫ EU) and ch. 4 (private AI investment by country, US vs EU vs Italy), plus the EU share of global AI compute (e.g. Epoch AI / TOP500). Add the best EU model's Arena / Artificial Analysis rank, with its snapshot date.
-    - [ ] @gciatto downloaded the ai_index_report_2026.pdf in root, so you can extract the numbers and charts
-- [ ] Art. 6(3) last subparagraph: profiling ⇒ always high-risk (`:1254`)
-    - [ ] Fix: in `:1254` (and decision-record.md §1), add "and anyway, scoring candidates is _profiling_, so Art. 6(3) last subparagraph makes the system always high-risk". Optionally mention it on the risk-classification slide too.
-- [ ] AI Act logging (Art. 26(6)) vs GDPR storage limitation
-    - [ ] Fix: add a sub-bullet near `:182`: "logs kept ≥ 6 months (AI Act Art. 26(6)) contain personal data: GDPR storage limitation still applies. Define a retention period (e.g. the appeal window + 6 months), then delete or pseudonymise". Add the retention period to decision-record.md §6.
-- [ ] Standards: CEN-CENELEC JTC 21, ISO/IEC 42001, NIST AI RMF
-    - [ ] Fix: one bullet on the AI Act roles/timeline slide: "conformity in practice via _harmonised standards_ (CEN-CENELEC JTC 21, still being drafted, a reason for the Omnibus delay); management systems: ISO/IEC 42001:2023; outside the EU: NIST AI RMF 1.0 (2023) + GenAI profile (NIST AI 600-1, 2024)".
-- [ ] L. 132/2025 delegated decrees status; sectoral articles (health Art. 7, work Art. 11)
-    - [ ] Fix: on the national-law slide (`:282-290`) add "health: AI supports, the physician decides (Art. 7)" and "work: employers must _inform_ workers about AI use (Art. 11)". Also add "delegated decrees: two drafts approved in preliminary reading on 10 Jun 2026 (authorities' powers, AI training; police biometrics, civil/criminal liability); delegation expires Oct 2026".
+- [x] Sovereignty (`:444-525`): hard evidence of EU/Italy lag (AI Index model counts by origin, private investment, compute share, leaderboard ranks with date)
+    - [x] Fix: add one slide "The gap, in numbers", before "Italian initiatives". Use AI Index 2026 ch. 1 (notable models by country: US ≫ China ≫ EU) and ch. 4 (private AI investment by country, US vs EU vs Italy), plus the EU share of global AI compute (e.g. Epoch AI / TOP500). Add the best EU model's Arena / Artificial Analysis rank, with its snapshot date.
+    - [x] @gciatto downloaded the ai_index_report_2026.pdf in root, so you can extract the numbers and charts — done from the PDF (models, investment, new companies, growth); compute share and leaderboard ranks not added (not in the report)
+- [x] Art. 6(3) last subparagraph: profiling ⇒ always high-risk (`:1254`)
+    - [x] Fix: in `:1254` (and decision-record.md §1), add "and anyway, scoring candidates is _profiling_, so Art. 6(3) last subparagraph makes the system always high-risk". Optionally mention it on the risk-classification slide too.
+- [x] AI Act logging (Art. 26(6)) vs GDPR storage limitation
+    - [x] Fix: add a sub-bullet near `:182`: "logs kept ≥ 6 months (AI Act Art. 26(6)) contain personal data: GDPR storage limitation still applies. Define a retention period (e.g. the appeal window + 6 months), then delete or pseudonymise". Add the retention period to decision-record.md §6.
+- [x] Standards: CEN-CENELEC JTC 21, ISO/IEC 42001, NIST AI RMF
+    - [x] Fix: one bullet on the AI Act roles/timeline slide: "conformity in practice via _harmonised standards_ (CEN-CENELEC JTC 21, still being drafted, a reason for the Omnibus delay); management systems: ISO/IEC 42001:2023; outside the EU: NIST AI RMF 1.0 (2023) + GenAI profile (NIST AI 600-1, 2024)".
+- [x] L. 132/2025 delegated decrees status; sectoral articles (health Art. 7, work Art. 11)
+    - [x] Fix: on the national-law slide (`:282-290`) add "health: AI supports, the physician decides (Art. 7)" and "work: employers must _inform_ workers about AI use (Art. 11)". Also add "delegated decrees: two drafts approved in preliminary reading on 10 Jun 2026 (authorities' powers, AI training; police biometrics, civil/criminal liability); delegation expires Oct 2026". — also added the decrees' status: final approval 4 Aug 2026, D.Lgs. 160/2026 (GU 15 Sep 2026); the second decree's publication (reportedly D.Lgs. 179/2026, GU 8 Oct 2026) is from a single source
     - [ ] @gciatto: check the Gazzetta Ufficiale for final adoption before the lecture.
-- [ ] Providers' copyright indemnities / output ownership
-    - [ ] Fix: add a sub-bullet under "Outputs" (`:417`): "proprietary vendors offer _copyright indemnities_ for outputs (e.g. Microsoft Copilot Copyright Commitment, Google's generative AI indemnification, OpenAI Copyright Shield, Anthropic's commercial terms), usually only for paid/enterprise tiers and with conditions; open-weights licenses give none". Cross-link to L. 132/2025 Art. 25 on human authorship.
-- [ ] Energy / environmental footprint in trade-offs
-    - [ ] Fix: add a row or bullet "Footprint" to the deployment comparison (`:110-122`): per-token energy is hidden in API prices; on-premise power use is measurable. Cite e.g. Luccioni et al., 2024 "Power Hungry Processing" (arXiv 2311.16863) and the AI Act Art. 53 / Annex XI energy-reporting duty for GPAI providers.
+- [x] Providers' copyright indemnities / output ownership
+    - [x] Fix: add a sub-bullet under "Outputs" (`:417`): "proprietary vendors offer _copyright indemnities_ for outputs (e.g. Microsoft Copilot Copyright Commitment, Google's generative AI indemnification, OpenAI Copyright Shield, Anthropic's commercial terms), usually only for paid/enterprise tiers and with conditions; open-weights licenses give none". Cross-link to L. 132/2025 Art. 25 on human authorship.
+- [x] Energy / environmental footprint in trade-offs
+    - [x] Fix: add a row or bullet "Footprint" to the deployment comparison (`:110-122`): per-token energy is hidden in API prices; on-premise power use is measurable. Cite e.g. Luccioni et al., 2024 "Power Hungry Processing" (arXiv 2311.16863) and the AI Act Art. 53 / Annex XI energy-reporting duty for GPAI providers.
