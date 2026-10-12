@@ -25,7 +25,7 @@ outputs = ["Reveal"]
 9. [Evaluating workflows](#/evaluating-workflows) end-to-end
 10. Exercises on the [running example](#/running-example): [a bot for candidates' e-mails](#/exercise-email-bot), [the bot as an A2A agent](#/exercise-a2a)
 
-> Recall: we assume the reader is familiar with [the spectrum of autonomy](../agents/#/autonomy-spectrum), [tools and agents](../agents/) (incl. [plan before acting](../agents/#/plan-before-acting)), [RAG](../rag/), and [validating generative software](../validating/)
+> Recall: we assume the reader is familiar with [the spectrum of autonomy](../agents/#/autonomy-spectrum), [tools and agents](../agents/) (incl. [plan before acting](../agents/#/plan-before-acting)), [RAG](../rag/), [agentic skills](../skills/) (incl. [hooks](../skills/#/hooks)), and [validating generative software](../validating/)
 
 ---
 
@@ -74,11 +74,12 @@ outputs = ["Reveal"]
 {{< image src="./admission-workflow.svg" max-h="42vh" alt="The admission workflow as a graph: start, then one read-transcript LLM step per candidate in parallel, then check eligibility (data step: Master's degree, Art. 3); if some candidate is eligible, score letters (LLM step, eligible candidates only), then rank (data step: grade plus letter, Art. 8, top 2 to the interview); if nobody is eligible, straight to the committee approval; the committee approval is a user-input step (an interrupt: the run stops and resumes upon the answer); if approved, notify candidates (action step, idempotent e-mails), otherwise end with nothing sent. Underneath, the state (run, candidates, transcripts, problems, scores, ranking, approved, notified), saved after each step as a checkpoint" >}}
 
 - The _same_ process, as an agent, would be a system prompt saying "_extract, check, score, rank, ask, notify_", hoping the LLM follows it, in that order, every time
-- As a workflow:
-    + __predictable__: steps run in the given order, every time, and can be _audited_ step by step
-    + __cheaper__: each LLM step sees _only_ what it needs (no growing conversation), and may use a _different_ (smaller) model
-    + __testable__: each step can be tested in isolation, and the paths through the graph can be enumerated
-    + __less flexible__: unforeseen requests (e.g. "_also check the letter's author_") need a _new version_ of the workflow
+- As a workflow (cf. the [spectrum of autonomy](../agents/#/autonomy-spectrum)):
+    + __predictable__: same steps, same order, auditable step by step
+    + __cheaper__: each LLM step sees _only_ what it needs, possibly with a smaller model
+    + __testable__: steps in isolation, paths through the graph enumerable
+    + __less flexible__: unforeseen requests need a _new version_ of the workflow
+- vs. [skills](../skills/#/skills-vs-others): procedures owned by domain experts (skills) vs. reliable, auditable ones (workflows)
 
 {{% /section %}}
 
@@ -122,6 +123,8 @@ outputs = ["Reveal"]
 - Typical interrupts: __approve / reject__ an action, __edit__ a draft or the state, __choose__ among options, __provide__ missing information
 - The interrupt lives in the __workflow__ (code), not in the prompt: the LLM _cannot_ skip it
     + recall: [human approval in the controller](../agents/#/exercise-decide-solution), for agents
+    + cf. [hooks](../skills/#/hooks): both are deterministic code outside the LLM; hooks react to the agent's _events_, interrupts are _steps_ of the graph
+- An interrupt is only as good as the human answering it: _over-trust_ (automation bias) turns approvals into rubber stamps (cf. [governance](../governance/#/responsibility))
 
 {{% /section %}}
 
@@ -388,9 +391,9 @@ flowchart LR
 | __Prompt chaining__ | the task splits into _fixed_ sub-tasks; _gates_ (checks in code) between them | latency adds up | extract $\rightarrow$ check $\rightarrow$ score |
 | __Routing__ | inputs fall into _distinct categories_, each with its own handling (or model) | misrouting: log and test the router | classify candidates' e-mails ([Exercise 1](#/exercise-email-bot)) |
 | __Parallelisation__ | sub-tasks are _independent_ (sectioning), or confidence is needed (voting) | cost $\times N$ | read all transcripts at once ([Example 1 bis](#/workflow-langgraph)); vote on extracted fields |
-| __Orchestrator–workers__ | sub-tasks are _not known_ in advance: an LLM decides them, workers execute | less predictable | which tools to call, for an ad-hoc request ([Example 3](#/plan-and-execute)) |
+| __Orchestrator–workers__ | sub-tasks are _not known_ in advance: an LLM decides them, workers execute | less predictable | the supervisor of [Example 4](#/multi-agent-example), delegating ad-hoc sub-questions to the documents and regulations workers |
 | __Evaluator–optimizer__ | clear _evaluation criteria_, and iterations measurably help | loops: _bound_ them | feedback letters, refined until a judge accepts them |
-| __Human-in-the-loop__ | irreversible, norm-sensitive, or high-stakes actions | latency (hours!); [over-trust](../governance/) | committee approval before notifying |
+| __Human-in-the-loop__ | irreversible, norm-sensitive, or high-stakes actions | latency (hours!); [over-trust](../governance/#/responsibility) | committee approval before notifying |
 | __Plan-and-execute__ | multi-step tasks whose steps vary, but must be _checked_ before acting | planning errors: _validate_ plans | ad-hoc requests of the committee |
 
 {{% /small %}}
@@ -437,7 +440,7 @@ flowchart LR
     {{% code path="static/lab-snippets/snippets/lecture_workflows/example2/feedback_letters.py" from="74" to="99" %}}
 
     - a compiled graph is a _runnable_: here, `worker.invoke(...)` runs _inside_ a node of another graph (a __subgraph__)
-    - here, the _code_ decides the sub-tasks (one per candidate); in _orchestrator–workers_, an _LLM_ would decide them (cf. [Example 3](#/plan-and-execute))
+    - here, the _code_ decides the sub-tasks (one per candidate); in _orchestrator–workers_, an _LLM_ would decide them (cf. the supervisor of [Example 4](#/multi-agent-example))
 
 ---
 
@@ -483,10 +486,8 @@ flowchart LR
 - __Plan-and-execute__ separates _planning_ (one LLM call, producing a whole plan) from _execution_ (steps run by code, or by simpler LLM calls)
     + vs. ReAct: _fewer_ calls to the big model, the plan is _visible before_ any action, and it can be _validated_ and _approved_
     + a __replanner__ step may revise the remaining plan when a step fails, or returns something unexpected
-- The plan is a __structured output__ (cf. [structured outputs](../prompting/#/structured-output)): a list of steps, each with a _tool_, its _arguments_, and its _preconditions_
-- Between planning and execution, a __validation__ step (code) checks the plan:
-    + do the tools exist? Are arguments valid? Are preconditions met (e.g. _approve_ before _notify_)?
-    + are there __irreversible__ steps? Then a user-input step asks for approval of the _whole_ plan
+    + a _static_ cousin of orchestrator–workers: the whole plan is fixed and validated before any worker runs
+- Recall: plans as [structured outputs](../prompting/#/structured-output), _validated_ in code ([agents](../agents/#/plan-before-acting)); here, validation is a _step_ of the workflow, and __irreversible__ steps trigger a user-input step approving the _whole_ plan
 
 ---
 
@@ -565,7 +566,7 @@ flowchart LR
     - reject the plan: is anything written in `output/`?
     - with a _small_ planner (`gemma4:e4b`), we saw plans declared `final` with no scheduling step at all, and a report saying "_Mario Rossi [is] the candidate to be invited to the interview next Monday at 10:00_": nothing was scheduled. Only the _results_ tell what was done: how would you check the report against them?
 
-    - the planner's prompt grows with the results of each step: with a local [Ollama](../llmaas/), whose default context window is 4,096 tokens, a run may fail with a _length limit_ error (start the server with a larger `OLLAMA_CONTEXT_LENGTH`)
+    - the planner's prompt grows with the results of each step: with a local [Ollama](../llmaas/#/ollama), whose default context window is 4k tokens on machines with less than 24 GiB of VRAM, a run may fail with a _length limit_ error (start the server with a larger `OLLAMA_CONTEXT_LENGTH`)
 
 7. Project structure: [`example3/plan_execute.py`](../lab-snippets/snippets/lecture_workflows/example3/plan_execute.py), plus the tools of [`committee.py`](../lab-snippets/snippets/lecture_workflows/committee.py); env vars as in [Example 1](#/workflow-scratch); outputs go to `output/workflows/`
 
@@ -593,6 +594,8 @@ flowchart LR
 ---
 
 ## Intermediate representations (pt. 2): principles
+
+Generalising [plan before acting](../agents/#/plan-before-acting) beyond plans:
 
 1. __Plan before acting__: no side effect before a representation of _what_ will be done exists
 2. __Log and trace__: every representation, every verification, every execution is recorded (cf. [observability](#/observability))
@@ -628,6 +631,7 @@ flowchart LR
 {{< image src="./multi-agent.svg" max-h="42vh" alt="Four multi-agent architectures: supervisor (one agent delegates questions to worker agents, used as tools, and gets their answers), hierarchical (a supervisor of team leads, each with its agents), handoffs or swarm (triage, regulations, and status agents transferring control to each other, one active at a time), shared state or blackboard (agents reading and writing a common state, while a workflow decides who acts next)" >}}
 
 - __Supervisor__: one agent delegates to _worker_ agents (often exposed to it as _tools_); simplest to reason about
+    + e.g. Deep Agents' `task` subagents ([skills lecture](../skills/#/skills-deepagents))
 - __Hierarchical__: supervisors of supervisors, for large teams
 - __Handoffs__ (or _swarm_): agents _transfer control_ to each other (e.g. triage $\rightarrow$ billing $\rightarrow$ refunds); one agent active at a time
 - __Shared state__ (or _blackboard_): agents communicate through a common state, while a _workflow_ decides who acts next
@@ -644,6 +648,7 @@ flowchart LR
 - Rule of thumb: __more agents = more autonomy__ (cf. the [spectrum of autonomy](../agents/#/autonomy-spectrum))
     + use them for _breadth-first_, _parallelisable_ tasks with _read-only_ sub-agents (e.g. research), or across _organisational_ boundaries
     + avoid them when sub-tasks are _tightly coupled_, or when sub-agents _write_ (conflicting actions)
+- Messages from other agents are __untrusted input__: a sub-agent reading a malicious letter can inject instructions into the supervisor (_injection propagates_); treat sub-agent and A2A outputs as _data_, validate structured outputs, and give _least privilege_ per agent (cf. [prompt injection](../agents/#/security))
 
 ---
 
@@ -727,6 +732,8 @@ flowchart LR
     + started by Google (2025), donated to the [Linux Foundation](https://linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year), now a project of the [Agentic AI Foundation](https://aaif.io/blog/a2a-joins-aaif) (along with MCP); specification v1.0 released in 2026
 - Core concepts (cf. [key concepts](https://a2a-protocol.org/latest/topics/key-concepts/)):
     + __Agent Card__: a JSON document describing an agent (name, skills, endpoints, supported protocol bindings, authentication), for _discovery_ (served at `/.well-known/agent-card.json`)
+        * A2A _skills_ are advertised capabilities (ID, description, tags, examples): __not__ the [Agent Skills](../skills/) of the skills lecture (no `SKILL.md`, no instructions)
+        * authentication: `securitySchemes` (API key, HTTP bearer, OAuth2, OpenID Connect, mTLS, as in OpenAPI) plus `security` requirements; optional `signatures` (JWS), so that clients can verify who published the card (cf. the [specification](https://a2a-protocol.org/latest/specification/))
     + __Task__: a _stateful_ unit of work, with an ID and a __lifecycle__: _submitted_, _working_, _input-required_ (or _auth-required_), then one of the terminal states _completed_, _failed_, _canceled_, _rejected_
     + __Message__: one turn of communication (role `user` or `agent`), made of __Parts__ (text, files, structured data)
     + __Artifact__: an _output_ of a task (e.g. a document, a JSON object)
@@ -799,7 +806,7 @@ sequenceDiagram
 
 > __Goal__: the _regulations_ agent of [Example 4](#/multi-agent-example) is now run by _another organisation_ (e.g. the PhD school's office), and exposed via A2A; the supervisor talks to it as a _remote peer_
 
-1. The __Agent Card__ (with [`a2a-sdk`](https://github.com/a2aproject/a2a-python)): who the agent is, what it can do (_skills_), where and how to reach it
+1. The __Agent Card__ (with [`a2a-sdk`](https://github.com/a2aproject/a2a-python)): who the agent is, what it can do (_A2A skills_), where and how to reach it
 
     {{% code path="static/lab-snippets/snippets/lecture_workflows/example4bis/regulations_server.py" from="23" to="38" %}}
 
@@ -976,7 +983,7 @@ sequenceDiagram
 {{< image src="./mlflow-trace.png" max-h="62vh" alt="The MLflow trace of the admission workflow, up to the committee's approval: on the left, the tree of spans (LangGraph, then read_transcript three times, each with its ChatOpenAI call taking from 32 seconds to 1.7 minutes, then check_eligibility, score_letters, ...), with durations and tokens; on the right, the inputs and outputs of the whole graph, i.e. the state: the transcripts as extracted (Mario Rossi's final grade misread as 1055 out of 110) and the problems found by check_eligibility (an implausible grade, to be checked)" >}}
 
 - One trace per `stream` call (here, up to the interrupt: 3.2 minutes, 5,619 tokens), and another one for the resumed run; spans nest as nodes $\rightarrow$ chains $\rightarrow$ LLM calls
-- In this run, the vision model read Mario Rossi's "105/110" as 1055/110: the [gate](#/workflow-scratch) in `check_eligibility` flagged it, and the trace shows _where_ the wrong value came from
+- In this run, the vision model read Mario Rossi's "105/110" as 1055/110 (a different misreading than [the one above](#/workflow-scratch): the error is not reproducible): the [gate](#/workflow-scratch) in `check_eligibility` flagged it, and the trace shows _where_ the wrong value came from
 
 {{% /section %}}
 
@@ -1267,7 +1274,7 @@ flowchart LR
 
 {{% fragment %}}
 ### TO-DO List
-1. write the bot's __Agent Card__ (cf. [Example 4 (bis)](#/a2a-example)): name, description, _skills_ (e.g. "answer candidates' questions on the PhD admission"), input/output modes
+1. write the bot's __Agent Card__ (cf. [Example 4 (bis)](#/a2a-example)): name, description, _A2A skills_ (e.g. "answer candidates' questions on the PhD admission"), input/output modes
 2. write an __A2A server__ (with `a2a-sdk`) whose executor runs the workflow of [Exercise 1](#/exercise-email-bot): one A2A __task__ per e-mail, one LangGraph __thread__ per task
 3. map the workflow onto the __task lifecycle__: `working` while drafting, then waiting for the office's approval (still `working`, or `input-required`? cf. the decision points), finally `completed` (with the reply as an __artifact__), or `rejected` / `failed`
 4. write a small __A2A client__ (the help-desk agent, or just a script) which sends an e-mail and _streams_ the task's status updates
@@ -1281,6 +1288,7 @@ flowchart LR
 ### Decision points and hints
 
 - _Who_ approves: the A2A __client__ (via `input-required`), or the office, _out of band_ (the client just waits)? Which one makes sense across organisations?
+- How does the approver avoid _rubber-stamping_? (e.g. show the evidence, require a motivation)
 - The A2A client is _another organisation's_ agent: what should the Agent Card _not_ reveal? Which _authentication_ scheme would you declare?
 - Long-running tasks: polling, streaming, or push notifications?
 - What is the A2A __context__ in this scenario (one per candidate? one per e-mail thread?)

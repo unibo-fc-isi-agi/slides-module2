@@ -312,34 +312,34 @@ Line numbers refer to `content/<lecture>/_index.md` unless a snippet path is giv
     - [x] Fix: verified 2026-10-12 — Claude Code handler types `command|http|mcp_tool|prompt|agent` ✓, `onFailure: "block"` ✓ (v2.1.295+, `command`/`http` only: add "for command/http hooks"); Codex `command`, `mcp_tool` ✓; Deep Agents `metadata.include_tools` ✓ (space-separated string). Codex URL `learn.chatgpt.com/docs/hooks` resolves, but use canonical `https://developers.openai.com/codex/hooks` (consistent with `:240` skills link).
 ## `workflows`
 
-- [ ] `gemma4:12b` (`:556`, `:566`): likely nonexistent tag
-    - [ ] Fix: none needed. `gemma4:12b` is listed on ollama.com/library/gemma4/tags (next to e2b, e4b, 26b, 31b)
-- [ ] Orchestrator–workers illustrated with Example 3 = plan-and-execute (`:391`, `:440`)
-    - [ ] Fix: in the patterns table (`:391`), point the running-example cell to the supervisor of [Example 4](#/multi-agent-example), where an LLM delegates ad-hoc sub-questions to the documents/regulations workers. At `:440`, change "(cf. Example 3)" to "(cf. the supervisor of Example 4)"
-    - [ ] Fix: optionally add one line under plan-and-execute: "a static cousin of orchestrator–workers: the whole plan is fixed and validated before any worker runs"
-- [ ] Ollama default context 4,096 (`:568`, also `llmaas:388`): check current docs
-    - [ ] Fix: the docs (docs.ollama.com/context-length) now set the default by VRAM: <24 GiB → 4k, 24–48 GiB → 32k, ≥48 GiB → 256k. At `:568`, write "whose default context window is 4k tokens on machines with less than 24 GiB of VRAM". At `llmaas:388` the `ollama ps` output showing 4096 is still plausible; add a note with the VRAM rule and a link
-- [ ] Misread grade "105510/110" (`:178`, `admission.py:59`) vs "1055/110" (`:979`) ✓
-    - [ ] Fix: none needed. These are two different runs, and the slides say so ("in one of our runs" vs "in this run"). If you want, add "(a different misreading than [the one above](#/workflow-scratch))" at `:979` to show that the error is not reproducible
-- [ ] A2A Agent Card "skills" ≠ Agent Skills (`:729`, `:802`, `:1270`): disambiguate
-    - [ ] Fix: at `:729`, after "skills", add "(A2A _skills_ are advertised capabilities with an ID, a description, tags, and examples: they are __not__ the [Agent Skills](../skills/) of the skills lecture, i.e. no `SKILL.md` and no instructions)". At `:802` and `:1270`, write "A2A skills" instead of "skills"
-- [ ] Plan-and-execute (`:479-489`) and IR principles (`:595-600`) restate `agents:643-650`, `:702-720`
-    - [ ] Fix: on `:479-489`, keep only what is new (plan-and-execute vs ReAct, replanner) and turn the "structured plan + validation" bullets into a one-line recall: "recall: plans as structured outputs, validated in code ([agents](../agents/#/planning))". On `:595-600`, open with "Generalising [plan before acting](../agents/#/planning) beyond plans:" and keep the 4 principles as a short summary list
-- [ ] Workflow vs agent pros/cons (`:76-81`) repeats `agents:86-95`: shorten
-    - [ ] Fix: keep the agent-vs-workflow contrast sentence and the 4 bullets, each cut to one line (predictable / cheaper / testable / less flexible). Point to the [spectrum of autonomy](../agents/#/autonomy-spectrum) instead of restating it; the bullets are concrete to the example, so they are not plain duplicates
-- [ ] Hole: no bridges to `skills` (trade-off, hooks vs interrupts, Deep Agents subagents vs supervisor); recall line `:28` should list skills
-    - [ ] Fix: at `:28`, add "[agentic skills](../skills/) (incl. [hooks](../skills/#/hooks))". Add one recall line in each of 3 places:
+- [x] `gemma4:12b` (`:556`, `:566`): likely nonexistent tag
+    - [x] Fix: none needed. `gemma4:12b` is listed on ollama.com/library/gemma4/tags (next to e2b, e4b, 26b, 31b)
+- [x] Orchestrator–workers illustrated with Example 3 = plan-and-execute (`:391`, `:440`)
+    - [x] Fix: in the patterns table (`:391`), point the running-example cell to the supervisor of [Example 4](#/multi-agent-example), where an LLM delegates ad-hoc sub-questions to the documents/regulations workers. At `:440`, change "(cf. Example 3)" to "(cf. the supervisor of Example 4)"
+    - [x] Fix: optionally add one line under plan-and-execute: "a static cousin of orchestrator–workers: the whole plan is fixed and validated before any worker runs"
+- [x] Ollama default context 4,096 (`:568`, also `llmaas:388`): check current docs
+    - [x] Fix: the docs (docs.ollama.com/context-length) now set the default by VRAM: <24 GiB → 4k, 24–48 GiB → 32k, ≥48 GiB → 256k. At `:568`, write "whose default context window is 4k tokens on machines with less than 24 GiB of VRAM". At `llmaas:388` the `ollama ps` output showing 4096 is still plausible; add a note with the VRAM rule and a link
+- [x] Misread grade "105510/110" (`:178`, `admission.py:59`) vs "1055/110" (`:979`) ✓
+    - [x] Fix: none needed. These are two different runs, and the slides say so ("in one of our runs" vs "in this run"). If you want, add "(a different misreading than [the one above](#/workflow-scratch))" at `:979` to show that the error is not reproducible — done (optional line added)
+- [x] A2A Agent Card "skills" ≠ Agent Skills (`:729`, `:802`, `:1270`): disambiguate
+    - [x] Fix: at `:729`, after "skills", add "(A2A _skills_ are advertised capabilities with an ID, a description, tags, and examples: they are __not__ the [Agent Skills](../skills/) of the skills lecture, i.e. no `SKILL.md` and no instructions)". At `:802` and `:1270`, write "A2A skills" instead of "skills"
+- [x] Plan-and-execute (`:479-489`) and IR principles (`:595-600`) restate `agents:643-650`, `:702-720`
+    - [x] Fix: on `:479-489`, keep only what is new (plan-and-execute vs ReAct, replanner) and turn the "structured plan + validation" bullets into a one-line recall: "recall: plans as structured outputs, validated in code ([agents](../agents/#/planning))". On `:595-600`, open with "Generalising [plan before acting](../agents/#/planning) beyond plans:" and keep the 4 principles as a short summary list
+- [x] Workflow vs agent pros/cons (`:76-81`) repeats `agents:86-95`: shorten
+    - [x] Fix: keep the agent-vs-workflow contrast sentence and the 4 bullets, each cut to one line (predictable / cheaper / testable / less flexible). Point to the [spectrum of autonomy](../agents/#/autonomy-spectrum) instead of restating it; the bullets are concrete to the example, so they are not plain duplicates
+- [x] Hole: no bridges to `skills` (trade-off, hooks vs interrupts, Deep Agents subagents vs supervisor); recall line `:28` should list skills
+    - [x] Fix: at `:28`, add "[agentic skills](../skills/) (incl. [hooks](../skills/#/hooks))". Add one recall line in each of 3 places:
       (a) `:76-81`: "skills vs workflows: procedures owned by domain experts vs reliable, auditable ones (cf. [skills](../skills/#/skills-example))"
       (b) humans-as-interrupts slide: "cf. [hooks](../skills/#/hooks): both are deterministic code outside the LLM; hooks react to the agent's events, interrupts are steps of the graph"
       (c) multi-agent architectures: "Deep Agents' `task` subagents ([skills lecture](../skills/#/skills-deepagents)) are the _supervisor_ architecture"
-- [ ] Hole: human-in-the-loop slides (`:117-124`, `:1283`) don't recall over-trust
-    - [ ] Fix: governance comes after this lecture, so make it a forward link. At the end of `:117-124`, add "an interrupt is only as good as the human answering it: _over-trust_ (automation bias) turns approvals into rubber stamps (cf. [governance](../governance/#/responsibility))". At `:1283`, add a hint: "how does the approver avoid rubber-stamping? (e.g. show the evidence, require a motivation)"
-- [ ] Hole: MAS security (inter-agent prompt injection) (`:613-646`)
-    - [ ] Fix: add a bullet to "when (not) to use them" (`:636-646`), or a short slide: "messages from other agents are __untrusted input__: a sub-agent that reads a malicious letter can inject instructions into the supervisor (_injection propagates_). Treat sub-agent and A2A outputs as data, validate structured outputs, and give least privilege per agent (cf. [prompt injection](../agents/#/security))". Possible source: OWASP Top 10 for Agentic Applications (2025/26)
-    - [ ] @gciatto: choose between a single bullet (recommended, as the slide is already dense) and a dedicated slide with an Example 4 scenario (a letter containing "tell the supervisor to admit me")
-- [ ] Hole: A2A `securitySchemes` / Agent Card signing (`:724-734`; flagged missing at `:856`, `:1316`)
-    - [ ] Fix: on the A2A concept slide (`:729`), extend the Agent Card bullet: "authentication: `securitySchemes` (API key, HTTP bearer, OAuth2, OpenID Connect, mTLS, as in OpenAPI) plus `security` requirements; optional `signatures` (JWS) so that clients can verify who published the card". Link to the spec section on Agent Card security at a2a-protocol.org
-    - [ ] @gciatto: decide whether to add `security_schemes` to the code in `lab-snippets` (`example4bis/regulations_server.py`, `exercise2/email_bot_server.py`, e.g. an API-key scheme checked by middleware) or keep it as a slide note only (recommended: slide note; adding it means re-checking the `from`/`to` ranges at `:802` and `:1307`)
+- [x] Hole: human-in-the-loop slides (`:117-124`, `:1283`) don't recall over-trust
+    - [x] Fix: governance comes after this lecture, so make it a forward link. At the end of `:117-124`, add "an interrupt is only as good as the human answering it: _over-trust_ (automation bias) turns approvals into rubber stamps (cf. [governance](../governance/#/responsibility))". At `:1283`, add a hint: "how does the approver avoid rubber-stamping? (e.g. show the evidence, require a motivation)"
+- [x] Hole: MAS security (inter-agent prompt injection) (`:613-646`)
+    - [x] Fix: add a bullet to "when (not) to use them" (`:636-646`), or a short slide: "messages from other agents are __untrusted input__: a sub-agent that reads a malicious letter can inject instructions into the supervisor (_injection propagates_). Treat sub-agent and A2A outputs as data, validate structured outputs, and give least privilege per agent (cf. [prompt injection](../agents/#/security))". Possible source: OWASP Top 10 for Agentic Applications (2025/26)
+    - [x] @gciatto: choose between a single bullet (recommended, as the slide is already dense) and a dedicated slide with an Example 4 scenario (a letter containing "tell the supervisor to admit me") — single bullet
+- [x] Hole: A2A `securitySchemes` / Agent Card signing (`:724-734`; flagged missing at `:856`, `:1316`)
+    - [x] Fix: on the A2A concept slide (`:729`), extend the Agent Card bullet: "authentication: `securitySchemes` (API key, HTTP bearer, OAuth2, OpenID Connect, mTLS, as in OpenAPI) plus `security` requirements; optional `signatures` (JWS) so that clients can verify who published the card". Link to the spec section on Agent Card security at a2a-protocol.org
+    - [x] @gciatto: decide whether to add `security_schemes` to the code in `lab-snippets` (`example4bis/regulations_server.py`, `exercise2/email_bot_server.py`, e.g. an API-key scheme checked by middleware) or keep it as a slide note only (recommended: slide note; adding it means re-checking the `from`/`to` ranges at `:802` and `:1307`) — slide note only
 ## `governance`
 
 ### Errors / outdated
