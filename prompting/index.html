@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -138,7 +138,7 @@
 </ul>
 </section><section>
 <h2 id="anatomy-of-a-prompt-an-intuitive-example">Anatomy of a prompt: an intuitive example</h2>
-<img src="./prompt-anatomy.svg" alt="The system and user messages of the letter-scoring prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<img src="./prompt-anatomy.svg" alt="The system and user messages of the letter-scoring prompt, with instructions, context, input data and output indicator highlighted: the system prompt is fixed, the letter_text placeholder changes at every request, and a JSON Schema is attached" style="max-width: calc(95 * 19.2px); max-height: calc(65 * 10.8px); object-fit: contain;">
 <ul>
 <li>The <strong>system</strong> prompt commonly contains the <em>stable</em> parts (context, general instructions, output format)</li>
 <li>The <strong>user</strong> prompt commonly contains the <em>variable</em> parts (input data, specific instructions)
@@ -245,7 +245,10 @@
 
 
 
-<img src="./structured-output.svg" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+
+
+
+<img src="./structured-output.svg" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(75 * 10.8px); object-fit: contain;">
 
 </section><section>
 <h2 id="how-to-represent-target-structured-format-to-the-model">How to represent target structured format to the model?</h2>
@@ -344,7 +347,7 @@
 <li>commonly implemented via <strong>constrained decoding</strong>: at each generation step, tokens that would violate the schema are <em>masked out</em></li>
 <li>cf. <a href="https://arxiv.org/abs/2307.09702">Willard &amp; Louf (2023)</a>, and libraries such as <a href="https://github.com/dottxt-ai/outlines">Outlines</a>, <a href="https://github.com/guidance-ai/llguidance">llguidance</a>, <a href="https://github.com/mlc-ai/xgrammar">XGrammar</a></li>
 </ul>
- <img src="./constrained-decoding.svg" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" style="max-width: 95vw; max-height: 30vh; object-fit: contain;">
+ <img src="./constrained-decoding.svg" alt="Constrained decoding: while generating the value of age, the JSON Schema (age: integer) masks every next-token candidate except 42, which is then chosen" style="max-width: calc(95 * 19.2px); max-height: calc(30 * 10.8px); object-fit: contain;">
 </li>
 <li>
 <p><strong>Tool-calling trick</strong>: declare a (fake) <em>tool</em> whose parameters are the target schema, and <em>force</em> the model to call it</p>
@@ -1119,7 +1122,7 @@
 </ul>
 </section><section>
 <h2 id="prompting-techniques-an-intuitive-example">Prompting techniques: an intuitive example</h2>
-<img src="./prompting-techniques.svg" alt="Zero-shot, few-shot, chain-of-thought, self-consistency and prompt chaining applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, from a 4/5 majority vote for critical to a two-step chain that first quotes the key sentences and then classifies them" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./prompting-techniques.svg" alt="Zero-shot, few-shot, chain-of-thought, self-consistency and prompt chaining applied to classifying the tone of Jean Dupont's letter, showing the messages sent in each case and the resulting labels, from a 4/5 majority vote for critical to a two-step chain that first quotes the key sentences and then classifies them" style="max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="prompting-techniques-in-langchain-the-technological-landscape">Prompting techniques in LangChain: the technological landscape</h2>
 <ul>
@@ -1390,7 +1393,7 @@
 </ul>
 </section><section>
 <h2 id="reasoning-models-an-intuitive-example">Reasoning models: an intuitive example</h2>
-<img src="./reasoning-tokens.svg" alt="The same ranking request at low, medium and high reasoning effort: hidden reasoning tokens grow from 250 to 3500 while the answer stays around 250 tokens, so latency and output cost grow accordingly" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+<img src="./reasoning-tokens.svg" alt="The same ranking request at low, medium and high reasoning effort: hidden reasoning tokens grow from 250 to 3500 while the answer stays around 250 tokens, so latency and output cost grow accordingly" style="max-width: calc(95 * 19.2px); max-height: calc(60 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="reasoning-models-the-technological-landscape">Reasoning models: the technological landscape</h2>
 <table>
@@ -1594,7 +1597,7 @@
 </ul>
 </section><section>
 <h2 id="context-management-an-intuitive-example">Context management: an intuitive example</h2>
-<img src="./context-growth.svg" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" style="max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./context-growth.svg" alt="Tokens sent per request over 10 turns: without context management the history grows linearly and exceeds the budget from turn 7; with compaction a summary replaces older messages after turns 6 and 9, keeping every request under budget" style="max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="prompt-caching-the-general-concept">Prompt caching: the general concept</h2>
 <ul>

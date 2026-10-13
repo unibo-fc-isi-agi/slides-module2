@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -87,7 +87,7 @@
 </ul>
 </section><section>
 <h2 id="agents-built-around-llms-the-agentic-metaphor">Agents built around LLMs: the agentic metaphor</h2>
-<img src="./agent-architecture.svg" alt="Agent architecture: a user talks to the agent; inside the agent, a controller (your code) runs the loop, an LLM deliberates, memory stores history and state, policies constrain behaviour; the controller calls perception, reasoning, and actuation tools, which read from and write to the environment" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+<img src="./agent-architecture.svg" alt="Agent architecture: a user talks to the agent; inside the agent, a controller (your code) runs the loop, an LLM deliberates, memory stores history and state, policies constrain behaviour; the controller calls perception, reasoning, and actuation tools, which read from and write to the environment" style="max-width: calc(95 * 19.2px); max-height: calc(60 * 10.8px); object-fit: contain;">
 <ul>
 <li><strong>LLM</strong> $\rightarrow$ <em>deliberation</em>: interprets the context, and proposes the next action</li>
 <li><strong>tools</strong> $\rightarrow$ <em>perception</em> (get data), <em>actuation</em> (change the world), and <em>reasoning</em> (compute, check, verify)</li>
@@ -120,7 +120,7 @@
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="autonomy-spectrum">
 <h2 id="the-spectrum-of-autonomy">The spectrum of autonomy</h2>
-<img src="./autonomy-spectrum.svg" alt="The spectrum of autonomy, from the code controlling the flow to the LLM controlling the flow: single LLM call (score one letter), workflow (score all letters, then rank), router (the LLM picks a branch), agent (the LLM picks the next tool in a loop); more autonomy brings more flexibility, but also more cost, latency, unpredictability, risk, and testing effort" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+<img src="./autonomy-spectrum.svg" alt="The spectrum of autonomy, from the code controlling the flow to the LLM controlling the flow: single LLM call (score one letter), workflow (score all letters, then rank), router (the LLM picks a branch), agent (the LLM picks the next tool in a loop); more autonomy brings more flexibility, but also more cost, latency, unpredictability, risk, and testing effort" style="max-width: calc(95 * 19.2px); max-height: calc(45 * 10.8px); object-fit: contain;">
 <ul>
 <li>
 <p>Recall the <a href="../genai/#/genai-uses">developer’s code vs. LLM</a> distinction of the introductory lecture:</p>
@@ -191,7 +191,8 @@
 <p><strong>Goal</strong>: an assistant answering questions about the <em>present</em>, which no LLM can know from its training data (e.g. “<em>where was Alan Turing born? What time is it there, and what’s the weather like?</em>”)</p>
 </blockquote>
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col col-6" style="text-align: left;"><ul>
+    <div class="row "><div class="col col-6" style="text-align: left;"><div style="font-size: 85%;">
+<ul>
 <li>Three <strong>tools</strong>, as Python functions (full code <a href="../lab-snippets/snippets/lecture_agents/simple_tools.py">here</a>):
 <ul>
 <li><code>get_current_time(timezone)</code>: <em>reasoning</em> (local computation, via the standard library’s <code>zoneinfo</code>, which knows IANA time zones)</li>
@@ -215,8 +216,11 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Search the Web (via DuckDuckGo), returning the title, URL, and snippet of the top 5 results.
 </span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    Use it for facts which may have changed recently, or which you are not sure about."""</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">DDGS</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">text</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">query</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">max_results</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
-</span></span></code></pre></div></div>
-<div class="col col-6" style="text-align: left;"><ul>
+</span></span></code></pre></div>
+</div>
+</div>
+<div class="col col-6" style="text-align: left;"><div style="font-size: 85%;">
+<ul>
 <li>What the LLM actually <em>sees</em> of <code>get_weather</code> (as YAML, for readability):</li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">type</span><span style="color:#000;font-weight:bold">:</span><span style="color:#f8f8f8"> </span><span style="color:#000">function</span><span style="color:#f8f8f8">
@@ -247,6 +251,7 @@
 </ul>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -444,7 +449,7 @@
 </ul>
 </section><section>
 <h2 id="the-react-loop-an-intuitive-example">The ReAct loop: an intuitive example</h2>
-<img src="./react-loop.svg" alt="Sequence diagram of the ReAct loop: the user asks where Turing was born, and the time and weather there; the agent sends the question and tool definitions to the LLM, which asks to call web_search; the agent runs it and sends back the search results; the LLM, having learned that Turing was born in London, asks for get_current_time and get_weather calls in parallel; the agent runs them and sends back time and weather; the LLM gives the final answer, which the agent returns to the user" style="max-width: 95vw; max-height: 75vh; object-fit: contain;">
+<img src="./react-loop.svg" alt="Sequence diagram of the ReAct loop: the user asks where Turing was born, and the time and weather there; the agent sends the question and tool definitions to the LLM, which asks to call web_search; the agent runs it and sends back the search results; the LLM, having learned that Turing was born in London, asks for get_current_time and get_weather calls in parallel; the agent runs them and sends back time and weather; the LLM gives the final answer, which the agent returns to the user" style="max-width: calc(95 * 19.2px); max-height: calc(75 * 10.8px); object-fit: contain;">
 <ul>
 <li>notice the <em>chaining</em>: the arguments of the second step (<code>London</code>) come from the <em>result</em> of the first one</li>
 </ul>
@@ -757,7 +762,7 @@
 </ul>
 </section><section>
 <h2 id="mcp-an-intuitive-example">MCP: an intuitive example</h2>
-<img src="./mcp-gateway.svg" alt="Two ways of connecting an MCP host to servers: (a) directly, with one MCP client per server (simple-tools and fetch as local stdio processes, plus a remote HTTP server), repeating configuration and policies in each host; (b) via an MCP gateway, a single endpoint which aggregates, filters, authenticates, stores secrets, logs, rate-limits, and sandboxes the servers behind it" style="max-width: 95vw; max-height: 55vh; object-fit: contain;">
+<img src="./mcp-gateway.svg" alt="Two ways of connecting an MCP host to servers: (a) directly, with one MCP client per server (simple-tools and fetch as local stdio processes, plus a remote HTTP server), repeating configuration and policies in each host; (b) via an MCP gateway, a single endpoint which aggregates, filters, authenticates, stores secrets, logs, rate-limits, and sandboxes the servers behind it" style="max-width: calc(95 * 19.2px); max-height: calc(55 * 10.8px); object-fit: contain;">
 <ul>
 <li>Our simple tools move into a <strong>server</strong>, which <em>any</em> MCP host can use: our agent, an IDE, a chat app, …</li>
 <li>An <strong>MCP gateway</strong> is a <em>proxy</em> aggregating several servers behind one endpoint: a single place where to enforce <em>policies</em> (who can call what), keep <em>secrets</em>, and <em>log</em> calls</li>
@@ -1166,7 +1171,7 @@
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="llm-modulo">
 <h2 id="llms-cant-plan-but-can-help-planning-llm-modulo">LLMs can’t plan, but can help planning: LLM-Modulo</h2>
-<img src="./llm-modulo.svg" alt="LLM-Modulo loop on the running example: a goal (shortlist the best candidates for an interview) goes to the LLM, which proposes a plan (score each letter, rank by score, invite the top 2 via send_email); external critics check it: hard critics in code (tools exist, arguments valid, preconditions met), policy critics (e-mails need human approval, grades must be considered), soft critics (LLM-as-a-judge or humans); rejected plans go back to the LLM with a critique, accepted ones are executed by the controller with logging and human approval" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+<img src="./llm-modulo.svg" alt="LLM-Modulo loop on the running example: a goal (shortlist the best candidates for an interview) goes to the LLM, which proposes a plan (score each letter, rank by score, invite the top 2 via send_email); external critics check it: hard critics in code (tools exist, arguments valid, preconditions met), policy critics (e-mails need human approval, grades must be considered), soft critics (LLM-as-a-judge or humans); rejected plans go back to the LLM with a critique, accepted ones are executed by the controller with logging and human approval" style="max-width: calc(95 * 19.2px); max-height: calc(45 * 10.8px); object-fit: contain;">
 <ul>
 <li><strong>LLM-Modulo</strong> (cf. <a href="https://proceedings.mlr.press/v235/kambhampati24a.html">Kambhampati et al. (2024)</a>): the LLM <em>proposes</em>, external <strong>critics</strong> <em>verify</em>, in a <em>generate–test–critique</em> loop</li>
 <li>Better roles for LLMs in planning: <strong>translator</strong> (natural language $\rightarrow$ formal goals and constraints), <strong>critic</strong> (spot missing steps or assumptions), <strong>heuristic source</strong> (suggest promising actions to a planner), <strong>model drafter</strong> (extract candidate actions from manuals and policies), <strong>explainer</strong> (formal plans $\rightarrow$ natural language)</li>
@@ -1571,7 +1576,8 @@
 <p><strong>Code</strong>: put your solution in <a href="../lab-snippets/snippets/lecture_agents/exercise2/__init__.py"><code>snippets/lecture_agents/exercise2/</code></a> of <a href="../#/lab-snippets-exercises"><code>lab-snippets</code></a>, and run it via <code>poetry run python -m snippets -l agents -x 2</code></p>
 </blockquote>
 <span class="fragment ">
-  <h3 id="to-do-list">TO-DO List</h3>
+  <div style="font-size: 90%;">
+<h3 id="to-do-list">TO-DO List</h3>
 <ol>
 <li>start from <a href="#/exercise-inspect">Exercise 1</a>, and add <em>write-enabled</em> tools, e.g.:
 <ul>
@@ -1594,6 +1600,7 @@
 </ul>
 </li>
 </ol>
+</div>
 </span>
 </section><section>
 <h2 id="exercise-2-tools-to-take-decisions-pt-2">Exercise 2: Tools to Take Decisions (pt. 2)</h2>

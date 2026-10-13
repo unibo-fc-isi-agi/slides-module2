@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -92,7 +92,7 @@
 </ul>
 </section><section>
 <h2 id="validating-generative-software-an-intuitive-example">Validating generative software: an intuitive example</h2>
-<img src="./evaluation-pipeline.svg" alt="An evaluation pipeline: a test dataset of three letters with expectations goes through the prompt template and model; outputs are checked by deterministic, relational and LLM-as-a-judge scorers, and the pass/fail report feeds back into the prompt" style="max-width: 95vw; max-height: 65vh; object-fit: contain;">
+<img src="./evaluation-pipeline.svg" alt="An evaluation pipeline: a test dataset of three letters with expectations goes through the prompt template and model; outputs are checked by deterministic, relational and LLM-as-a-judge scorers, and the pass/fail report feeds back into the prompt" style="max-width: calc(95 * 19.2px); max-height: calc(65 * 10.8px); object-fit: contain;">
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="llm-as-a-judge">
 <h2 id="llm-as-a-judge">LLM-as-a-Judge</h2>
@@ -262,7 +262,8 @@
 <li><em>adding</em> a test case = adding an entry to the file, no code changes</li>
 </ul>
 </div>
-<div class="col col-6" style="text-align: left;"><ul>
+<div class="col col-6" style="text-align: left;"><div style="font-size: 85%;">
+<ul>
 <li>notice that each expectation is meant for a specific <em>kind</em> of check:
 <ul>
 <li><strong>exact</strong> match: names and emails</li>
@@ -288,6 +289,7 @@
 <li><code>yaml.safe_load</code> (from <a href="https://pyyaml.org/">PyYAML</a>) parses YAML text into Python <code>list</code>s and <code>dict</code>s</li>
 <li><code>read_letter(case)</code>, in the same file, reads the text of the case’s letter from the running example’s <code>data/</code> directory</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -586,7 +588,7 @@
 <p>Let’s run it (full code <a href="../lab-snippets/snippets/lecture_validating/example1bis/evaluate_mlflow.py">here</a>), from the project’s root directory:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>poetry run python -m snippets -l validating -e 1bis   <span style="color:#8f5902;font-style:italic"># prints metrics, e.g. {'score_in_range/mean': 0.67, ...}, then: Failed scorers: [...]</span>
 </span></span><span style="display:flex;"><span>poetry run mlflow ui                                  <span style="color:#8f5902;font-style:italic"># then open http://localhost:5000, to browse runs, traces, and judges' rationales</span>
-</span></span></code></pre></div> <img src="./todo-mlflow-ui.png" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (names_and_email, score_in_range, relationship, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." style="max-width: 95vw; max-height: 25vh; object-fit: contain;">
+</span></span></code></pre></div> <img src="./todo-mlflow-ui.png" alt="TODO picture: screenshot of the MLflow UI, 'letter-scoring' experiment, 'Evaluations' tab of a run: a table with one row per letter (Mario Rossi, Jean Dupont, Mohammed Ali), columns for the inputs (truncated letter text), the outputs (truncated JSON), and one column per scorer (names_and_email, score_in_range, relationship, groundedness) with pass/fail or yes/no badges; the groundedness cell of one row is expanded, showing the judge's rationale." style="max-width: calc(95 * 19.2px); max-height: calc(25 * 10.8px); object-fit: contain;">
 </li>
 </ol>
 </section><section>

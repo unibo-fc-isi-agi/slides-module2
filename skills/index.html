@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -141,7 +141,7 @@
 <blockquote>
 <p><strong>Goal</strong>: the <a href="#/running-example">committee</a>’s assistant should review applications <em>the way the committee does</em> (same checks, same rubric, same report format), without the committee re-explaining the procedure at each request</p>
 </blockquote>
-<img src="./skill-activation.svg" alt="Sequence diagram of skill activation: at startup, the agent's controller puts the name and description of each available skill (phd-application-review, admission-letter) into the system prompt; the user asks to review Mario Rossi's application; the LLM recognises that the phd-application-review skill is relevant, and asks to read its SKILL.md; the controller returns the instructions; following them, the LLM asks to run the skill's check_application.py script, and to read its rubric; finally, the LLM writes the report, following the skill's template" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+<img src="./skill-activation.svg" alt="Sequence diagram of skill activation: at startup, the agent's controller puts the name and description of each available skill (phd-application-review, admission-letter) into the system prompt; the user asks to review Mario Rossi's application; the LLM recognises that the phd-application-review skill is relevant, and asks to read its SKILL.md; the controller returns the instructions; following them, the LLM asks to run the skill's check_application.py script, and to read its rubric; finally, the LLM writes the report, following the skill's template" style="max-width: calc(95 * 19.2px); max-height: calc(45 * 10.8px); object-fit: contain;">
 <ul>
 <li>The skill (a folder) is <em>discovered</em> at startup, <em>activated</em> by the LLM upon a relevant request, then <em>followed</em>
 <ul>
@@ -387,7 +387,7 @@
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="progressive-disclosure">
 <h2 id="skills-as-a-context-loading-mechanism-progressive-disclosure">Skills as a context-loading mechanism: progressive disclosure</h2>
-<img src="./progressive-disclosure.svg" alt="Progressive disclosure, as three levels of a pyramid: level 1, metadata (name and description of all skills, about 100 tokens each), always in the context from startup; level 2, instructions (the SKILL.md body of the activated skill, below 5,000 tokens), loaded upon activation; level 3, resources (scripts, references, assets), loaded or executed only when the instructions require them, possibly never entering the context, e.g. a script whose output only is read" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+<img src="./progressive-disclosure.svg" alt="Progressive disclosure, as three levels of a pyramid: level 1, metadata (name and description of all skills, about 100 tokens each), always in the context from startup; level 2, instructions (the SKILL.md body of the activated skill, below 5,000 tokens), loaded upon activation; level 3, resources (scripts, references, assets), loaded or executed only when the instructions require them, possibly never entering the context, e.g. a script whose output only is read" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 <ol>
 <li><strong>Metadata</strong> (~100 tokens per skill): <code>name</code> + <code>description</code> of <em>all</em> skills, in the system prompt, from startup</li>
 <li><strong>Instructions</strong> (&lt; 5,000 tokens recommended): the body of <code>SKILL.md</code>, read when the skill is <em>activated</em></li>
@@ -1199,7 +1199,7 @@
 </ul>
 </section><section>
 <h2 id="hooks-in-the-agents-lifecycle">Hooks in the agent’s lifecycle</h2>
-<img src="./hook-lifecycle.svg" alt="The agent loop with hook events: SessionStart before the first prompt; UserPromptSubmit when the user writes; inside the ReAct loop, PreToolUse before each tool call (which may allow, deny, or modify it) and PostToolUse after it (which may add context, or block); PreCompact before compaction; Stop when the agent wants to end its turn (which may force it to continue)" style="max-width: 95vw; max-height: 55vh; object-fit: contain;">
+<img src="./hook-lifecycle.svg" alt="The agent loop with hook events: SessionStart before the first prompt; UserPromptSubmit when the user writes; inside the ReAct loop, PreToolUse before each tool call (which may allow, deny, or modify it) and PostToolUse after it (which may add context, or block); PreCompact before compaction; Stop when the agent wants to end its turn (which may force it to continue)" style="max-width: calc(95 * 19.2px); max-height: calc(55 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="hooks-are-callbacks-events-are-their-interface">Hooks are callbacks, events are their interface</h2>
 <ul>

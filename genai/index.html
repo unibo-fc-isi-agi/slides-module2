@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -65,7 +65,10 @@
 
 
 
-<img src="./foundation-models.svg" alt="Foundation models concept" style="max-width: 95vw; max-height: 60vh; object-fit: contain;">
+
+
+
+<img src="./foundation-models.svg" alt="Foundation models concept" style="max-width: calc(95 * 19.2px); max-height: calc(60 * 10.8px); object-fit: contain;">
 
 </section><section>
 <h2 id="terminology-foundation-models-vs-large-language-models"><strong>Terminology</strong>: Foundation Models vs. <em>Large Language Models</em></h2>
@@ -74,9 +77,12 @@
 
 
 
+
+
+
 <a href="https://thebabar.medium.com/essential-guide-to-foundation-models-and-large-language-models-27dab58f7404">
 
-<img src="./fm-vs-llm.svg" alt="Venn diagram explaining how LLMs are a specific case of foundation models" style="width: 80%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./fm-vs-llm.svg" alt="Venn diagram explaining how LLMs are a specific case of foundation models" style="width: 80%; max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
 
 </a>
 
@@ -87,7 +93,10 @@
 
 
 
-<img src="./next-word-prediction.svg" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
+
+
+
+<img src="./next-word-prediction.svg" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(55 * 10.8px); object-fit: contain;">
 
 <ul>
 <li>LLMs have learned to <strong>predict</strong> the <em>next word</em> (actually, <em>token</em>) in a <em>text</em> given the <em>previous context</em>
@@ -121,7 +130,10 @@
 
 
 
-<img src="./tokenization.svg" alt="Example of how a sentence is split into tokens" style="max-width: 95vw; max-height: 45vh; object-fit: contain;">
+
+
+
+<img src="./tokenization.svg" alt="Example of how a sentence is split into tokens" style="max-width: calc(95 * 19.2px); max-height: calc(45 * 10.8px); object-fit: contain;">
 
 <ul>
 <li>Tokens are the <strong>unit of measure</strong> for LLMs:
@@ -172,7 +184,10 @@
 
 
 
-<img src="./dual-system.svg" alt="Dual-system theory concept" style="width: 100%; max-width: 95vw; max-height: 75vh; object-fit: contain;">
+
+
+
+<img src="./dual-system.svg" alt="Dual-system theory concept" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(75 * 10.8px); object-fit: contain;">
 
 <p>(cf. <a href="https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow">Thinking, Fast and Slow</a>)</p>
 </section><section>
@@ -180,7 +195,7 @@
 
 <section data-shortcode-section="">
 <h2 id="genai-with-an-as-a-service-consumption-model">GenAI with an <em>as-a-Service</em> consumption model</h2>
-<img src="./llm-concept.svg" alt="'As-a-Service' consumption model for foundation models" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./llm-concept.svg" alt="'As-a-Service' consumption model for foundation models" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="genai-with-an-as-a-service-consumption-model-1">GenAI with an <em>as-a-Service</em> consumption model</h2>
 <ul>
@@ -236,7 +251,7 @@
 
 <section data-shortcode-section="">
 <h2 id="genai-learning-cycle">GenAI <em>learning</em> cycle</h2>
-<img src="./dataflow.svg" alt="GenAI learning cycle" style="width: 100%; max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="./dataflow.svg" alt="GenAI learning cycle" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="genai-learning-cycle--consequences-pt-1">GenAI <em>learning</em> cycle — <strong>Consequences</strong> (pt. 1)</h2>
 <ul>
@@ -289,9 +304,9 @@
 </span>
 </section><section>
 <h2 id="some-technological-solutions-let-you-opt-out-of-training">Some technological solutions let you <em>opt out</em> of training</h2>
-<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 <br>
-<img src="./chatgpt-settings/no-learn-4.png" alt="ChatGPT settings: the toggle allowing OpenAI to use your conversations to train its models" style="width: 100%; max-width: 95vw; max-height: 50vh; object-fit: contain;">
+<img src="./chatgpt-settings/no-learn-4.png" alt="ChatGPT settings: the toggle allowing OpenAI to use your conversations to train its models" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(50 * 10.8px); object-fit: contain;">
 <p>(cf. <a href="../governance/#/regulation">regulation</a> in the governance lecture)</p>
 
 </section>
@@ -319,9 +334,9 @@
 <h2 id="conversational-interface"><strong>Conversational</strong> interface</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-chatgpt.svg" alt="" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 <a href="https://chatgpt.com/share/6798dd04-8a98-8008-a751-bc374318bd9e">
-<img src="./interface-conversational.png" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./interface-conversational.png" alt="" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </a>
 </div>
 <div class="col " style="text-align: left;"><br>
@@ -361,8 +376,8 @@
 <h2 id="auto-completion-interface"><strong>Auto-completion</strong> interface</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<img src="./interface-autocompletion.gif" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot.svg" alt="" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
+<img src="./interface-autocompletion.gif" alt="" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </div>
 <div class="col " style="text-align: left;"><br>
 <ul>
@@ -389,7 +404,7 @@
 <h2 id="programmatic-interface"><strong>Programmatic</strong> interface</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col col-6" style="text-align: left;"><img src="./logo-openai.svg" alt="OpenAI logo" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col col-6" style="text-align: left;"><img src="./logo-openai.svg" alt="OpenAI logo" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">openai</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">OpenAI</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">()</span>  <span style="color:#8f5902;font-style:italic"># reads the API key from the OPENAI_API_KEY env variable</span>
@@ -411,7 +426,8 @@
 </span></span><span style="display:flex;"><span>Belgium
 </span></span><span style="display:flex;"><span>...
 </span></span></code></pre></div></div>
-<div class="col " style="text-align: left;"><ul>
+<div class="col " style="text-align: left;"><div style="font-size: 85%;">
+<ul>
 <li>
 <p><strong>Programming language</strong> interacting with AI</p>
 <ul>
@@ -465,12 +481,13 @@
 </div>
 </div>
 </div>
+</div>
 </section><section>
 <h2 id="in-app-interface"><strong>In-app</strong> interface</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot-office.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<img src="./interface-inapp.gif" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-copilot-office.svg" alt="" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
+<img src="./interface-inapp.gif" alt="" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </div>
 <div class="col " style="text-align: left;"><br>
 <ul>
@@ -509,8 +526,8 @@
 <h2 id="interface-for-editing-audiovideo-content-eg-music">Interface for <strong>editing</strong> audio/video content (e.g. <em>music</em>)</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-suno.svg" alt="" style="height: 2em; max-width: 95vw; max-height: 80vh; object-fit: contain;">
-<img src="./generate-song-1.png" alt="" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./logo-suno.svg" alt="" style="height: 2em; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
+<img src="./generate-song-1.png" alt="" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </div>
 <div class="col " style="text-align: left;"><ul>
 <li>
@@ -549,7 +566,7 @@
 <h2 id="agentic-interface"><strong>Agentic</strong> interface</h2>
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col " style="text-align: left;"><img src="./claude-code.png" alt="A Claude Code session in a terminal: the agent reads files and runs commands to answer the user's request" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+    <div class="row "><div class="col " style="text-align: left;"><img src="./claude-code.png" alt="A Claude Code session in a terminal: the agent reads files and runs commands to answer the user's request" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </div>
 <div class="col " style="text-align: left;"><br>
 <ul>
@@ -694,7 +711,7 @@
 </section><section>
 <h2 id="three-ways-engineers-exploit-genai">Three ways engineers exploit GenAI</h2>
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div class="col col-7" style="text-align: left;"><img src="./genai-uses-venn.svg" alt="Venn diagram: (1) coding assistants and co-pilots, (2) automating hard-to-code tasks, (3) agents in products; all intersections are possible" style="width: 100%; max-width: 95vw; max-height: 75vh; object-fit: contain;">
+    <div class="row "><div class="col col-7" style="text-align: left;"><img src="./genai-uses-venn.svg" alt="Venn diagram: (1) coding assistants and co-pilots, (2) automating hard-to-code tasks, (3) agents in products; all intersections are possible" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(75 * 10.8px); object-fit: contain;">
 </div>
 <div class="col " style="text-align: left;"><ol>
 <li>As <strong>coding assistants</strong> and <em>co-pilots</em>
@@ -1090,11 +1107,11 @@
 </ul>
 </section><section>
 <h2 id="concept-agents-calling-external-tools">Concept: Agents Calling External Tools</h2>
-<img src="./tools.svg" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" style="width: 100%; max-width: 95vw; max-height: 85vh; object-fit: contain;">
+<img src="./tools.svg" alt="Sequence diagram: an agent discovers tools via MCP, the LLM requests a tool call, the agent invokes it via MCP, and the result is fed back to the LLM" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(85 * 10.8px); object-fit: contain;">
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="mcp-concept">
 <h2 id="concept-model-context-protocol-mcp">Concept: Model Context Protocol (MCP)</h2>
-<img src="./mcp.svg" alt="Model Context Protocol (MCP) concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
+<img src="./mcp.svg" alt="Model Context Protocol (MCP) concept" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(60 * 10.8px); object-fit: contain;">
 <ul>
 <li>MCP $\approx$ <em>standard</em> protocol for LLM-based applications to <em>discover</em> and <em>call</em> <strong>external tools</strong> (cf. <a href="https://modelcontextprotocol.io/specification">specification</a>)</li>
 <li>Allows for <em>decoupling</em> between the agent’s logic and the implementation of the tools, thus enabling modularity and interoperability</li>
@@ -1108,10 +1125,10 @@
 </section>
 <section data-noprocess="" data-shortcode-slide="" id="rag-concept">
 <h2 id="concept-retrieval-augmented-generation-rag">Concept: Retrieval-Augmented Generation (RAG)</h2>
-<img src="./rag.svg" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" style="width: 100%; max-width: 95vw; max-height: 80vh; object-fit: contain;">
+<img src="./rag.svg" alt="RAG: indexing pipeline (chunking, embedding, vector store) and retrieval-and-generation pipeline (embedding the question, retrieving chunks, enriched prompt, LLM answer)" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(80 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="concept-llm-as-a-judge">Concept: LLM-as-a-Judge</h2>
-<img src="./llm-as-a-judge.svg" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: 95vw; max-height: 60vh; object-fit: contain;">
+<img src="./llm-as-a-judge.svg" alt="LLM-as-a-Judge concept" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(60 * 10.8px); object-fit: contain;">
 <ul>
 <li>Exploiting an LLM to <em>evaluate</em> the quality of some other LLM’s output…</li>
 <li>… based on some <em>informal</em> <strong>criterion</strong> (e.g. <em>relevance</em>, <em>accuracy</em>, <em>completeness</em>, etc.)</li>
@@ -1151,7 +1168,7 @@
 <h2 id="the-genai-project-lifecycle">The GenAI project lifecycle</h2>
 <p>(The lifecycle of engineering products as per dimensions (2) and (3).
 Similar to the ML lifecycle in the sense that the goal is to process data, but different in many details: e.g. training is <em>optional</em>, and commonly <em>not</em> performed in-house, as pre-trained FMs are exploited)</p>
-<img src="./genai-workflow.svg" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" style="width: 100%; max-width: 95vw; max-height: 40vh; object-fit: contain;">
+<img src="./genai-workflow.svg" alt="GenAI project lifecycle: scope, select, adapt and align model, application integration" style="width: 100%; max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 <ul>
 <li>there could be <strong>many iterations</strong> (e.g. for FM selection, and prompt tuning)</li>
 <li>the whole lifecycle may be <strong>re-started</strong> upon <em>data changes</em>, or <em>task changes</em>, or new <em>FM availability</em></li>

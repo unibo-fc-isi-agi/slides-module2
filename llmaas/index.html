@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/slides-module2/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/slides-module2/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.cdd5ed02131effdaa8fec3134c9821692884cbb9e2b2f97e2fa0d6c39b01ed26.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/slides-module2/css/custom-theme.min.33d041ec477d01d174fafc300b8cd4c28098210cf0ee315dc6697eacc28a5c92.css" id="theme"><link rel="stylesheet" href="/slides-module2/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -119,7 +119,10 @@
 
 
 
-<img src='./todo-model-card.png' alt='TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) &#39;Files and versions&#39; tab with GGUF/safetensors files; 5) description &#43; intended uses; 6) evaluation table; 7) &#39;Use this model&#39; button with code snippets.' style='max-width: 95vw; max-height: 45vh; object-fit: contain;'>
+
+
+
+<img src='./todo-model-card.png' alt='TODO picture: screenshot of a Hugging Face model card page (e.g. google/gemma-3 or Qwen), annotated with colored boxes and labels: 1) model name and organization; 2) license badge; 3) tags (task, languages, library); 4) &#39;Files and versions&#39; tab with GGUF/safetensors files; 5) description &#43; intended uses; 6) evaluation table; 7) &#39;Use this model&#39; button with code snippets.' style='max-width: calc(95 * 19.2px); max-height: calc(45 * 10.8px); object-fit: contain;'>
  -->
 <h3 id="example">Example</h3>
 <ul>
@@ -129,7 +132,7 @@
 <li>each one with a model card, technical metadata, and license information</li>
 <li>e.g. filter on “Gemma” to see the <a href="https://huggingface.co/models?sort=trending&amp;search=gemma">Gemma family</a> of LLMs, then click on one to see the card</li>
 </ul>
-<p><img src="./hugging-face-model-zoo.png" alt="Hugging Face Gemma model card screenshot"></p>
+  <img src="./hugging-face-model-zoo.png" alt="Hugging Face Gemma model card screenshot" style="max-width: calc(95 * 19.2px); max-height: calc(28 * 10.8px); object-fit: contain;">
 </li>
 </ul>
 </section><section>
@@ -269,8 +272,8 @@
 <ul>
 <li>notice naming convention: <code>model:variant</code>, most commonly the variant denotes the size of the model</li>
 </ul>
- <img src="ollama-models.png" alt="Ollama's Model Zoo" style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
- <img src="ollama-models-gemma4.png" alt="Available variants for a Model on Ollama's Model Zoo" style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
+ <img src="ollama-models.png" alt="Ollama's Model Zoo" style="max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
+ <img src="ollama-models-gemma4.png" alt="Available variants for a Model on Ollama's Model Zoo" style="max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
 </li>
 </ol>
 </section><section>
@@ -393,7 +396,7 @@
 </li>
 <li>the <em>overhead</em> covers runtime buffers, activations, and driver context: usually an extra ~10–20%</li>
 </ul>
-<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: 95vw; max-height: 20vh; object-fit: contain;">
+<img src="./memory-footprint.svg" alt="Stacked bars of the memory needed (weights plus 8k-token KV cache) by 7B, 14B, 32B and 70B models at 16-bit, Q8_0 and Q4_K_M precision, compared with 8/16/24/48/80 GB devices" style="max-width: calc(95 * 19.2px); max-height: calc(20 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="running-models-locally-what-does-it-take-pt-2">Running models locally: what does it take? (pt. 2)</h2>
 <h3 id="rule-of-thumb-for-the-weights-alone">Rule of thumb for the weights alone</h3>
@@ -476,7 +479,7 @@
 </ul>
 </li>
 </ul>
-<img src="./quantization.svg" alt="A bell-shaped histogram of fp16 weights mapped onto 16 four-bit codes plus a per-block scale, yielding an approximate, stepped histogram" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+<img src="./quantization.svg" alt="A bell-shaped histogram of fp16 weights mapped onto 16 four-bit codes plus a per-block scale, yielding an approximate, stepped histogram" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 </section><section>
 <h2 id="quantization-pt-2-the-technological-landscape">Quantization (pt. 2): the technological landscape</h2>
 <p>Several <em>quantization methods</em> and <em>file formats</em> exist, bound to specific <strong>runtimes</strong>:</p>
@@ -642,7 +645,7 @@
 </ul>
 </li>
 </ul>
-  <img src="open-router-models.png" alt="Open Router's Model Zoo" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+  <img src="open-router-models.png" alt="Open Router's Model Zoo" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 </li>
 </ul>
 </section><section>
@@ -697,7 +700,7 @@
 <li>no credit needed for this lecture</li>
 <li>recall to set <em>expense limitation</em> to avoid unexpected costs, in case you decide to experiment with actual money</li>
 </ul>
- <img src="open-router-credits.png" alt="Open Router's Credits Settings" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+ <img src="open-router-credits.png" alt="Open Router's Credits Settings" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 </li>
 </ol>
 </section><section>
@@ -705,7 +708,7 @@
 <ol start="3">
 <li>
 <p>From time to time, keep an eye on the <strong>activity dashboard</strong> of your account, to check the usage and the costs of your requests: <a href="https://openrouter.ai/activity">https://openrouter.ai/activity</a></p>
- <img src="open-router-activity.png" alt="Open Router's Activity Dashboard" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+ <img src="open-router-activity.png" alt="Open Router's Activity Dashboard" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 </li>
 </ol>
 </section><section>
@@ -721,7 +724,7 @@
 </ul>
 </li>
 </ul>
- <img src="open-router-apikeys.png" alt="Open Router's API Keys Settings" style="max-width: 95vw; max-height: 40vh; object-fit: contain;">
+ <img src="open-router-apikeys.png" alt="Open Router's API Keys Settings" style="max-width: calc(95 * 19.2px); max-height: calc(40 * 10.8px); object-fit: contain;">
 <ul>
 <li>an API key is a string of the form: <code>sk-or-v1-XXXXXXXXXXXXXXXXXXXXXXXX</code>: it is sufficient to <u>consume your credit</u> and to make requests on your behalf</li>
 </ul>
@@ -827,7 +830,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791859139494747417" class="plantuml" alt="" style="width: 100%;max-width: 95vw;max-height: 80vh;">
+<figure id="plantuml-figure-1791878210159031807" class="plantuml" alt="" style="width: 100%;max-width: calc(95 * 19.2px);max-height: calc(70 * 10.8px);">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -849,7 +852,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791859139494747417");
+    handlePlantumlFigureByID("plantuml-figure-1791878210159031807");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1003,7 +1006,7 @@ P -&gt; U: “It’s … in Cesena”
 </section><section>
 <h2 id="about-llms-web-api-compatibility-pt-7-wrap-up">About LLMs’ Web API Compatibility (pt. 7) –&nbsp;Wrap Up</h2>
 <p><strong>OpenAI-like</strong> APIs are becoming the <em>de-facto</em> standard, yet they are currently under active <em>evolution</em></p>
-<img src="apis.svg" alt="LLMs' Web API Compatibility Landscape" style="max-width: 95vw; max-height: 70vh; object-fit: contain;">
+<img src="apis.svg" alt="LLMs' Web API Compatibility Landscape" style="max-width: calc(95 * 19.2px); max-height: calc(70 * 10.8px); object-fit: contain;">
 
 </section>
 </section><section>
@@ -2340,8 +2343,6 @@ P -&gt; U: “It’s … in Cesena”
   
   
 
-  
-    
   
   
 
