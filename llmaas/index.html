@@ -830,7 +830,7 @@
 </ul>
 </section><section>
 <h2 id="chat-completion-an-intuitive-example">Chat Completion: an intuitive example</h2>
-<figure id="plantuml-figure-1791878210159031807" class="plantuml" alt="" style="width: 100%;max-width: calc(95 * 19.2px);max-height: calc(70 * 10.8px);">
+<figure id="plantuml-figure-1791898760236692288" class="plantuml" alt="" style="width: 100%;max-width: calc(95 * 19.2px);max-height: calc(70 * 10.8px);">
 <p>@startuml
 hide footbox
 actor “User” as U
@@ -852,7 +852,7 @@ P -&gt; U: “It’s … in Cesena”
 @enduml</p>
 </figure>
 <script>
-    handlePlantumlFigureByID("plantuml-figure-1791878210159031807");
+    handlePlantumlFigureByID("plantuml-figure-1791898760236692288");
 </script>
 <ul>
 <li>Notice that the <strong>same</strong> interaction is implemented by <em>all</em> providers, only the <em>syntax</em> changes
@@ -1511,6 +1511,169 @@ P -&gt; U: “It’s … in Cesena”
 <p>Notice: these are <strong>not</strong> Longfellow’s lines (his line 3 is “<em>For the straightforward pathway had been lost</em>”, cf. <a href="https://en.wikisource.org/wiki/Divine_Comedy_(Longfellow_1867)/Volume_1/Canto_1">Wikisource</a>): a confident <strong>hallucination</strong></p>
 </blockquote>
 </span>
+
+</section>
+</section>
+
+
+<section data-shortcode-section="">
+<section data-noprocess="" data-shortcode-slide="" id="responses-example">
+<h2 id="example-3-cli-chat-with-attachments-via-the-responses-api-pt-1">Example 3: CLI Chat with Attachments, via the Responses API (pt. 1)</h2>
+<blockquote>
+<p><strong>Goal</strong>: the same chat as Example 2, via OpenAI’s <a href="https://developers.openai.com/api/reference/resources/responses/methods/create"><strong>Responses API</strong></a> (<code>POST /v1/responses</code>), letting users <em>attach files</em> (pictures, PDFs, text) to their messages</p>
+</blockquote>
+<ul>
+<li>The Responses API is OpenAI’s <em>newer</em> API, which differs from Chat Completions in that:
+<ul>
+<li>the system prompt is a <em>parameter</em> (<code>instructions=...</code>), and the history is a list of <strong>typed items</strong> (<code>input=[...]</code>)</li>
+<li>messages are lists of typed <strong>content parts</strong>: <code>input_text</code>, <code>input_image</code>, <code>input_file</code>, …</li>
+<li>streaming produces <strong>typed events</strong> (e.g. <code>response.created</code>, <code>response.output_text.delta</code>, <code>response.completed</code>), rather than generic <em>deltas</em></li>
+<li>it <em>can</em> be <strong>stateful</strong>: the provider stores the history (<code>store=True</code>), and the next request just points to the previous response (<code>previous_response_id=...</code>)</li>
+</ul>
+</li>
+<li><strong>Portability</strong> is limited (cf. <a href="#/api-comparison">compatibility</a>): Open Router and Ollama support it in its <em>stateless</em> flavour only
+<ul>
+<li>Open Router <em>rejects</em> stateful requests (<a href="https://openrouter.ai/docs/api/reference/responses/overview">docs</a>), Ollama <em>silently ignores</em> them (<a href="https://docs.ollama.com/api/openai-compatibility">docs</a>)</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>
+<p>Client setup is the same as in Example 1, plus a command-line flag to choose between <em>stateless</em> and <em>stateful</em> mode:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#000">parser</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">argparse</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ArgumentParser</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">description</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"CLI Chat with Attachments, via the Responses API"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">add_argument</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"--stateful"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">action</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"store_true"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">help</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"let the provider keep the history (OpenAI only)"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">args</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">parser</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">parse_args</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">base_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_BASE_URL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"https://openrouter.ai/api/v1/"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">api_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_API_KEY"</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#204a87">input</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"Enter your API key for </span><span style="color:#4e9a06">{</span><span style="color:#000">base_url</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: "</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">model</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">environ</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"OPENAI_MODEL"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">"google/gemma-4-26b-a4b-it:free"</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># a free model that can see pictures</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">OpenAI</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">base_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">base_url</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">api_key</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">api_key</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">INSTRUCTIONS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">"Just chat with the user, be friendly and helpful. Answer questions about the attached files, if any."</span>
+</span></span></code></pre></div><ul>
+<li>the default model is <em>multimodal</em>, as users may attach pictures</li>
+</ul>
+</li>
+</ol>
+</section><section>
+<h2 id="example-3-cli-chat-with-attachments-via-the-responses-api-pt-2">Example 3: CLI Chat with Attachments, via the Responses API (pt. 2)</h2>
+<ol start="2">
+<li>
+<p>Files become <strong>content parts</strong>: <em>text</em> files are inlined, <em>pictures</em> and <em>PDFs</em> are encoded as <a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data">data URLs</a> (base64)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">attachment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">"""Turns a file into a content part of a message: pictures and PDFs are sent in base64, text files inline."""</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">mime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">mimetypes</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">guess_type</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span><span style="color:#000;font-weight:bold">)[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">or</span> <span style="color:#4e9a06">"text/plain"</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">mime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">startswith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"text/"</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"input_text"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"&lt;file name='</span><span style="color:#4e9a06">{</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">'&gt;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">{</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_text</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&lt;/file&gt;"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">data_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">"data:</span><span style="color:#4e9a06">{</span><span style="color:#000">mime</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">;base64,</span><span style="color:#4e9a06">{</span><span style="color:#000">base64</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">b64encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read_bytes</span><span style="color:#000;font-weight:bold">())</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">mime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">startswith</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"image/"</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"input_image"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">image_url</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">data_url</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"input_file"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">filename</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file_data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">data_url</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># e.g. PDFs</span>
+</span></span></code></pre></div><ul>
+<li>inlined text is <em>delimited</em> by tags (<code>&lt;file name='...'&gt;</code>), so that the model can tell files apart from the user’s text</li>
+<li>alternatively, files can be <em>uploaded once</em> via the <a href="https://developers.openai.com/api/reference/resources/files/methods/create">Files API</a> (<code>client.files.create(...)</code>), then <em>referenced</em> by ID (<code>file_id=...</code>) in any request: OpenAI-specific, though</li>
+</ul>
+</li>
+<li>
+<p>The REPL handles the <code>/attach &lt;path&gt;</code> command by <em>accumulating</em> content parts for the next message:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">cmd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"/attach"</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">Path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arg</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()))</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">is_file</span><span style="color:#000;font-weight:bold">():</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"error&gt; no such file: </span><span style="color:#4e9a06">{</span><span style="color:#000">path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">attachments</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">attachment</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path</span><span style="color:#000;font-weight:bold">))</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"(attached </span><span style="color:#4e9a06">{</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: it will be sent along with your next message)"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># a message is a list of content parts: the attachments, then the text</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"user"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">attachments</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">type</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"input_text"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">text</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">user_text</span><span style="color:#000;font-weight:bold">)])</span>
+</span></span></code></pre></div></li>
+</ol>
+</section><section>
+<h2 id="example-3-cli-chat-with-attachments-via-the-responses-api-pt-3">Example 3: CLI Chat with Attachments, via the Responses API (pt. 3)</h2>
+<ol start="4">
+<li>
+<p>Stateless vs. stateful requests, and the consumption of the stream of <em>typed</em> events:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">args</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">stateful</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># we only send the new message, and point to the previous response (the provider has the rest)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">previous_response_id</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">previous_id</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">store</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># we send the whole history, and ask the provider NOT to store anything</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">input</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">history</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">message</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">store</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">""</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">stream</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">responses</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">instructions</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">INSTRUCTIONS</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stream</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">**</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">"assistant&gt; "</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">event</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">stream</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># typed events: we only need two kinds of them</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">event</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">type</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"response.created"</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">response_id</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">event</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">id</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">event</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">type</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">"response.output_text.delta"</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">event</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">""</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">flush</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">answer</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#000">event</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">delta</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">exc</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#8f5902;font-style:italic"># e.g. network errors, rate limits, unsupported features</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">"</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">error&gt; </span><span style="color:#4e9a06">{</span><span style="color:#000">exc</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">"</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">attachments</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>  <span style="color:#8f5902;font-style:italic"># sent: don't send them again</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">previous_id</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">response_id</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">history</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">role</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">"assistant"</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">content</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">answer</span><span style="color:#000;font-weight:bold">)]</span>
+</span></span></code></pre></div><p>notice that:</p>
+<ul>
+<li>in <strong>stateless</strong> mode, the <em>whole</em> history is sent at each request (as in Examples 1 and 2), and <code>store=False</code> asks the provider <em>not</em> to keep it</li>
+<li>in <strong>stateful</strong> mode, only the <em>new</em> message is sent: fewer bytes per request (attachments are sent <em>once</em>), but the conversation lives on the provider’s servers (cf. data protection), and only OpenAI supports it</li>
+<li>we only care for two kinds of events: <code>response.created</code> (to get the response’s ID) and <code>response.output_text.delta</code> (the new piece of text)</li>
+</ul>
+</li>
+</ol>
+</section>
+<section data-noprocess="" data-shortcode-slide="" class="print-compact">
+<h2 id="example-3-cli-chat-with-attachments-via-the-responses-api-pt-4">Example 3: CLI Chat with Attachments, via the Responses API (pt. 4)</h2>
+<ol start="5">
+<li>
+<p>Full code <a href="../lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py">here</a></p>
+</li>
+<li>
+<p>Example of interaction (start with <code>poetry run python -m snippets -l llmaas -e 3</code>, here with a local Ollama):</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="nohighlight" data-noescape=""><span style="display:flex;"><span>Using model: gemma4:e4b (stateless)
+</span></span><span style="display:flex;"><span>Type '/exit' or '/quit' to stop. Type '/attach &lt;path&gt;' to attach a file to your next message.
+</span></span><span style="display:flex;"><span>you&gt; /attach data/passport-mario-rossi.png
+</span></span><span style="display:flex;"><span>(attached passport-mario-rossi.png: it will be sent along with your next message)
+</span></span><span style="display:flex;"><span>you&gt; What is the nationality and birth date of this person? Be brief.
+</span></span><span style="display:flex;"><span>assistant&gt; The nationality is **Bananense**, and the birth date is **March 15, 1985**.
+</span></span><span style="display:flex;"><span>you&gt; And their name?
+</span></span><span style="display:flex;"><span>assistant&gt; The name is **Mario Rossi**.
+</span></span><span style="display:flex;"><span>you&gt; /attach data/regulations-phd.md
+</span></span><span style="display:flex;"><span>(attached regulations-phd.md: it will be sent along with your next message)
+</span></span><span style="display:flex;"><span>you&gt; What is the age limit, if any? One sentence.
+</span></span><span style="display:flex;"><span>assistant&gt; There is no age limit for admission to the PhD Programme.
+</span></span><span style="display:flex;"><span>you&gt; Goodbye!
+</span></span></code></pre></div><ol start="7">
+<li>Try <code>--stateful</code> on Ollama, then ask “<em>what is my name?</em>” after telling it: the model forgets, as <code>previous_response_id</code> is <strong>silently ignored</strong></li>
+</ol>
+<span class="fragment ">
+  <blockquote>
+<p>Compatibility is not just “<em>the request is accepted</em>”: the <em>semantics</em> must be preserved too, and silent incompatibilities are the worst ones</p>
+</blockquote>
+</span>
+</section><section>
+<h2 id="example-3-project-structure">Example 3: Project Structure</h2>
+<p>Files of this example, in the <a href="https://github.com/unibo-fc-isi-iag/lab-snippets"><code>lab-snippets</code></a> repository:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape="">lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/passport-mario-rossi.png">passport-mario-rossi.png</a>      # files to attach, e.g. pictures
+│   └── <a href="../lab-snippets/data/regulations-phd.md">regulations-phd.md</a>            # ... or text
+├── snippets/
+│   └── lecture_llmaas/
+│       └── example3/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/example3/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py">repl_chat_responses.py</a>  # the chat
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                    # dependencies of all snippets</code></pre></div>
+<ul>
+<li>run it with <code>poetry run python -m snippets -l llmaas -e 3 [--stateful]</code> (cf. <a href="../#/lab-snippets-run">how to run snippets</a>)
+<ul>
+<li>set the environment variables <code>OPENAI_API_KEY</code> (and, optionally, <code>OPENAI_BASE_URL</code>, <code>OPENAI_MODEL</code>), as for Example 1</li>
+<li><code>--stateful</code> requires OpenAI as the provider (e.g. <code>OPENAI_BASE_URL=https://api.openai.com/v1/</code>)</li>
+</ul>
+</li>
+</ul>
 
 </section>
 </section><section>
@@ -2343,6 +2506,8 @@ P -&gt; U: “It’s … in Cesena”
   
   
 
+  
+    
   
   
 
