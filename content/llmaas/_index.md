@@ -1104,6 +1104,113 @@ you> Goodbye!
 
 ---
 
+{{% section %}}
+
+{{< slide id="responses-example" >}}
+
+## Example 3: CLI Chat with Attachments, via the Responses API (pt. 1)
+
+> __Goal__: the same chat as Example 2, via OpenAI's [__Responses API__](https://developers.openai.com/api/reference/resources/responses/methods/create) (`POST /v1/responses`), letting users _attach files_ (pictures, PDFs, text) to their messages
+
+- The Responses API is OpenAI's _newer_ API, which differs from Chat Completions in that:
+    + the system prompt is a _parameter_ (`instructions=...`), and the history is a list of __typed items__ (`input=[...]`)
+    + messages are lists of typed __content parts__: `input_text`, `input_image`, `input_file`, ...
+    + streaming produces __typed events__ (e.g. `response.created`, `response.output_text.delta`, `response.completed`), rather than generic _deltas_
+    + it _can_ be __stateful__: the provider stores the history (`store=True`), and the next request just points to the previous response (`previous_response_id=...`)
+- __Portability__ is limited (cf. [compatibility](#/api-comparison)): Open Router and Ollama support it in its _stateless_ flavour only
+    + Open Router _rejects_ stateful requests ([docs](https://openrouter.ai/docs/api/reference/responses/overview)), Ollama _silently ignores_ them ([docs](https://docs.ollama.com/api/openai-compatibility))
+
+1. Client setup is the same as in Example 1, plus a command-line flag to choose between _stateless_ and _stateful_ mode:
+
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py" from="18" to="27" %}}
+
+    - the default model is _multimodal_, as users may attach pictures
+
+---
+
+## Example 3: CLI Chat with Attachments, via the Responses API (pt. 2)
+
+2. Files become __content parts__: _text_ files are inlined, _pictures_ and _PDFs_ are encoded as [data URLs](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data) (base64)
+
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py" from="30" to="38" %}}
+
+    - inlined text is _delimited_ by tags (`<file name='...'>`), so that the model can tell files apart from the user's text
+    - alternatively, files can be _uploaded once_ via the [Files API](https://developers.openai.com/api/reference/resources/files/methods/create) (`client.files.create(...)`), then _referenced_ by ID (`file_id=...`) in any request: OpenAI-specific, though
+
+3. The REPL handles the `/attach <path>` command by _accumulating_ content parts for the next message:
+
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py" from="56" to="64" %}}
+
+---
+
+## Example 3: CLI Chat with Attachments, via the Responses API (pt. 3)
+
+4. Stateless vs. stateful requests, and the consumption of the stream of _typed_ events:
+
+    {{% code path="static/lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py" from="65" to="85" %}}
+
+    notice that:
+    - in __stateless__ mode, the _whole_ history is sent at each request (as in Examples 1 and 2), and `store=False` asks the provider _not_ to keep it
+    - in __stateful__ mode, only the _new_ message is sent: fewer bytes per request (attachments are sent _once_), but the conversation lives on the provider's servers (cf. data protection), and only OpenAI supports it
+    - we only care for two kinds of events: `response.created` (to get the response's ID) and `response.output_text.delta` (the new piece of text)
+
+---
+
+{{< slide class="print-compact" >}}
+
+## Example 3: CLI Chat with Attachments, via the Responses API (pt. 4)
+
+5. Full code [here](../lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py)
+
+6. Example of interaction (start with `poetry run python -m snippets -l llmaas -e 3`, here with a local Ollama):
+
+```text
+Using model: gemma4:e4b (stateless)
+Type '/exit' or '/quit' to stop. Type '/attach <path>' to attach a file to your next message.
+you> /attach data/passport-mario-rossi.png
+(attached passport-mario-rossi.png: it will be sent along with your next message)
+you> What is the nationality and birth date of this person? Be brief.
+assistant> The nationality is **Bananense**, and the birth date is **March 15, 1985**.
+you> And their name?
+assistant> The name is **Mario Rossi**.
+you> /attach data/regulations-phd.md
+(attached regulations-phd.md: it will be sent along with your next message)
+you> What is the age limit, if any? One sentence.
+assistant> There is no age limit for admission to the PhD Programme.
+you> Goodbye!
+```
+
+7. Try `--stateful` on Ollama, then ask "_what is my name?_" after telling it: the model forgets, as `previous_response_id` is __silently ignored__
+
+{{% fragment %}}
+> Compatibility is not just "_the request is accepted_": the _semantics_ must be preserved too, and silent incompatibilities are the worst ones
+{{% /fragment %}}
+
+---
+
+## Example 3: Project Structure
+
+Files of this example, in the [`lab-snippets`]({{< github-url repo="lab-snippets" >}}) repository:
+
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;"><code class="nohighlight" data-noescape>lab-snippets/
+├── data/
+│   ├── <a href="../lab-snippets/data/passport-mario-rossi.png">passport-mario-rossi.png</a>      # files to attach, e.g. pictures
+│   └── <a href="../lab-snippets/data/regulations-phd.md">regulations-phd.md</a>            # ... or text
+├── snippets/
+│   └── lecture_llmaas/
+│       └── example3/
+│           ├── <a href="../lab-snippets/snippets/lecture_llmaas/example3/__init__.py">__init__.py</a>
+│           └── <a href="../lab-snippets/snippets/lecture_llmaas/example3/repl_chat_responses.py">repl_chat_responses.py</a>  # the chat
+└── <a href="../lab-snippets/pyproject.toml">pyproject.toml</a>                    # dependencies of all snippets</code></pre></div>
+
+- run it with `poetry run python -m snippets -l llmaas -e 3 [--stateful]` (cf. [how to run snippets](../#/lab-snippets-run))
+    + set the environment variables `OPENAI_API_KEY` (and, optionally, `OPENAI_BASE_URL`, `OPENAI_MODEL`), as for Example 1
+    + `--stateful` requires OpenAI as the provider (e.g. `OPENAI_BASE_URL=https://api.openai.com/v1/`)
+
+{{% /section %}}
+
+---
+
 # Focus on Anthropic's Client Library for Python
 
 ---

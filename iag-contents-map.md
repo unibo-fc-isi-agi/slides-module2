@@ -29,7 +29,7 @@ Covered but not in this map: `genai` (Generative AI 101, intro lecture; incl. ag
             + [x] reasoning models (reasoning effort, reasoning tokens) — `prompting` (example 3)
         * [x] System prompt / user prompt, completion API, conversation — `llmaas` (Chat Completion API, message roles), `prompting` (prompt anatomy)
         * [x] Structured outputs & related technicalities (pydantic, JSON, etc) — `prompting` (example 1 with OpenAI, 1 bis with LangChain, constrained decoding)
-        * [x] Multimodal input (e.g. images) — `prompting` (exercise 2)
+        * [x] Multimodal input (e.g. images) — `prompting` (exercise 2), `llmaas` (example 3: attachments via the Responses API, stateless vs. stateful)
         * [x] Context management: context window limits, token budgets, prompt caching, conversation summarization/compaction — `prompting` (example 4: CLI chat with compaction)
         * [x] Validating generative software (scorers + LLM-as-a-Judge) — `validating`
             + [x] examples on selected tecnologies (e.g. `deepeval`, `mlflow`, etc) — `validating` (example 1 with DeepEval, 1 bis with MLflow)
