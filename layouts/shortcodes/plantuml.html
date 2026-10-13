@@ -1,7 +1,10 @@
 {{ $figure_id := now.UnixNano }}
+{{/* vh/vw follow the browser window, not the (scaled) 1920x1080 slide: turn them into slide pixels */}}
+{{ $maxw := replaceRE `^([0-9.]+)vw$` "calc($1 * 19.2px)" (.Get "max-w" | default "95vw") | safeCSS }}
+{{ $maxh := replaceRE `^([0-9.]+)vh$` "calc($1 * 10.8px)" (.Get "max-h" | default "80vh") | safeCSS }}
 <figure id="plantuml-figure-{{ $figure_id }}" class="plantuml" 
     alt="{{ with .Get "alt" }}{{.}}{{ else }}{{ end }}"
-    style="width: {{ with .Get "width" }}{{.}}{{ else }}100%{{ end }};{{ with .Get "height" }}height: {{.}};{{ end }}max-width: {{ with .Get "max-w" }}{{.}}{{ else }}95vw{{ end }};max-height: {{ with .Get "max-h" }}{{.}}{{ else }}80vh{{end}};">
+    style="width: {{ with .Get "width" }}{{.}}{{ else }}100%{{ end }};{{ with .Get "height" }}height: {{.}};{{ end }}max-width: {{ $maxw }};max-height: {{ $maxh }};">
     {{ .Inner }}
 </figure>
 <script>

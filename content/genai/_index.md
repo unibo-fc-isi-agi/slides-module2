@@ -47,7 +47,7 @@ _AI_ algorithms capable of __automatically generating__ _content_, e.g.:
 
 ## Basic Operation of LLMs
 
-{{< image src="./next-word-prediction.svg" width="100%" max-h="60vh" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled">}}
+{{< image src="./next-word-prediction.svg" width="100%" max-h="55vh" alt="Next token prediction: the LLM outputs a probability distribution over the next token, from which the next token is sampled">}}
 
 - LLMs have learned to __predict__ the _next word_ (actually, _token_) in a _text_ given the _previous context_
     * similar to the _predictive_ keyboard on mobile phones, but much more _complex_ and _powerful_
@@ -312,6 +312,7 @@ Belgium
 ```
 {{% /col %}}
 {{% col %}}
+{{% small "85%" %}}
 
 - __Programming language__ interacting with AI
     + e.g., _Python_, JavaScript
@@ -346,6 +347,7 @@ Belgium
 
 {{% /fragment %}}
 
+{{% /small %}}
 {{% /col %}}
 {{% /multicol %}}
 

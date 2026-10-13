@@ -70,7 +70,7 @@ outputs = ["Reveal"]
     - each one with a model card, technical metadata, and license information
     - e.g. filter on "Gemma" to see the [Gemma family](https://huggingface.co/models?sort=trending&search=gemma) of LLMs, then click on one to see the card
 
-    ![Hugging Face Gemma model card screenshot](./hugging-face-model-zoo.png)
+    {{< image src="./hugging-face-model-zoo.png" max-h="28vh" alt="Hugging Face Gemma model card screenshot" >}}
 
 ---
 
@@ -588,7 +588,7 @@ usage:
 
 ## Chat Completion: an intuitive example
 
-{{< plantuml >}}
+{{< plantuml max-h="70vh" >}}
 @startuml
 hide footbox
 actor "User" as U

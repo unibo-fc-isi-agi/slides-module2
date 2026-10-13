@@ -131,6 +131,7 @@ outputs = ["Reveal"]
 - _adding_ a test case = adding an entry to the file, no code changes
 {{% /col %}}
 {{% col class="col-6" %}}
+{{% small "85%" %}}
 - notice that each expectation is meant for a specific _kind_ of check:
     * __exact__ match: names and emails
     * __tolerant__ match: _ranges_ for scores
@@ -142,6 +143,7 @@ outputs = ["Reveal"]
 
 - `yaml.safe_load` (from [PyYAML](https://pyyaml.org/)) parses YAML text into Python `list`s and `dict`s
 - `read_letter(case)`, in the same file, reads the text of the case's letter from the running example's `data/` directory
+{{% /small %}}
 {{% /col %}}
 {{% /multicol %}}
 

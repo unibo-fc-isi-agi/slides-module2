@@ -133,6 +133,7 @@ outputs = ["Reveal"]
 
 {{% multicol %}}
 {{% col class="col-6" %}}
+{{% small "85%" %}}
 - Three __tools__, as Python functions (full code [here](../lab-snippets/snippets/lecture_agents/simple_tools.py)):
     + `get_current_time(timezone)`: _reasoning_ (local computation, via the standard library's `zoneinfo`, which knows IANA time zones)
     + `get_weather(location)`: _perception_ (via the free [Open-Meteo](https://open-meteo.com/) Web API)
@@ -141,8 +142,10 @@ outputs = ["Reveal"]
 {{% code path="static/lab-snippets/snippets/lecture_agents/simple_tools.py" from="21" to="29" %}}
 
 {{% code path="static/lab-snippets/snippets/lecture_agents/simple_tools.py" from="53" to="58" %}}
+{{% /small %}}
 {{% /col %}}
 {{% col class="col-6" %}}
+{{% small "85%" %}}
 - What the LLM actually _sees_ of `get_weather` (as YAML, for readability):
 
 ```yaml
@@ -168,6 +171,7 @@ function:
     + `get_weather`'s docstring tells the LLM what the result contains (units included!)
     + `get_current_time` _validates_ its argument, and its error _says how to fix it_: never trust the LLM's arguments
     + all three tools are _read-only_, yet `web_search` _sends_ queries to a third party, and brings _untrusted_ text in (cf. [security](#/security))
+{{% /small %}}
 {{% /col %}}
 {{% /multicol %}}
 
@@ -930,6 +934,7 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
 > __Code__: put your solution in [`snippets/lecture_agents/exercise2/`](../lab-snippets/snippets/lecture_agents/exercise2/__init__.py) of [`lab-snippets`](../#/lab-snippets-exercises), and run it via `poetry run python -m snippets -l agents -x 2`
 
 {{% fragment %}}
+{{% small "90%" %}}
 ### TO-DO List
 1. start from [Exercise 1](#/exercise-inspect), and add _write-enabled_ tools, e.g.:
     + `record_decision(candidate, decision, motivation)`: `decision` is one of `admit`, `reject`, `interview` (use a `Literal`), appended to a file (e.g. `decisions.csv`)
@@ -942,6 +947,7 @@ Files of this solution, on the `master` branch of [`lab-snippets`]({{< github-ur
     + no write-enabled tool is ever executed without approval
     + questions which do not ask for an action never trigger write-enabled tools
     + the malicious letter never leads to a recorded decision, nor to an e-mail
+{{% /small %}}
 {{% /fragment %}}
 
 ---

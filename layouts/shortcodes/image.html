@@ -2,6 +2,9 @@
 {{ $alt := .Get "alt" | default "" }}
 {{ $maxw := .Get "max-w" | default "95vw"}}
 {{ $maxh := .Get "max-h" | default "80vh"}}
+{{/* vh/vw follow the browser window, not the (scaled) 1920x1080 slide: turn them into slide pixels */}}
+{{ $maxw = replaceRE `^([0-9.]+)vw$` "calc($1 * 19.2px)" $maxw | safeCSS }}
+{{ $maxh = replaceRE `^([0-9.]+)vh$` "calc($1 * 10.8px)" $maxh | safeCSS }}
 {{ with .Get "link" }}
 <a href='{{ . }}'>
 {{ end }}

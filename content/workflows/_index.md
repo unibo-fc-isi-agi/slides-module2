@@ -409,6 +409,8 @@ flowchart LR
 
 > __Goal__: after the committee's decisions, write a _personalised_ feedback e-mail to each candidate, good enough to be sent
 
+{{% small "90%" %}}
+
 1. The committee's __decisions__ are the _only_ facts e-mails may mention; __routing__: one set of instructions per decision
 
     {{% code path="static/lab-snippets/snippets/lecture_workflows/example2/feedback_letters.py" from="21" to="31" %}}
@@ -419,6 +421,8 @@ flowchart LR
 
     - `Verdict` is the judge's structured output: a __checklist__, one boolean per criterion (cf. the [letter-scoring checklist](../prompting/#/exercise-checklist)); the _issues_ and the acceptance are derived by code
     - why not a list of `issues`? In our runs, a small judge filled it with "None", "N/A", or "the e-mail passes all criteria": nothing was ever accepted
+
+{{% /small %}}
 
 ---
 
@@ -692,7 +696,7 @@ Generalising [plan before acting](../agents/#/plan-before-acting) beyond plans:
     level mentioned in the regulations. [...]
     ```
 
-    (actual run, with `gemma4:e4b` via [Ollama](../llmaas/): notice the first question, which is _not_ self-contained, as the regulations agent knows nothing about candidates)
+    <small>(actual run, with `gemma4:e4b` via [Ollama](../llmaas/): notice the first question, which is _not_ self-contained, as the regulations agent knows nothing about candidates)</small>
 
 ---
 

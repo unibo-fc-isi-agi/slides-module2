@@ -110,7 +110,7 @@ outputs = ["Reveal"]
 
 __TL;DR__: forcing the model to _produce output_ in a specific format (e.g. JSON matching a given schema) so that to bring unstructured input data (e.g. natural language) into structured form that can be easily processed by downstream applications (e.g. databases, APIs, etc.)
 
-{{< image src="./structured-output.svg" width="100%" max-h="80vh" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" >}}
+{{< image src="./structured-output.svg" width="100%" max-h="75vh" alt="Structured output: what it is, why it matters, the workflow, how to define schemas, best practices" >}}
 
 ---
 

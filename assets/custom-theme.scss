@@ -101,6 +101,13 @@ section.has-light-background {
 	color: black;
 }
 
+// wrap long lines rather than cutting them (they would need horizontal scrolling);
+// `.slides` beats the equally-specific `white-space: pre` of the stylesheets loaded later
+.reveal .slides pre code {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 // HEADERS
 
 .reveal h1 {
@@ -203,7 +210,7 @@ section.has-light-background {
 
 .mermaid svg {
 	max-width: 100% !important;
-	max-height: 45vh !important;
+	max-height: calc(45 * 10.8px) !important; // i.e. 45% of the slide, whatever the window size
 	height: 20%;
 	width: 100vw;
 	transition: transform 0.3s ease;
