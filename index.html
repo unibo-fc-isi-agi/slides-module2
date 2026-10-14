@@ -1,5 +1,4 @@
 <!DOCTYPE html><html lang="en"><head>
-	<meta name="generator" content="Hugo 0.167.0">
     <meta charset="utf-8">
 <title>About the course</title>
 <meta name="description" content="Presentation of the course 'Intelligent Agents — Module 2'">
@@ -18,7 +17,8 @@
 <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 <script src="https://unibo-fc-isi-iag.github.io/slides-module2/plantuml.js"></script>
 
-  </head>
+  	<meta name="generator" content="Hugo 0.168.0">
+</head>
   <body>
     
     <div class="reveal">
@@ -30,7 +30,7 @@
 <br>
 <h3 id="prof-hahahugoshortcode1s2hbhb">Prof. <a href="mailto:giovanni.ciatto@unibo.it">Giovanni Ciatto</a></h3>
 <br>
-<p>Compiled on: 2026-10-13
+<p>Compiled on: 2026-10-14
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <!-- [<i class="fa fa-undo" aria-hidden="true"></i> back](..) -->
 </section>
@@ -555,7 +555,7 @@
 </section><section>
 <h1 id="lecture-is-over">Lecture is Over</h1>
 <br>
-<p>Compiled on: 2026-10-13
+<p>Compiled on: 2026-10-14
  — <a href="?print-pdf&amp;pdfSeparateFragments=false"><i class="fa fa-print" aria-hidden="true"></i> printable version</a></p>
 <p><a href="./#/toc"><i class="fa fa-undo" aria-hidden="true"></i> back to ToC</a></p>
 </section>
@@ -638,8 +638,6 @@
   
 
   
-    
-  
   
 
   
@@ -673,30 +671,6 @@
   
 
 
-
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
-  <script>
-    mermaid.initialize({});
-
-    let render = (event) => {
-      let mermaidElems = event.currentSlide.querySelectorAll('.mermaid');
-      if (!mermaidElems.length){
-          return
-      }
-      mermaidElems.forEach(mermaidElem => {
-          let processed = mermaidElem.getAttribute('data-processed');
-          if (!processed){
-              
-              mermaid.init(undefined, mermaidElem);
-          }
-      });
-    };
-    
-    render({currentSlide: Reveal.getCurrentSlide()});
-
-    Reveal.on('slidechanged', render);
-    Reveal.on('ready', render);
-  </script>
 
 
 
